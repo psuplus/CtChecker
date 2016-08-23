@@ -1,0 +1,24 @@
+digraph "Globals graph" {
+	label="Globals graph";
+
+	Node0x7fdc4951b1f0 [shape=record,shape=Mrecord,label="{0: %struct.list*,  : SMR\n|{<s0>0}}"];
+	Node0x7fdc4951b1f0:s0 -> Node0x7fdc4951b420;
+	Node0x7fdc4951b310 [shape=record,shape=Mrecord,label="{0: %struct.list*,  : SMR\n|{<s0>0}}"];
+	Node0x7fdc4951b310:s0 -> Node0x7fdc4951b4f0;
+	Node0x7fdc4951b420 [shape=record,shape=Mrecord,label="{0: %struct.list*,  8: i32,  : HMR\n|{<s0>0}}"];
+	Node0x7fdc4951b420:s0 -> Node0x7fdc4951b420;
+	Node0x7fdc4951b4f0 [shape=record,shape=Mrecord,label="{0: %struct.list*,  8: i32,  : HMR\n|{<s0>0}}"];
+	Node0x7fdc4951b4f0:s0 -> Node0x7fdc4951b4f0;
+	Node0x7fdc4950cce8[  label ="  %X = alloca %struct.list*, align 8"];
+	Node0x7fdc4950cce8 -> Node0x7fdc4951b1f0[arrowtail=tee,color=gray63];
+	Node0x7fdc4950cd58[  label ="  %Y = alloca %struct.list*, align 8"];
+	Node0x7fdc4950cd58 -> Node0x7fdc4951b310[arrowtail=tee,color=gray63];
+	Node0x7fdc4950ced0[  label ="  %call = call %struct.list* @makeList(i32 10), !dbg !38"];
+	Node0x7fdc4950ced0 -> Node0x7fdc4951b420[arrowtail=tee,color=gray63];
+	Node0x7fdc4950d120[  label ="  %call1 = call %struct.list* @makeList(i32 100), !dbg !41"];
+	Node0x7fdc4950d120 -> Node0x7fdc4951b4f0[arrowtail=tee,color=gray63];
+	Node0x7fdc4950d238[  label ="  %0 = load %struct.list*, %struct.list** %X, align 8, !dbg !42"];
+	Node0x7fdc4950d238 -> Node0x7fdc4951b420[arrowtail=tee,color=gray63];
+	Node0x7fdc4950d418[  label ="  %1 = load %struct.list*, %struct.list** %Y, align 8, !dbg !45"];
+	Node0x7fdc4950d418 -> Node0x7fdc4951b4f0[arrowtail=tee,color=gray63];
+}

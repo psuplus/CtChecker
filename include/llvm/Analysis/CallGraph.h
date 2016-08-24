@@ -115,6 +115,8 @@ public:
   /// \brief Returns the module the call graph corresponds to.
   Module &getModule() const { return M; }
 
+  CallGraphNode* getRoot() const {return Root;}
+
   inline iterator begin() { return FunctionMap.begin(); }
   inline iterator end() { return FunctionMap.end(); }
   inline const_iterator begin() const { return FunctionMap.begin(); }

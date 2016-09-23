@@ -31,7 +31,7 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < test.bc > /dev/null
+  -taintanalysis  -debug < test.bc > /dev/null
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

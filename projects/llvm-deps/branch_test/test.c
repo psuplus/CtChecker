@@ -22,8 +22,9 @@ int main() {
   //    x = 2;
   // if (plain < N)    // this branch is untrusted, but not tainted.
   //    x = 3;
-  c.x = key;
-  c.y = 0;
-  if (plain < c.y)  // this branch is untrusted, but not tainted.
-     ; 
+  c.x = key; // tainted
+  c.y = 0;   // not tainted
+  plain = c.y; // not tainted
+  // if (plain < c.y)  // this branch is untrusted, but not tainted.
+  //   ; 
 }

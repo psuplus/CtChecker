@@ -7,11 +7,9 @@ target triple = "x86_64-apple-macosx10.11.0"
 ; Function Attrs: nounwind ssp uwtable
 define i32 @main() #0 {
 entry:
-  %retval = alloca i32, align 4
   %key = alloca i32, align 4
   %plain = alloca i32, align 4
   %c = alloca %struct.context, align 4
-  store i32 0, i32* %retval
   call void @llvm.dbg.declare(metadata i32* %key, metadata !12, metadata !13), !dbg !14
   store i32 6, i32* %key, align 4, !dbg !14
   call void @llvm.dbg.declare(metadata i32* %plain, metadata !15, metadata !13), !dbg !16
@@ -22,18 +20,10 @@ entry:
   store i32 %0, i32* %x, align 4, !dbg !26
   %y = getelementptr inbounds %struct.context, %struct.context* %c, i32 0, i32 1, !dbg !27
   store i32 0, i32* %y, align 4, !dbg !28
-  %1 = load i32, i32* %plain, align 4, !dbg !29
-  %y1 = getelementptr inbounds %struct.context, %struct.context* %c, i32 0, i32 1, !dbg !31
-  %2 = load i32, i32* %y1, align 4, !dbg !31
-  %cmp = icmp slt i32 %1, %2, !dbg !32
-  br i1 %cmp, label %if.then, label %if.end, !dbg !33
-
-if.then:                                          ; preds = %entry
-  br label %if.end, !dbg !33
-
-if.end:                                           ; preds = %if.then, %entry
-  %3 = load i32, i32* %retval, !dbg !34
-  ret i32 %3, !dbg !34
+  %y1 = getelementptr inbounds %struct.context, %struct.context* %c, i32 0, i32 1, !dbg !29
+  %1 = load i32, i32* %y1, align 4, !dbg !29
+  store i32 %1, i32* %plain, align 4, !dbg !30
+  ret i32 0, !dbg !31
 }
 
 ; Function Attrs: nounwind readnone
@@ -75,9 +65,6 @@ attributes #1 = { nounwind readnone }
 !26 = !MDLocation(line: 25, column: 7, scope: !4)
 !27 = !MDLocation(line: 26, column: 5, scope: !4)
 !28 = !MDLocation(line: 26, column: 7, scope: !4)
-!29 = !MDLocation(line: 27, column: 7, scope: !30)
-!30 = distinct !MDLexicalBlock(scope: !4, file: !1, line: 27, column: 7)
-!31 = !MDLocation(line: 27, column: 17, scope: !30)
-!32 = !MDLocation(line: 27, column: 13, scope: !30)
-!33 = !MDLocation(line: 27, column: 7, scope: !4)
-!34 = !MDLocation(line: 29, column: 1, scope: !4)
+!29 = !MDLocation(line: 27, column: 13, scope: !4)
+!30 = !MDLocation(line: 27, column: 9, scope: !4)
+!31 = !MDLocation(line: 30, column: 1, scope: !4)

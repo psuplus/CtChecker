@@ -31,7 +31,10 @@ void printLnTrace(char* filename, int line) {
 }
 
 void printTrace(int node) {
-	cerr << "," << node;
+	fstream trace;
+	trace.open("/tmp/trace/tcas.c.tr", std::fstream::app)
+	trace << "," << node;
+	trace.close();
 }
 
 

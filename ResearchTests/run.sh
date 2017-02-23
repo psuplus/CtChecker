@@ -73,7 +73,7 @@ if [ $# -gt 1 ]; then
 
 	for f in *.bc; do
 		llvm-dis $f
-		opt -load $LLVMLIB/Research.$EXT $opt $f -o ${f%.bc}.g.bc &>> ../trace/nodes
+		opt -load $LLVMLIB/Research.$EXT $opt $f -o ${f%.bc}.g.bc >> ../trace/nodes 2>&1
 		ret=$?
 		if [ $ret -ne 0 ]; then
 			echo "opt failed when processing \"$f\", ret=$ret"

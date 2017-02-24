@@ -15,9 +15,16 @@ if [ -n "${VTENV}" ]; then
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
-	alias readlink="greadlink"
+	export READLINK="greadlink"
+	export EXT="dylib"
+	export CPPFLAGS="-g -stdlib=libstdc++"
+	export LDFLAGS="-stdlib=libstdc++"
+else
+	export READLINK="readlink"
+	export EXT="so"
+	export CPPFLAGS="-g"
+	export LDFLAGS=
 fi
-
 
 export TEST=$(dirname $(readlink -f env.sh))
 export BASE=$(dirname $TEST)
@@ -54,6 +61,10 @@ deactivate_vtenv() {
     unset -v BENCHMARKS
     unset -v BBInfo
     unset -v TMP
+    unset -v READLINK
+    unset -v EXT
+    unset -v CPPFLAGS
+    unset -v LDFLAGS
     unset -f deactivate_vtenv
 
     if [ -n "$BASH" -o -n "$ZSH_VERSION" ]; then

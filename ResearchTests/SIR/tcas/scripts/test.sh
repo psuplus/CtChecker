@@ -16,7 +16,7 @@ elif [[ $1 -gt 41 ]]; then
 fi
 
 # copy the original source code and compile
-
+mkdir -p ../source
 cp ../source.alt/source.orig/tcas.c ../source
 
 (

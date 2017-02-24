@@ -1,4 +1,5 @@
 echo script type: R
+mkdir -p ../outputs
 echo ">>>>>>>>running test 1"
 ../source/tcas.exe  958 1 1 2597  574 4253 0  399  400 0 0 1     > ../outputs/t1
 echo ">>>>>>>>running test 2"

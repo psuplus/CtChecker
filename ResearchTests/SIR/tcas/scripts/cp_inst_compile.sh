@@ -33,9 +33,9 @@ fi
 clang -g -O0 -emit-llvm -c tcas.c -o tcas.bc
 
 echo 0 > /tmp/llvm0
-opt -load /home/troy/LLVM-Deps/Debug+Asserts/lib/Research.so -prtLnTrace tcas.bc -o tcas.g.bc &> ../nodes
+opt -load ../../../../Debug+Asserts/lib/Research.so -prtLnTrace tcas.bc -o tcas.g.bc &> ../nodes
 
-clang -g -O0 -emit-llvm -c /home/troy/LLVM-Deps/ResearchTests/instrumentation/BBInfo/printLine.cpp
+clang -g -O0 -emit-llvm -c ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp
 
 llvm-link tcas.g.bc printLine.bc -o tcas.linked.bc
 

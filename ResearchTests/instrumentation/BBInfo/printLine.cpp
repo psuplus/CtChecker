@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <string>
 
@@ -32,7 +33,7 @@ void printLnTrace(char* filename, int line) {
 
 void printTrace(int node) {
 	fstream trace;
-	trace.open("/tmp/trace/tcas.c.tr", std::fstream::app)
+	trace.open("/tmp/trace/tcas.c.tr", std::fstream::app);
 	trace << "," << node;
 	trace.close();
 }

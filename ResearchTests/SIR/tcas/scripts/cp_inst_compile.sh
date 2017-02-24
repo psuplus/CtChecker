@@ -30,12 +30,12 @@ Run \`source ./env.sh\` in \`ResearchTests\` to activate the virtual environment
   exit
 fi
 
-clang -g -O0 -emit-llvm -c tcas.c -o tcas.bc
+clang $CPPFLAGS -O0 -emit-llvm -c tcas.c -o tcas.bc
 
 echo 0 > /tmp/llvm0
 opt -load ../../../../Debug+Asserts/lib/Research.so -prtLnTrace tcas.bc -o tcas.g.bc &> ../nodes
 
-clang -g -O0 -emit-llvm -c ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp
+clang $CPPFLAGS -O0 -emit-llvm -c ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp
 
 llvm-link tcas.g.bc printLine.bc -o tcas.linked.bc
 

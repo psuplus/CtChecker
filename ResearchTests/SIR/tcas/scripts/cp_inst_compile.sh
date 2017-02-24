@@ -33,7 +33,7 @@ fi
 clang $CPPFLAGS -O0 -emit-llvm -c tcas.c -o tcas.bc
 
 echo 0 > /tmp/llvm0
-opt -load ../../../../Debug+Asserts/lib/Research.so -prtLnTrace tcas.bc -o tcas.g.bc &> ../nodes
+opt -load ../../../../Debug+Asserts/lib/Research.dylib -prtLnTrace tcas.bc -o tcas.g.bc &> ../nodes
 
 clang $CPPFLAGS -O0 -emit-llvm -c ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp
 
@@ -41,4 +41,8 @@ llvm-link tcas.g.bc printLine.bc -o tcas.linked.bc
 
 llc -filetype=obj tcas.linked.bc -o tcas.o
 
-g++ -std=c++11 tcas.o -o tcas.c.inst.exe
+if [ "$(uname)" == "Darwin" ]; then
+  g++ $CPPFLAGS tcas.o -o tcas.c.inst.exe
+else
+  g++ -std=c++11 tcas.o -o tcas.c.inst.exe
+fi

@@ -1,26 +1,33 @@
 import networkx as nx
 from math import *
+import sys
 import heapq
 # import matplotlib
 
 p2 = 0.3
-p1 = (p2/(1-p2)) ** 3
+p1 = (p2/(1-p2)) ** 10
+# p1 = 0.3
 c1 = -log(p1)
 c2 = -log(p2/(1-p2))
+print c1, c2
+# c1 = 1
+# c2 = 0
 
-G = nx.DiGraph()
+# G = nx.DiGraph()
 
-f = open("trace/nodes")
+# f = open("trace/nodes")
+f = open(sys.argv[1])
 all_nodes = {}
 for line in f.xreadlines():
     node, detail = line.strip().split(" = ", 2)
     filename, line, col = detail[1:-1].split("; ", 3)
-    G.add_node(int(node), filename=filename, line=int(line), col=int(col))
+    # G.add_node(int(node), filename=filename, line=int(line), col=int(col))
     all_nodes[int(node)] = (filename, int(line), int(col))
 
 f.close()
 
-f = open("trace/traces")
+# f = open("trace/traces")
+f = open(sys.argv[2])
 failed_traces = set()
 succeeded_traces = set()
 good_nodes = {}
@@ -51,6 +58,8 @@ for line in f.xreadlines():
 
 # all possible nodes to be in min cut set.
 possible_nodes = reduce(lambda x,y: x | y, failed_traces, set())
+# print failed_traces
+print reduce(lambda x,y: x & y, failed_traces)
 heap = []
 # Calculate such nodes and add to heap
 for n in possible_nodes:
@@ -65,27 +74,25 @@ while True:
     if not paths:
         if done and h > done:
             break
-        print h, nodes, all_nodes[nodes.pop()]
+        print h, nodes, map(lambda x: all_nodes[x], nodes)
         done = h
     else:
         remaining_nodes = reduce(lambda x,y: x|y, paths)
         for n in remaining_nodes:
             ns = nodes | {n}
+            # print c1 * len(ns), c2 * len(filter(lambda t: ns & t, succeeded_traces))
             g = c1 * len(ns) + c2 * len(filter(lambda t: ns & t, succeeded_traces))
             remaining_paths = filter(lambda p: not(ns & p), failed_traces)
             h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x&y, remaining_paths) else 2
             heapq.heappush(heap, (g+h*c1, ns, remaining_paths))
-for h in heap:
-    print h
-# print heap
-# def is_min_cut(nodes, paths):
-#     for p in paths:
-#         if (nodes & p):
+
+# for h in heap:
+#     print h
 
 
 
 # print G.nodes(data=True)
 # print G.edges(data=True)
 # print G.edges()
-print failed_traces
+# print failed_traces
 # matplotlib.draw(G)

@@ -15,6 +15,8 @@ elif [[ $1 -gt 41 ]]; then
   printUsage
 fi
 
+mkdir -p ../newoutputs ../orgoutputs
+
 # copy the original source code and compile
 mkdir -p ../source
 rm -f ../source/*

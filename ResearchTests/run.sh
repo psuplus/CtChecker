@@ -82,7 +82,9 @@ if [ $# -gt 1 ]; then
 	done
 
 	if [[ ! $opt =~ "-s" ]]; then ## -s means static analysis
-		clang $CPPFLAGS -O0 -emit-llvm -c $BBInfo/printLine.cpp -o printLine.bc
+		echo "#define __SOURCE__ \"$tst.c\"" > printLine.cpp
+		cat $BBInfo/printLine.cpp >> printLine.cpp
+		clang $CPPFLAGS -O0 -emit-llvm -c printLine.cpp -o printLine.bc
 
 		## link instrumentation module
 		llvm-link *.g.bc printLine.bc -o "$tst".linked.bc
@@ -104,7 +106,8 @@ if [ $# -gt 1 ]; then
 		fi
 
 		## generate native executable
-		g++ -std=c++11 "$tst".o $LLVMLIBS $LDFLAGS -o "$tst".x
+		# g++ -std=c++11 "$tst".o $LLVMLIBS $LDFLAGS -o "$tst".x
+		g++ "$tst".o $LLVMLIBS $LDFLAGS -o "$tst".x
 		ret=$?
 		if [ $ret -ne 0 ]; then
 			echo "g++ failed ret=$ret"
@@ -113,8 +116,10 @@ if [ $# -gt 1 ]; then
 
 		echo "Running ./$tst"
 		for f in ../tests/$tst/*; do
-			./"$tst".x ${f##*/} 2>trace
-			printf "\n$?\n" | cat - trace >> ../trace/traces
+			# ./"$tst".x ${f##*/} 2>trace
+			./"$tst".x ${f##*/}
+			printf "\n$?\n" | cat - /tmp/trace/$tst.c.tr >> ../trace/traces
+			rm /tmp/trace/$tst.c.tr
 		done
 	else
 		echo "Analysis only"

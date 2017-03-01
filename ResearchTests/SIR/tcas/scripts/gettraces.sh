@@ -2095,9 +2095,9 @@ echo ">>>>>>>>running test 523"
 ../source/tcas.c.inst.exe 766 1 1 0 380 744 0 370 369 0 2 1     > ../newoutputs/t523
 cp $ARISTOTLE_DB_DIR/tcas.c.tr ../traces/522.tr
 rm -f $ARISTOTLE_DB_DIR/tcas.c.tr
-echo ">>>>>>>>running test 524"
-../source/tcas.c.inst.exe 860 1 1 618 329 574 4 893 914 0 2 0     > ../newoutputs/t524
-cp $ARISTOTLE_DB_DIR/tcas.c.tr ../traces/523.tr
+# echo ">>>>>>>>running test 524"
+# ../source/tcas.c.inst.exe 860 1 1 618 329 574 4 893 914 0 2 0     > ../newoutputs/t524
+# cp $ARISTOTLE_DB_DIR/tcas.c.tr ../traces/523.tr
 rm -f $ARISTOTLE_DB_DIR/tcas.c.tr
 echo ">>>>>>>>running test 525"
 ../source/tcas.c.inst.exe 654 1 1 912 496 465 0 587 495 0 2 1     > ../newoutputs/t525

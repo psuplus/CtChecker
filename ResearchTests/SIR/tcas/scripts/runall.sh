@@ -1046,8 +1046,8 @@ echo ">>>>>>>>running test 522"
 ../source/tcas.exe 810 1 0 686 458 122 3 1017 980 0 1 1     > ../outputs/t522
 echo ">>>>>>>>running test 523"
 ../source/tcas.exe 766 1 1 0 380 744 0 370 369 0 2 1     > ../outputs/t523
-echo ">>>>>>>>running test 524"
-../source/tcas.exe 860 1 1 618 329 574 4 893 914 0 2 0     > ../outputs/t524
+# echo ">>>>>>>>running test 524"
+# ../source/tcas.exe 860 1 1 618 329 574 4 893 914 0 2 0     > ../outputs/t524
 echo ">>>>>>>>running test 525"
 ../source/tcas.exe 654 1 1 912 496 465 0 587 495 0 2 1     > ../outputs/t525
 echo ">>>>>>>>running test 526"

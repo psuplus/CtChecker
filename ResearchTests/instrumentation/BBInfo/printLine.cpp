@@ -33,7 +33,7 @@ void printLnTrace(char* filename, int line) {
 
 void printTrace(int node) {
 	fstream trace;
-	trace.open("/tmp/trace/tcas.c.tr", std::fstream::in | std::fstream::out | std::fstream::app);
+	trace.open("/tmp/trace/" __SOURCE__ ".tr", std::fstream::in | std::fstream::out | std::fstream::app);
 	trace << "," << node;
 	trace.close();
 }

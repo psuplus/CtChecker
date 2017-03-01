@@ -1,5 +1,14 @@
 #!/bin/bash
 
+source=tcas.c
+EXT=so
+
+if [ "$(uname)" == "Darwin" ]; then
+  EXT=dylib
+else
+  EXT=so
+fi
+
 function printUsage {
   echo "USAGE:"
   echo "      ./cp_and_compile.sh <version>"
@@ -17,7 +26,7 @@ fi
 
 ver=$1
 
-cp ../versions.alt/versions.orig/v$ver/tcas.c ../source
+cp ../versions.alt/versions.orig/v$ver/$source ../source
 
 cd ../source
 
@@ -30,19 +39,17 @@ Run \`source ./env.sh\` in \`ResearchTests\` to activate the virtual environment
   exit
 fi
 
-clang $CPPFLAGS -O0 -emit-llvm -c tcas.c -o tcas.bc
+clang -g $CPPFLAGS -O0 -emit-llvm -c $source
 
 echo 0 > /tmp/llvm0
-opt -load ../../../../Debug+Asserts/lib/Research.dylib -prtLnTrace tcas.bc -o tcas.g.bc &> ../nodes
+opt -load ../../../../Debug+Asserts/lib/Research.$EXT -prtLnTrace tcas.bc -o $source.bc &> ../nodes
 
-clang $CPPFLAGS -O0 -emit-llvm -c ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp
+echo "#define __SOURCE__ \"$source\"" > printLine.cpp
+cat ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp >> printLine.cpp
+clang $CPPFLAGS -O0 -emit-llvm -c printLine.cpp
 
-llvm-link tcas.g.bc printLine.bc -o tcas.linked.bc
+llvm-link $source.bc printLine.bc -o tcas.linked.bc
 
 llc -filetype=obj tcas.linked.bc -o tcas.o
 
-if [ "$(uname)" == "Darwin" ]; then
-  g++ $CPPFLAGS tcas.o -o tcas.c.inst.exe
-else
-  g++ -std=c++11 tcas.o -o tcas.c.inst.exe
-fi
+g++ $CPPFLAGS tcas.o -o tcas.c.inst.exe

@@ -1,5 +1,5 @@
 export OPTFLAGS="-sprtLnNum -prtLnNum -prtBBTrace -prtLnTrace"
-export TESTS="gcd welcome compression recursive divBy0"
+export TESTS="gcd welcome compression recursive divBy0 simple"
 
 _script()
 {

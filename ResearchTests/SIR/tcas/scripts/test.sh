@@ -17,6 +17,7 @@ fi
 
 # copy the original source code and compile
 mkdir -p ../source
+rm -f ../source/*
 cp ../source.alt/source.orig/tcas.c ../source
 
 (
@@ -26,12 +27,11 @@ cp ../source.alt/source.orig/tcas.c ../source
 
 # run the tests on original code
 ## skip for efficiency
-if false; then
-  cd ../scripts
+# if false; then
   echo Running ./runall.sh
   (./runall.sh) > /dev/null
   mv -f ../outputs/* ../orgoutputs
-fi
+# fi
 
 # cp intrument and compile version $1
 echo "Running rm ../traces/*"

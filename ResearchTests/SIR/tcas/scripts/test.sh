@@ -32,11 +32,14 @@ cp ../source.alt/source.orig/tcas.c ../source
 # if false; then
   echo Running ./runall.sh
   (./runall.sh) > /dev/null
+  mkdir -p ../orgoutputs
+  rm -f ../orgoutputs/*
   mv -f ../outputs/* ../orgoutputs
 # fi
 
 # cp intrument and compile version $1
 echo "Running rm ../traces/*"
+mkdir -p ../traces
 rm ../traces/*
 echo Running ./cp_inst_compile.sh $1
 (./cp_inst_compile.sh $1) &> /dev/null

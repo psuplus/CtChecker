@@ -12,9 +12,9 @@ for f in ../newoutputs/*; do
 
 	if [[ $ret -ne 0 ]]; then
 		(cat ../traces/$((${bname:1} - 1)).tr; echo) >> ../failed_traces
-		if grep -v ",21," ../traces/$((${bname:1} - 1)).tr; then
-			echo "../traces/$((${bname:1} - 1)).tr doesn't contain 21"
-		fi
+		# if grep -v ",132," ../traces/$((${bname:1} - 1)).tr; then
+		# 	echo "../traces/$((${bname:1} - 1)).tr doesn't contain 132"
+		# fi
 	else
 		(cat ../traces/$((${bname:1} - 1)).tr; echo) >> ../succeeded_traces
 	fi

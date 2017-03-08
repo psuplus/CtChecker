@@ -57,6 +57,8 @@ for line in f.xreadlines():
 # Use A* search to find such min-cut sets
 
 # all possible nodes to be in min cut set.
+print "succ traces: ", len(succeeded_traces)
+print "fail traces: ", len(failed_traces)
 possible_nodes = reduce(lambda x,y: x | y, failed_traces, set())
 # print failed_traces
 print reduce(lambda x,y: x & y, failed_traces)
@@ -74,7 +76,7 @@ while True:
     if not paths:
         if done and h > done:
             break
-        print h, nodes, map(lambda x: all_nodes[x], nodes)
+        print h, (h-c1*len(nodes))/c2, nodes, map(lambda x: all_nodes[x], nodes)
         done = h
     else:
         remaining_nodes = reduce(lambda x,y: x|y, paths)

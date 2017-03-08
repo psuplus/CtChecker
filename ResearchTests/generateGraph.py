@@ -20,9 +20,9 @@ f = open(sys.argv[1])
 all_nodes = {}
 for line in f.xreadlines():
     node, detail = line.strip().split(" = ", 2)
-    filename, line, col = detail[1:-1].split("; ", 3)
+    filename, line, col, scope, inlinedAt = detail[1:-1].split("; ", 5)
     # G.add_node(int(node), filename=filename, line=int(line), col=int(col))
-    all_nodes[int(node)] = (filename, int(line), int(col))
+    all_nodes[int(node)] = (filename, int(line), int(col), scope, inlinedAt)
 
 f.close()
 
@@ -38,17 +38,11 @@ for line in f.xreadlines():
         else:
             trace = [int(a) for a in line.split(",") if a.strip()]
             if failed:
-                failed_traces.add(frozenset(trace))
-                # for i in xrange(1, len(trace)-1):
-                #     G.add_edge(trace[i],trace[i+1])
-                #     G[trace[i]][trace[i+1]]['failure'] = G[trace[i]][trace[i+1]].get('failure', 0) +1
+                # failed_traces.add(frozenset(trace))
+                failed_traces.add(trace)
             else:
                 succeeded_traces.add(frozenset(trace))
-                # for x in trace:
-                #     good_nodes[x] = good_nodes.get(x, 0)+1
-                # for i in xrange(1, len(trace)-1):
-                #     G.add_edge(trace[i],trace[i+1])
-                #     G[trace[i]][trace[i+1]]['success'] = G[trace[i]][trace[i+1]].get('success', 0) +1
+                succeeded_traces.add(frozenset(trace))
 
 # Need to keep the failure path..
 # General Idea: to get the min-cut of wrong paths.

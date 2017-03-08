@@ -72,7 +72,7 @@ bool Non_Crossing_Biased_Climb()
     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
     if (upward_preferred)
     {
-	result = 1; /* opertor mutation */
+	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) && (!(Down_Separation > ALIM()))); /* opertor mutation */
     }
     else
     {	

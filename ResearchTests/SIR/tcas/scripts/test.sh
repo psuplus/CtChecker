@@ -37,12 +37,12 @@ cp ../source.alt/source.orig/tcas.c ../source
 
 # cp intrument and compile version $1
 echo "Running rm ../traces/*"
-rm ../traces/*
+rm -f ../traces/*
 echo Running ./cp_inst_compile.sh $1
-(./cp_inst_compile.sh $1) &> /dev/null
+(./cp_inst_compile.sh $1) > /dev/null
 
 echo Running ./gettraces.sh
-(./gettraces.sh) > /dev/null
+(./gettraces.sh) &> /dev/null
 
 echo Running ./collect_traces.sh
 ./collect_traces.sh

@@ -31,7 +31,7 @@ cp ../source.alt/source.orig/tcas.c ../source
 ## skip for efficiency
 # if false; then
   echo Running ./runall.sh
-  (./runall.sh) > /dev/null
+  (./runall.sh) &> /dev/null
   mkdir -p ../orgoutputs
   rm -f ../orgoutputs/*
   mv -f ../outputs/* ../orgoutputs
@@ -43,7 +43,7 @@ mkdir -p ../traces
 rm -f ../traces/*
 
 echo Running ./cp_inst_compile.sh $1
-(./cp_inst_compile.sh $1) > /dev/null
+(./cp_inst_compile.sh $1) &> /dev/null
 
 echo Running ./gettraces.sh
 (./gettraces.sh) &> /dev/null
@@ -58,4 +58,4 @@ diff ../source.alt/source.orig/tcas.c ../versions.alt/versions.orig/v$1/tcas.c
 # Generate the output
 echo
 echo Generate the output
-python ../../../generateGraph.py ../nodes ../trace
+python ../../../calculateErrorNodes.py ../nodes ../trace

@@ -58,4 +58,4 @@ diff ../source.alt/source.orig/tcas.c ../versions.alt/versions.orig/v$1/tcas.c
 # Generate the output
 echo
 echo Generate the output
-python ../../../calculateErrorNodes.py ../nodes ../trace
+python ../../../computeErrorNodes.py ../nodes ../trace ../errorInfo $1

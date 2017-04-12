@@ -77,7 +77,7 @@ bool OutputLnTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 		int node;
 		if (nodes.find(loc) == nodes.end()) {
 			node = count;
-			dbgs() << count << " = (" << loc->getFilename().str() << "; " << loc->getLine() << "; "  << loc->getColumn() << ") \n";
+			dbgs() << count << " = (" << loc->getFilename().str() << "; " << loc->getLine() << "; "  << loc->getColumn() << "; " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
 			nodes[loc] = count++;
 		}
 		else

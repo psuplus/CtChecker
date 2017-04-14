@@ -11,7 +11,7 @@ function printUsage {
 if [[ $# -lt 1 ]]; then
 	printUsage
 elif [[ $# -lt 2 ]]; then
-	echo "Using Product to calculate likelihood	$(basename calculateErrorNodes.py)
+	echo "Using Product to calculate likelihood	$(basename $1)
 Test	FailsAt	Rank" > /tmp/log
 	start=1
 	end=42
@@ -29,4 +29,4 @@ for (( i = $start; i < $end; i++ )); do
 	./test.sh $i $1
 done
 
-echo All Tests are Finished
+echo "All Tests are Finished"

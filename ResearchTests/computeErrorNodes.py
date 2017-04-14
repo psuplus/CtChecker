@@ -121,9 +121,9 @@ heap = []
 # Calculate such nodes and add to heap
 for n in possible_nodes:
     p2 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), succeeded_traces), 1.0)
-    p3 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), failed_traces), 1.0)
+    p3 = reduce(lambda x,y: x*y, map(lambda tr: 1-f(tr,n), failed_traces), 1.0)
     c2 = x2 and -log(p2)
-    c3 = x3 and -log(1- p3 + 1e-20 ) # added a small number to avoid domain error
+    c3 = x3 and -log(p3 + 1e-20) # added a small number to avoid domain error
     g = c1 + c2 + c3
     remaining_paths = set(filter(lambda p: n not in p, map(frozenset, failed_traces)))
     h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x & y, remaining_paths) else 2
@@ -149,7 +149,7 @@ for count in range(1, tol+1):
         for n in remaining_nodes:
             ns = nodes | {n}
             c2 = x2 and -log(reduce(lambda x,y: x*y, map(lambda tr: f(tr, ns), succeeded_traces), 1.0))
-            c3 = x3 and -log(1 - reduce(lambda x,y: x*y, map(lambda tr: f(tr,ns), failed_traces), 1.0) + 1e-20)
+            c3 = x3 and -log(reduce(lambda x,y: x*y, map(lambda tr: 1-f(tr,ns), failed_traces), 1.0) + 1e-20)
             g = c1 * len(ns) + c2 + c3
             remaining_paths = set(filter(lambda p: not(ns & p), map(frozenset, failed_traces)))
             h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x & y, remaining_paths) else 2
@@ -162,10 +162,11 @@ if debug:
     print "succ trace patterns: ", len(succeeded_traces)
     print "fail trace patterns: ", len(failed_traces)
     for n in nds:
-        if p2(n) and p2(n) < 1:
-            c2 = x2 and -log(p2(n))
-            c3 = x3 and -log(1-p2(n))
-            print n, all_nodes[n], p2(n), c2, nds[n].get("kE", None), c3, nds[n].get("fE", None)
+        p2 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), succeeded_traces), 1.0)
+        p3 = reduce(lambda x,y: x*y, map(lambda tr: 1-f(tr,n), failed_traces), 1.0)
+        c2 = x2 and -log(p2)
+        c3 = x3 and -log(p3 + 1e-20)
+        print n, all_nodes[n], p2, p3, c2, c3
 ##########################################################################################
 
 with open("/tmp/log", "a") as file:

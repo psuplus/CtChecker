@@ -27,13 +27,12 @@ if len(sys.argv) < 4:
 ###########################################################################
 # Flags and Constants
 ###########################################################################
-debug = True
-x1, x2, x3 = 1, 1, 1 # filters of the three terms, 1 = on, 0 = off
-p1 = 0.001
-c1 = -log(p1) * x1
-p2method = 2
-p2value = None
-tol = 40 # tolerance of the rank of true error in the heap
+debug = False
+x1,x2,x3 = 1,1,1
+p1 = 1e-20
+c1 = x1 and -log(p1)
+p3dep = True # whether p3 = 1-p2
+tol = 200 # tolerance of the rank of true error in the heap
 ###########################################################################
 
 
@@ -106,8 +105,14 @@ def p2(n):
     # print ret
     return ret
 
+def avg(l):
+    return sum(l)/len(l) if l else 0
+
 def f(tr, n):
-    return 1.0 - tr.index(n)/float(len(tr)) if n in tr else -1
+    if isinstance(n, set):
+        return 1.0 - avg([tr.index(node) for node in n if node in tr])/float(len(tr)) if n & set(tr) else 1.0
+    else:
+        return 1.0 - tr.index(n)/float(len(tr)) if n in tr else 1.0
 
 ###########################################################################
 
@@ -115,26 +120,25 @@ possible_nodes = reduce(lambda x,y: x | y, map(set, failed_traces), set())
 heap = []
 # Calculate such nodes and add to heap
 for n in possible_nodes:
-    c2 = -log(p2(n)) * x2
-    c3 = -log(1-p2(n)) * x3
-    nds[n]["kE"] = len(filter(lambda t: n in t, succeeded_traces))
-    nds[n]["fE"] = len(filter(lambda t: n in t, failed_traces))
-    g = c1 + c2 * nds[n]["kE"] + c3 * nds[n]["fE"]
+    p2 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), succeeded_traces), 1.0)
+    p3 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), failed_traces), 1.0)
+    c2 = x2 and -log(p2)
+    c3 = x3 and -log(1- p3 + 1e-20 ) # added a small number to avoid domain error
+    g = c1 + c2 + c3
     remaining_paths = set(filter(lambda p: n not in p, map(frozenset, failed_traces)))
     h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x & y, remaining_paths) else 2
-    heapq.heappush(heap, (g+h*c1, {n}, remaining_paths))
+    heapq.heappush(heap, (g + h*c1, {n}, remaining_paths, c2, c3))
 
 first = True
 for count in range(1, tol+1):
-    h, nodes, paths = heapq.heappop(heap)
+    h, nodes, paths, c2, c3 = heapq.heappop(heap)
     if not paths:
         if first:
             first = None
-            print "heapvalue    c1           c2           c3           nodes        nodes_details"
-        n=next(iter(nodes))
-        c2 = -log(p2(n))
-        c3 = -log(1-p2(n))
-        print '%-12f %-12f %-12f %-12f %-12s %s' % (h, c1, c2, c3, nodes, str(map(lambda x: all_nodes[x], nodes)))
+            if debug:
+                print "heapvalue    c1           c2           c3           nodes        nodes_details"
+        if debug:
+            print '%-12f %-12f %-12f %-12f %-12s %s' % (h, c1, c2, c3, nodes, str(map(lambda x: all_nodes[x], nodes)))
         foundAt = set(map(lambda x: all_nodes[x][1], nodes))
         if foundAt & set(failsAt):
             break
@@ -144,20 +148,12 @@ for count in range(1, tol+1):
         remaining_nodes = reduce(lambda x,y: x|y, map(set, paths))
         for n in remaining_nodes:
             ns = nodes | {n}
-            c2 = -log(p2(n))
-            c3 = -log(1-p2(n))
-            g = c1 * len(ns) + c2 * len(filter(lambda t: ns & set(t), succeeded_traces)) \
-                + c3 * len(filter(lambda t: ns & set(t), failed_traces))
+            c2 = x2 and -log(reduce(lambda x,y: x*y, map(lambda tr: f(tr, ns), succeeded_traces), 1.0))
+            c3 = x3 and -log(1 - reduce(lambda x,y: x*y, map(lambda tr: f(tr,ns), failed_traces), 1.0) + 1e-20)
+            g = c1 * len(ns) + c2 + c3
             remaining_paths = set(filter(lambda p: not(ns & p), map(frozenset, failed_traces)))
             h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x & y, remaining_paths) else 2
-            heapq.heappush(heap, (g+h*c1, ns, remaining_paths))
-
-
-if foundAt & set(failsAt):
-    print "The true error is found at rank %d" % count
-else:
-    print "The true error falls out of rank %d, which should be in line: %s" % (tol, failsAt)
-
+            heapq.heappush(heap, (g+h*c1, ns, remaining_paths, c2, c3))
 
 ##########################################################################################
 # Print Debug info
@@ -167,7 +163,15 @@ if debug:
     print "fail trace patterns: ", len(failed_traces)
     for n in nds:
         if p2(n) and p2(n) < 1:
-            c2 = -log(p2(n)) * x2
-            c3 = -log(1-p2(n)) * x3
-            print n, all_nodes[n], p2(n), c2, nds[n].get("kE", None), c3, nds[n].get("fE",None)
+            c2 = x2 and -log(p2(n))
+            c3 = x3 and -log(1-p2(n))
+            print n, all_nodes[n], p2(n), c2, nds[n].get("kE", None), c3, nds[n].get("fE", None)
 ##########################################################################################
+
+with open("/tmp/log", "a") as file:
+    if foundAt & set(failsAt):
+        print "The true error is found at rank %d" % count
+        file.write("%s\t%s\t%d\n" % (sys.argv[4], failsAt, count))
+    else:
+        print "The true error falls out of rank %d, which should be in line: %s" % (tol, failsAt)
+        file.write("%s\t%s\t>%d\n" % (sys.argv[4], failsAt, tol))

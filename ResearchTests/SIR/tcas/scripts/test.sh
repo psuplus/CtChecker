@@ -2,8 +2,10 @@
 
 function printUsage {
   echo "USAGE:"
-  echo "      ./test.sh <version>"
+  echo "      $0 <version> <py script>"
   echo "      <version> varies from 1 to 41"
+  echo "      <py script> for calculating error nodes,
+                    default: computeErrorNodes.py"
   exit
 }
 
@@ -29,13 +31,13 @@ cp ../source.alt/source.orig/tcas.c ../source
 
 # run the tests on original code
 ## skip for efficiency
-# if false; then
+if false; then
   echo Running ./runall.sh
   (./runall.sh) &> /dev/null
   mkdir -p ../orgoutputs
   rm -f ../orgoutputs/*
   mv -f ../outputs/* ../orgoutputs
-# fi
+fi
 
 # cp intrument and compile version $1
 echo "Running rm ../traces/*"
@@ -58,4 +60,8 @@ diff ../source.alt/source.orig/tcas.c ../versions.alt/versions.orig/v$1/tcas.c
 # Generate the output
 echo
 echo Generate the output
-python ../../../computeErrorNodes.py ../nodes ../trace ../errorInfo $1
+if [[ $# -lt 2 ]]; then
+    python ../../../calculateErrorNodes.py ../nodes ../trace ../errorInfo $1
+else
+    python $2 ../nodes ../trace ../errorInfo $1
+fi

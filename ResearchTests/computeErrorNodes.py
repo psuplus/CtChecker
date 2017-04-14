@@ -27,7 +27,7 @@ if len(sys.argv) < 4:
 ###########################################################################
 # Flags and Constants
 ###########################################################################
-debug = False
+debug = True
 x1,x2,x3 = 1,1,1
 p1 = 1e-20
 c1 = x1 and -log(p1)
@@ -112,7 +112,8 @@ def f(tr, n):
     if isinstance(n, set):
         return 1.0 - avg([tr.index(node) for node in n if node in tr])/float(len(tr)) if n & set(tr) else 1.0
     else:
-        return 1.0 - tr.index(n)/float(len(tr)) if n in tr else 1.0
+        # return 0.25 + tr[::-1].index(n)/float(2*len(tr)) if n in tr else 1.0
+        return 0.75 - tr.index(n)/float(2*len(tr)) if n in tr else 1.0
 
 ###########################################################################
 
@@ -122,7 +123,7 @@ heap = []
 for n in possible_nodes:
     p2 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), succeeded_traces), 1.0)
     p3 = reduce(lambda x,y: x*y, map(lambda tr: 1-f(tr,n), failed_traces), 1.0)
-    c2 = x2 and -log(p2)
+    c2 = x2 and -log(p2 + 1e-20)
     c3 = x3 and -log(p3 + 1e-20) # added a small number to avoid domain error
     g = c1 + c2 + c3
     remaining_paths = set(filter(lambda p: n not in p, map(frozenset, failed_traces)))
@@ -164,7 +165,7 @@ if debug:
     for n in nds:
         p2 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), succeeded_traces), 1.0)
         p3 = reduce(lambda x,y: x*y, map(lambda tr: 1-f(tr,n), failed_traces), 1.0)
-        c2 = x2 and -log(p2)
+        c2 = x2 and -log(p2 + 1e-20)
         c3 = x3 and -log(p3 + 1e-20)
         print n, all_nodes[n], p2, p3, c2, c3
 ##########################################################################################

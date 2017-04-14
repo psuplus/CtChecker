@@ -27,7 +27,7 @@ if len(sys.argv) < 4:
 ###########################################################################
 # Flags and Constants
 ###########################################################################
-debug = False
+debug = True
 x1, x2, x3 = 1, 1, 1 # filters of the three terms, 1 = on, 0 = off
 p1 = 0.00000000001
 c1 = x1 and -log(p1)
@@ -107,7 +107,7 @@ def p2(n):
     return ret
 
 def f(tr, n):
-    return 1.0 - tr.index(n)/float(len(tr)) if n in tr else -1
+    return 0.75 - tr.index(n)/float(2*len(tr)) if n in tr else -1
 
 ###########################################################################
 

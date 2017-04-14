@@ -11,10 +11,14 @@ function printUsage {
 
 if [[ $# -lt 1 ]]; then
   printUsage
+elif [[ $# -lt 2 ]]; then
+  $py=../../../computeErrorNodes.py
 elif [[ $1 -lt 1 ]]; then
   printUsage
 elif [[ $1 -gt 41 ]]; then
   printUsage
+else
+  $py=$2
 fi
 
 mkdir -p ../newoutputs ../orgoutputs
@@ -63,5 +67,5 @@ echo Generate the output
 if [[ $# -lt 2 ]]; then
     python ../../../calculateErrorNodes.py ../nodes ../trace ../errorInfo $1
 else
-    python $2 ../nodes ../trace ../errorInfo $1
+    python $py ../nodes ../trace ../errorInfo $1
 fi

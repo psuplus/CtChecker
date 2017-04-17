@@ -12,13 +12,13 @@ function printUsage {
 if [[ $# -lt 1 ]]; then
   printUsage
 elif [[ $# -lt 2 ]]; then
-  $py=../../../computeErrorNodes.py
+  py=../../../computeErrorNodes.py
 elif [[ $1 -lt 1 ]]; then
   printUsage
 elif [[ $1 -gt 41 ]]; then
   printUsage
 else
-  $py=$2
+  py=$2
 fi
 
 mkdir -p ../newoutputs ../orgoutputs

@@ -18,7 +18,7 @@ elif [[ $1 -gt 41 ]]; then
 elif [[ $# -lt 2 ]]; then
   $py=../../../computeErrorNodes.py
 else
-  $py=$2
+  py=$2
 fi
 
 mkdir -p ../newoutputs ../orgoutputs

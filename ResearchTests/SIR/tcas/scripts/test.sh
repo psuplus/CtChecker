@@ -11,12 +11,12 @@ function printUsage {
 
 if [[ $# -lt 1 ]]; then
   printUsage
-elif [[ $# -lt 2 ]]; then
-  $py=../../../computeErrorNodes.py
 elif [[ $1 -lt 1 ]]; then
   printUsage
 elif [[ $1 -gt 41 ]]; then
   printUsage
+elif [[ $# -lt 2 ]]; then
+  $py=../../../computeErrorNodes.py
 else
   $py=$2
 fi

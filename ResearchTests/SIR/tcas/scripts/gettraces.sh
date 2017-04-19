@@ -1,7 +1,6 @@
 
 mkdir -p ../newoutputs /tmp/trace
-rm ../newoutputs/*
-rm /tmp/trace/* 
+rm -f ../newoutputs/* /tmp/trace/* 
 ARISTOTLE_DB_DIR=/tmp/trace
 
 echo script type: T

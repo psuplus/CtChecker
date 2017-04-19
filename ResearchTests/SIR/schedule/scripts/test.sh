@@ -25,6 +25,8 @@ fi
 
 mkdir -p ../newoutputs ../orgoutputs
 
+### SKIP HERE for Efficiency
+0 && (
 # copy the original source code and compile
 mkdir -p ../source
 rm -f ../source/*
@@ -36,12 +38,12 @@ cp ../source.alt/source.orig/$PROGRAM.c ../source
 ) &> /dev/null
 
 # run the tests on original code
-## skip for efficiency
 echo Running ./runall.sh
 (./runall.sh) &> /dev/null
 mkdir -p ../orgoutputs ../outputs
 rm -f ../orgoutputs/*
 mv -f ../outputs/* ../orgoutputs
+)
 
 # cp intrument and compile version $1
 echo "Running rm ../traces/*"
@@ -49,10 +51,10 @@ mkdir -p ../traces
 rm -f ../traces/*
 
 echo Running ./cp_inst_compile.sh $1
-(./cp_inst_compile.sh $1) &> /dev/null
+./cp_inst_compile.sh $1
 
 echo Running ./gettraces.sh
-(./gettraces.sh) &> /dev/null
+./gettraces.sh 
 
 echo Running ./collect_traces.sh
 ./collect_traces.sh

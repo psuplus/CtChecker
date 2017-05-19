@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdint.h>
 
 const int BLOCK_SZ = 64; // An architecture with memory blocks of 64 Bytes
 const int spacing = 8; // spacing for the location for the next byte, assuming a window of 3bits

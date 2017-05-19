@@ -123,24 +123,24 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-  // errs() << "----- Trying to print out ConstraintSet -----\n";
+  errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
-  // std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
+  std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
   /// set contains all constraints, constraints are pairs of ConsElem
   /// can't joint on rhs, only on lhs
-  // for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
-  //    constraint != end; ++constraint) {
-        /// a constraint contains two ConElem: lhs and rhs.
-        /// We need to search through valueMap, locMap and vargMap to get the
-        /// value paired to both ConElems.
+  for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
+      constraint != end; ++constraint) {
+    //       /// a constraint contains two ConElem: lhs and rhs.
+    //       /// We need to search through valueMap, locMap and vargMap to get the
+    //       /// value paired to both ConElems.
 
-        // print lhs
-        //(*constraint).lhs().dump(errs());
-        //errs() << "-->";
-        //(*constraint).rhs().dump(errs());
-        //errs()  << "\n";
-  // }
+    // print lhs
+    (*constraint).lhs().dump(errs());
+    errs() << "-->";
+    (*constraint).rhs().dump(errs());
+    errs()  << "\n";
+  }
 
   return Unit();
 }
@@ -758,8 +758,8 @@ void
 Infoflow::generateFunctionConstraints(const Function& f) {
     std::vector<FlowRecord> flows;
     for (Function::const_iterator bb = f.begin(), end = f.end(); bb != end; ++bb) {
-        // Build constraints for basic blocks
-        // The pc of the entry block will be tainted at any call sites
+      // Build constraints for basic blocks
+      // The pc of the entry block will be tainted at any call sites
       generateBasicBlockConstraints(*bb, flows);
     }
 

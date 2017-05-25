@@ -573,6 +573,16 @@ Infoflow::kindFromImplicitSink(bool implicit, bool sink) const {
   }
 }
 
+const std::string
+Infoflow::stringFromValue(const Value &value){
+  raw_string_ostream* valueStream;
+  std::string valueString;
+  valueStream = new raw_string_ostream(valueString);
+  *valueStream << value;
+  valueStream->str();
+  return valueString;
+}
+
 DenseMap<const Value *, const ConsElem *> &
 Infoflow::getOrCreateValueConstraintMap(const ContextID context) {
   return valueConstraintMap[context];
@@ -583,7 +593,13 @@ Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
   DenseMap<const Value *, const ConsElem *>::iterator curElem = summarySourceValueConstraintMap.find(&value);
   if (curElem == summarySourceValueConstraintMap.end()) {
       //errs() << "Created a constraint variable...\n";
-      const ConsElem & elem = kit->newVar(value.getName());
+      std::string name;
+      if(value.hasName()) {
+          name = value.getName();
+      } else {
+          name = stringFromValue(value);
+      }
+      const ConsElem & elem = kit->newVar(name);
       summarySourceValueConstraintMap.insert(std::make_pair(&value, &elem));
       return elem;
   } else {
@@ -623,9 +639,14 @@ Infoflow::getOrCreateConsElem(const ContextID ctxt, const Value &value) {
   DenseMap<const Value *, const ConsElem *> & valueMap = getOrCreateValueConstraintMap(ctxt);
   DenseMap<const Value *, const ConsElem *>::iterator curElem = valueMap.find(&value);
   if (curElem == valueMap.end()) {
-      // errs() << "Creating var " << value.getName() << " for \n" ;
-      // errs() << value;
-      const ConsElem & elem = kit->newVar(value.getName());
+      std::string identifier = "";
+      if (value.hasName()){
+          identifier = value.getName();
+      } else {
+          identifier = stringFromValue(value);
+      }
+
+      const ConsElem & elem = kit->newVar(identifier);
       valueMap.insert(std::make_pair(&value, &elem));
 
       // Hook up the summaries for non-context sensitive interface
@@ -739,7 +760,8 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
     DenseMap<const AbstractLoc *, const ConsElem *>::iterator curElem = locConstraintMap.find(&loc);
     if (curElem == locConstraintMap.end()) {
         // errs() << "Created a constraint variable...\n";
-        const ConsElem & elem = kit->newVar("an absloc");
+        std::string name = getCaption(&loc, NULL);
+        const ConsElem & elem = kit->newVar(name);
         locConstraintMap.insert(std::make_pair(&loc, &elem));
 
         return elem;
@@ -1545,5 +1567,96 @@ Infoflow::constrainIntrinsic(const IntrinsicInst & intr, Flows & flows) {
   }
 }
 
+std::string getCaption(const DSNode *N, const DSGraph *G) {
+  std::string empty;
+  raw_string_ostream OS(empty);
+  const Module *M = 0;
+
+  if (!G) G = N->getParentGraph();
+
+  // Get the module from ONE of the functions in the graph it is available.
+  if (G && G->retnodes_begin() != G->retnodes_end())
+    M = G->retnodes_begin()->first->getParent();
+  if (M == 0 && G) {
+    // If there is a global in the graph, we can use it to find the module.
+    const DSScalarMap &SM = G->getScalarMap();
+    if (SM.global_begin() != SM.global_end())
+      M = (*SM.global_begin())->getParent();
+  }
+
+  if (N->isNodeCompletelyFolded())
+    OS << "COLLAPSED";
+  else {
+    if (N->type_begin() != N->type_end())
+      for (DSNode::TyMapTy::const_iterator ii = N->type_begin(),
+           ee = N->type_end(); ii != ee; ++ii) {
+        OS << ii->first << ": ";
+        if (ii->second)
+          for (svset<Type*>::const_iterator ni = ii->second->begin(),
+               ne = ii->second->end(); ni != ne; ++ni) {
+            Type * t = *ni;
+            t->print (OS);
+            OS << ", ";
+          }
+        else
+          OS << "VOID";
+        OS << " ";
+      }
+    else
+      OS << "VOIDTB==TE"; // denote the difference between the VOID labels
+    if (N->isArrayNode())
+      OS << " array";
+  }
+  if (unsigned NodeType = N->getNodeFlags()) {
+    OS << ": ";
+    if (NodeType & DSNode::AllocaNode       ) OS << "S";
+    if (NodeType & DSNode::HeapNode         ) OS << "H";
+    if (NodeType & DSNode::GlobalNode       ) OS << "G";
+    if (NodeType & DSNode::UnknownNode      ) OS << "U";
+    if (NodeType & DSNode::IncompleteNode   ) OS << "I";
+    if (NodeType & DSNode::ModifiedNode     ) OS << "M";
+    if (NodeType & DSNode::ReadNode         ) OS << "R";
+    if (NodeType & DSNode::ExternalNode     ) OS << "E";
+    if (NodeType & DSNode::ExternFuncNode   ) OS << "X";
+    if (NodeType & DSNode::IntToPtrNode     ) OS << "P";
+    if (NodeType & DSNode::PtrToIntNode     ) OS << "2";
+    if (NodeType & DSNode::VAStartNode      ) OS << "V";
+
+#ifndef NDEBUG
+    if (NodeType & DSNode::DeadNode       ) OS << "<dead>";
+#endif
+  }
+
+  //Indicate if this is a VANode for some function
+  for (DSGraph::vanodes_iterator I = G->vanodes_begin(), E = G->vanodes_end();
+      I != E; ++I) {
+    DSNodeHandle VANode = I->second;
+    if (N == VANode.getNode()) {
+      OS << "(VANode for " << I->first->getName().str() << ")\n";
+    }
+  }
+
+  EquivalenceClasses<const GlobalValue*> *GlobalECs = 0;
+  if (G) GlobalECs = &G->getGlobalECs();
+
+  for (DSNode::globals_iterator i = N->globals_begin(), e = N->globals_end(); 
+       i != e; ++i) {
+    (*i)->print(OS);
+
+    // Figure out how many globals are equivalent to this one.
+    if (GlobalECs) {
+      EquivalenceClasses<const GlobalValue*>::iterator I =
+        GlobalECs->findValue(*i);
+      if (I != GlobalECs->end()) {
+        unsigned NumMembers =
+          std::distance(GlobalECs->member_begin(I), GlobalECs->member_end());
+        if (NumMembers != 1) OS << " + " << (NumMembers-1) << " EC";
+      }
+    }
+  }
+
+  return OS.str();
 }
+}
+
 #endif

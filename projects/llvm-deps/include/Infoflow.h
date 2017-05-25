@@ -258,6 +258,8 @@ class Infoflow :
 
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
+    const std::string stringFromValue(const Value &);
+
     const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
     void putOrConstrainConsElem(bool imp, bool sink, const ContextID, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElemSummarySource(const Value &);
@@ -324,8 +326,10 @@ class Infoflow :
     void constrainCallSite(const ImmutableCallSite & cs, bool callees, Flows &);
     void constrainCallee(const ContextID calleeContext, const Function & callee, const ImmutableCallSite & cs, Flows &);
     void constrainIntrinsic(const IntrinsicInst &, Flows &);
+
 };
 
+  std::string getCaption(const DSNode *N, const DSGraph *G);
 }
 
 #endif /* INFOFLOW_H */

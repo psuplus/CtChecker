@@ -45,11 +45,15 @@ TaintAnalysis::taintStr (std::string kind, std::string match) {
     if (value.hasName() && value.getName() == match) {
       s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
+      errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
       for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
              end = locs.end(); loc != end; ++loc) {
         DenseMap<const AbstractLoc *, const ConsElem *>::iterator curElem = ifa->locConstraintMap.find(*loc);
         if (curElem != ifa->locConstraintMap.end()) {
-           ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(curElem->second));
+            errs() << "Matching " << match << " with " << value.getName() << ": ";
+            (curElem->second)->dump(errs());
+            errs() << "\n";
+            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(curElem->second));
         }
       }
     }
@@ -59,7 +63,7 @@ TaintAnalysis::taintStr (std::string kind, std::string match) {
       ss->str(); // flush stream to s
       if (s.find(match) == 0) // test if the value's content starts with match
         ifa->setTainted(kind, value);
-    } 
+    }
   }
 }
 

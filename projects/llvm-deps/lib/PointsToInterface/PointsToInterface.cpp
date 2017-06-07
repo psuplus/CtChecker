@@ -47,8 +47,13 @@ void PointsToInterface::mergeAllIncomplete() {
       MergedLeaders.insert(EqIt->getData());
 
     // Get the DSNode and check if the node is incomplete.
+    //
+    // DZ: It doesn't seem like a good idea to merge all external nodes. I
+    // understand the worry about unknown/incomplete nodes, but merging
+    // external nodes does not make too much sense. So I have disabled the
+    // merging for external nodes 
     const DSNode *N = EqIt->getData();
-    if (!N->isIncompleteNode() && !N->isExternalNode() && !N->isUnknownNode())
+    if (!N->isIncompleteNode() && /* !N->isExternalNode() &&*/ !N->isUnknownNode())
       continue;
 
     // Get the leader of this node's class.

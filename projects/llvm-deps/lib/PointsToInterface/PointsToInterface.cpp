@@ -95,6 +95,28 @@ PointsToInterface::getAbstractLocSetForValue(const Value *V) {
   return &ClassForLeader[MergedLeader];
 }
 
+const AbstractHandleSet *
+PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
+  const AbstractLocSet * locs = getAbstractLocSetForValue(V);
+
+  const DSNode *MergedLeader = getMergedLeaderForValue(V);
+
+  for(AbstractLocSet::iterator it = locs->begin(), itend= locs->end(); it != itend; it++ ) {
+    if ((*it)->type_begin() != (*it)->type_end()) {
+      for(DSNode::TyMapTy::const_iterator ii = (*it)->type_begin(), ee = (*it)->type_end();
+          ii != ee; ++ii) {
+        unsigned int link_offset = ii->first;
+        if (HandlesForLeader.find(MergedLeader) == HandlesForLeader.end())
+          HandlesForLeader[MergedLeader].insert(&(*it)->getLink(link_offset));
+
+      }
+    }
+
+  }
+
+  return &HandlesForLeader[MergedLeader];
+}
+
 //
 // Given a value in the program, returns a pointer to a set of abstract
 // locations that are reachable from the value.
@@ -145,6 +167,32 @@ PointsToInterface::getReachableAbstractLocSetForValue(const Value *V) {
   }
 
   return &Result;
+}
+
+//
+// Converts the Reachable set of AbstractLocs to a set of AbstactHandles
+//
+const AbstractHandleSet *
+PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
+  const DSNode* MergedLeader = getMergedLeaderForValue(V);
+  const AbstractLocSet* reachableSet = getReachableAbstractLocSetForValue(V);
+
+  AbstractLocSet::iterator ReachableIt = reachableSet->begin();
+  AbstractLocSet::iterator ReachableEnd = reachableSet->end();
+
+  for (; ReachableIt != ReachableEnd; ++ReachableIt) {
+    if ((*ReachableIt)->type_begin() != (*ReachableIt)->type_end()) {
+      for(DSNode::TyMapTy::const_iterator ii = (*ReachableIt)->type_begin(), ee = (*ReachableIt)->type_end();
+          ii != ee; ++ii) {
+        unsigned int link_offset = ii->first;
+        if (ReachableHandlesForLeader.find(MergedLeader) == ReachableHandlesForLeader.end())
+          ReachableHandlesForLeader[MergedLeader].insert(&(*ReachableIt)->getLink(link_offset));
+
+      }
+    }
+  }
+
+  return &ReachableHandlesForLeader[MergedLeader];
 }
 
 //

@@ -44,11 +44,11 @@ TaintAnalysis::taintStr (std::string kind, std::string match) {
     std::string s;
     if (value.hasName() && value.getName() == match) {
       s = value.getName();
-      const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
+      const std::set<const AbstractHandle *> & locs = ifa->HandlesForValue(value);
       errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
-      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
+      for (std::set<const AbstractHandle *>::const_iterator loc = locs.begin(),
              end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, const ConsElem *>::iterator curElem = ifa->locConstraintMap.find(*loc);
+        DenseMap<const AbstractHandle *, const ConsElem *>::iterator curElem = ifa->locConstraintMap.find(*loc);
         if (curElem != ifa->locConstraintMap.end()) {
             errs() << "Matching " << match << " with " << value.getName() << ": ";
             (curElem->second)->dump(errs());

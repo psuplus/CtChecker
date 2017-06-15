@@ -107,7 +107,9 @@ PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
           ii != ee; ++ii) {
         unsigned int link_offset = ii->first;
         if (HandlesForLeader.find(MergedLeader) == HandlesForLeader.end())
-          HandlesForLeader[MergedLeader].insert(&(*it)->getLink(link_offset));
+          if((*it)->hasLink(link_offset)) {
+            HandlesForLeader[MergedLeader].insert(&(*it)->getLink(link_offset));
+          }
 
       }
     }
@@ -185,9 +187,11 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
       for(DSNode::TyMapTy::const_iterator ii = (*ReachableIt)->type_begin(), ee = (*ReachableIt)->type_end();
           ii != ee; ++ii) {
         unsigned int link_offset = ii->first;
-        if (ReachableHandlesForLeader.find(MergedLeader) == ReachableHandlesForLeader.end())
-          ReachableHandlesForLeader[MergedLeader].insert(&(*ReachableIt)->getLink(link_offset));
-
+        if (ReachableHandlesForLeader.find(MergedLeader) == ReachableHandlesForLeader.end()){
+          if((*ReachableIt)->hasLink(link_offset)) {
+            ReachableHandlesForLeader[MergedLeader].insert(&(*ReachableIt)->getLink(link_offset));
+          }
+        }
       }
     }
   }

@@ -227,7 +227,7 @@ DSNodeEquivs::getEquivalenceClasses() {
 
 // Returns a DSNode for the specified value.
 // Returns null for a node that was not found.
-const DSNode *DSNodeEquivs::getMemberForValue(const Value *V) {
+const DSNode *DSNodeEquivs::getMemberForValue(const Value *V, DSNodeHandle* Handle) {
   TDDataStructures &TDDS = getAnalysis<TDDataStructures>();
   DSNodeHandle *NHForV = 0;
 
@@ -279,6 +279,10 @@ const DSNode *DSNodeEquivs::getMemberForValue(const Value *V) {
   }
 
   assert(NHForV && "Unable to find node handle for given value!");
+
+  // If handle is requested return that instead
+  if(Handle != NULL)
+    Handle = NHForV;
 
   return NHForV->getNode();
 }

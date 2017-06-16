@@ -99,8 +99,12 @@ const AbstractHandleSet *
 PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
   const AbstractLocSet * locs = getAbstractLocSetForValue(V);
 
-  const DSNode *MergedLeader = getMergedLeaderForValue(V);
+  const DSNodeHandle *HandleLeader;
+  const DSNode *MergedLeader = getMergedLeaderForValue(V, HandleLeader);
 
+  HandlesForleader[MergedLeader].insert(HandleLeader);
+  // Need to find a way to filter the correct handle out of this
+  /*
   for(AbstractLocSet::iterator it = locs->begin(), itend= locs->end(); it != itend; it++ ) {
     if ((*it)->type_begin() != (*it)->type_end()) {
       for(DSNode::TyMapTy::const_iterator ii = (*it)->type_begin(), ee = (*it)->type_end();
@@ -115,6 +119,7 @@ PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
     }
 
   }
+  */
 
   return &HandlesForLeader[MergedLeader];
 }
@@ -176,25 +181,15 @@ PointsToInterface::getReachableAbstractLocSetForValue(const Value *V) {
 //
 const AbstractHandleSet *
 PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
-  const DSNode* MergedLeader = getMergedLeaderForValue(V);
-  const AbstractLocSet* reachableSet = getReachableAbstractLocSetForValue(V);
+  DSNodeHandle *HandleLeader;
+  const DSNode *MergedLeader = getMergedLeaderForValue(V, HandleLeader);
 
-  AbstractLocSet::iterator ReachableIt = reachableSet->begin();
-  AbstractLocSet::iterator ReachableEnd = reachableSet->end();
+  // If the class for the value doesn't exist, return the empty set.
+  if (MergedLeader == 0)
+    return &EmptySet;
 
-  for (; ReachableIt != ReachableEnd; ++ReachableIt) {
-    if ((*ReachableIt)->type_begin() != (*ReachableIt)->type_end()) {
-      for(DSNode::TyMapTy::const_iterator ii = (*ReachableIt)->type_begin(), ee = (*ReachableIt)->type_end();
-          ii != ee; ++ii) {
-        unsigned int link_offset = ii->first;
-        if (ReachableHandlesForLeader.find(MergedLeader) == ReachableHandlesForLeader.end()){
-          if((*ReachableIt)->hasLink(link_offset)) {
-            ReachableHandlesForLeader[MergedLeader].insert(&(*ReachableIt)->getLink(link_offset));
-          }
-        }
-      }
-    }
-  }
+  if (ReachableHandlesForLeader.find(MergedLeader) != ReachableHandlesForLeader.end())
+    return &ReachableHandlesForLeader[MergedLeader];
 
   return &ReachableHandlesForLeader[MergedLeader];
 }
@@ -217,7 +212,7 @@ PointsToInterface::getMergedLeaderForValue(const Value *V) {
     return LeaderForValue[V] = 0;
 
   // Search for the equivalence class of Node.
-  assert(Classes->findValue(Node) != Classes->end() && "Class not found!"); 
+  assert(Classes->findValue(Node) != Classes->end() && "Class not found!");
   const DSNode *NodeLeader = Classes->getLeaderValue(Node);
   const DSNode *MergedLeader = MergedLeaders.getLeaderValue(NodeLeader);
 

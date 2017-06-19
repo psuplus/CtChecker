@@ -45,6 +45,8 @@ typedef std::set<const AbstractHandle *> AbstractHandleSet;
 class PointsToInterface : public ModulePass {
 private:
   static const AbstractLocSet EmptySet;
+  //static const AbstractHandleSet EmptyHandleSet;
+  
 
   std::map<const DSNode *, AbstractLocSet> ClassForLeader;
   std::map<const DSNode *, AbstractLocSet> ReachablesForLeader;
@@ -59,7 +61,7 @@ private:
   DSNodeEquivs *EquivsAnalysis;
 
   void mergeAllIncomplete();
-  const DSNode *getMergedLeaderForValue(const Value *V);
+  const DSNode *getMergedLeaderForValue(const Value *V, DSNodeHandle* H=NULL);
   void findReachableAbstractLocSetForNode(AbstractLocSet &S, const DSNode *Nd);
 
 public:

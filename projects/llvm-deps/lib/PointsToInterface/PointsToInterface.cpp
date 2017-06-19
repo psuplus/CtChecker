@@ -99,10 +99,10 @@ const AbstractHandleSet *
 PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
   const AbstractLocSet * locs = getAbstractLocSetForValue(V);
 
-  const DSNodeHandle *HandleLeader;
+  DSNodeHandle *HandleLeader;
   const DSNode *MergedLeader = getMergedLeaderForValue(V, HandleLeader);
 
-  HandlesForleader[MergedLeader].insert(HandleLeader);
+  HandlesForLeader[MergedLeader].insert(HandleLeader);
   // Need to find a way to filter the correct handle out of this
   /*
   for(AbstractLocSet::iterator it = locs->begin(), itend= locs->end(); it != itend; it++ ) {
@@ -185,8 +185,8 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
   const DSNode *MergedLeader = getMergedLeaderForValue(V, HandleLeader);
 
   // If the class for the value doesn't exist, return the empty set.
-  if (MergedLeader == 0)
-    return &EmptySet;
+  //if (MergedLeader == 0)
+  //return &EmptyHandleSet;
 
   if (ReachableHandlesForLeader.find(MergedLeader) != ReachableHandlesForLeader.end())
     return &ReachableHandlesForLeader[MergedLeader];
@@ -200,14 +200,14 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
 // incomplete nodes. Returns null if the value's DSNode doesn't exist.
 //
 const DSNode *
-PointsToInterface::getMergedLeaderForValue(const Value *V) {
+PointsToInterface::getMergedLeaderForValue(const Value *V, DSNodeHandle* Handle) {
   const DSNode *Node;
 
   if (LeaderForValue.count(V))
     return LeaderForValue[V];
 
   // Get the node for V and return null if it doesn't exist.
-  Node = EquivsAnalysis->getMemberForValue(V);
+  Node = EquivsAnalysis->getMemberForValue(V, Handle);
   if (Node == 0)
     return LeaderForValue[V] = 0;
 

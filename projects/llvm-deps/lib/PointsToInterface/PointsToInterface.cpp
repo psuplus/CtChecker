@@ -177,7 +177,7 @@ PointsToInterface::getReachableAbstractLocSetForValue(const Value *V) {
 }
 
 //
-// Converts the Reachable set of AbstractLocs to a set of AbstactHandles
+// Converts the Reachable set of AbstractLocs to a set of AbstractHandles
 //
 const AbstractHandleSet *
 PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
@@ -190,6 +190,21 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
 
   if (ReachableHandlesForLeader.find(MergedLeader) != ReachableHandlesForLeader.end())
     return &ReachableHandlesForLeader[MergedLeader];
+
+  const AbstractLocSet* reachableNodes = getReachableAbstractLocSetForValue(V);
+
+  AbstractLocSet::iterator reachIt = reachableNodes->begin();
+  AbstractLocSet::iterator reachEnd = reachableNodes->end();
+  for(; reachIt != reachEnd; ++reachIt){
+    DSNode::const_edge_iterator edgeIt = (*reachIt)->edge_begin();
+    DSNode::const_edge_iterator edgeEnd = (*reachIt)->edge_end();
+    for(; edgeIt != edgeEnd; ++edgeIt){
+      const DSNodeHandle * link = &(*edgeIt).second;
+      if (link != NULL) {
+        ReachableHandlesForLeader[MergedLeader].insert(link);
+      }
+    }
+  }
 
   return &ReachableHandlesForLeader[MergedLeader];
 }

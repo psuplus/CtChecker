@@ -175,11 +175,11 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
 
     // For memory-based sources, build up the set of memory locations that act
     // as sources for this record...
-    std::set<const AbstractHandle *> SourceLocs;
-    std::set<const AbstractHandle *> sinkSourceLocs;
+    std::set<const AbstractLoc *> SourceLocs;
+    std::set<const AbstractLoc *> sinkSourceLocs;
     for (FlowRecord::value_iterator source = record.source_directptr_begin(), end = record.source_directptr_end();
         source != end; ++source) {
-      const std::set<const AbstractHandle *> & locs = HandlesForValue(**source);
+      const std::set<const AbstractLoc *> & locs = locsForValue(**source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->directPtrIsSink(**source)) {
 	SourceLocs.insert(locs.begin(), locs.end());
       } else {
@@ -188,7 +188,7 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     }
     for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
         source != end; ++source) {
-      const std::set<const AbstractHandle *> & locs = reachableHandlesForValue(**source);
+      const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->reachPtrIsSink(**source)) {
 	SourceLocs.insert(locs.begin(), locs.end());
       } else {
@@ -197,13 +197,21 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     }
 
     // ...And convert those locs into ConsElem's and store them into Sources
-    for(std::set<const AbstractHandle *>::const_iterator I = SourceLocs.begin(),
+    for(std::set<const AbstractLoc *>::const_iterator I = SourceLocs.begin(),
         E = SourceLocs.end(); I != E; ++I) {
-      Sources.insert(&getOrCreateConsElem(**I));
+      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**I);
+      for(std::set<const ConsElem *>::const_iterator it = elemSet.begin(), itEnd = elemSet.end();
+          it != itEnd; ++it){
+        Sources.insert((*it));
+      }
     }
-    for(std::set<const AbstractHandle *>::const_iterator I = sinkSourceLocs.begin(),
+    for(std::set<const AbstractLoc *>::const_iterator I = sinkSourceLocs.begin(),
         E = sinkSourceLocs.end(); I != E; ++I) {
-      sinkSources.insert(&getOrCreateConsElem(**I));
+      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**I);
+      for(std::set<const ConsElem *>::const_iterator it = elemSet.begin(), itEnd = elemSet.end();
+          it != itEnd; ++it){
+        sinkSources.insert((*it));
+      }
     }
   }
 
@@ -241,20 +249,20 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
   }
 
   // To try to save constraint generation, gather memory locations as before:
-  std::set<const AbstractHandle *> SinkLocs;
+  std::set<const AbstractLoc *> SinkLocs;
   for (FlowRecord::value_iterator sink = record.sink_directptr_begin(), end = record.sink_directptr_end();
       sink != end; ++sink) {
-    const std::set<const AbstractHandle *> & locs = HandlesForValue(**sink);
+    const std::set<const AbstractLoc *> & locs = locsForValue(**sink);
     SinkLocs.insert(locs.begin(), locs.end());
   }
   for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(), end = record.sink_reachptr_end();
       sink != end; ++sink) {
-    const std::set<const AbstractHandle *> & locs = reachableHandlesForValue(**sink);
+    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**sink);
     SinkLocs.insert(locs.begin(), locs.end());
   }
 
   // And add constraints for each of the sink memory locations
-  for (std::set<const AbstractHandle *>::iterator loc = SinkLocs.begin(), end = SinkLocs.end();
+  for (std::set<const AbstractLoc *>::iterator loc = SinkLocs.begin(), end = SinkLocs.end();
       loc != end ; ++loc) {
     if (regFlow)
       putOrConstrainConsElem(implicit, false, **loc, *sourceElem);
@@ -382,14 +390,18 @@ InfoflowSolution::getAllTaintValues( ) {
 
 bool
 InfoflowSolution::isDirectPtrTainted(const Value & value) {
-  const std::set<const AbstractHandle *> & locs = infoflow.HandlesForValue(value);
-  for (std::set<const AbstractHandle *>::const_iterator loc = locs.begin(), end = locs.end();
+  const std::set<const AbstractLoc *> & locs = infoflow.locsForValue(value);
+  for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    DenseMap<const AbstractHandle *, const ConsElem *>::iterator entry = locMap.find(*loc);
+    DenseMap<const AbstractLoc *, std::set<const ConsElem *> >::iterator entry = locMap.find(*loc);
     if (entry != locMap.end()) {
-      const ConsElem & elem = *(entry->second);
-      if (soln->subst(elem) == highConstant) {
-        return true;
+      std::set<const ConsElem *>::iterator it = entry->second.begin();
+      std::set<const ConsElem *>::iterator itEnd = entry->second.end();
+      for(; it != itEnd; ++it){
+        const ConsElem & elem = (**it);
+        if (soln->subst(elem) == highConstant) {
+          return true;
+        }
       }
     } else {
       assert(false && "abstract location not in solution!");
@@ -401,14 +413,18 @@ InfoflowSolution::isDirectPtrTainted(const Value & value) {
 
 bool
 InfoflowSolution::isReachPtrTainted(const Value & value) {
-  const std::set<const AbstractHandle *> & locs = infoflow.reachableHandlesForValue(value);
-  for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+  const std::set<const AbstractLoc *> & locs = infoflow.reachableLocsForValue(value);
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    DenseMap<const AbstractHandle *, const ConsElem *>::iterator entry = locMap.find(*loc);
+    DenseMap<const AbstractLoc *, std::set<const ConsElem *> >::iterator entry = locMap.find(*loc);
     if (entry != locMap.end()) {
-      const ConsElem & elem = *(entry->second);
-      if (soln->subst(elem) == highConstant) {
-        return true;
+      std::set<const ConsElem *>::iterator it = entry->second.begin();
+      std::set<const ConsElem *>::iterator itEnd = entry->second.end();
+      for(; it != itEnd; ++it){
+        const ConsElem & elem = (**it);
+        if (soln->subst(elem) == highConstant) {
+          return true;
+        }
       }
     } else {
       assert(false && "abstract location not in solution!");
@@ -470,11 +486,14 @@ void
 Infoflow::setDirectPtrUntainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  const std::set<const AbstractHandle *> & locs = HandlesForValue(value);
-  for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+  const std::set<const AbstractLoc *> & locs = locsForValue(value);
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    const ConsElem & current = getOrCreateConsElem(**loc);
-    kit->addConstraint(kind, current, kit->lowConstant());
+    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+        it != itEnd; ++it){
+      kit->addConstraint(kind, **it, kit->lowConstant());
+    }
   }
 }
 
@@ -482,11 +501,14 @@ void
 Infoflow::setDirectPtrTainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  const std::set<const AbstractHandle *> & locs = HandlesForValue(value);
-  for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+  const std::set<const AbstractLoc *> & locs = locsForValue(value);
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    const ConsElem & current = getOrCreateConsElem(**loc);
-    kit->addConstraint(kind, kit->highConstant(), current);
+    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+        it != itEnd; ++it){
+      kit->addConstraint(kind, kit->highConstant(), **it);
+    }
   }
 }
 
@@ -494,11 +516,14 @@ void
 Infoflow::setReachPtrUntainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  const std::set<const AbstractHandle *> & locs = reachableHandlesForValue(value);
-  for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+  const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    const ConsElem & current = getOrCreateConsElem(**loc);
-    kit->addConstraint(kind, current, kit->lowConstant());
+    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+        it != itEnd; ++it){
+      kit->addConstraint(kind, **it, kit->lowConstant());
+    }
   }
 }
 
@@ -506,11 +531,14 @@ void
 Infoflow::setReachPtrTainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  const std::set<const AbstractHandle *> & locs = reachableHandlesForValue(value);
-  for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+  const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    const ConsElem & current = getOrCreateConsElem(**loc);
-    kit->addConstraint(kind, kit->highConstant(), current);
+    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+        it != itEnd; ++it){
+      kit->addConstraint(kind, kit->highConstant(), **it);
+    }
   }
 }
 
@@ -765,25 +793,29 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
   return putOrConstrainVargConsElem(implicit, sink, this->getCurrentContext(), value, lub);
 }
 
-const ConsElem &
-Infoflow::getOrCreateConsElem(const AbstractHandle &loc) {
-    DenseMap<const AbstractHandle *, const ConsElem *>::iterator curElem = locConstraintMap.find(&loc);
+std::set<const ConsElem *>
+Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
+  DenseMap<const AbstractLoc *, std::set<const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
     if (curElem == locConstraintMap.end()) {
         // errs() << "Created a constraint variable...\n";
         std::string name = getCaption(&loc, NULL);
         const ConsElem & elem = kit->newVar(name);
-        locConstraintMap.insert(std::make_pair(&loc, &elem));
+        locConstraintMap[&loc].insert(&elem);
+        //locConstraintMap.insert(std::make_pair(&loc, &elem));
 
-        return elem;
+        return locConstraintMap[&loc];
     } else {
-        return *(curElem->second);
+        return (curElem->second);
     }
 }
 
 void
-Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractHandle &loc, const ConsElem &lub) {
-  const ConsElem & current = getOrCreateConsElem(loc);
-  kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, current);
+Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub) {
+  std::set<const ConsElem *> elemSet = getOrCreateConsElem(loc);
+  for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+      it != itEnd; ++it){
+    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, **it);
+  }
 }
 
 void
@@ -811,8 +843,8 @@ Infoflow::generateBasicBlockConstraints(const BasicBlock & bb, Flows & flows) {
 
 void
 Infoflow::constrainMemoryLocation(bool implicit, bool sink, const Value & value, const ConsElem & level) {
-    const std::set<const AbstractHandle *> & locs = HandlesForValue(value);
-    for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+    const std::set<const AbstractLoc *> & locs = locsForValue(value);
+    for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
       putOrConstrainConsElem(implicit, sink, **loc, level);
     }
@@ -820,8 +852,8 @@ Infoflow::constrainMemoryLocation(bool implicit, bool sink, const Value & value,
 
 void
 Infoflow::constrainReachableMemoryLocations(bool implicit, bool sink, const Value & value, const ConsElem & level) {
-    const std::set<const AbstractHandle *> & locs = reachableHandlesForValue(value);
-    for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+    for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
       putOrConstrainConsElem(implicit, sink, **loc, level);
     }
@@ -830,14 +862,18 @@ Infoflow::constrainReachableMemoryLocations(bool implicit, bool sink, const Valu
 const ConsElem &
 Infoflow::getOrCreateMemoryConsElem(const Value & value) {
     const ConsElem *join = NULL;
-    const std::set<const AbstractHandle *> & locs = HandlesForValue(value);
-    for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+    const std::set<const AbstractLoc *> & locs = locsForValue(value);
+    for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
+      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+      for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+          it != itEnd; ++it){
         if (join == NULL) {
-            join = &getOrCreateConsElem(**loc);
+            join = *it;
         } else {
-            join = &kit->upperBound(*join, getOrCreateConsElem(**loc));
+          join = &kit->upperBound(*join, **it);
         }
+      }
     }
     return *join;
 }
@@ -845,14 +881,18 @@ Infoflow::getOrCreateMemoryConsElem(const Value & value) {
 const ConsElem &
 Infoflow::getOrCreateReachableMemoryConsElem(const Value & value) {
     const ConsElem *join = NULL;
-    const std::set<const AbstractHandle *> & locs = reachableHandlesForValue(value);
-    for (std::set<const AbstractHandle *>::iterator loc = locs.begin(), end = locs.end();
+    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+    for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
+      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+      for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+          it != itEnd; ++it){
         if (join == NULL) {
-            join = &getOrCreateConsElem(**loc);
+            join = *it;
         } else {
-            join = &kit->upperBound(*join, getOrCreateConsElem(**loc));
+            join = &kit->upperBound(*join, **it);
         }
+      }
     }
     return *join;
 }
@@ -1580,11 +1620,13 @@ Infoflow::constrainIntrinsic(const IntrinsicInst & intr, Flows & flows) {
 
 // TODO: Update this function to provide information as getCaption does
 // for DSNode input.
-std::string getCaption(const AbstractHandle *N, const DSGraph *G) {
-  return "An AbsHandle";
+std::string getCaption(const AbstractHandle *NH, const DSGraph *G) {
+  const AbstractHandle NH2 = *NH;
+  const AbstractLoc * N = NH->getNode();
+  return "NH: " + getCaption(N,G);
 }
 
-std::string getCaption(const DSNode *N, const DSGraph *G) {
+std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   std::string empty;
   raw_string_ostream OS(empty);
   const Module *M = 0;
@@ -1671,7 +1713,6 @@ std::string getCaption(const DSNode *N, const DSGraph *G) {
       }
     }
   }
-
   return OS.str();
 }
 }

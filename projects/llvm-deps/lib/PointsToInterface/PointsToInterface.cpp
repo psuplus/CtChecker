@@ -97,29 +97,50 @@ PointsToInterface::getAbstractLocSetForValue(const Value *V) {
 
 const AbstractHandleSet *
 PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
-  const AbstractLocSet * locs = getAbstractLocSetForValue(V);
+  // get the offset of the handle that pointes to the DSNode
+  unsigned *Offset = new unsigned;
+  *Offset = 1000;
+  const DSNode *MergedLeader = getMergedLeaderForValue(V, Offset);
 
-  DSNodeHandle *HandleLeader;
-  const DSNode *MergedLeader = getMergedLeaderForValue(V, HandleLeader);
+  // Commented out because MergedLeader is likely in EC
+  // if(*Offset < MergedLeader->getSize() && MergedLeader->hasLink(*Offset))
+  // HandlesForLeader[MergedLeader].insert(&MergedLeader->getLink(*Offset));
+  const AbstractLocSet *Result = getAbstractLocSetForValue(V);
 
-  HandlesForLeader[MergedLeader].insert(HandleLeader);
-  // Need to find a way to filter the correct handle out of this
-  /*
-  for(AbstractLocSet::iterator it = locs->begin(), itend= locs->end(); it != itend; it++ ) {
-    if ((*it)->type_begin() != (*it)->type_end()) {
-      for(DSNode::TyMapTy::const_iterator ii = (*it)->type_begin(), ee = (*it)->type_end();
-          ii != ee; ++ii) {
-        unsigned int link_offset = ii->first;
-        if (HandlesForLeader.find(MergedLeader) == HandlesForLeader.end())
-          if((*it)->hasLink(link_offset)) {
-            HandlesForLeader[MergedLeader].insert(&(*it)->getLink(link_offset));
-          }
+  //errs() << "Offset: " << *Offset << "\n";
 
-      }
+  AbstractLocSet::iterator nodeIt = Result->begin();
+  AbstractLocSet::iterator nodeEnd = Result->end();
+  *Offset = 0;
+  for (; nodeIt != nodeEnd; ++nodeIt) {
+    const DSNode *Node = *nodeIt;
+    //(*nodeIt)->dump();
+    if(*Offset < Node->getSize() && Node->hasLink(*Offset)) {
+      HandlesForLeader[MergedLeader].insert(&Node->getLink(*Offset));
     }
-
   }
-  */
+
+    /*
+  EquivalenceClasses<const DSNode *>::member_iterator
+    ClassesIt = Classes->member_begin(Classes->findValue(MergedLeader)),
+    ClassesItEnd = Classes->member_end();
+
+
+  // Loop through the merged class nodes and if they have a link at the specfied
+  // offset add that DSHandle to the set
+  for (; ClassesIt != ClassesItEnd; ++ClassesIt) {
+    const DSNode *Node = *ClassesIt;
+    if(*Offset < Node->getSize())
+      errs() << "Node->Haslink:"  << Node->hasLink(*Offset) << "\n";
+
+    if(*Offset < Node->getSize() && Node->hasLink(*Offset)) {
+      HandlesForLeader[MergedLeader].insert(&Node->getLink(*Offset));
+    }
+  }
+
+    */
+  //errs() << "Length of set: " << HandlesForLeader[MergedLeader].size() << "\n";
+  delete Offset;
 
   return &HandlesForLeader[MergedLeader];
 }
@@ -181,15 +202,17 @@ PointsToInterface::getReachableAbstractLocSetForValue(const Value *V) {
 //
 const AbstractHandleSet *
 PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
-  DSNodeHandle *HandleLeader;
-  const DSNode *MergedLeader = getMergedLeaderForValue(V, HandleLeader);
+  unsigned *Offset = new unsigned;
+  const DSNode *MergedLeader = getMergedLeaderForValue(V, Offset);
 
   // If the class for the value doesn't exist, return the empty set.
   //if (MergedLeader == 0)
   //return &EmptyHandleSet;
 
-  if (ReachableHandlesForLeader.find(MergedLeader) != ReachableHandlesForLeader.end())
+  if (ReachableHandlesForLeader.find(MergedLeader) != ReachableHandlesForLeader.end()){
+    delete Offset;
     return &ReachableHandlesForLeader[MergedLeader];
+  }
 
   const AbstractLocSet* reachableNodes = getReachableAbstractLocSetForValue(V);
 
@@ -206,7 +229,9 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
     }
   }
 
-  return &ReachableHandlesForLeader[MergedLeader];
+  delete Offset;
+  return &HandlesForLeader[MergedLeader];
+  ///return &ReachableHandlesForLeader[MergedLeader];
 }
 
 //
@@ -215,14 +240,20 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
 // incomplete nodes. Returns null if the value's DSNode doesn't exist.
 //
 const DSNode *
-PointsToInterface::getMergedLeaderForValue(const Value *V, DSNodeHandle* Handle) {
+PointsToInterface::getMergedLeaderForValue(const Value *V, unsigned* offset) {
   const DSNode *Node;
+
+  raw_string_ostream* valueStream;
+  std::string valueString;
+  valueStream = new raw_string_ostream(valueString);
+  *valueStream << *V;
+  errs() <<"Value from getMergedLeader: " <<  valueStream->str() << "\n";
 
   if (LeaderForValue.count(V))
     return LeaderForValue[V];
 
   // Get the node for V and return null if it doesn't exist.
-  Node = EquivsAnalysis->getMemberForValue(V, Handle);
+  Node = EquivsAnalysis->getMemberForValue(V, offset);
   if (Node == 0)
     return LeaderForValue[V] = 0;
 

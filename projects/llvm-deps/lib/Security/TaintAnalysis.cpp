@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// A taint analysis based InfoFlow anlysis.
+// A taint analysis based InfoFlow analysis.
 //
 //===----------------------------------------------------------------------===//
 
@@ -44,16 +44,20 @@ TaintAnalysis::taintStr (std::string kind, std::string match) {
     std::string s;
     if (value.hasName() && value.getName() == match) {
       s = value.getName();
-      const std::set<const AbstractHandle *> & locs = ifa->HandlesForValue(value);
+      const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
-      for (std::set<const AbstractHandle *>::const_iterator loc = locs.begin(),
+      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
              end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractHandle *, const ConsElem *>::iterator curElem = ifa->locConstraintMap.find(*loc);
+        DenseMap<const AbstractLoc *, std::set<const ConsElem *>>::iterator curElem = ifa->locConstraintMap.find(*loc);
         if (curElem != ifa->locConstraintMap.end()) {
+          std::set<const ConsElem *> elemSet = curElem->second;
+          for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+              it != itEnd; ++it){
             errs() << "Matching " << match << " with " << value.getName() << ": ";
-            (curElem->second)->dump(errs());
+            (*it)->dump(errs());
             errs() << "\n";
-            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(curElem->second));
+            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), **it);
+          }
         }
       }
     }
@@ -81,7 +85,7 @@ TaintAnalysis::runOnModule(Module &M) {
   std::set<std::string> kinds;
   kinds.insert("test");
 
-  errs() << "Least solution with explicit contraints\n";
+  errs() << "Least solution with explicit constraints\n";
   InfoflowSolution* soln = ifa->leastSolution(kinds, false, true);
   soln->allTainted();
 

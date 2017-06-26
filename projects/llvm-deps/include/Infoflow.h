@@ -70,7 +70,7 @@ public:
                    const ConsElem & high,
                    bool defaultTainted,
                    DenseMap<const Value*, const ConsElem*> & valueMap,
-                   DenseMap<const AbstractHandle*, const ConsElem*> & locMap,
+                   DenseMap<const AbstractLoc*, std::set<const ConsElem*>> & locMap,
                    DenseMap<const Function*, const ConsElem*> & vargMap):
 
            infoflow(infoflow), soln(s), highConstant(high),
@@ -100,7 +100,7 @@ private:
   const ConsElem & highConstant;
   bool defaultTainted;
   DenseMap<const Value *, const ConsElem *> & valueMap;
-  DenseMap<const AbstractHandle *, const ConsElem *> & locMap;
+  DenseMap<const AbstractLoc *, std::set<const ConsElem *>> & locMap;
   DenseMap<const Function *, const ConsElem *> & vargMap;
 };
 
@@ -244,7 +244,7 @@ class Infoflow :
     const std::set<const AbstractHandle *> &reachableHandlesForValue(const Value & value) const;
 
     DenseMap<ContextID, DenseMap<const Value *, const ConsElem *> > valueConstraintMap;
-    DenseMap<const AbstractHandle *, const ConsElem *> locConstraintMap;
+    DenseMap<const AbstractLoc *, std::set<const ConsElem *>> locConstraintMap;
     DenseMap<ContextID, DenseMap<const Function *, const ConsElem *> > vargConstraintMap;
 
     DenseMap<const Value *, const ConsElem *> summarySinkValueConstraintMap;
@@ -270,9 +270,9 @@ class Infoflow :
     const ConsElem &getOrCreateConsElemSummarySink(const Value &);
     void putOrConstrainConsElemSummarySink(std::string, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElem(const Value &);
-    const ConsElem &getOrCreateConsElem(const AbstractHandle &);
+    std::set<const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
-    void putOrConstrainConsElem(bool imp, bool sink, const AbstractHandle &, const ConsElem &);
+    void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &);
 
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);
@@ -333,6 +333,7 @@ class Infoflow :
 };
 
   std::string getCaption(const AbstractHandle *N, const DSGraph *G);
+  std::string getCaption(const AbstractLoc *N, const DSGraph *G);
 }
 
 #endif /* INFOFLOW_H */

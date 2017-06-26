@@ -61,7 +61,7 @@ private:
   DSNodeEquivs *EquivsAnalysis;
 
   void mergeAllIncomplete();
-  const DSNode *getMergedLeaderForValue(const Value *V, DSNodeHandle* H=NULL);
+  const DSNode *getMergedLeaderForValue(const Value *V, unsigned* offset=NULL);
   void findReachableAbstractLocSetForNode(AbstractLocSet &S, const DSNode *Nd);
 
 public:

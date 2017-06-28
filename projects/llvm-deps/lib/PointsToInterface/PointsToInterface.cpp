@@ -98,9 +98,8 @@ PointsToInterface::getAbstractLocSetForValue(const Value *V) {
 const AbstractHandleSet *
 PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
   // get the offset of the handle that pointes to the DSNode
-  unsigned *Offset = new unsigned;
-  *Offset = 1000;
-  const DSNode *MergedLeader = getMergedLeaderForValue(V, Offset);
+  unsigned Offset = 0;
+  const DSNode *MergedLeader = getMergedLeaderForValue(V, &Offset);
 
   // Commented out because MergedLeader is likely in EC
   // if(*Offset < MergedLeader->getSize() && MergedLeader->hasLink(*Offset))
@@ -111,12 +110,12 @@ PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
 
   AbstractLocSet::iterator nodeIt = Result->begin();
   AbstractLocSet::iterator nodeEnd = Result->end();
-  *Offset = 0;
+  Offset = 0;
   for (; nodeIt != nodeEnd; ++nodeIt) {
     const DSNode *Node = *nodeIt;
     //(*nodeIt)->dump();
-    if(*Offset < Node->getSize() && Node->hasLink(*Offset)) {
-      HandlesForLeader[MergedLeader].insert(&Node->getLink(*Offset));
+    if(Offset < Node->getSize() && Node->hasLink(Offset)) {
+      HandlesForLeader[MergedLeader].insert(&Node->getLink(Offset));
     }
   }
 
@@ -140,7 +139,6 @@ PointsToInterface::getAbstractHandleSetForValue(const Value *V) {
 
     */
   //errs() << "Length of set: " << HandlesForLeader[MergedLeader].size() << "\n";
-  delete Offset;
 
   return &HandlesForLeader[MergedLeader];
 }
@@ -202,15 +200,14 @@ PointsToInterface::getReachableAbstractLocSetForValue(const Value *V) {
 //
 const AbstractHandleSet *
 PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
-  unsigned *Offset = new unsigned;
-  const DSNode *MergedLeader = getMergedLeaderForValue(V, Offset);
+  unsigned Offset = 0;
+  const DSNode *MergedLeader = getMergedLeaderForValue(V, &Offset);
 
   // If the class for the value doesn't exist, return the empty set.
   //if (MergedLeader == 0)
   //return &EmptyHandleSet;
 
   if (ReachableHandlesForLeader.find(MergedLeader) != ReachableHandlesForLeader.end()){
-    delete Offset;
     return &ReachableHandlesForLeader[MergedLeader];
   }
 
@@ -229,7 +226,6 @@ PointsToInterface::getReachableAbstractHandleSetForValue(const Value *V) {
     }
   }
 
-  delete Offset;
   return &HandlesForLeader[MergedLeader];
   ///return &ReachableHandlesForLeader[MergedLeader];
 }
@@ -243,11 +239,12 @@ const DSNode *
 PointsToInterface::getMergedLeaderForValue(const Value *V, unsigned* offset) {
   const DSNode *Node;
 
-  raw_string_ostream* valueStream;
-  std::string valueString;
-  valueStream = new raw_string_ostream(valueString);
-  *valueStream << *V;
-  errs() <<"Value from getMergedLeader: " <<  valueStream->str() << "\n";
+  // print out information from value.
+  // raw_string_ostream* valueStream;
+  // std::string valueString;
+  // valueStream = new raw_string_ostream(valueString);
+  // *valueStream << *V;
+  // errs() <<"Value from getMergedLeader: " <<  valueStream->str() << "\n";
 
   if (LeaderForValue.count(V))
     return LeaderForValue[V];
@@ -263,6 +260,20 @@ PointsToInterface::getMergedLeaderForValue(const Value *V, unsigned* offset) {
   const DSNode *MergedLeader = MergedLeaders.getLeaderValue(NodeLeader);
 
   return LeaderForValue[V] = MergedLeader;
+}
+
+
+//
+// Return the offset of the value in the DSNode if possible.
+// getMErgedLeaderFromValue can return NULL. If no DSNode is retrieved do not
+// use the value stored in the offset
+//
+bool
+PointsToInterface::getOffsetForValue(const Value * V, unsigned *Offset) {
+  const DSNode * N = getMergedLeaderForValue(V, Offset);
+  if (N != NULL)
+    return true;
+  return false;
 }
 
 //

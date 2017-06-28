@@ -45,23 +45,32 @@ TaintAnalysis::taintStr (std::string kind, std::string match) {
     if (value.hasName() && value.getName() == match) {
       s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
+      unsigned offset = 0;
+      bool hasOffset = ifa->offsetForValue(value, &offset);
       errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
       for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
              end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, std::set<const ConsElem *>>::iterator curElem = ifa->locConstraintMap.find(*loc);
-        if (curElem != ifa->locConstraintMap.end()) {
-          std::set<const ConsElem *> elemSet = curElem->second;
-          for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
+        if (curElem != ifa->locConstraintMap.end() && hasOffset) {
+          std::map<unsigned, const ConsElem *> elemMap = curElem->second;
+          const ConsElem & elem = *elemMap[offset];
+          errs() << "Matching " << match << " with " << value.getName() << ": ";
+          elem.dump(errs());
+          errs() << "\n";
+          ifa->kit->addConstraint(kind, ifa->kit->highConstant(), elem);
+          /*
+          for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), itEnd= elemMap.end();
               it != itEnd; ++it){
+            const ConsElem & elem = *(*it).second;
             errs() << "Matching " << match << " with " << value.getName() << ": ";
-            (*it)->dump(errs());
+            elem.dump(errs());
             errs() << "\n";
-            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), **it);
+            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), elem);
           }
+          */
         }
       }
-    }
-    else {
+    } else {
       llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
       *ss << value; // dump value info to ss
       ss->str(); // flush stream to s

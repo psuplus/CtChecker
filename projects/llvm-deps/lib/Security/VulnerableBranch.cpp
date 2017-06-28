@@ -50,12 +50,13 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
              end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, std::set<const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
+        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
         if (curElem != ifa->locConstraintMap.end()) {
-          std::set<const ConsElem *> elemSet = curElem->second;
-          for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+          std::map<unsigned, const ConsElem *> elemMap = curElem->second;
+          for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), itEnd= elemMap.end();
               it != itEnd; ++it){
-           ifa->kit->addConstraint(kind, ifa->kit->highConstant(), **it);
+            const ConsElem & elem = *(*it).second;
+            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), elem);
           }
         }
       }

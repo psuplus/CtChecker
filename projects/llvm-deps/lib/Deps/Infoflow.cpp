@@ -151,8 +151,8 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
   const ConsElem *sinkSourceElem = NULL;
 
   // First, build up the set of ConsElem's that represent the sources:
-  std::set<const ConsElem*> Sources;
-  std::set<const ConsElem*> sinkSources;
+  std::set<const ConsElem *> Sources;
+  std::set<const ConsElem *> sinkSources;
   {
     // For variables and vargs elements, add all of these directly to 'Sources'
     for (FlowRecord::value_iterator source = record.source_value_begin(), end = record.source_value_end();
@@ -199,18 +199,18 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     // ...And convert those locs into ConsElem's and store them into Sources
     for(std::set<const AbstractLoc *>::const_iterator I = SourceLocs.begin(),
         E = SourceLocs.end(); I != E; ++I) {
-      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**I);
-      for(std::set<const ConsElem *>::const_iterator it = elemSet.begin(), itEnd = elemSet.end();
+      std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**I);
+      for(std::map<unsigned, const ConsElem *>::const_iterator it = elemSet.begin(), itEnd = elemSet.end();
           it != itEnd; ++it){
-        Sources.insert((*it));
+        Sources.insert((*it).second);
       }
     }
     for(std::set<const AbstractLoc *>::const_iterator I = sinkSourceLocs.begin(),
         E = sinkSourceLocs.end(); I != E; ++I) {
-      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**I);
-      for(std::set<const ConsElem *>::const_iterator it = elemSet.begin(), itEnd = elemSet.end();
+      std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**I);
+      for(std::map<unsigned, const ConsElem *>::const_iterator it = elemSet.begin(), itEnd = elemSet.end();
           it != itEnd; ++it){
-        sinkSources.insert((*it));
+        sinkSources.insert((*it).second);
       }
     }
   }
@@ -393,12 +393,12 @@ InfoflowSolution::isDirectPtrTainted(const Value & value) {
   const std::set<const AbstractLoc *> & locs = infoflow.locsForValue(value);
   for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    DenseMap<const AbstractLoc *, std::set<const ConsElem *> >::iterator entry = locMap.find(*loc);
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator entry = locMap.find(*loc);
     if (entry != locMap.end()) {
-      std::set<const ConsElem *>::iterator it = entry->second.begin();
-      std::set<const ConsElem *>::iterator itEnd = entry->second.end();
+      std::map<unsigned, const ConsElem *>::iterator it = entry->second.begin();
+      std::map<unsigned, const ConsElem *>::iterator itEnd = entry->second.end();
       for(; it != itEnd; ++it){
-        const ConsElem & elem = (**it);
+        const ConsElem & elem = *(*it).second;
         if (soln->subst(elem) == highConstant) {
           return true;
         }
@@ -416,12 +416,12 @@ InfoflowSolution::isReachPtrTainted(const Value & value) {
   const std::set<const AbstractLoc *> & locs = infoflow.reachableLocsForValue(value);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    DenseMap<const AbstractLoc *, std::set<const ConsElem *> >::iterator entry = locMap.find(*loc);
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator entry = locMap.find(*loc);
     if (entry != locMap.end()) {
-      std::set<const ConsElem *>::iterator it = entry->second.begin();
-      std::set<const ConsElem *>::iterator itEnd = entry->second.end();
+      std::map<unsigned, const ConsElem *>::iterator it = entry->second.begin();
+      std::map<unsigned, const ConsElem *>::iterator itEnd = entry->second.end();
       for(; it != itEnd; ++it){
-        const ConsElem & elem = (**it);
+        const ConsElem & elem = *(*it).second;
         if (soln->subst(elem) == highConstant) {
           return true;
         }
@@ -487,13 +487,19 @@ Infoflow::setDirectPtrUntainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const std::set<const AbstractLoc *> & locs = locsForValue(value);
+  unsigned offset = 0;
+  bool hasOffset = offsetForValue(value, &offset);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
-    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
-        it != itEnd; ++it){
-      kit->addConstraint(kind, **it, kit->lowConstant());
+    std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    if(hasOffset){
+      const ConsElem & elem = *elemSet[offset];
+      kit->addConstraint(kind, elem, kit->lowConstant());
     }
+    // for(std::map<unsigned, const ConsElem *>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+    // it != itEnd; ++it){
+    // kit->addConstraint(kind, *(*it).second, kit->lowConstant());
+    // }
   }
 }
 
@@ -502,13 +508,19 @@ Infoflow::setDirectPtrTainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const std::set<const AbstractLoc *> & locs = locsForValue(value);
+  unsigned offset = 0;
+  bool hasOffset = offsetForValue(value, &offset);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
-    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
-        it != itEnd; ++it){
-      kit->addConstraint(kind, kit->highConstant(), **it);
+    std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    if (hasOffset){
+      const ConsElem & elem = *elemSet[offset];
+      kit->addConstraint(kind, kit->highConstant(), elem);
     }
+    // for(std::map<unsigned, const ConsElem *>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+    // it != itEnd; ++it){
+    // kit->addConstraint(kind, kit->highConstant(), *(*it).second);
+    // }
   }
 }
 
@@ -517,13 +529,19 @@ Infoflow::setReachPtrUntainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+  unsigned offset = 0;
+  bool hasOffset = offsetForValue(value, &offset);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
-    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
-        it != itEnd; ++it){
-      kit->addConstraint(kind, **it, kit->lowConstant());
+    std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    if(hasOffset){
+      const ConsElem & elem = *elemSet[offset];
+      kit->addConstraint(kind, elem, kit->lowConstant());
     }
+    // for(std::map<unsigned, const ConsElem *>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+    // it != itEnd; ++it){
+    // kit->addConstraint(kind, *(*it).second, kit->lowConstant());
+    // }
   }
 }
 
@@ -532,13 +550,19 @@ Infoflow::setReachPtrTainted(std::string kind, const Value & value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+  unsigned offset = 0;
+  bool hasOffset = offsetForValue(value, &offset);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
         loc != end; ++loc) {
-    std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
-    for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
-        it != itEnd; ++it){
-      kit->addConstraint(kind, kit->highConstant(), **it);
+    std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    if (hasOffset){
+      const ConsElem & elem = *elemSet[offset];
+      kit->addConstraint(kind, kit->highConstant(), elem);
     }
+    // for(std::map<unsigned, const ConsElem *>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+    // it != itEnd; ++it){
+    // kit->addConstraint(kind, kit->highConstant(), *(*it).second);
+    // }
   }
 }
 
@@ -582,6 +606,10 @@ Infoflow::locsForValue(const Value & value) const {
 const std::set<const AbstractLoc *> &
 Infoflow::reachableLocsForValue(const Value & value) const {
   return *pti->getReachableAbstractLocSetForValue(&value);
+}
+
+bool Infoflow::offsetForValue(const Value & value, unsigned *Offset) const {
+  return pti->getOffsetForValue(&value, Offset);
 }
 
 const std::set<const AbstractHandle *> &
@@ -793,14 +821,16 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
   return putOrConstrainVargConsElem(implicit, sink, this->getCurrentContext(), value, lub);
 }
 
-std::set<const ConsElem *>
+std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
-  DenseMap<const AbstractLoc *, std::set<const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
     if (curElem == locConstraintMap.end()) {
         // errs() << "Created a constraint variable...\n";
         std::string name = getCaption(&loc, NULL);
-        const ConsElem & elem = kit->newVar(name);
-        locConstraintMap[&loc].insert(&elem);
+        for(unsigned offset = 0; offset < loc.getSize(); offset +=4){
+          const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset));
+          locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
+        }
         //locConstraintMap.insert(std::make_pair(&loc, &elem));
 
         return locConstraintMap[&loc];
@@ -811,10 +841,10 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub) {
-  std::set<const ConsElem *> elemSet = getOrCreateConsElem(loc);
-  for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
+  std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(loc);
+  for(std::map<unsigned, const ConsElem *>::iterator it = elemSet.begin(), itEnd= elemSet.end();
       it != itEnd; ++it){
-    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, **it);
+    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
   }
 }
 
@@ -863,15 +893,17 @@ const ConsElem &
 Infoflow::getOrCreateMemoryConsElem(const Value & value) {
     const ConsElem *join = NULL;
     const std::set<const AbstractLoc *> & locs = locsForValue(value);
+    unsigned offset = 0;
+    bool hasOffset = offsetForValue(value, &offset);
     for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
-      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
-      for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
-          it != itEnd; ++it){
+      std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+      if(hasOffset){
+        const ConsElem * elem = elemSet[offset];
         if (join == NULL) {
-            join = *it;
+          join = elem;
         } else {
-          join = &kit->upperBound(*join, **it);
+          join = &kit->upperBound(*join, *elem);
         }
       }
     }
@@ -880,21 +912,23 @@ Infoflow::getOrCreateMemoryConsElem(const Value & value) {
 
 const ConsElem &
 Infoflow::getOrCreateReachableMemoryConsElem(const Value & value) {
-    const ConsElem *join = NULL;
-    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
-    for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
-            loc != end ; ++loc) {
-      std::set<const ConsElem *> elemSet = getOrCreateConsElem(**loc);
-      for(std::set<const ConsElem*>::iterator it = elemSet.begin(), itEnd= elemSet.end();
-          it != itEnd; ++it){
-        if (join == NULL) {
-            join = *it;
-        } else {
-            join = &kit->upperBound(*join, **it);
-        }
+  const ConsElem *join = NULL;
+  const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
+  unsigned offset = 0;
+  bool hasOffset = offsetForValue(value, &offset);
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
+       loc != end ; ++loc) {
+    std::map<unsigned, const ConsElem *> elemSet = getOrCreateConsElem(**loc);
+    if (hasOffset) {
+      const ConsElem * elem = elemSet[offset];
+      if (join == NULL) {
+        join = elem;
+      } else {
+        join = &kit->upperBound(*join, *elem);
       }
     }
-    return *join;
+  }
+  return *join;
 }
 
 FlowRecord

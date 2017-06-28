@@ -82,6 +82,7 @@ public:
   //
   const AbstractLocSet *getAbstractLocSetForValue(const Value *V);
   const AbstractHandleSet *getAbstractHandleSetForValue(const Value *V);
+  bool getOffsetForValue(const Value * V, unsigned * Offset);
 
   //
   // For a given value in the module, returns the set of all abstract memory

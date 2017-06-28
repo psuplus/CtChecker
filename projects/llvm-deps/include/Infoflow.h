@@ -70,7 +70,7 @@ public:
                    const ConsElem & high,
                    bool defaultTainted,
                    DenseMap<const Value*, const ConsElem*> & valueMap,
-                   DenseMap<const AbstractLoc*, std::set<const ConsElem*>> & locMap,
+                   DenseMap<const AbstractLoc*, std::map<unsigned, const ConsElem*>> & locMap,
                    DenseMap<const Function*, const ConsElem*> & vargMap):
 
            infoflow(infoflow), soln(s), highConstant(high),
@@ -100,7 +100,7 @@ private:
   const ConsElem & highConstant;
   bool defaultTainted;
   DenseMap<const Value *, const ConsElem *> & valueMap;
-  DenseMap<const AbstractLoc *, std::set<const ConsElem *>> & locMap;
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> > & locMap;
   DenseMap<const Function *, const ConsElem *> & vargMap;
 };
 
@@ -243,8 +243,10 @@ class Infoflow :
     const std::set<const AbstractHandle *> &HandlesForValue(const Value & value) const;
     const std::set<const AbstractHandle *> &reachableHandlesForValue(const Value & value) const;
 
+    bool offsetForValue(const Value & value, unsigned *Offset) const;
+
     DenseMap<ContextID, DenseMap<const Value *, const ConsElem *> > valueConstraintMap;
-    DenseMap<const AbstractLoc *, std::set<const ConsElem *>> locConstraintMap;
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> locConstraintMap;
     DenseMap<ContextID, DenseMap<const Function *, const ConsElem *> > vargConstraintMap;
 
     DenseMap<const Value *, const ConsElem *> summarySinkValueConstraintMap;
@@ -270,7 +272,7 @@ class Infoflow :
     const ConsElem &getOrCreateConsElemSummarySink(const Value &);
     void putOrConstrainConsElemSummarySink(std::string, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElem(const Value &);
-    std::set<const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
+    std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &);
 

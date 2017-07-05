@@ -264,6 +264,8 @@ class Infoflow :
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
     const std::string stringFromValue(const Value &);
+    void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
+    void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);
 
     const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
     void putOrConstrainConsElem(bool imp, bool sink, const ContextID, const Value &, const ConsElem &);
@@ -275,6 +277,7 @@ class Infoflow :
     std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &);
+    void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &, unsigned offset);
 
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);

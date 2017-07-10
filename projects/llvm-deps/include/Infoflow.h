@@ -264,6 +264,11 @@ class Infoflow :
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
     const std::string stringFromValue(const Value &);
+    unsigned GEPInstCalculateNumberElements(const GetElementPtrInst*);
+    unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst*);
+    unsigned GEPInstCalculateStructOffset(const GetElementPtrInst*);
+    unsigned GEPInstCalculateOffset(const GetElementPtrInst*);
+    bool checkGEPOperandsConstant(const GetElementPtrInst*);
     void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
     void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);
 
@@ -275,9 +280,10 @@ class Infoflow :
     void putOrConstrainConsElemSummarySink(std::string, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElem(const Value &);
     std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
+    std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &, unsigned);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &);
-    void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &, unsigned offset);
+    void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &, unsigned offset, unsigned);
 
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);

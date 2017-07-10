@@ -301,19 +301,33 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
 /// the instruction is dealing with. That offset is used to constrain the
 /// element from the instruction more specifically
 ///
-void Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool sink, const ConsElem &lub, std::set<const AbstractLoc*> locs) {
-  errs() << "[Sink:] " << stringFromValue(*value);
+void
+Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool sink, const ConsElem &lub, std::set<const AbstractLoc*> locs) {
+  errs() << "[Sink:] " << stringFromValue(*value) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
-  if(ConstantInt *CI = dyn_cast<ConstantInt>(gep->getOperand(2))){
-    uint64_t idx = CI->getZExtValue();
-    unsigned offset = idx*4;
-    for(std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
-        loc != end; ++loc){
-      putOrConstrainConsElem(implicit, sink, **loc, lub, offset);
+  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  unsigned numElements = 0;
+  if(isa<ArrayType>(T))
+    numElements = GEPInstCalculateNumberElements(gep);
+
+  // If operands are not constant constrain all ConsElems
+  if(!checkGEPOperandsConstant(gep)){
+    errs() << "Non-constant ptr or offset\n";
+    for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
+        I != E; ++I){
+      putOrConstrainConsElem(implicit, sink, **I, lub);
     }
+    return;
+  }
+
+  // Otherwise constrain the elements that are at the location of the operands
+  unsigned offset = GEPInstCalculateOffset(gep);
+
+  for(std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
+      loc != end; ++loc){
+    putOrConstrainConsElem(implicit, sink, **loc, lub, offset, numElements);
   }
 }
-
 
 ///
 /// This function takes any GetElementPtrInst values and extracts the offset
@@ -324,19 +338,112 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   //get ConsElem from Value
   errs() << "[Source:] " << stringFromValue(*source) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
-  if(ConstantInt *CI = dyn_cast<ConstantInt>(gep->getOperand(2))){
-    uint64_t idx = CI->getZExtValue();
-    unsigned offset = idx*4;
+  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  unsigned numElements = 0;
+  if(isa<ArrayType>(T))
+    numElements = GEPInstCalculateNumberElements(gep);
+
+  // If operands are not constant taint all consElems
+  if(!checkGEPOperandsConstant(gep)){
+    errs() << "Non-constant ptr or offset\n";
     for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
         I != E; ++I){
-      std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**I);
-      if(elemMap.find(offset) != elemMap.end()){
-        sourceSet.insert(elemMap[offset]);
+      std::map<unsigned, const ConsElem *> elemMap;
+      elemMap = getOrCreateConsElem(**I, numElements);
+
+      for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
+          i != e; ++i){
+        sourceSet.insert((*i).second);
       }
     }
+    return;
+  }
+
+  // If operands are constant taint only that element
+  unsigned offset = GEPInstCalculateOffset(gep);
+
+  errs() << "Adding Constraint Source: elem #" << offset << "\n";
+  for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
+      I != E; ++I){
+    std::map<unsigned, const ConsElem *> elemMap;
+    elemMap = getOrCreateConsElem(**I, numElements);
+
+    errs() << "Array Size " << numElements << " elements\n";
+
+    // ElemMap should match the number of elements unless
+    // the number is not known at compile time
+    // If the offset is somehow larger than the map, add all
+    // constraint elements to the sourceSet
+    if (offset > elemMap.size())
+      for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
+          i != e; ++i){
+        sourceSet.insert((*i).second);
+      }
+    else if(elemMap.find(offset) != elemMap.end())
+      sourceSet.insert(elemMap[offset]);
   }
 }
 
+unsigned Infoflow::GEPInstCalculateNumberElements(const GetElementPtrInst *gep) {
+  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  unsigned numElements = cast<ArrayType>(T)->getNumElements();
+  errs() << "GEP # elements in array: " << numElements << "\n";
+  return numElements;
+}
+
+unsigned Infoflow::GEPInstCalculateArrayOffset(const GetElementPtrInst* gep) {
+  unsigned numElements = GEPInstCalculateNumberElements(gep);
+
+  // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
+  ConstantInt *ptr = dyn_cast<ConstantInt>(gep->getOperand(1));
+  ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
+  uint64_t ptrIdx = ptr->getZExtValue();
+  uint64_t ptrOff = ptrOffset->getZExtValue();
+  unsigned offset = ptrIdx * numElements + ptrOff;
+  return offset;
+}
+unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst* gep) {
+  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  unsigned offset = 0;
+  if(isa<ArrayType>(T) && gep->getNumIndices() == 2) {
+    offset = GEPInstCalculateArrayOffset(gep);
+  } else if (gep->getNumIndices() == 2) {
+    offset = GEPInstCalculateStructOffset(gep);
+  } else {
+    ConstantInt *ptrIdx = dyn_cast<ConstantInt>(gep->getOperand(1));
+    offset = ptrIdx->getZExtValue();
+  }
+
+  return offset;
+}
+unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep) {
+  // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
+  ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
+  uint64_t ptrOff = ptrOffset->getZExtValue();
+  unsigned offset = ptrOff;
+  return offset;
+}
+
+bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst* gep) {
+  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  // If array, check both indices ptr+offset (operand 1 and 2)
+  if(isa<ArrayType>(T) && gep->getNumIndices() == 2){
+    if( ! isa<ConstantInt>(gep->getOperand(1)))
+      return false;
+    if( ! isa<ConstantInt>(gep->getOperand(2)))
+      return false;
+    return true;
+  } else if (gep->getNumIndices() == 2){
+    // if structure check the offset (operand 2)
+    if( ! isa<ConstantInt>(gep->getOperand(2)))
+      return false;
+    return true;
+  } else {
+    if ( ! isa<ConstantInt>(gep->getOperand(1)))
+      return false;
+    return true;
+  }
+}
 const Unit
 Infoflow::signatureForExternalCall(const ImmutableCallSite & cs, const Unit input) {
   std::vector<FlowRecord> flowRecords = signatureRegistrar->process(this->getCurrentContext(), cs);
@@ -891,22 +998,42 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 }
 
 std::map<unsigned, const ConsElem *>
+Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
+  if (curElem == locConstraintMap.end()) {
+    std::string name = getCaption(&loc, NULL);
+    if(numElements == 0)
+      numElements = loc.getSize()/4;
+    errs() << "Created " << numElements << " constraint variable(s)...\n";
+    for(unsigned offset = 0; offset < numElements; offset++ ){
+      const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + "::");
+      locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
+    }
+    //locConstraintMap.insert(std::make_pair(&loc, &elem));
+
+    return locConstraintMap[&loc];
+  } else {
+    return (curElem->second);
+  }
+}
+
+std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
-    if (curElem == locConstraintMap.end()) {
-        // errs() << "Created a constraint variable...\n";
-        std::string name = getCaption(&loc, NULL);
-        unsigned size = loc.getSize();
-        for(unsigned offset = 0; offset < size*4; offset += 4){
-          const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset));
-          locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
-        }
-        //locConstraintMap.insert(std::make_pair(&loc, &elem));
-
-        return locConstraintMap[&loc];
-    } else {
-        return (curElem->second);
+  if (curElem == locConstraintMap.end()) {
+    std::string name = getCaption(&loc, NULL);
+    unsigned size = loc.getSize()/4;
+    size = (loc.getSize() % 4 == 0) ? size : size + 1;
+    //errs() << "Created " << size << " constraint variable(s)...\n";
+    for(unsigned offset = 0; offset < size; offset++ ){
+      const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + "::");
+      locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
     }
+
+    return locConstraintMap[&loc];
+  } else {
+    return (curElem->second);
+  }
 }
 
 void
@@ -919,8 +1046,8 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
 }
 
 void
-Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset) {
-  std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
+Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
+  std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc, numElements);
   loc.dump();
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
@@ -930,6 +1057,8 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
       (*it).second->dump(errs());
       errs() << " to ";
       lub.dump(errs());
+    } else if (offset > elemMap.size()){
+      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
     }
   }
   errs() << "\n\n";

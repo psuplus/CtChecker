@@ -362,25 +362,26 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   // If operands are constant taint only that element
   unsigned offset = GEPInstCalculateOffset(gep);
 
-  errs() << "Adding Constraint Source: elem #" << offset << "\n";
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElem(**I, numElements);
 
-    errs() << "Array Size " << numElements << " elements\n";
-
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
     // If the offset is somehow larger than the map, add all
     // constraint elements to the sourceSet
-    if (offset > elemMap.size())
+    // Collapsed nodes contain no type info, so also taint all elems
+    if((*I)->isNodeCompletelyFolded() || offset >= elemMap.size()){
+      errs() << "Adding " << elemMap.size() << "relevant source elements\n";
       for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
           i != e; ++i){
         sourceSet.insert((*i).second);
       }
-    else if(elemMap.find(offset) != elemMap.end())
+    } else if (elemMap.find(offset) != elemMap.end()){
       sourceSet.insert(elemMap[offset]);
+      errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
+    }
   }
 }
 
@@ -1002,9 +1003,18 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
-    if(numElements == 0)
-      numElements = loc.getSize()/4;
-    errs() << "Created " << numElements << " constraint variable(s)...\n";
+    // Create an element to represent each type if the information exists
+    if(numElements == 0 && !loc.isNodeCompletelyFolded()){
+      for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
+          i != e; ++i)
+        numElements++;
+    } else if (numElements == 0) {
+      numElements = 1;
+    }
+
+
+    errs() << "Created " << numElements << " constraint variable(s) for node of size "; 
+    errs() << loc.getSize() << "\n";
     for(unsigned offset = 0; offset < numElements; offset++ ){
       const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + "::");
       locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
@@ -1051,14 +1061,14 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   loc.dump();
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
-    if((*it).first == offset) {
+    if (loc.isNodeCompletelyFolded() || offset > elemMap.size()) {
+      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
+    } else if((*it).first == offset) {
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
       errs() << "Added: " ;
       (*it).second->dump(errs());
       errs() << " to ";
       lub.dump(errs());
-    } else if (offset > elemMap.size()){
-      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
     }
   }
   errs() << "\n\n";

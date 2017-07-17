@@ -311,8 +311,9 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
     numElements = GEPInstCalculateNumberElements(gep);
 
   // If operands are not constant constrain all ConsElems
+  // i.e. Operands are variables or values loaded from a register
   if(!checkGEPOperandsConstant(gep)){
-    errs() << "Non-constant ptr or offset\n";
+    //errs() << "Non-constant ptr or offset\n";
     for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
         I != E; ++I){
       putOrConstrainConsElem(implicit, sink, **I, lub);
@@ -336,7 +337,7 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
 ///
 void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<const ConsElem *>& sourceSet, std::set<const AbstractLoc *> locs) {
   //get ConsElem from Value
-  errs() << "[Source:] " << stringFromValue(*source) << "\n";
+  //errs() << "[Source:] " << stringFromValue(*source) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -345,7 +346,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 
   // If operands are not constant taint all consElems
   if(!checkGEPOperandsConstant(gep)){
-    errs() << "Non-constant ptr or offset\n";
+    //errs() << "Non-constant ptr or offset\n";
     for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
         I != E; ++I){
       std::map<unsigned, const ConsElem *> elemMap;
@@ -373,36 +374,24 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
     if((*I)->isNodeCompletelyFolded() || offset >= elemMap.size()){
-      errs() << "Adding " << elemMap.size() << "relevant source elements\n";
+      //errs() << "Adding " << elemMap.size() << "relevant source elements\n";
       for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
           i != e; ++i){
         sourceSet.insert((*i).second);
       }
     } else if (elemMap.find(offset) != elemMap.end()){
       sourceSet.insert(elemMap[offset]);
-      errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
+      //errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
     }
   }
 }
 
-unsigned Infoflow::GEPInstCalculateNumberElements(const GetElementPtrInst *gep) {
-  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
-  unsigned numElements = cast<ArrayType>(T)->getNumElements();
-  errs() << "GEP # elements in array: " << numElements << "\n";
-  return numElements;
-}
-
-unsigned Infoflow::GEPInstCalculateArrayOffset(const GetElementPtrInst* gep) {
-  unsigned numElements = GEPInstCalculateNumberElements(gep);
-
-  // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
-  ConstantInt *ptr = dyn_cast<ConstantInt>(gep->getOperand(1));
-  ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
-  uint64_t ptrIdx = ptr->getZExtValue();
-  uint64_t ptrOff = ptrOffset->getZExtValue();
-  unsigned offset = ptrIdx * numElements + ptrOff;
-  return offset;
-}
+//
+// Funtctions to parse teh GetElementPtrInst and return the correct offset
+// to find the correct ConsElem to add to the constraint sets
+//
+// This handles the different types of  GEPInstructions that can occur
+// and calls the correct parsing function
 unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst* gep) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned offset = 0;
@@ -417,6 +406,25 @@ unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst* gep) {
 
   return offset;
 }
+
+unsigned Infoflow::GEPInstCalculateNumberElements(const GetElementPtrInst *gep) {
+  Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  unsigned numElements = cast<ArrayType>(T)->getNumElements();
+  //errs() << "GEP # elements in array: " << numElements << "\n";
+  return numElements;
+}
+
+unsigned Infoflow::GEPInstCalculateArrayOffset(const GetElementPtrInst* gep) {
+  unsigned numElements = GEPInstCalculateNumberElements(gep);
+
+  // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
+  ConstantInt *ptr = dyn_cast<ConstantInt>(gep->getOperand(1));
+  ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
+  uint64_t ptrIdx = ptr->getZExtValue();
+  uint64_t ptrOff = ptrOffset->getZExtValue();
+  unsigned offset = ptrIdx * numElements + ptrOff;
+  return offset;
+}
 unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep) {
   // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
   ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
@@ -425,6 +433,12 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep) {
   return offset;
 }
 
+//
+// checkGEPOperandsConst returns true if all operands used in the offset
+// calculations are constant. The calculating functions assume that these
+// operands are constant and this function is necessary to check before
+// invoking any of those functions.
+//
 bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst* gep) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   // If array, check both indices ptr+offset (operand 1 and 2)
@@ -445,6 +459,7 @@ bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst* gep) {
     return true;
   }
 }
+
 const Unit
 Infoflow::signatureForExternalCall(const ImmutableCallSite & cs, const Unit input) {
   std::vector<FlowRecord> flowRecords = signatureRegistrar->process(this->getCurrentContext(), cs);

@@ -60,7 +60,7 @@ public:
   // Returns a DSNode for the specified value.  Note that two nodes may alias
   // even if they have different DSNodes (because the DSNodes may belong to
   // different DSGraphs).
-  const DSNode *getMemberForValue(const Value *V, unsigned* offset=NULL);
+  const DSNode *getMemberForValue(const Value *V);
 };
 
 }

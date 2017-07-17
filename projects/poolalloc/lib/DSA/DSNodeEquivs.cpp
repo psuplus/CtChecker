@@ -136,7 +136,7 @@ void DSNodeEquivs::equivNodesThroughCallsite(CallInst *CI) {
     // We can't merge through graphs that don't exist.
     if (!TDDS.hasDSGraph(Callee))
       continue;
-
+    
     DSGraph &CalleeGraph = *TDDS.getDSGraph(Callee);
     DSGraph::NodeMapTy NodeMap;
 
@@ -227,7 +227,7 @@ DSNodeEquivs::getEquivalenceClasses() {
 
 // Returns a DSNode for the specified value.
 // Returns null for a node that was not found.
-const DSNode *DSNodeEquivs::getMemberForValue(const Value *V, unsigned* offset) {
+const DSNode *DSNodeEquivs::getMemberForValue(const Value *V) {
   TDDataStructures &TDDS = getAnalysis<TDDataStructures>();
   DSNodeHandle *NHForV = 0;
 
@@ -279,10 +279,6 @@ const DSNode *DSNodeEquivs::getMemberForValue(const Value *V, unsigned* offset) 
   }
 
   assert(NHForV && "Unable to find node handle for given value!");
-
-
-  if(offset != NULL)
-    *offset = NHForV->getOffset();
 
   return NHForV->getNode();
 }

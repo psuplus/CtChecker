@@ -33,10 +33,8 @@ namespace deps {
 // An abstract memory location that represents the target of a pointer.
 //
 typedef DSNode AbstractLoc;
-typedef DSNodeHandle AbstractHandle;
 
 typedef std::set<const AbstractLoc *> AbstractLocSet;
-typedef std::set<const AbstractHandle *> AbstractHandleSet;
 
 //
 // This pass provides an interface to a points-to analysis (currently DSA) that
@@ -45,15 +43,10 @@ typedef std::set<const AbstractHandle *> AbstractHandleSet;
 class PointsToInterface : public ModulePass {
 private:
   static const AbstractLocSet EmptySet;
-  //static const AbstractHandleSet EmptyHandleSet;
-  
 
   std::map<const DSNode *, AbstractLocSet> ClassForLeader;
   std::map<const DSNode *, AbstractLocSet> ReachablesForLeader;
   DenseMap<const Value*, const DSNode*> LeaderForValue;
-
-  std::map<const DSNode *, AbstractHandleSet> HandlesForLeader;
-  std::map<const DSNode *, AbstractHandleSet> ReachableHandlesForLeader;
 
   EquivalenceClasses<const DSNode *> MergedLeaders;
 
@@ -61,7 +54,7 @@ private:
   DSNodeEquivs *EquivsAnalysis;
 
   void mergeAllIncomplete();
-  const DSNode *getMergedLeaderForValue(const Value *V, unsigned* offset=NULL);
+  const DSNode *getMergedLeaderForValue(const Value *V);
   void findReachableAbstractLocSetForNode(AbstractLocSet &S, const DSNode *Nd);
 
 public:
@@ -81,16 +74,12 @@ public:
   // the set of abstract memory locations that the value can point to.
   //
   const AbstractLocSet *getAbstractLocSetForValue(const Value *V);
-  const AbstractHandleSet *getAbstractHandleSetForValue(const Value *V);
-  bool getOffsetForValue(const Value * V, unsigned * Offset);
 
   //
   // For a given value in the module, returns the set of all abstract memory
   // locations reachable from that value.
   //
   const AbstractLocSet *getReachableAbstractLocSetForValue(const Value *V);
-  const AbstractHandleSet *getReachableAbstractHandleSetForValue(const Value *V);
-
 };
 
 }

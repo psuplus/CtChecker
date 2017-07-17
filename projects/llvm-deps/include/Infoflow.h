@@ -70,7 +70,7 @@ public:
                    const ConsElem & high,
                    bool defaultTainted,
                    DenseMap<const Value*, const ConsElem*> & valueMap,
-                   DenseMap<const AbstractLoc*, const ConsElem*> & locMap,
+                   DenseMap<const AbstractLoc*, std::map<unsigned, const ConsElem*>> & locMap,
                    DenseMap<const Function*, const ConsElem*> & vargMap):
 
            infoflow(infoflow), soln(s), highConstant(high),
@@ -100,7 +100,7 @@ private:
   const ConsElem & highConstant;
   bool defaultTainted;
   DenseMap<const Value *, const ConsElem *> & valueMap;
-  DenseMap<const AbstractLoc *, const ConsElem *> & locMap;
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> > & locMap;
   DenseMap<const Function *, const ConsElem *> & vargMap;
 };
 
@@ -240,8 +240,13 @@ class Infoflow :
     const std::set<const AbstractLoc *> &locsForValue(const Value & value) const;
     const std::set<const AbstractLoc *> &reachableLocsForValue(const Value & value) const;
 
+    const std::set<const AbstractHandle *> &HandlesForValue(const Value & value) const;
+    const std::set<const AbstractHandle *> &reachableHandlesForValue(const Value & value) const;
+
+    bool offsetForValue(const Value & value, unsigned *Offset) const;
+
     DenseMap<ContextID, DenseMap<const Value *, const ConsElem *> > valueConstraintMap;
-    DenseMap<const AbstractLoc *, const ConsElem *> locConstraintMap;
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> locConstraintMap;
     DenseMap<ContextID, DenseMap<const Function *, const ConsElem *> > vargConstraintMap;
 
     DenseMap<const Value *, const ConsElem *> summarySinkValueConstraintMap;
@@ -259,6 +264,13 @@ class Infoflow :
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
     const std::string stringFromValue(const Value &);
+    unsigned GEPInstCalculateNumberElements(const GetElementPtrInst*);
+    unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst*);
+    unsigned GEPInstCalculateStructOffset(const GetElementPtrInst*);
+    unsigned GEPInstCalculateOffset(const GetElementPtrInst*);
+    bool checkGEPOperandsConstant(const GetElementPtrInst*);
+    void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
+    void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);
 
     const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
     void putOrConstrainConsElem(bool imp, bool sink, const ContextID, const Value &, const ConsElem &);
@@ -267,9 +279,11 @@ class Infoflow :
     const ConsElem &getOrCreateConsElemSummarySink(const Value &);
     void putOrConstrainConsElemSummarySink(std::string, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElem(const Value &);
-    const ConsElem &getOrCreateConsElem(const AbstractLoc &);
+    std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
+    std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &, unsigned);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &);
+    void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &, unsigned offset, unsigned);
 
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);
@@ -329,7 +343,8 @@ class Infoflow :
 
 };
 
-  std::string getCaption(const DSNode *N, const DSGraph *G);
+  std::string getCaption(const AbstractHandle *N, const DSGraph *G);
+  std::string getCaption(const AbstractLoc *N, const DSGraph *G);
 }
 
 #endif /* INFOFLOW_H */

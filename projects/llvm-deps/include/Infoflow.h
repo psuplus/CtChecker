@@ -243,7 +243,7 @@ class Infoflow :
     const std::set<const AbstractHandle *> &HandlesForValue(const Value & value) const;
     const std::set<const AbstractHandle *> &reachableHandlesForValue(const Value & value) const;
 
-    bool offsetForValue(const Value & value, unsigned *Offset) const;
+    bool offsetForValue(const Value & value, unsigned *Offset);
 
     DenseMap<ContextID, DenseMap<const Value *, const ConsElem *> > valueConstraintMap;
     DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> locConstraintMap;

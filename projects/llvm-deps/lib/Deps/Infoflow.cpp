@@ -123,24 +123,24 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-  errs() << "----- Trying to print out ConstraintSet -----\n";
-  /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
-  /// try "default" first
-  std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
-  /// set contains all constraints, constraints are pairs of ConsElem
-  /// can't joint on rhs, only on lhs
-  for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
-      constraint != end; ++constraint) {
-    //       /// a constraint contains two ConElem: lhs and rhs.
-    //       /// We need to search through valueMap, locMap and vargMap to get the
-    //       /// value paired to both ConElems.
+  // errs() << "----- Trying to print out ConstraintSet -----\n";
+  // /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
+  // /// try "default" first
+  // std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
+  // /// set contains all constraints, constraints are pairs of ConsElem
+  // /// can't joint on rhs, only on lhs
+  // for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
+  //     constraint != end; ++constraint) {
+  //   //       /// a constraint contains two ConElem: lhs and rhs.
+  //   //       /// We need to search through valueMap, locMap and vargMap to get the
+  //   //       /// value paired to both ConElems.
 
-    // print lhs
-    (*constraint).lhs().dump(errs());
-    errs() << "-->";
-    (*constraint).rhs().dump(errs());
-    errs()  << "\n";
-  }
+  //   // print lhs
+  //   (*constraint).lhs().dump(errs());
+  //   errs() << "-->";
+  //   (*constraint).rhs().dump(errs());
+  //   errs()  << "\n";
+  // }
 
   return Unit();
 }
@@ -303,7 +303,7 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
 ///
 void
 Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool sink, const ConsElem &lub, std::set<const AbstractLoc*> locs) {
-  errs() << "[Sink:] " << stringFromValue(*value) << "\n";
+  //errs() << "[Sink:] " << stringFromValue(*value) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -337,7 +337,7 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
 ///
 void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<const ConsElem *>& sourceSet, std::set<const AbstractLoc *> locs) {
   //get ConsElem from Value
-  //errs() << "[Source:] " << stringFromValue(*source) << "\n";
+  // errs() << "[Source:] " << stringFromValue(*source) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -797,7 +797,15 @@ Infoflow::reachableLocsForValue(const Value & value) const {
   return *pti->getReachableAbstractLocSetForValue(&value);
 }
 
-bool Infoflow::offsetForValue(const Value & value, unsigned *Offset) const {
+bool Infoflow::offsetForValue(const Value & value, unsigned *Offset) {
+  if(const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&value)){
+    if(checkGEPOperandsConstant(gep)){
+      *Offset = GEPInstCalculateOffset(gep);
+      return true;
+    } else {
+      return false;
+    }
+  }
   return pti->getOffsetForValue(&value, Offset);
 }
 
@@ -917,9 +925,9 @@ Infoflow::getOrCreateConsElem(const ContextID ctxt, const Value &value) {
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const ContextID ctxt, const Value &value, const ConsElem &lub) {
   const ConsElem & current = getOrCreateConsElem(ctxt, value);
-  errs() << "putOrConstrainConsElem:";
-  current.dump(errs()); errs() << " ";
-  lub.dump(errs()); errs() << "\n";
+  // errs() << "putOrConstrainConsElem:";
+  // current.dump(errs()); errs() << " ";
+  // lub.dump(errs()); errs() << "\n";
   kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, current);
 }
 
@@ -1028,8 +1036,8 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
     }
 
 
-    errs() << "Created " << numElements << " constraint variable(s) for node of size "; 
-    errs() << loc.getSize() << "\n";
+    //errs() << "Created " << numElements << " constraint variable(s) for node of size "; 
+    // errs() << loc.getSize() << "\n";
     for(unsigned offset = 0; offset < numElements; offset++ ){
       const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + "::");
       locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
@@ -1073,20 +1081,20 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc, numElements);
-  loc.dump();
+  //loc.dump();
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
     if (loc.isNodeCompletelyFolded() || offset > elemMap.size()) {
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
     } else if((*it).first == offset) {
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
-      errs() << "Added: " ;
-      (*it).second->dump(errs());
-      errs() << " to ";
-      lub.dump(errs());
+      // errs() << "Added: " ;
+      // (*it).second->dump(errs());
+      // errs() << " to ";
+      // lub.dump(errs());
     }
   }
-  errs() << "\n\n";
+  // errs() << "\n\n";
 }
 
 void
@@ -1117,9 +1125,9 @@ Infoflow::constrainMemoryLocation(bool implicit, bool sink, const Value & value,
     const std::set<const AbstractLoc *> & locs = locsForValue(value);
     for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
-      errs() << "Adding consElem: ";
-      (*loc)->dump(); errs() << " and ";
-      level.dump(errs()); errs() << "\n";
+      // errs() << "Adding consElem: ";
+      // (*loc)->dump(); errs() << " and ";
+      // level.dump(errs()); errs() << "\n";
       putOrConstrainConsElem(implicit, sink, **loc, level);
     }
 }
@@ -1129,9 +1137,9 @@ Infoflow::constrainReachableMemoryLocations(bool implicit, bool sink, const Valu
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
     for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
-      errs() << "Adding consElem: ";
-      (*loc)->dump(); errs() << " and ";
-      level.dump(errs()); errs() << "\n";
+      // errs() << "Adding consElem: ";
+      // (*loc)->dump(); errs() << " and ";
+      // level.dump(errs()); errs() << "\n";
       putOrConstrainConsElem(implicit, sink, **loc, level);
     }
 }
@@ -1142,7 +1150,7 @@ Infoflow::getOrCreateMemoryConsElem(const Value & value) {
     const std::set<const AbstractLoc *> & locs = locsForValue(value);
     unsigned offset = 0;
     bool hasOffset = offsetForValue(value, &offset);
-    errs() << "getOrCreate: " << stringFromValue(value) << "\n";
+    // errs() << "getOrCreate: " << stringFromValue(value) << "\n";
     for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
             loc != end ; ++loc) {
       std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
@@ -1164,7 +1172,7 @@ Infoflow::getOrCreateReachableMemoryConsElem(const Value & value) {
   const std::set<const AbstractLoc *> & locs = reachableLocsForValue(value);
   unsigned offset = 0;
   bool hasOffset = offsetForValue(value, &offset);
-  errs() << "getOrCreate2: " << stringFromValue(value) << "\n";
+  // errs() << "getOrCreate2: " << stringFromValue(value) << "\n";
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
        loc != end ; ++loc) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);

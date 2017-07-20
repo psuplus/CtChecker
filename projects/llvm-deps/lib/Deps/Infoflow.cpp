@@ -805,6 +805,8 @@ bool Infoflow::offsetForValue(const Value & value, unsigned *Offset) {
     } else {
       return false;
     }
+  } else if (isa<AllocaInst>(value)){
+    return false;
   }
   return pti->getOffsetForValue(&value, Offset);
 }

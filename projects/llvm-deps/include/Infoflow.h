@@ -266,8 +266,9 @@ class Infoflow :
     const std::string stringFromValue(const Value &);
     unsigned GEPInstCalculateNumberElements(const GetElementPtrInst*);
     unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst*);
-    unsigned GEPInstCalculateStructOffset(const GetElementPtrInst*);
-    unsigned GEPInstCalculateOffset(const GetElementPtrInst*);
+    unsigned GEPInstCalculateStructOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
+    unsigned GEPInstCalculateOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
+    unsigned findOffsetFromFieldIndex(std::set<const AbstractLoc*>, unsigned);
     bool checkGEPOperandsConstant(const GetElementPtrInst*);
     void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
     void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);

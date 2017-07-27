@@ -322,10 +322,11 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
   }
 
   // Otherwise constrain the elements that are at the location of the operands
-  unsigned offset = GEPInstCalculateOffset(gep);
+  unsigned offset = GEPInstCalculateOffset(gep, locs);
 
   for(std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
       loc != end; ++loc){
+    errs() << "Tainting at offset: " << offset << "\n";
     putOrConstrainConsElem(implicit, sink, **loc, lub, offset, numElements);
   }
 }
@@ -361,8 +362,8 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   }
 
   // If operands are constant taint only that element
-  unsigned offset = GEPInstCalculateOffset(gep);
-
+  unsigned offset = GEPInstCalculateOffset(gep,locs);
+  errs() << "\nSourceOffset: " << offset << "\n";
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
     std::map<unsigned, const ConsElem *> elemMap;
@@ -373,15 +374,15 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // If the offset is somehow larger than the map, add all
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
-    if((*I)->isNodeCompletelyFolded() || offset >= elemMap.size()){
-      //errs() << "Adding " << elemMap.size() << "relevant source elements\n";
+    if((*I)->isNodeCompletelyFolded() || elemMap.find(offset) == elemMap.end()){
+      errs() << "Adding " << elemMap.size() << "relevant source elements\n";
       for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
           i != e; ++i){
         sourceSet.insert((*i).second);
       }
     } else if (elemMap.find(offset) != elemMap.end()){
       sourceSet.insert(elemMap[offset]);
-      //errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
+      errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
     }
   }
 }
@@ -392,13 +393,15 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 //
 // This handles the different types of  GEPInstructions that can occur
 // and calls the correct parsing function
-unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst* gep) {
+unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst* gep, std::set<const AbstractLoc*> locs) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned offset = 0;
   if(isa<ArrayType>(T) && gep->getNumIndices() == 2) {
+    errs() << "ArrayType:";
     offset = GEPInstCalculateArrayOffset(gep);
   } else if (gep->getNumIndices() == 2) {
-    offset = GEPInstCalculateStructOffset(gep);
+    errs() << "StructType:";
+    offset = GEPInstCalculateStructOffset(gep, locs);
   } else {
     ConstantInt *ptrIdx = dyn_cast<ConstantInt>(gep->getOperand(1));
     offset = ptrIdx->getZExtValue();
@@ -425,14 +428,61 @@ unsigned Infoflow::GEPInstCalculateArrayOffset(const GetElementPtrInst* gep) {
   unsigned offset = ptrIdx * numElements + ptrOff;
   return offset;
 }
-unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep) {
+
+unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, std::set<const AbstractLoc*> locs) {
   // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
   ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
   uint64_t ptrOff = ptrOffset->getZExtValue();
   unsigned offset = ptrOff;
+  if (locs.size() > 1 || offset == 0)   // if multiple DSNodes just return the offset
+    return offset;                      // if offset is 0 no calculations needed
+
+
+  // if the offset is non zero, get offset by adding together largest blocks
+  // until the position in the structure is met.
+  // Treat offset received from previous line as the index of the actual type in a structure
+
+  offset = findOffsetFromFieldIndex(locs, offset);
+
   return offset;
 }
 
+unsigned Infoflow::findOffsetFromFieldIndex(std::set<const AbstractLoc*> locs, unsigned fieldIdx) {
+  unsigned field_count = 0;  // track which element in the struture
+  unsigned field_offset = 0;
+  unsigned next = 0;
+  for(std::set<const AbstractLoc *>::iterator it = locs.begin(), end = locs.end();
+      it != end; ++it){
+    for(DSNode::const_type_iterator i = (*it)->type_begin(), e = (*it)->type_end();
+        i != e; ++i){
+        if (i->first == next){
+            int elemMax = 0;
+            int start = i->first;
+            int end = 0;
+            for (svset<Type*>::const_iterator ni = i->second->begin(),
+                      ne = i->second->end(); ni != ne; ++ni) {
+                Type * t = *ni;
+
+                int size = t->getPrimitiveSizeInBits()/8;
+                if(size == 0 && isa<PointerType>(t))
+                    size = 8;
+                end = start+size;
+
+                if (size > elemMax ) {
+                    elemMax = size;
+                    next = end;
+                }
+            }
+            field_count++;
+            field_offset += elemMax;
+            if(field_count == fieldIdx) {
+              return field_offset;
+            }
+        }
+      }
+  }
+  return field_offset;
+}
 //
 // checkGEPOperandsConst returns true if all operands used in the offset
 // calculations are constant. The calculating functions assume that these
@@ -799,8 +849,9 @@ Infoflow::reachableLocsForValue(const Value & value) const {
 
 bool Infoflow::offsetForValue(const Value & value, unsigned *Offset) {
   if(const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&value)){
+    std::set<const AbstractLoc *> locs = locsForValue(value);
     if(checkGEPOperandsConstant(gep)){
-      *Offset = GEPInstCalculateOffset(gep);
+      *Offset = GEPInstCalculateOffset(gep, locs);
       return true;
     } else {
       return false;
@@ -1029,17 +1080,51 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
     // Create an element to represent each type if the information exists
+    unsigned next = 0;
     if(numElements == 0 && !loc.isNodeCompletelyFolded()){
       for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
-          i != e; ++i)
-        numElements++;
+          i != e; ++i){
+          numElements++;
+          if (i->first == next){
+              int elemMax = 0;
+              int start = i->first;
+              int end = 0;
+              for (svset<Type*>::const_iterator ni = i->second->begin(),
+                       ne = i->second->end(); ni != ne; ++ni) {
+                  Type * t = *ni;
+
+                  int size = t->getPrimitiveSizeInBits()/8;
+                  if(size == 0 && isa<PointerType>(t))
+                      size = 8;
+                  end = start+size;
+
+                  // errs() << "Item: ";
+                  // t->print(errs());
+                  // errs() << " " << t->getPrimitiveSizeInBits() << ", ";
+                  // errs() << "range: " << i->first;
+                  // errs() << "->" << end;
+                  if (size > elemMax ) {
+                      elemMax = size;
+                      next = end;
+                  }
+              }
+              // errs () << "Max element size: " << elemMax;
+              // errs() << "\n";
+              std::string label = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+              const ConsElem & elem = kit->newVar(name+label);
+              locConstraintMap[&loc].insert(std::make_pair(start, &elem));
+
+          }
+      }
+      return locConstraintMap[&loc];
     } else if (numElements == 0) {
       numElements = 1;
     }
 
 
-    //errs() << "Created " << numElements << " constraint variable(s) for node of size "; 
-    // errs() << loc.getSize() << "\n";
+
+    errs() << "Created " << numElements << " constraint variable(s) for node of size "; 
+    errs() << loc.getSize() << "\n";
     for(unsigned offset = 0; offset < numElements; offset++ ){
       const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + "::");
       locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
@@ -1083,20 +1168,36 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc, numElements);
-  //loc.dump();
-  for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-      it != itEnd; ++it){
-    if (loc.isNodeCompletelyFolded() || offset > elemMap.size()) {
+  loc.dump();
+  if(loc.isNodeCompletelyFolded()){
+    for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+        it != itEnd; ++it){
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
-    } else if((*it).first == offset) {
-      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
-      // errs() << "Added: " ;
-      // (*it).second->dump(errs());
-      // errs() << " to ";
-      // lub.dump(errs());
+    }
+  } else if (elemMap.find(offset) != elemMap.end()){
+    const ConsElem * elem = elemMap[offset];
+    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
+    errs() << "Added: " ;
+    elem->dump(errs());
+    errs() << " to ";
+    lub.dump(errs());
+  } else {
+    const ConsElem * lastElem;
+    bool elemAdded = false;
+    for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+        it != itEnd; ++it){
+      if((*it).first > offset && !elemAdded){
+        kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *lastElem);
+        elemAdded = true;
+      }
+      lastElem = (*it).second;
+    }
+
+    if(!elemAdded){
+      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *lastElem);
     }
   }
-  // errs() << "\n\n";
+  errs() << "\n\n";
 }
 
 void

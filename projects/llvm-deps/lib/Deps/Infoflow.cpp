@@ -303,7 +303,7 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
 ///
 void
 Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool sink, const ConsElem &lub, std::set<const AbstractLoc*> locs) {
-  //errs() << "[Sink:] " << stringFromValue(*value) << "\n";
+  errs() << "[Sink:] " << stringFromValue(*value) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -338,7 +338,7 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
 ///
 void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<const ConsElem *>& sourceSet, std::set<const AbstractLoc *> locs) {
   //get ConsElem from Value
-  // errs() << "[Source:] " << stringFromValue(*source) << "\n";
+  errs() << "[Source:] " << stringFromValue(*source) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -366,6 +366,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   errs() << "\nSourceOffset: " << offset << "\n";
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
+    (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElem(**I, numElements);
 
@@ -374,7 +375,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // If the offset is somehow larger than the map, add all
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
-    if((*I)->isNodeCompletelyFolded() || elemMap.find(offset) == elemMap.end()){
+    if((*I)->isNodeCompletelyFolded()){
       errs() << "Adding " << elemMap.size() << "relevant source elements\n";
       for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
           i != e; ++i){
@@ -383,6 +384,26 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     } else if (elemMap.find(offset) != elemMap.end()){
       sourceSet.insert(elemMap[offset]);
       errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
+    } else {
+      const ConsElem * lastElem;
+      bool elemAdded = false;
+      for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+          it != itEnd; ++it){
+        if((*it).first > offset && !elemAdded && lastElem != NULL){
+          sourceSet.insert(lastElem);
+          errs() << "Added1: " ;
+          lastElem->dump(errs());
+          elemAdded = true;
+        }
+        if( (*it).second )
+          lastElem = (*it).second;
+      }
+
+      if(!elemAdded && lastElem != NULL){
+      sourceSet.insert(lastElem);
+      errs() << "Added2: " ;
+      lastElem->dump(errs());
+      }
     }
   }
 }
@@ -434,8 +455,9 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
   uint64_t ptrOff = ptrOffset->getZExtValue();
   unsigned offset = ptrOff;
-  if (locs.size() > 1 || offset == 0)   // if multiple DSNodes just return the offset
-    return offset;                      // if offset is 0 no calculations needed
+  if (locs.size() > 1){   // if multiple DSNodes just return the offset
+    return offset;
+  }
 
 
   // if the offset is non zero, get offset by adding together largest blocks
@@ -451,33 +473,39 @@ unsigned Infoflow::findOffsetFromFieldIndex(std::set<const AbstractLoc*> locs, u
   unsigned field_count = 0;  // track which element in the struture
   unsigned field_offset = 0;
   unsigned next = 0;
+  unsigned endPos = 0;
+  errs() << "Finding field at index: " << fieldIdx << "\n";
   for(std::set<const AbstractLoc *>::iterator it = locs.begin(), end = locs.end();
       it != end; ++it){
-    for(DSNode::const_type_iterator i = (*it)->type_begin(), e = (*it)->type_end();
-        i != e; ++i){
-        if (i->first == next){
-            int elemMax = 0;
-            int start = i->first;
-            int end = 0;
+    if ((*it)->type_begin() != (*it)->type_end())
+      for(DSNode::const_type_iterator i = (*it)->type_begin(), e = (*it)->type_end();
+          i != e; ++i){
+        if(i->first >= endPos){
+          next = i->first;
+          field_offset = i->first;
+        }
+        if(fieldIdx == 0 || fieldIdx == field_count){
+          return field_offset;
+        } else if (i->first == next){
+          unsigned elemMax = 0;
+          unsigned start = i->first;
+          if(i->second){
             for (svset<Type*>::const_iterator ni = i->second->begin(),
-                      ne = i->second->end(); ni != ne; ++ni) {
-                Type * t = *ni;
+                   ne = i->second->end(); ni != ne; ++ni) {
+              Type * t = *ni;
 
-                int size = t->getPrimitiveSizeInBits()/8;
-                if(size == 0 && isa<PointerType>(t))
-                    size = 8;
-                end = start+size;
+              unsigned size = t->getPrimitiveSizeInBits()/8;
+              if(size == 0 && isa<PointerType>(t))
+                size = 8;
+              endPos = start+size;
 
-                if (size > elemMax ) {
-                    elemMax = size;
-                    next = end;
-                }
+              if (size > elemMax ) {
+                elemMax = size;
+                next = endPos;
+              }
             }
             field_count++;
-            field_offset += elemMax;
-            if(field_count == fieldIdx) {
-              return field_offset;
-            }
+          }
         }
       }
   }
@@ -1081,41 +1109,47 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
     std::string name = getCaption(&loc, NULL);
     // Create an element to represent each type if the information exists
     unsigned next = 0;
+    unsigned endPos = 0;
     if(numElements == 0 && !loc.isNodeCompletelyFolded()){
-      for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
-          i != e; ++i){
-          numElements++;
+      if(loc.type_begin() != loc.type_end())
+        for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
+            i != e; ++i){
+          // Sometimes values aren't packed tightly
+          // i.e. {0:i32, 8:i32, 16: i32}
+          if (i->first >= endPos){
+            next = i->first;
+          }
           if (i->first == next){
-              int elemMax = 0;
-              int start = i->first;
-              int end = 0;
+            unsigned elemMax = 0;
+            unsigned start = i->first;
+            if(i->second)
               for (svset<Type*>::const_iterator ni = i->second->begin(),
-                       ne = i->second->end(); ni != ne; ++ni) {
-                  Type * t = *ni;
+                     ne = i->second->end(); ni != ne; ++ni) {
+                Type * t = *ni;
 
-                  int size = t->getPrimitiveSizeInBits()/8;
-                  if(size == 0 && isa<PointerType>(t))
-                      size = 8;
-                  end = start+size;
+                unsigned size = t->getPrimitiveSizeInBits()/8;
+                if(size == 0 && isa<PointerType>(t))
+                  size = 8;
 
-                  // errs() << "Item: ";
-                  // t->print(errs());
-                  // errs() << " " << t->getPrimitiveSizeInBits() << ", ";
-                  // errs() << "range: " << i->first;
-                  // errs() << "->" << end;
-                  if (size > elemMax ) {
-                      elemMax = size;
-                      next = end;
-                  }
+                // errs() << "Item: ";
+                // t->print(errs());
+                // errs() << " " << t->getPrimitiveSizeInBits() << ", ";
+                // errs() << "range: " << i->first;
+                // errs() << "->" << end;
+                if (size > elemMax ) {
+                  elemMax = size;
+                  endPos = start+size;
+                  next = endPos;
+                }
               }
-              // errs () << "Max element size: " << elemMax;
-              // errs() << "\n";
-              std::string label = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
-              const ConsElem & elem = kit->newVar(name+label);
-              locConstraintMap[&loc].insert(std::make_pair(start, &elem));
+            // errs () << "Max element size: " << elemMax;
+            // errs() << "\n";
+            std::string label = "[" + std::to_string(start) + "," + std::to_string(endPos) + "]";
+            const ConsElem & elem = kit->newVar(name+label);
+            locConstraintMap[&loc].insert(std::make_pair(start, &elem));
 
           }
-      }
+        }
       return locConstraintMap[&loc];
     } else if (numElements == 0) {
       numElements = 1;
@@ -1123,7 +1157,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
 
 
 
-    errs() << "Created " << numElements << " constraint variable(s) for node of size "; 
+    errs() << "Created " << numElements << " constraint variable(s) for node of size ";
     errs() << loc.getSize() << "\n";
     for(unsigned offset = 0; offset < numElements; offset++ ){
       const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + "::");
@@ -1169,9 +1203,13 @@ void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc, numElements);
   loc.dump();
+  if(elemMap.size() == 0)
+    return;
+
   if(loc.isNodeCompletelyFolded()){
     for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
         it != itEnd; ++it){
+      errs() << "Adding " << elemMap.size() << " elements\n";
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
     }
   } else if (elemMap.find(offset) != elemMap.end()){
@@ -1186,15 +1224,25 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
     bool elemAdded = false;
     for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
         it != itEnd; ++it){
-      if((*it).first > offset && !elemAdded){
+      if((*it).first > offset && !elemAdded && lastElem != NULL){
         kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *lastElem);
         elemAdded = true;
+        errs() << "Added[loop]: " ;
+        lastElem->dump(errs());
+        errs() << " to ";
+        lub.dump(errs());
       }
-      lastElem = (*it).second;
+      if((*it).second != NULL){
+        lastElem = (*it).second;
+      }
     }
 
-    if(!elemAdded){
+    if(!elemAdded && lastElem != NULL){
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *lastElem);
+      errs() << "Added[after]: " ;
+      lastElem->dump(errs());
+      errs() << " to ";
+      lub.dump(errs());
     }
   }
   errs() << "\n\n";

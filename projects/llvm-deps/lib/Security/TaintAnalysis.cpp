@@ -32,10 +32,10 @@ X("taintanalysis", "A simple taint analysis");
 char TaintAnalysis::ID;
 
 /** Taint a Value whose name matches s */
-void 
+void
 TaintAnalysis::taintStr (std::string kind, std::string match) {
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(),
-    end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
+         end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
     const Value& value = *(entry->first);
 
     // errs() << "Visiting ";
@@ -52,19 +52,47 @@ TaintAnalysis::taintStr (std::string kind, std::string match) {
              end = locs.end(); loc != end; ++loc) {
         DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
         std::map<unsigned, const ConsElem *> elemMap;
-        if(curElem != ifa->locConstraintMap.end())
+        if(curElem != ifa->locConstraintMap.end()){
           elemMap = curElem->second;
 
-        if (hasOffset) {
-          const ConsElem & elem = *elemMap[offset];
-          errs() << "Matching " << match << " with " << value.getName() << ": ";
-          elem.dump(errs());
-          errs() << "\n";
-          ifa->kit->addConstraint(kind, ifa->kit->highConstant(), elem);
-        } else {
-          for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
-              elemIt != elemEnd; ++elemIt)
-            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*elemIt).second);
+          if (hasOffset) {
+            errs() << "Using elem at offset " << offset << "\n";
+            const ConsElem * elem;
+            if (elemMap.find(offset) != elemMap.end()){
+              elem = elemMap[offset];
+            } else {
+              errs() << "No direct element that matches offset.\n";
+              const ConsElem * lastElem;
+              bool elemAdded = false;
+              for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+                  it != itEnd; ++it){
+                if((*it).first > offset && !elemAdded && lastElem != NULL){
+                  elem = lastElem;
+                  elemAdded = true;
+                }
+                if((*it).second != NULL){
+                  lastElem = (*it).second;
+                }
+              }
+
+              if(!elemAdded && lastElem != NULL){
+                elem = lastElem;
+              }
+            }
+
+            errs() << "Matching " << match << " with " << value.getName() << ": ";
+            elem->dump(errs());
+            errs() << "\n";
+            ifa->kit->addConstraint(kind,ifa->kit->highConstant(), *elem);
+          } else {
+            errs() << "Visiting: ";
+            value.dump();
+            errs() << "Matching " << match << " with " << value.getName() << ": ";
+            errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
+            for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
+                elemIt != elemEnd; ++elemIt)
+              ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*elemIt).second);
+          }
         }
       }
     } else {

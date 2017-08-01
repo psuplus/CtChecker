@@ -35,7 +35,7 @@ X("vulnerablebranch", "An analysis for identifying vulnerable branches");
 char VulnerableBranch::ID;
 
 /** Taint a Value whose name matches s */
-void 
+void
 VulnerableBranch::taintStr (std::string kind, std::string match) {
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(),
     end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {

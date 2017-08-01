@@ -7,10 +7,10 @@ else
         EXT="so"
 fi
 
-CPPFLAGS=
+CPPFLAGS="-O0 -g -emit-llvm"
 LLVMLIBS=
 LDFLAGS=
-LEVEL="../../../../"
+LEVEL="../../../.."
 
 # if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
 #CPPFLAGS=`llvm-config --cppflags`
@@ -19,8 +19,8 @@ LEVEL="../../../../"
 
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
-$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o test.bc -c main.cpp
-$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
+$LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.cpp -o test.bc
+#$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \

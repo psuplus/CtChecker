@@ -384,6 +384,8 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     } else if (elemMap.find(offset) != elemMap.end()){
       sourceSet.insert(elemMap[offset]);
       errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
+      elemMap[offset]->dump(errs());
+      errs() << "\n";
     } else {
       const ConsElem * lastElem;
       bool elemAdded = false;
@@ -483,7 +485,10 @@ unsigned Infoflow::findOffsetFromFieldIndex(std::set<const AbstractLoc*> locs, u
         if(i->first >= endPos){
           next = i->first;
           field_offset = i->first;
+        } else {
+          continue;
         }
+
         if(fieldIdx == 0 || fieldIdx == field_count){
           return field_offset;
         } else if (i->first == next){

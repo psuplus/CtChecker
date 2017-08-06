@@ -389,22 +389,26 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     } else {
       const ConsElem * lastElem;
       bool elemAdded = false;
-      for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-          it != itEnd; ++it){
-        if((*it).first > offset && !elemAdded && lastElem != NULL){
-          sourceSet.insert(lastElem);
-          errs() << "Added1: " ;
-          lastElem->dump(errs());
-          elemAdded = true;
+      if(elemMap.begin() != elemMap.end()){
+        for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+            it != itEnd; ++it){
+          if((*it).first > offset && !elemAdded && lastElem != NULL){
+            sourceSet.insert(lastElem);
+            errs() << "Added1: " ;
+            lastElem->dump(errs());
+            elemAdded = true;
+          }
+          if( (*it).second ){
+            lastElem = (*it).second;
+            errs() << "[Set LastElem]: " << it->first << "\n";
+          }
         }
-        if( (*it).second )
-          lastElem = (*it).second;
-      }
 
-      if(!elemAdded && lastElem != NULL){
-      sourceSet.insert(lastElem);
-      errs() << "Added2: " ;
-      lastElem->dump(errs());
+        if(!elemAdded && lastElem != NULL){
+          sourceSet.insert(lastElem);
+          errs() << "Added2: " ;
+          lastElem->dump(errs());
+        }
       }
     }
   }
@@ -1116,7 +1120,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
     unsigned next = 0;
     unsigned endPos = 0;
     if(numElements == 0 && !loc.isNodeCompletelyFolded()){
-      if(loc.type_begin() != loc.type_end())
+      if(loc.type_begin() != loc.type_end()){
         for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
             i != e; ++i){
           // Sometimes values aren't packed tightly
@@ -1156,6 +1160,9 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
           }
         }
       return locConstraintMap[&loc];
+      } else {
+        numElements = 1;
+      }
     } else if (numElements == 0) {
       numElements = 1;
     }

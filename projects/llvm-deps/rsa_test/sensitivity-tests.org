@@ -2094,7 +2094,119 @@ typedef struct
         rsa.c line 728
         rsa.c line 830
 
-* Testing RSA in projects/llvm-deps/rsa_test Control test is don with commit *e0ed882* Experimental test is done with commit *baab0b5* Tainted Values: P, Q, D  -- private key exponents ** Control Results - T: 78 rsa.c line 222 rsa.c line 251 rsa.c line 340 rsa.c line 350 rsa.c line 360 rsa.c line 377 rsa.c line 393 rsa.c line 426 rsa.c line 439 rsa.c line 481 rsa.c line 491 rsa.c line 525 rsa.c line 528 rsa.c line 536 rsa.c line 566 rsa.c line 573 rsa.c line 579 rsa.c line 588 rsa.c line 637 rsa.c line 645 rsa.c line 655 rsa.c line 661 rsa.c line 675 rsa.c line 743 rsa.c line 748 rsa.c line 752 rsa.c line 762 rsa.c line 797 rsa.c line 804 rsa.c line 819 rsa.c line 822 rsa.c line 849 rsa.c line 854 rsa.c line 861 rsa.c line 879 rsa.c line 894 rsa.c line 904 rsa.c line 907 rsa.c line 970 rsa.c line 983 rsa.c line 990 rsa.c line 996 rsa.c line 1003 rsa.c line 1073 rsa.c line 1095 rsa.c line 1143 rsa.c line 1146 rsa.c line 1147 rsa.c line 1150 rsa.c line 1154 rsa.c line 1227 rsa.c line 1232 rsa.c line 1239 rsa.c line 1244 rsa.c line 1252 rsa.c line 1259 rsa.c line 1278 rsa.c line 1288 rsa.c line 1291 rsa.c line 1301 rsa.c line 1336 rsa.c line 1369 rsa.c line 1374 rsa.c line 1381 rsa.c line 1391 rsa.c line 1399 rsa.c line 1416 rsa.c line 1420 rsa.c line 1423 rsa.c line 1427 rsa.c line 1430 rsa.c line 1445 rsa.c line 1448 rsa.c line 1459 rsa.c line 1673 rsa.c line 1685 rsa.c line 1712 rsa.c line 1724 ** Experimental Results - T: 28 rsa.c line 566 rsa.c line 573 rsa.c line 579 rsa.c line 588 rsa.c line 525 rsa.c line 528 rsa.c line 536 rsa.c line 637 rsa.c line 743 rsa.c line 752 rsa.c line 797 rsa.c line 804 rsa.c line 822 rsa.c line 849 rsa.c line 970 rsa.c line 983 rsa.c line 990 rsa.c line 996 rsa.c line 1003 rsa.c line 1073 rsa.c line 1227 rsa.c line 1252 rsa.c line 1259 rsa.c line 1301 rsa.c line 1336 rsa.c line 1369 rsa.c line 1673 rsa.c line 1712
+* Testing RSA in projects/llvm-deps/rsa_test 
+  Control test is don with commit *e0ed882*
+  Experimental test is done with commit *baab0b5* 
+  Tainted Values: P, Q, D  -- private key exponents 
+** Control Results - T: 78
+    rsa.c line 222 
+    rsa.c line 251 
+    rsa.c line 340 
+    rsa.c line 350 
+    rsa.c line 360 
+    rsa.c line 377 
+    rsa.c line 393 
+    rsa.c line 426 
+    rsa.c line 439 
+    rsa.c line 481 
+    rsa.c line 491 
+    rsa.c line 525 
+    rsa.c line 528 
+    rsa.c line 536 
+    rsa.c line 566 
+    rsa.c line 573 
+    rsa.c line 579 
+    rsa.c line 588 
+    rsa.c line 637 
+    rsa.c line 645 
+    rsa.c line 655 
+    rsa.c line 661 
+    rsa.c line 675 
+    rsa.c line 743 
+    rsa.c line 748 
+    rsa.c line 752 
+    rsa.c line 762 
+    rsa.c line 797 
+    rsa.c line 804 
+    rsa.c line 819 
+    rsa.c line 822 
+    rsa.c line 849 
+    rsa.c line 854 
+    rsa.c line 861 
+    rsa.c line 879 
+    rsa.c line 894 
+    rsa.c line 904 
+    rsa.c line 907 
+    rsa.c line 970 
+    rsa.c line 983 
+    rsa.c line 990 
+    rsa.c line 996 
+    rsa.c line 1003 
+    rsa.c line 1073 
+    rsa.c line 1095 
+    rsa.c line 1143 
+    rsa.c line 1146 
+    rsa.c line 1147 
+    rsa.c line 1150 
+    rsa.c line 1154 
+    rsa.c line 1227 
+    rsa.c line 1232 
+    rsa.c line 1239 
+    rsa.c line 1244 
+    rsa.c line 1252 
+    rsa.c line 1259 
+    rsa.c line 1278 
+    rsa.c line 1288 
+    rsa.c line 1291 
+    rsa.c line 1301 
+    rsa.c line 1336 
+    rsa.c line 1369 
+    rsa.c line 1374 
+    rsa.c line 1381 
+    rsa.c line 1391 
+    rsa.c line 1399 
+    rsa.c line 1416 
+    rsa.c line 1420 
+    rsa.c line 1423 
+    rsa.c line 1427 
+    rsa.c line 1430 
+    rsa.c line 1445 
+    rsa.c line 1448 
+    rsa.c line 1459 
+    rsa.c line 1673 
+    rsa.c line 1685 
+    rsa.c line 1712 
+    rsa.c line 1724 
+
+** Experimental Results - T: 28 
+    rsa.c line 566 
+    rsa.c line 573 
+    rsa.c line 579 
+    rsa.c line 588 
+    rsa.c line 525 
+    rsa.c line 528 
+    rsa.c line 536 
+    rsa.c line 637 
+    rsa.c line 743 
+    rsa.c line 752 
+    rsa.c line 797 
+    rsa.c line 804 
+    rsa.c line 822 
+    rsa.c line 849 
+    rsa.c line 970 
+    rsa.c line 983 
+    rsa.c line 990 
+    rsa.c line 996 
+    rsa.c line 1003 
+    rsa.c line 1073 
+    rsa.c line 1227 
+    rsa.c line 1252 
+    rsa.c line 1259 
+    rsa.c line 1301 
+    rsa.c line 1336 
+    rsa.c line 1369 
+    rsa.c line 1673 
+    rsa.c line 1712
 * Manual Tracing through mbedtls_rsa_self_test
 ** Entry: mbedtls_rsa_self_test
    New test is done with commit *baab0b5*
@@ -2325,7 +2437,7 @@ typedef struct
     rsa.c line 1278
     rsa.c line 1288
     rsa.c line 1291
-** Vulnerable Branch - Taint/Untrust P, Q, D bignum.c line 63 bignum.c line 97 bignum.c line 100 bignum.c line 118 bignum.c line 121 bignum.c line 123 bignum.c line 126 bignum.c line 150 bignum.c line 153 bignum.c line 154 bignum.c line 158 bignum.c line 161 bignum.c line 164 bignum.c line 185 bignum.c line 188 bignum.c line 194 bignum.c line 195 bignum.c line 243 bignum.c line 276 bignum.c line 328 bignum.c line 351 bignum.c line 353 bignum.c line 369 bignum.c line 384 bignum.c line 387 bignum.c line 388 bignum.c line 475 bignum.c line 507 bignum.c line 510 bignum.c line 544 bignum.c line 553 bignum.c line 561 bignum.c line 567 bignum.c line 580 bignum.c line 656 bignum.c line 677 bignum.c line 678 bignum.c line 684 bignum.c line 701 bignum.c line 706 bignum.c line 726 bignum.c line 734 bignum.c line 736 bignum.c line 739 bignum.c line 746 bignum.c line 748 bignum.c line 773 bignum.c line 779 bignum.c line 781 bignum.c line 784 bignum.c line 791 bignum.c line 793 bignum.c line 812 bignum.c line 813 bignum.c line 816 bignum.c line 817 bignum.c line 820 bignum.c line 823 bignum.c line 824 bignum.c line 826 bignum.c line 828 bignum.c line 829 bignum.c line 842 bignum.c line 843 bignum.c line 846 bignum.c line 847 bignum.c line 850 bignum.c line 853 bignum.c line 854 bignum.c line 856 bignum.c line 857 bignum.c line 859 bignum.c line 861 bignum.c line 862 bignum.c line 906 bignum.c line 907 bignum.c line 917 bignum.c line 924 bignum.c line 926 bignum.c line 948 bignum.c line 954 bignum.c line 991 bignum.c line 992 bignum.c line 1011 bignum.c line 1042 bignum.c line 1128 bignum.c line 1143 bignum.c line 1154 bignum.c line 1166 bignum.c line 1184 bignum.c line 1185 bignum.c line 1188 bignum.c line 1189 bignum.c line 1195 bignum.c line 1243 bignum.c line 1254 bignum.c line 1328 bignum.c line 1351 bignum.c line 1363 bignum.c line 1370 bignum.c line 1372 bignum.c line 1386 bignum.c line 1391 bignum.c line 1392 bignum.c line 1394 bignum.c line 1401 bignum.c line 1422 bignum.c line 1457 bignum.c line 1462 bignum.c line 1465 bignum.c line 1505 bignum.c line 1522 bignum.c line 1556 bignum.c line 1563 bignum.c line 1565 bignum.c line 1617 bignum.c line 1620 bignum.c line 1633 bignum.c line 1634 bignum.c line 1636 bignum.c line 1648 bignum.c line 1658 bignum.c line 1673 bignum.c line 1686 bignum.c line 1696 bignum.c line 1702 bignum.c line 1721 bignum.c line 1736 bignum.c line 1739 bignum.c line 1756 bignum.c line 1761 bignum.c line 1778 bignum.c line 1784 bignum.c line 1793 bignum.c line 1801 bignum.c line 1806 bignum.c line 1837 bignum.c line 1842 bignum.c line 1878 bignum.c line 1881 bignum.c line 1896 bignum.c line 1905 bignum.c line 1923 bignum.c line 1927 bignum.c line 1937 bignum.c line 1941 bignum.c line 1951 bignum.c line 1963 bignum.c line 1966 bignum.c line 1969 bignum.c line 2025 bignum.c line 2030 bignum.c line 2035 bignum.c line 2070 bignum.c line 2071 bignum.c line 2072 bignum.c line 2074 bignum.c line 2079 bignum.c line 2081 bignum.c line 2090 bignum.c line 2094 bignum.c line 2102 bignum.c line 2110 bignum.c line 2115 bignum.c line 2123 bignum.c line 2132 bignum.c line 2161 bignum.c line 2165 bignum.c line 2198 bignum.c line 2201 bignum.c line 2209 bignum.c line 2211 bignum.c line 2228 bignum.c line 2230 bignum.c line 2243 bignum.c line 2245 bignum.c line 2251 bignum.c line 2326 bignum.c line 2351 bignum.c line 2374 bignum.c line 2396 bignum.c line 2418 rsa.c line 166 rsa.c line 169 rsa.c line 172 rsa.c line 175 rsa.c line 179 rsa.c line 186 rsa.c line 206 rsa.c line 222 rsa.c line 225 rsa.c line 229 rsa.c line 233 rsa.c line 251 rsa.c line 276 rsa.c line 277 rsa.c line 278 rsa.c line 279 rsa.c line 280 rsa.c line 281 rsa.c line 313 rsa.c line 342 rsa.c line 377 rsa.c line 393 rsa.c line 395 rsa.c line 427 rsa.c line 439 rsa.c line 491 rsa.c line 525 rsa.c line 528 rsa.c line 536 rsa.c line 566 rsa.c line 573 rsa.c line 579 rsa.c line 588 rsa.c line 637 rsa.c line 645 rsa.c line 655 rsa.c line 661 rsa.c line 675 rsa.c line 743 rsa.c line 748 rsa.c line 752 rsa.c line 762 rsa.c line 797 rsa.c line 804 rsa.c line 819 rsa.c line 822 rsa.c line 849 rsa.c line 854 rsa.c line 861 rsa.c line 879 rsa.c line 894 rsa.c line 904 rsa.c line 907 rsa.c line 970 rsa.c line 983 rsa.c line 990 rsa.c line 996 rsa.c line 1003 rsa.c line 1027 rsa.c line 1073 rsa.c line 1095 rsa.c line 1143 rsa.c line 1146 rsa.c line 1150 rsa.c line 1154 rsa.c line 1227 rsa.c line 1232 rsa.c line 1239 rsa.c line 1244 rsa.c line 1252 rsa.c line 1259 rsa.c line 1273 rsa.c line 1278 rsa.c line 1288 rsa.c line 1291 rsa.c line 1301 rsa.c line 1336 rsa.c line 1369 rsa.c line 1374 rsa.c line 1381 rsa.c line 1391 rsa.c line 1399 rsa.c line 1416 rsa.c line 1420 rsa.c line 1423 rsa.c line 1427 rsa.c line 1430 rsa.c line 1445 rsa.c line 1448 rsa.c line 1459 rsa.c line 1673 rsa.c line 1685 rsa.c line 1712 rsa.c line 1724
+** Vulnerable Branch - Taint/Untrust P, Q, D 
     bignum.c line 63
     bignum.c line 97
     bignum.c line 100
@@ -2508,7 +2620,7 @@ typedef struct
     bignum.c line 2374
     bignum.c line 2396
     bignum.c line 2418
-    rsa.c line 166
+    rsa.c line 166 - mbedtls_gen_prime(&ctx-P, nbits, 0, f_rng, p_rng)
     rsa.c line 169
     rsa.c line 172
     rsa.c line 175
@@ -2519,6 +2631,7 @@ typedef struct
     rsa.c line 225
     rsa.c line 229
     rsa.c line 233
+  mbedtls_rsa_check_privkey
     rsa.c line 251
     rsa.c line 276
     rsa.c line 277
@@ -2526,6 +2639,7 @@ typedef struct
     rsa.c line 279
     rsa.c line 280
     rsa.c line 281
+  -------------------------
     rsa.c line 313
     rsa.c line 342
     rsa.c line 377
@@ -2603,7 +2717,7 @@ typedef struct
     rsa.c line 1712
     rsa.c line 1724
 ** Vulnerable Branch - Taint P, Q, D // Untrusted rsa_plaintext
-    bignum.c line 154
+    bignum.c line 154 -
     bignum.c line 195
     bignum.c line 353
     bignum.c line 369
@@ -2647,14 +2761,164 @@ typedef struct
     bignum.c line 2035
     bignum.c line 2228
     bignum.c line 2230
-    rsa.c line 225
-    rsa.c line 661
-    rsa.c line 819
-    rsa.c line 822
-    rsa.c line 904
-    rsa.c line 907
-    rsa.c line 1154
-    rsa.c line 1244
-    rsa.c line 1278
-    rsa.c line 1288
-    rsa.c line 1291
+    rsa.c line 225 - mbedtls_rsa_check_pubkey: if ( ( ctx->N.p[0] & 1 ) == 0 || ( ctx->E.p[0] & 1 ) == 0 )
+    rsa.c line 661 - mbedtls_rsa_rsaes_pkcs1_v15_encrypt: while( *p == 0 && --rng_dl && ret == 0 )
+    rsa.c line 819 - mbedtls_rsa_rsaes_oaep_decrypt: if( bad != 0 )
+    rsa.c line 822 - mbedtls_rsa_rsaes_oaep_decrypt: if( ilen - ( p - buf ) > output_max_len )
+    rsa.c line 904 - mbedtls_rsa_rsaes_pkcs1_v15_decrypt: if ( bad )
+    rsa.c line 907 - mbedtls_rsa_rsaes_pkcs1_v15_decrypt: if( ilen - ( p - buf ) > output_max_len )  
+    rsa.c line 1154 - mbedtls_rsa_rsassa_pkcs1_v15_sign: if( diff_no_optimize != 0 )
+    rsa.c line 1244 - mbedtls_rsa_rsassa_pss_verify_ext: if( buf[siglen - 1] != 0xBC )
+    rsa.c line 1278 - mbedtls_rsa_rsassa_pss_verify_ext: if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+    rsa.c line 1288 - mbedtls_rsa_rsassa_pss_verify_ext: while( p < buf + siglen && *p == 0 )
+    rsa.c line 1291 - mbedtls_rsa_rsassa_pss_verify_ext: if( p == buf + siglen || *p++ != 0x01 )
+* Tracing through rsa_mpi.bc with overlap commit
+  Tainted Values: P, Q, D
+  Untrusted Values: rsa_plaintext
+
+*mbedtls_mpi_shrink* - 0 occurrences
+  bignum.c line 154 - if( X->p[i] != 0 )
+
+*mbedtls_mpi_copy* -  13 occurrences
+  bignum.c line 195 - if( Y->p[i] != 0 )
+
+*mbedtls_mpi_lsb* -  0 occurrences
+  bignum.c line 353 - if( ( ( X->p[i] >> j ) & 1 ) != 0 )
+
+*mbedtls_clz* -  0 occurrences
+  bignum.c line 369 - if( x & mask ) break;
+
+*mbedtls_mpi_bitlen* - 8 occurrences
+  bignum.c line 388 - if( X->p[i] != 0 )
+
+*mpi_write_hlp* -  0 occurrences
+  bignum.c line 510 - if( r < 10 )
+
+*mbedtls_write_file* -  0 occurrences
+  bignum.c line 656 - if( fwrite( p, 1, plen, fout ) != plen || fwrite( s, 1, slen, fout ) != slen )
+
+*mbedtls_mpi_read_binary* - 2 occurrences
+  bignum.c line 678 - if( buf[n] != 0 )
+
+*mbedtls_mpi_cmp_abs*
+  bignum.c line 813 - if( X->p[i - 1] != 0 )
+  bignum.c line 817 - if( Y->p[j - 1] != 0 )
+  bignum.c line 828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+  bignum.c line 829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+
+*mbedtls_mpi_cmp_mpi* - 11 occurrences
+  mbedtls_rsa_public calls this witth args &T, ctx->N;
+  bignum.c line 843 - if( X->p[i - 1] != 0 )
+  bignum.c line 847 - if( Y->p[j - 1] != 0 )
+  bignum.c line 861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+  bignum.c line 862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+
+*mbedtls_mpi_add_abs*
+  bignum.c line 907 - if( B->p[j - 1] != 0 )
+  bignum.c line 924 - while( c != 0 )
+
+*mpi_sub_hlp*
+  bignum.c line 954 - while( c != 0 )
+
+*mbedtls_mpi_sub_abs*
+  bignum.c line 992 - if( B->p[n - 1] != 0 )
+
+
+*mbedtls_mpi_mul_mpi* - 11 occurrences
+  bignum.c line 1185 - if( A->p[i - 1] != 0 )
+  bignum.c line 1189 - if( B->p[j - 1] != 0 )
+  calls mpi_mul_hlp
+*mpi_mul_hlp*
+  bignum.c line 1166 - while( c != 0 )
+
+*mbedtls_int_div_int* - 0 occurrences
+  bignum.c line 1243 - if( 0 == d || u1 >= d )
+  bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+  
+*mbedtls_mpi_div_mpi* - 1 occurrence
+  bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+
+*mbedtls_mpi_mod_int* -  0 occurrences
+  bignum.c line 1522 - if( A->s < 0 && y != 0 )
+
+*mbedtls_mpi_exp_mod*  - 5 occurrences 
+  mbedtls_rsa_public calls this with args:( &T, &T, &ctx->E, &ctx->N, &ctx->RN )
+
+  bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+    This is a bug : offset not calculated correctly due to unused fields missing from typemap
+  bignum.c line 1736 - if( ei == 0 && state == 0 )
+    ei is calculated from E->p bufsize & 1;
+  bignum.c line 1739 - if( ei == 0 && state == 1 )
+    ei is tainted from before
+  bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
+    wbits != ( ei << ( wsize - nbits ) ) 
+  bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+    E->n is tainted and so is E->p
+
+*mbedtls_mpi_inv_mod* - 4 occurrences
+  bignum.c line 1923 - while( ( TU.p[0] & 1 ) == 0 )
+  bignum.c line 1927 - if( ( U1.p[0] & 1 ) != 0 || ( U2.p[0] & 1 ) != 0 )
+  bignum.c line 1937 - while( ( TV.p[0] & 1 ) == 0 )
+  bignum.c line 1941 - if( ( V1.p[0] & 1 ) != 0 || ( V2.p[0] & 1 ) != 0 )
+
+*mpi_check_small_factors* - 0 
+  bignum.c line 2025 - if( ( X->p[0] & 1 ) == 0 )
+  bignum.c line 2035 - if( r == 0 )
+  bignum.c line 2228 - if( r == 0 )
+  bignum.c line 2230 - else if( r == 1 )
+
+*mbedtls_rsa_check_pubkey*  -  3 occurrences
+  rsa.c line 225 - if( ( ctx->N.p[0] & 1 ) == 0 || ( ctx->E.p[0] & 1 ) == 0 )
+    Unsure
+
+*mbedtls_rsa_rsaes_pkcs1_v15_encrypt* 1 occurrence
+  rsa.c line 661 - while( *p == 0 && --rng_dl && ret == 0 )
+    calls to rsa_public/rsa_private have input touch buf
+    p is then set equal to buf (p = buf)
+    p seems to be untrusted
+
+*mbedtls_rsa_rsaes_oaep_decrypt* - 1 occurrence
+  rsa.c line 819 - if( bad != 0 )
+    since *p is untrusted (bad |= lhash[i] ^ *p++;) "bad" is untrused
+
+  rsa.c line 822 - if( ilen - ( p - buf )
+    here both p and buf are untrusted
+    
+*mbedtls_rsa_rsaes_pkcs1_v15_decrypt* - 1 occurrence
+  rsa.c line 904 - if( bad )
+    calls to rsa_public/rsa_private have input touch buf
+    p is then set equal to buf (p = buf)
+    p seems to be untrusted
+    bad is computed by |= different bytes in p so bad is also untrusted
+    
+  rsa.c line 907 - if( ilen - ( p - buf ) > output_max_len )
+    p and buf are untrusted as before
+
+*mbedtls_rsa_rsassa_pkcs1_v15_sign* - 1 occurrence
+  rsa.c line 1154 - if( diff_no_optimize != 0 )
+    p  is untrusted  (unsigned char *p = sig;)
+
+*mbedtls_rsa_rsassa_verify_ext* - 1 occurrence
+  rsa.c line 1244 - if( buf[siglen - 1] != 0xBC )
+    calls to rsa_public/rsa_private have sig interact with buf
+    sig and buf are untrusted
+  rsa.c line 1278 -  if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+    buf is untrusted
+  rsa.c line 1288 -  while( p < buf + siglen && *p == 0 )
+    p = buf makes p untrusted
+    buf is untrusted
+  rsa.c line 1291 - if( p == buf + siglen || *p++ != 0x01 )
+    buf is untrusted
+** TODO Fix
+   In mbedtls_rsa_context, not all fields are used resulting in using the offset as a key to be inaccurate
+* Taint.txt with actual LLVM IR value
+  Taint value "  %P1 = alloca %struct.mbedtls_mpi, align 8"
+  Untrust value "  %P1 = alloca %struct.mbedtls_mpi, align 8"
+  bignum.c line 84   - if ( X == NULL )
+  bignum.c line 97   - if( X == NULL )
+  bignum.c line 185  - mbedtls_mpi_copy: if( X == Y )
+  bignum.c line 893  - mbedtls_mpi_add_abs: if( X == B )
+  bignum.c line 898  - mbedtls_mpi_add_abs: if( X != A )
+  bignum.c line 975  - mbedtls_mpi_sub_abs: if( X == B )
+  bignum.c line 981  - mbedtls_mpi_sub_abs: if( X != A )
+  bignum.c line 1181 - mbedtls_mpi_mul_mpi: if( X == A ) { MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &TA, A ) ); A = &TA; }

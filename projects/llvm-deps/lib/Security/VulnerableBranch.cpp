@@ -46,7 +46,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
 
     std::string s;
     if (value.hasName() && value.getName() == match) {
-      s = value.getName();
+       s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       unsigned offset = 0;
       errs() << "Trying to get offset..\n";
@@ -103,8 +103,10 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
       llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
       *ss << value; // dump value info to ss
       ss->str(); // flush stream to s
-      if (s.find(match) == 0) // test if the value's content starts with match
+      if (s.find(match) == 0) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
+        errs() << "Match Detected for " << s  << "\n";
+      }
     }
   }
   errs() << "DONE\n";

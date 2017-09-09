@@ -461,6 +461,8 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
   uint64_t ptrOff = ptrOffset->getZExtValue();
   unsigned offset = ptrOff;
+  const StructType* structType = dyn_cast<StructType>(gep->getSourceElementType());
+
   if (locs.size() > 1){   // if multiple DSNodes just return the offset
     return offset;
   }
@@ -470,53 +472,23 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   // until the position in the structure is met.
   // Treat offset received from previous line as the index of the actual type in a structure
 
-  offset = findOffsetFromFieldIndex(locs, offset);
+  offset = findOffsetFromFieldIndex(structType, offset);
 
   return offset;
 }
 
-unsigned Infoflow::findOffsetFromFieldIndex(std::set<const AbstractLoc*> locs, unsigned fieldIdx) {
-  unsigned field_count = 0;  // track which element in the struture
+unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fieldIdx) {
   unsigned field_offset = 0;
-  unsigned next = 0;
-  unsigned endPos = 0;
-  errs() << "Finding field at index: " << fieldIdx << "\n";
-  for(std::set<const AbstractLoc *>::iterator it = locs.begin(), end = locs.end();
-      it != end; ++it){
-    if ((*it)->type_begin() != (*it)->type_end())
-      for(DSNode::const_type_iterator i = (*it)->type_begin(), e = (*it)->type_end();
-          i != e; ++i){
-        if(i->first >= endPos){
-          next = i->first;
-          field_offset = i->first;
-        } else {
-          continue;
-        }
+  unsigned field_ct = 0;
+  StructType::element_iterator typeIt = type->element_begin();
+  StructType::element_iterator typeEnd = type->element_end();
+  while(field_ct != fieldIdx && typeIt != typeEnd){
+    const Type * elem = *typeIt;
+    unsigned size = elem->getPrimitiveSizeInBits() / 8 ;
+    field_offset += size;
 
-        if(fieldIdx == 0 || fieldIdx == field_count){
-          return field_offset;
-        } else if (i->first == next){
-          unsigned elemMax = 0;
-          unsigned start = i->first;
-          if(i->second){
-            for (svset<Type*>::const_iterator ni = i->second->begin(),
-                   ne = i->second->end(); ni != ne; ++ni) {
-              Type * t = *ni;
-
-              unsigned size = t->getPrimitiveSizeInBits()/8;
-              if(size == 0 && isa<PointerType>(t))
-                size = 8;
-              endPos = start+size;
-
-              if (size > elemMax ) {
-                elemMax = size;
-                next = endPos;
-              }
-            }
-            field_count++;
-          }
-        }
-      }
+    field_ct++;
+    ++typeIt;
   }
   return field_offset;
 }

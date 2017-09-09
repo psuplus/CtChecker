@@ -18,11 +18,11 @@ int main(void) {
 
   int unharmful = pk.rd_key;
 
-  if ( unharmful )
+  if ( unharmful ) // Vulnerable (unless white-listed)
     ;
 
   // int harmful = unharmful;
-  // 
+  //
   // if ( harmful )
   // ;
 

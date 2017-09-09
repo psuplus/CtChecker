@@ -20,7 +20,7 @@ LEVEL="../../../.."
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 $LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.cpp -o test.bc
-#$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
+$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \

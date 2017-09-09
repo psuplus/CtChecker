@@ -16,5 +16,15 @@ int main(void) {
   if(pk.rd_key) // Reported by Vulnerable Branch
     ;
 
+  int unharmful = pk.rd_key;
+
+  if ( unharmful )
+    ;
+
+  // int harmful = unharmful;
+  // 
+  // if ( harmful )
+  // ;
+
   return 0;
 }

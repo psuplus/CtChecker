@@ -116,6 +116,11 @@ TaintAnalysis::runOnModule(Module &M) {
     taintStr ("test", line);
   }
 
+  std::ifstream whitelistFile("whitelist.txt");
+  while (std::getline(whitelistFile, line)) {
+    taintStr("white", line);
+  }
+
   std::set<std::string> kinds;
   kinds.insert("test");
 
@@ -125,6 +130,12 @@ TaintAnalysis::runOnModule(Module &M) {
 
   errs() << "Least solution with implicit contraints\n";
   soln = ifa->leastSolution(kinds, true, true);
+  soln->allTainted();
+
+  kinds.clear();
+  kinds.insert("white");
+  errs() << "Whitelist with constraints\n";
+  soln = ifa->leastSolution(kinds, false, true);
   soln->allTainted();
   return false;
 }

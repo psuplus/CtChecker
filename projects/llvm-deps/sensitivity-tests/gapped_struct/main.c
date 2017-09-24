@@ -14,10 +14,10 @@ int main(void)
   c.b = 0;
   c.c = bad;
 
-  if (c.b == 1)
+  if (c.b == 1) // this would be reported if using AbstractLoc TypeMap only
     ;
 
-  if (c.c == 1)
+  if (c.c == 1) // Vulnerable Branch
     ;
 
   return 0;

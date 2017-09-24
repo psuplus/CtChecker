@@ -28,7 +28,7 @@ int main(void)
   e = c;
   if ( c == 4 ) // unreported -- this probably should be reported though.
     ;
-  if ( e == 3 )
+  if ( e == 3 ) // unreported
     ;
   return 0;
 }

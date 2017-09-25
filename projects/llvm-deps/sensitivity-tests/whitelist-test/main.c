@@ -24,11 +24,13 @@ int main(void)
   if( d == 3 ) // reported
     ;
 
-  c = d;  // C is whitelisted, but has the same value as key
+#if 1
+  c = d; 
   e = c;
-  if ( c == 4 ) // unreported -- this probably should be reported though.
+  if ( c == 4 ) // reported
     ;
-  if ( e == 3 ) // unreported
+  if ( e == 3 ) // reported
     ;
+#endif
   return 0;
 }

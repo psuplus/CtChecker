@@ -66,6 +66,7 @@ public:
     /// Constrain the left hand side with the right hand side and put it
     /// in the set "kind"
     virtual void addConstraint(const std::string kind, const ConsElem &lhs, const ConsElem &rhs) = 0;
+    virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs) = 0;
     /// Find the lfp of the constraints in the "kinds" sets (caller must delete)
     virtual ConsSoln *leastSolution(const std::set<std::string> kinds) = 0;
     /// Find the gfp of the constraints in the "kinds" sets (caller must delete)

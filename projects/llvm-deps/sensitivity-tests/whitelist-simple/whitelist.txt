@@ -1,0 +1,1 @@
+  %3 = load i32, i32* %b, align 4, !dbg !30

@@ -130,7 +130,8 @@ VulnerableBranch::runOnModule(Module &M) {
 
   std::ifstream fwhitelist("whitelist.txt");
   while (std::getline(fwhitelist, line)) {
-    taintStr ("whitelist", line);
+    ifa->removeConstraint("taint", line);
+    ifa->removeConstraint("untrust", line);
   }
 
   std::set<std::string> kinds;
@@ -144,10 +145,6 @@ VulnerableBranch::runOnModule(Module &M) {
   soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> untrusted = soln->getAllTaintValues();
 
-  kinds.clear();
-  kinds.insert("whitelist");
-  soln = ifa->leastSolution(kinds, false, true);
-  std::set<const Value*> whitelisted = soln->getAllTaintValues();
   /** 
   std::set<const Value*> vul; 
   std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
@@ -163,7 +160,7 @@ VulnerableBranch::runOnModule(Module &M) {
          const MDLocation* loc = bi->getDebugLoc();
          if (bi->isConditional() && loc) {
            const Value* v = bi->getCondition();
-           if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end() && whitelisted.find(v) == whitelisted.end())
+           if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end())
              errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << "\n";
          }
       }

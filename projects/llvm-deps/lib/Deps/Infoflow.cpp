@@ -123,24 +123,26 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-  // errs() << "----- Trying to print out ConstraintSet -----\n";
-  // /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
-  // /// try "default" first
-  // std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
-  // /// set contains all constraints, constraints are pairs of ConsElem
-  // /// can't joint on rhs, only on lhs
-  // for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
-  //     constraint != end; ++constraint) {
-  //   //       /// a constraint contains two ConElem: lhs and rhs.
-  //   //       /// We need to search through valueMap, locMap and vargMap to get the
-  //   //       /// value paired to both ConElems.
+#if 1
+  errs() << "----- Trying to print out ConstraintSet -----\n";
+  /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
+  /// try "default" first
+  std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
+  /// set contains all constraints, constraints are pairs of ConsElem
+  /// can't joint on rhs, only on lhs
+  for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
+      constraint != end; ++constraint) {
+    //       /// a constraint contains two ConElem: lhs and rhs.
+    //       /// We need to search through valueMap, locMap and vargMap to get the
+    //       /// value paired to both ConElems.
 
-  //   // print lhs
-  //   (*constraint).lhs().dump(errs());
-  //   errs() << "-->";
-  //   (*constraint).rhs().dump(errs());
-  //   errs()  << "\n";
-  // }
+    // print lhs
+    (*constraint).lhs().dump(errs());
+    errs() << "-->";
+    (*constraint).rhs().dump(errs());
+    errs()  << "\n";
+  }
+#endif
 
   return Unit();
 }
@@ -351,7 +353,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
         I != E; ++I){
       std::map<unsigned, const ConsElem *> elemMap;
-      elemMap = getOrCreateConsElem(**I, numElements);
+      elemMap = getOrCreateConsElemTyped(**I, numElements);
 
       for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
           i != e; ++i){
@@ -368,7 +370,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
       I != E; ++I){
     (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
-    elemMap = getOrCreateConsElem(**I, numElements);
+    elemMap = getOrCreateConsElemTyped(**I, numElements);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -1084,7 +1086,7 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 }
 
 std::map<unsigned, const ConsElem *>
-Infoflow::getOrCreateConsElem(const AbstractLoc &loc, unsigned numElements) {
+Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
@@ -1185,7 +1187,7 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
 
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
-  std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc, numElements);
+  std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElemTyped(loc, numElements);
   loc.dump();
   if(elemMap.size() == 0)
     return;
@@ -2141,6 +2143,79 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   }
   return OS.str();
 }
+
+void
+Infoflow::removeConstraint(std::string kind, std::string match) {
+  errs() << "Removing values tied to " << match << "\n";
+  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
+         end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
+    const Value & value = *(entry->first);
+
+    std::string s;
+    llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
+    *ss << value; // dump value info to ss
+    ss->str(); // flush stream to s
+    if(value.hasName() && value.getName() == match) {
+      s = value.getName();
+      const std::set<const AbstractLoc *> &locs = locsForValue(value);
+      unsigned offset = 0;
+      bool hasOffset = offsetForValue(value, &offset);
+      errs() << "Length of set for " << s << " is " << locs.size() << "\n";
+      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(),
+            end = locs.end(); loc != end; ++loc) {
+        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
+        std::map<unsigned, const ConsElem *> elemMap;
+        if(curElem != locConstraintMap.end()) {
+          elemMap = curElem->second;
+
+          if(hasOffset) {
+            const ConsElem * elem;
+            if(elemMap.find(offset) != elemMap.end()){
+              elem = elemMap[offset];
+            } else {
+              errs() << "No direct element that matches offset.\n";
+              const ConsElem * lastElem;
+              bool elemAdded = false;
+              for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+                  it != itEnd; ++it){
+                if((*it).first > offset && !elemAdded && lastElem != NULL){
+                  elem = lastElem;
+                  elemAdded = true;
+                }
+                if((*it).second != NULL){
+                  lastElem = (*it).second;
+                }
+              }
+            }
+            errs() << "Matching " << match << " with " << value.getName() << ": ";
+            elem->dump(errs());
+            errs() << "\n";
+            kit->removeConstraintRHS(kind, *elem);
+          } else {
+            errs() << "Visiting: ";
+            value.dump();
+            errs() << "Matching " << match << " with " << value.getName() << ": ";
+            errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
+            for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
+                elemIt != elemEnd; ++elemIt)
+              kit->removeConstraintRHS(kind, *(*elemIt).second);
+          }
+        }
+      }
+    } else if (s.find(match) == 0 ) {
+      
+      DenseMap<const Value *, const ConsElem *>::iterator valueMap = summarySourceValueConstraintMap.find(&value);
+      if(valueMap != summarySourceValueConstraintMap.end()){
+        errs() << "Removing constraint ";
+        const ConsElem & elem = *(valueMap->second);
+        elem.dump(errs());
+        errs() << "\n";
+        kit->removeConstraintRHS(kind, elem);
+      }
+    }
+  }
 }
+}
+
 
 #endif

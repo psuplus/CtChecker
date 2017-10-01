@@ -1,2 +1,1 @@
-  %1 = load i32, i32* %a, align 4, !dbg !26
-  %2 = load i32, i32* %b, align 4, !dbg !28
+b

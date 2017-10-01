@@ -19,18 +19,19 @@ int main(void)
     ;
   if( b == 3 )
     ;
-  if( c == 3 )
+  if( c == 3 ) // reported - if bottom part uncommented
     ;
   if( d == 3 ) // reported
     ;
 
-#if 1
-  c = d; 
+  a = key;
+/*
+  c = d;
   e = c;
   if ( c == 4 ) // reported
     ;
   if ( e == 3 ) // reported
     ;
-#endif
+*/
   return 0;
 }

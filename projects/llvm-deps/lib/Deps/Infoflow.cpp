@@ -123,7 +123,7 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-#if 1
+#if 0
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
@@ -2191,19 +2191,25 @@ Infoflow::removeConstraint(std::string kind, std::string match) {
             elem->dump(errs());
             errs() << "\n";
             kit->removeConstraintRHS(kind, *elem);
-          } else {
-            errs() << "Visiting: ";
-            value.dump();
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
-            errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
-            for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
-                elemIt != elemEnd; ++elemIt)
-              kit->removeConstraintRHS(kind, *(*elemIt).second);
           }
         }
       }
+    } else if(const LoadInst * l = dyn_cast<LoadInst>(&value)) {
+      const Value * v = l->getPointerOperand();
+      //v->dump();
+      if(v->hasName() && v->getName() == match) {
+        const std::set<const AbstractLoc *> &locs = locsForValue(value);
+        errs() << "Locs are of size " << locs.size() << "\n";
+        DenseMap<const Value *, const ConsElem *>::iterator valueMap = summarySourceValueConstraintMap.find(&value);
+        if(valueMap != summarySourceValueConstraintMap.end()){
+          errs() << "Removing LOAD ";
+          const ConsElem & elem = *(valueMap->second);
+          elem.dump(errs());
+          errs() << "\n";
+          kit->removeConstraintRHS(kind, elem);
+        }
+      }
     } else if (s.find(match) == 0 ) {
-      
       DenseMap<const Value *, const ConsElem *>::iterator valueMap = summarySourceValueConstraintMap.find(&value);
       if(valueMap != summarySourceValueConstraintMap.end()){
         errs() << "Removing constraint ";

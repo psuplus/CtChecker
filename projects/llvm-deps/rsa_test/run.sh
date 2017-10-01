@@ -21,6 +21,8 @@ LEVEL="../../.."
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o rsa.bc -c rsa.c
 $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o bignum.bc -c bignum.c
+$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S rsa.c
+$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S bignum.c
 $LEVEL/Debug+Asserts/bin/llvm-link rsa.bc bignum.bc -o rsa_mpi.bc
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc

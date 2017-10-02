@@ -389,19 +389,19 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
       elemMap[offset]->dump(errs());
       errs() << "\n";
     } else {
-      const ConsElem * lastElem;
+      const ConsElem * lastElem = NULL;
       bool elemAdded = false;
       if(elemMap.begin() != elemMap.end()){
         for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
             it != itEnd; ++it){
           if((*it).first > offset && !elemAdded && lastElem != NULL){
             sourceSet.insert(lastElem);
-            errs() << "Added1: " ;
+            errs() << "Added1 element [" << it->first <<  "]";
             lastElem->dump(errs());
             elemAdded = true;
           }
           if( (*it).second ){
-            lastElem = (*it).second;
+            lastElem = it->second;
             errs() << "[Set LastElem]: " << it->first << "\n";
           }
         }

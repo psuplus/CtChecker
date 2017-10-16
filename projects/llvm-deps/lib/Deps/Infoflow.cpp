@@ -487,6 +487,10 @@ unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fie
   while(field_ct != fieldIdx && typeIt != typeEnd){
     const Type * elem = *typeIt;
     unsigned size = elem->getPrimitiveSizeInBits() / 8 ;
+    if(elem->isPointerTy()){
+      size = sizeof(int*);
+      //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
+    }
     field_offset += size;
 
     field_ct++;

@@ -21,7 +21,7 @@ else
   py=$2
 fi
 
-mkdir -p ../newoutputs ../orgoutputs
+mkdir -p ../newoutputs ../orgoutputs ../t_all
 
 # copy the original source code and compile
 mkdir -p ../source
@@ -56,6 +56,8 @@ echo Running ./gettraces.sh
 
 echo Running ./collect_traces.sh
 ./collect_traces.sh
+
+cp ../trace ../t_all/a$1.tr
 
 # diff the source files to see where has been changed
 echo "diff <original tcas.c> <new tcas.c>"

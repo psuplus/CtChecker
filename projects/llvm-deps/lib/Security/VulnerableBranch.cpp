@@ -61,12 +61,25 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
 
           if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
+            if(offset == 0){
+              value.dump();
+              llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
+              *ss << value; // dump value info to ss
+              ss->str(); // flush stream to s
+              if(s.find(match) == 0){
+                errs() << "Adding all to tainted set\n";
+                for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+                    it != itEnd; ++it){
+                  ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*it).second);
+                }
+              }
+            }
             const ConsElem * elem;
             if(elemMap.find(offset) != elemMap.end()){
               elem = elemMap[offset];
             } else {
               errs() << "No direct element that matches offset.\n";
-              const ConsElem * lastElem;
+              const ConsElem * lastElem = NULL;
               bool elemAdded = false;
               for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
                   it != itEnd; ++it){
@@ -105,14 +118,14 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
       ss->str(); // flush stream to s
       if (s.find(match) == 0) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
-        errs() << "Match Detected for " << s  << "\n";
+        //errs() << "Match Detected for " << s  << "\n";
       }
     }
   }
   errs() << "DONE\n";
 }
 
-bool 
+bool
 VulnerableBranch::runOnModule(Module &M) {
   ifa = &getAnalysis<Infoflow>();
   if (!ifa) { errs() << "No instance\n"; return false;}
@@ -128,6 +141,11 @@ VulnerableBranch::runOnModule(Module &M) {
     taintStr ("untrust", line);
   }
 
+  std::ifstream fwhitelist("whitelist.txt");
+  while (std::getline(fwhitelist, line)) {
+    ifa->removeConstraint("taint", line);
+    ifa->removeConstraint("untrust", line);
+  }
 
   std::set<std::string> kinds;
   kinds.insert("taint");

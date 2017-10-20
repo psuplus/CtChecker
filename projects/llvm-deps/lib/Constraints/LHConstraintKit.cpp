@@ -113,6 +113,51 @@ void LHConstraintKit::addConstraint(const std::string kind,
     }
 }
 
+void LHConstraintKit::removeConstraintRHS(const std::string kind,
+                                          const ConsElem &rhs){
+  if (kind == "default") explicitLHConstraints--;
+  if (kind == "implicit") implicitLHConstraints--;
+
+  std::vector<LHConstraint> &set = getOrCreateConstraintSet("default");
+
+  assert(!llvm::isa<LHJoin>(&rhs) && "We shouldn't have joins on rhs!");
+
+  llvm::errs() << "Size of vector " << set.size() << "\n";
+  std::vector<LHConstraint>::iterator vIt = set.begin();
+  std::vector<LHConstraint>::iterator vEnd = set.end();
+  llvm::errs() << "Constraint to find ";
+
+  std::string rhsText;
+  std::string consText;
+  llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(rhsText);
+  llvm::raw_string_ostream* ss2 = new llvm::raw_string_ostream(consText);
+  rhs.dump(*ss);
+  ss->str();
+
+  llvm::errs() << rhsText;
+  llvm::errs() << "\n";
+
+
+  for(; vIt != vEnd;){
+    consText = "";
+    LHConstraint c = *vIt;
+    const ConsElem & constraintRight = c.rhs();
+    constraintRight.dump(*ss2);
+    ss2->str();
+    if(consText.length() > 0 && rhsText.find(consText) == 0){
+      llvm::errs() << "Constraint erased: ";
+      llvm::errs() << consText << "\n";
+      set.erase(vIt);
+    } else {
+      ++vIt;
+    }
+    vEnd = set.end();
+  }
+
+  delete ss;
+  delete ss2;
+}
+
 ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end(); kind != end; ++kind) {

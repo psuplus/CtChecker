@@ -56,6 +56,7 @@ public:
 
     /// Add the constraint lhs <= rhs to the set "kind"
     virtual void addConstraint(const std::string kind, const ConsElem &lhs, const ConsElem &rhs);
+    virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs);
     /// Find the lfp of the constraints in the "kinds" sets
     /// Unconstrained variables will be "Low" (caller delete)
     virtual ConsSoln *leastSolution(const std::set<std::string> kinds);

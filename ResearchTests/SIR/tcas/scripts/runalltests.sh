@@ -1,11 +1,11 @@
 #!/bin/bash
 
 function printUsage {
-	echo "Usage: $0 <py script> [start] [end]"
+    echo "Usage: $0 <py script> [start] [end]"
     echo "      <py script>	calculates error nodes"
     echo "      [start]		start index of test cases, default=1"
     echo "      [end]		end index of test cases, default=41"
-	exit
+    exit
 }
 
 if [[ $# -lt 1 ]]; then

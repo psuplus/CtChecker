@@ -2,10 +2,9 @@
 
 function printUsage {
   echo "USAGE:"
-  echo "      $0 <version> <py script>"
+  echo "      $0 <version> [py script]"
   echo "      <version> varies from 1 to 41"
-  echo "      <py script> for calculating error nodes,
-                    default: computeErrorNodes.py"
+  echo "      <py script> for calculating error nodes"
   exit
 }
 
@@ -57,17 +56,16 @@ echo Running ./gettraces.sh
 echo Running ./collect_traces.sh
 ./collect_traces.sh
 
-cp ../trace ../t_all/a$1.tr
+cp ../trace ../t_all/$1.tr
+cp ../nodes ../t_all/$1.n
 
 # diff the source files to see where has been changed
 echo "diff <original tcas.c> <new tcas.c>"
 diff ../source.alt/source.orig/tcas.c ../versions.alt/versions.orig/v$1/tcas.c
 
-# Generate the output
-echo
-echo Generate the output
-if [[ $# -lt 2 ]]; then
-    python ../../../calculateErrorNodes.py ../nodes ../trace ../errorInfo $1
-else
+if [[ ($# -gt 1) && ( -f "$2" ) ]]; then
+    # Generate the output
+    echo
+    echo Generate the output
     python $py ../nodes ../trace ../errorInfo $1
 fi

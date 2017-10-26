@@ -20,7 +20,7 @@ else
   py=$2
 fi
 
-mkdir -p ../newoutputs ../orgoutputs ../t_all
+mkdir -p ../newoutputs ../orgoutputs ../t_all ../n_all
 
 # copy the original source code and compile
 mkdir -p ../source
@@ -34,7 +34,7 @@ cp ../source.alt/source.orig/tcas.c ../source
 
 # run the tests on original code
 ## skip for efficiency
-if false; then
+if [ ! -e "../orgoutputs/t1599" ]; then
   echo Running ./runall.sh
   (./runall.sh) &> /dev/null
   mkdir -p ../orgoutputs
@@ -47,14 +47,22 @@ echo "Running rm ../traces/*"
 mkdir -p ../traces
 rm -f ../traces/*
 
-echo Running ./cp_inst_compile.sh $1
-(./cp_inst_compile.sh $1) &> /dev/null
+if [ -e "../n_all/a$1.nd" ]; then
+  cp ../n_all/a$1.nd ../nodes
+else
+  echo Running ./cp_inst_compile.sh $1
+  (./cp_inst_compile.sh $1) &> /dev/null
+  cp ../nodes ../n_all/a$1.nd
+fi
 
-echo Running ./gettraces.sh
-(./gettraces.sh) &> /dev/null
+if [ -e "../t_all/a$1.tr" ]; then
+  cp ../t_all/a$1.tr ../trace 
+else
+  echo Running ./gettraces.sh
+  (./gettraces.sh) &> /dev/null
 
-echo Running ./collect_traces.sh
-./collect_traces.sh
+  echo Running ./collect_traces.sh
+  ./collect_traces.sh
 
 cp ../trace ../t_all/$1.tr
 cp ../nodes ../t_all/$1.n

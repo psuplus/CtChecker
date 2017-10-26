@@ -7,6 +7,7 @@ function printUsage {
     echo "      [end]		end index of test cases, default=41"
 }
 
+echo $#
 start=1
 end=42
 if [[ $# -lt 1 ]]; then
@@ -17,9 +18,9 @@ else
 	echo "Using Product to calculate likelihood	$(basename $1)
 Test	FailsAt	Rank" > /tmp/log
 
-	if [[ $# == 3 ]]; then
+	if [[ $# == 2 ]]; then
 		start=$2
-	elif [[ $# == 4 ]]; then
+	elif [[ $# == 3 ]]; then
 		start=$2
 		end=$(($3 + 1))
 	fi

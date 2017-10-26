@@ -63,6 +63,7 @@ else
 
   echo Running ./collect_traces.sh
   ./collect_traces.sh
+fi
 
 cp ../trace ../t_all/$1.tr
 cp ../nodes ../t_all/$1.n

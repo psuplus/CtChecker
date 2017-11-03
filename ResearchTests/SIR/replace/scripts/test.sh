@@ -28,6 +28,7 @@ mkdir -p ../newoutputs ../orgoutputs ../t_all ../n_all ../outputs
 mkdir -p ../source
 rm -f ../source/*
 cp ../source.alt/source.orig/* ../source
+sed -i '' 's/getline/getline_new/g' ../source/*.c
 
 (
   cd ../source;

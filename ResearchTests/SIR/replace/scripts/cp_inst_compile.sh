@@ -30,6 +30,7 @@ ver=$1
 
 mkdir -p ../source
 cp ../versions.alt/versions.orig/v$ver/$prog.c ../source
+sed -i '' 's/getline/getline_new/g' ../source/$prog.c
 
 cd ../source
 

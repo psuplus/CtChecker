@@ -7,9 +7,8 @@ function printUsage {
     echo "      [end]		end index of test cases, default=41"
 }
 
-echo $#
 start=1
-end=42
+end=32
 if [[ $# -lt 1 ]]; then
 	printUsage
 	echo "Now ignoring the analysis"

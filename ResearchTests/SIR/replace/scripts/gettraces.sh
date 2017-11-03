@@ -1,3 +1,9 @@
+
+mkdir -p ../newoutputs /tmp/trace
+rm ../newoutputs/*
+rm /tmp/trace/* 
+ARISTOTLE_DB_DIR=/tmp/trace
+
 echo script type: T
 echo ">>>>>>>>running test 1"
 ../source/replace.c.inst.exe '-?' 'a&'  < ../inputs/temp-test/1.inp.1.1 > ../newoutputs/t1

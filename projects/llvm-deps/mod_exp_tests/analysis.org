@@ -1,0 +1,91 @@
+* openSSL 0.9.7k
+  crypto/rsa/rsa_eay.c -- default definitions of rsa_encrypt functions
+  function call to if (!rsa->meth->bn_mod_exp(&ret,&f,rsa->e,rsa->n,ctx, rsa->_method_mod_n)) goto err;
+  crypto/rsa/rsa_lib.c -- Wrapper functions for RSA encryption depending on engine
+** RSA_eay_public_encrypt()
+   Args: int flen, const unsigned char *from, unsigned char *to, RSA *rsa, int padding
+   Here the plaintext is "from"
+
+   Steps:
+   1. Padding "from" flows to "buf"
+   2. BN_bin2bn(buf, num, &f)  buf flows to f
+   3. bn_mod_exp(...) f(arg2) and rsa->e(arg3) and rsa->n(arg4)
+** Flaws found
+   ConsElems generated for VOID type maps doesn't match how offset is calculated
+   
+   For Example:
+    [Source:]   %n39 = getelementptr inbounds %struct.rsa_st, %struct.rsa_st* %44, i32 0, i32 4, !dbg !267
+    StructType:
+    SourceOffset: 28
+      Node0x56888c0 [shape=record,shape=Mrecord,label="{VOID: IE\n}"];
+** RSA_eay.c Test
+   Tainted:    p,  q
+   Untrusted: r1, m1
+    rsa_eay.c line 388 - RSA_eay_private_encrypt: NULL check p
+    rsa_eay.c line 389 - RSA_eay_private_encrypt: NULL check q
+    rsa_eay.c line 526 - RSA_eay_private_decrypt: NULL check p
+    rsa_eay.c line 527 - RSA_eay_private_decrypt: NULL check q
+    rsa_eay.c line 576 - RSA_eay_private_decrypt: if (r < 0)
+    rsa_eay.c line 658 - RSA_eay_public_decrypt: if(r > 42 && 3*8*r >= BN_num_bits(rsa->n))
+    rsa_eay.c line 671 - RSA_eay_public_decrypt: if (r < 0)
+    -- Below are RSA_eay_mod_exp results
+    rsa_eay.c line 701 - if (!BN_MONT_CTX_set_locked(&rsa->_method_mod_p, CRYPTO_LOCK_RSA, rsa->p, ctx))
+    rsa_eay.c line 704 - if (!BN_MONT_CTX_set_locked(&rsa->_method_mod_q, CRYPTO_LOCK_RSA, rsa->q, ctx))
+    rsa_eay.c line 709 - if (!BN_mod(&r1,I,rsa->q,ctx))
+    rsa_eay.c line 717 - if (!rsa->meth->bn_mod_exp(&m1,&r1,dmq1,rsa->q,ctx, rsa->_method_mod_q))
+    rsa_eay.c line 720 - if (!BN_mod(&r1,I,rsa->p,ctx))
+    rsa_eay.c line 728 - if (!rsa->meth->bn_mod_exp(r0,&r1,dmp1,rsa->p,ctx, rsa->_method_mod_p))
+    rsa_eay.c line 735 - if (!rsa->meth->bn_mod_exp(&m1,&r1,dmq1,rsa->q,ctx, rsa->_method_mod_q))
+    rsa_eay.c line 738 - if (!BN_mod(&r1,I,rsa->p,ctx))
+    rsa_eay.c line 747 - if (!BN_add(r0,r0,rsa->p))
+    rsa_eay.c line 748 - if (!BN_mul(&r1,r0,rsa->q,ctx))
+** bn_exp.c test
+*** *Commit* 72467763f3 - if ( BN_ucmp(a,m) ) not reported and it should be reported
+    Tainted: p, m :: Untrusted: a - No results from OpenSSL versions 0.9.6l 1.0.2f/g
+    bn_exp.c line 215 - BN_mod_exp: if (a->top == 1 && !a->neg && (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) == 0))
+    bn_exp.c line 426 - BN_mod_exp_mont: if (BN_is_zero(aa))
+    bn_exp.c line 526 - MOD_EXP_CTIMR_COPY_TO_PREBUF: if (bn_wexpand(b, top) == NULL)
+    bn_exp.c line 528 - MOD_EXP_CTIME_COPY_TO_PREBUF: while (b->top < top)
+    bn_exp.c line 538 - MOD_EXP_CTIME_COPY_TO_PREBUF: bn_fix_top(b);
+    bn_exp.c line 546 - MOD_EXP_CTIME_COPY_FROM_PREBUF: if (bn_wexpand(b, top) == NULL)
+    bn_exp.c line 555 - MOD_EXP_CTIME_COPY_FROM_PREBUF: bn_fix_top(b);
+*** *Commit* 49a91cc93e  - line 418 correctly reported now
+    Tainted: p, m :: Untrusted: a
+    bn_exp.c line 215 - BN_mod_exp: if (a->top == 1 && !a->neg && (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) == 0)
+    bn_exp.c line 279 - BN_mod_exp_recp: if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line 418 - BN_mod_exp_mont: if (a->neg || BN_ucmp(a,m)
+    bn_exp.c line 420 - BN_mod_exp_mont: if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line 426 - BN_mod_exp_mont: if (BN_is_zero(aa))
+    bn_exp.c line 441 - BN_mod_exp_mont: if (!BN_mod_mul_montgomery(&(val[i]),&(val[i-1]),d,mont,ctx))
+    bn_exp.c line 497 - BN_mod_exp_mont: if (!BN_mod_mul_montgomery(r,r,&(val[wvalue>>1]),mont,ctx))
+    bn_exp.c line 526 - MOD_EXP_CTIMR_COPY_TO_PREBUF: if (bn_wexpand(b, top) == NULL)   
+    bn_exp.c line 528 - MOD_EXP_CTIME_COPY_TO_PREBUF: while (b->top < top)
+    bn_exp.c line 538 - MOD_EXP_CTIME_COPY_TO_PREBUF: bn_fix_top(b);
+    bn_exp.c line 546 - MOD_EXP_CTIME_COPY_FROM_PREBUF: if (bn_wexpand(b, top) == NULL)
+    bn_exp.c line 555 - MOD_EXP_CTIME_COPY_FROM_PREBUF: bn_fix_top(b);
+    bn_exp.c line 643 - BN_mod_exp_mont_consttime: if (!BN_mod_mul_montgomery(&(val[i]),&(val[i-1]),d,mont,ctx))
+    bn_exp.c line 645 - BN_mod_exp_mont_consttime: if (!BN_mod(am,a,m,ctx))
+    bn_exp.c line 900 - BN_mod_exp_simple: if (!BN_nnmod(&(val[0]),a,m,ctx))
+* openSSL 0.9.7c
+** RSA_eay.c test
+   Tainted: p, q
+   Untrusted: r1, m1
+   rsa_eay.c line 329 - RSA_eay_private_encrypt: NULL check p
+   rsa_eay.c line 330 - RSA_eay_private_encrypt: NULL check q
+   rsa_eay.c line 442 - RSA_eay_privane_decrypt: NULL check p
+   rsa_eay.c line 443 - RSA_eay_private_decrypt: NULL check q
+   rsa_eay.c line 480 - RSA_eay_private_decrypt: if (r > 0)
+   rsa_eay.c line 579 - RSA_eay_public_decrypt: if (r >  0)
+   rsa_eay.c line 612 - RSA_eay_mod_exp: if (!BN_MONT_CTX_set(bn_mont_ctx,rsa->p,ctx))
+   rsa_eay.c line 636 - RSA_eay_mod_exp: if (!BN_MONT_CTX_set(bn_mont_ctx,rsa->q,ctx))
+   rsa_eay.c line 656 - RSA_eay_mod_exp: if (!BN_mod(&r1,I,rsa->q,ctx))
+   rsa_eay.c line 657 - RSA_eay_mod_exp: if (!rsa->meth->bn_mod_exp(&m1,&r1,rsa->dmq1,rsa->q,ctx, rsa->_method_mod_q))
+   rsa_eay.c line 660 - RSA_eay_mod_exp: if (!BN_mod(&r1,I,rsa->p,ctx))
+   rsa_eay.c line 661 - RSA_eay_mod_exp: if (!rsa->meth->bn_mod_exp(r0,&r1,rsa->dmp1,rsa->p,ctx, rsa->_method_mod_p))
+   rsa_eay.c line 668 - RSA_eay_mod_exp: if (!BN_add(r0,r0,rsa->p))
+   rsa_eay.c line 671 - RSA_eay_mod_exp: if (!BN_mod(r0,&r1,rsa->p,ctx))
+   rsa_eay.c line 680 - RSA_eay_mod_exp: if (!BN_add(r0,r0,rsa->p))
+   rsa_eay.c line 681 - RSA_eay_mod_exp: if (!BN_mul(&r1,r0,rsa->q,ctx))
+** bn_exp.c test
+    Tainted: p, m :: Untrusted: a
+    No results found.

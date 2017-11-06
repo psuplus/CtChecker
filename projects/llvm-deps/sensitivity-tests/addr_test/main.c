@@ -7,7 +7,7 @@ typedef struct {
 
 typedef struct {
   pk_info_t* pk_info;
-  int pk_b;
+  int pk_b[5];
 } pk_t;
 
 
@@ -15,9 +15,11 @@ void do_stuff (pk_t *ctx){
 
   if(ctx->pk_info == NULL) // Vulnerable Branch reported
     ;
-  if(ctx->pk_b == 2) // Vulnerable Branch reported
+  if(ctx->pk_b == NULL) // Vulnerable Branch reported
     ;
-  if(ctx)
+  if(ctx->pk_b[1] == 3) // Vulnerable Branch reported
+    ;
+  if(ctx != NULL)
     ;
 }
 

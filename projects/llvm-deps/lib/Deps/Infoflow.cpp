@@ -161,17 +161,37 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
         source != end; ++source) {
       if (!DepsDropAtSink || !sourceSinkAnalysis->valueIsSink(**source)) {
 	       Sources.insert(&getOrCreateConsElem(record.sourceContext(), **source));
+         if(isa<GetElementPtrInst>(*source)){
+          errs() << "1:";
+          (*source)->dump();
+          processGetElementPtrInstSource(*source, Sources, locsForValue(**source));
+         }
       } else {
 	       sinkSources.insert(&getOrCreateConsElem(record.sourceContext(), **source));
+         if(isa<GetElementPtrInst>(*source)){
+          errs() << "1:";
+          (*source)->dump();
+          processGetElementPtrInstSource(*source, sinkSources, locsForValue(**source));
+         }
       }
     }
 
     for (FlowRecord::fun_iterator source = record.source_varg_begin(), end = record.source_varg_end();
         source != end; ++source) {
+      errs() << "2:";
+      (*source)->dump();
       if (!DepsDropAtSink || !sourceSinkAnalysis->vargIsSink(**source)) {
 	       Sources.insert(&getOrCreateVargConsElem(record.sourceContext(), **source));
+         if(isa<GetElementPtrInst>(*source)){
+          errs() << "2:";
+          (*source)->dump();
+         }
       } else {
 	       sinkSources.insert(&getOrCreateVargConsElem(record.sourceContext(), **source));
+         if(isa<GetElementPtrInst>(*source)){
+          errs() << "2:";
+          (*source)->dump();
+         }
       }
     }
 
@@ -181,14 +201,20 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     std::set<const AbstractLoc *> sinkSourceLocs;
     for (FlowRecord::value_iterator source = record.source_directptr_begin(), end = record.source_directptr_end();
         source != end; ++source) {
+      errs() << "3:";
+      (*source)->dump();
       const std::set<const AbstractLoc *> & locs = locsForValue(**source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->directPtrIsSink(**source)) {
         if(isa<GetElementPtrInst>(*source)){ // If value is GEP Instruction handle differently
+          errs() << "3:";
+          (*source)->dump();
           processGetElementPtrInstSource(*source, Sources, locs);
         } else
           SourceLocs.insert(locs.begin(), locs.end());
       } else {
         if(isa<GetElementPtrInst>(*source)){ // If value is GEP Instruction handle differently
+          errs() << "3:";
+          (*source)->dump();
           processGetElementPtrInstSource(*source, sinkSources, locs);
         } else
           sinkSourceLocs.insert(locs.begin(), locs.end());

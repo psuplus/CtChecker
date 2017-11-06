@@ -161,14 +161,8 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
         source != end; ++source) {
       if (!DepsDropAtSink || !sourceSinkAnalysis->valueIsSink(**source)) {
 	       Sources.insert(&getOrCreateConsElem(record.sourceContext(), **source));
-         if(isa<GetElementPtrInst>(*source)){
-          processGetElementPtrInstSource(*source, Sources, locsForValue(**source));
-         }
       } else {
 	       sinkSources.insert(&getOrCreateConsElem(record.sourceContext(), **source));
-         if(isa<GetElementPtrInst>(*source)){
-          processGetElementPtrInstSource(*source, sinkSources, locsForValue(**source));
-         }
       }
     }
 
@@ -176,14 +170,8 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
         source != end; ++source) {
       if (!DepsDropAtSink || !sourceSinkAnalysis->vargIsSink(**source)) {
 	       Sources.insert(&getOrCreateVargConsElem(record.sourceContext(), **source));
-         if(isa<GetElementPtrInst>(*source)){
-           processGetElementPtrInstSource(*source, Sources, locsForValue(**source));
-         }
       } else {
 	       sinkSources.insert(&getOrCreateVargConsElem(record.sourceContext(), **source));
-         if(isa<GetElementPtrInst>(*source)){
-           processGetElementPtrInstSource(*source, sinkSources, locsForValue(**source));
-         }
       }
     }
 

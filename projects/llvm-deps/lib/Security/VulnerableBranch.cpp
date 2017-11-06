@@ -45,7 +45,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
     // value.dump();
 
     std::string s;
-    if (value.hasName() && value.getName() == match) {
+    if (value.hasName() && (value.getName() == match || value.getName() == match+".addr")) {
        s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       unsigned offset = 0;

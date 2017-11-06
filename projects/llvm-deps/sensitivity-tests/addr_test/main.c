@@ -19,7 +19,7 @@ void do_stuff (pk_t *ctx){
     ;
   if(ctx->pk_b[1] == 3) // Vulnerable Branch reported
     ;
-  if(ctx != NULL)
+  if(ctx != NULL) // vulnerable branch
     ;
 }
 

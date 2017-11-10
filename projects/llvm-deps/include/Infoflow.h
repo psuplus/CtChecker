@@ -281,12 +281,13 @@ class Infoflow :
     void putOrConstrainConsElemSummarySink(std::string, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElem(const Value &);
     std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
-    std::map<unsigned, const ConsElem *> getOrCreateConsElemTyped(const AbstractLoc &, unsigned);
+    std::map<unsigned, const ConsElem *> getOrCreateConsElemTyped(const AbstractLoc &, unsigned, const Value* v=NULL);
 
     std::map<unsigned, const ConsElem *> getOrCreateConsElemCollapsedStruct(const AbstractLoc &, const StructType*);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &);
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &, unsigned offset, unsigned);
+    void putOrConstrainConsElemStruct(bool, bool, const AbstractLoc & ,const ConsElem &, unsigned, const Value * v=NULL);
     void putOrConstrainConsElemCollapsed(bool, bool, const AbstractLoc &, const ConsElem &, unsigned, const StructType*);
 
     void removeConstraint (std::string kind, std::string match);

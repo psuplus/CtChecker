@@ -325,10 +325,18 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
 
   // Otherwise constrain the elements that are at the location of the operands
   unsigned offset = GEPInstCalculateOffset(gep, locs);
+  bool structTy = false;
+  const StructType* s = dyn_cast<StructType>(gep->getSourceElementType());
+  if (s != NULL){
+    structTy = true;
+  }
 
   for(std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
       loc != end; ++loc){
     errs() << "Tainting at offset: " << offset << "\n";
+    if(structTy)
+      putOrConstrainConsElemStruct(implicit, sink, **loc, lub, offset, value);
+
     putOrConstrainConsElem(implicit, sink, **loc, lub, offset, numElements);
   }
 }
@@ -353,7 +361,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
         I != E; ++I){
       std::map<unsigned, const ConsElem *> elemMap;
-      elemMap = getOrCreateConsElemTyped(**I, numElements);
+      elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
       for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
           i != e; ++i){
@@ -370,7 +378,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
       I != E; ++I){
     (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
-    elemMap = getOrCreateConsElemTyped(**I, numElements);
+    elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -408,8 +416,9 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 
         if(!elemAdded && lastElem != NULL){
           sourceSet.insert(lastElem);
-          errs() << "Added2: " ;
+          errs() << "Added2 : " ;
           lastElem->dump(errs());
+          errs() << elemMap.size() << "\n";
         }
       }
     }
@@ -1090,7 +1099,7 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 }
 
 std::map<unsigned, const ConsElem *>
-Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements) {
+Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements, const Value* v) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
@@ -1138,7 +1147,29 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements)
           }
         }
       return locConstraintMap[&loc];
-      } else {
+      } else if (v != NULL) {
+        const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
+        const StructType* s = dyn_cast<StructType>(gep->getSourceElementType());
+        if(s != NULL){
+          unsigned field_offset = 0;
+          StructType::element_iterator typeIt = s->element_begin();
+          StructType::element_iterator typeEnd = s->element_end();
+          while(typeIt != typeEnd){
+            const Type * elem = *typeIt;
+            unsigned size = elem->getPrimitiveSizeInBits() / 8 ;
+            if(elem->isPointerTy()){
+              size = sizeof(int*);
+              //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
+            }
+            const ConsElem & consElem = kit->newVar(name+": elem " + std::to_string(field_offset) + "::");
+            locConstraintMap[&loc].insert(std::make_pair(field_offset, &consElem));
+            field_offset += size;
+
+            ++typeIt;
+          }
+        }
+        return locConstraintMap[&loc];
+      } else  {
         numElements = 1;
       }
     } else if (numElements == 0) {
@@ -1189,6 +1220,20 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   }
 }
 
+void
+Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink, const AbstractLoc &loc,const ConsElem &lub, unsigned offset, const Value* v) {
+  unsigned numElements = 0;
+  std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElemTyped(loc, numElements, v);
+  if(elemMap.size() == 0)
+    return;
+
+  if(elemMap.find(offset) != elemMap.end()){
+    const  ConsElem* elem = elemMap[offset];
+    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
+  }
+
+  errs() << "StructConstraint - elem not found\n";
+}
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElemTyped(loc, numElements);

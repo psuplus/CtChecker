@@ -8,7 +8,7 @@ function printUsage {
 }
 
 start=1
-end=32
+end=9
 if [[ $# -lt 1 ]]; then
 	printUsage
 	echo "Now ignoring the analysis"

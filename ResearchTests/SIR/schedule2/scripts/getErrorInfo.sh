@@ -1,10 +1,10 @@
 #!/bin/bash
 
-prog=replace
+prog=schedule2
 
 
 (printf "{\n"
-for f in {1..32}; do
+for f in {1..10}; do
   (printf "\n\n"
   echo Diff Version $f 
   echo

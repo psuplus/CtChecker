@@ -1,8 +1,8 @@
 #!/bin/bash
 
-prog=replace
+prog=schedule2
 EXT=so
-CPPFLAGS="$CPPFLAGS -ansi"
+CPPFLAGS="$CPPFLAGS -Wno-return-type"
 
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -29,7 +29,6 @@ ver=$1
 
 mkdir -p ../source
 cp ../versions.alt/versions.orig/v$ver/$prog.c ../source
-sed -i '' 's/getline/getline_new/g' ../source/$prog.c
 
 cd ../source
 

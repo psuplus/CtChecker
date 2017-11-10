@@ -1,6 +1,6 @@
 #!/bin/bash
 
-prog=replace
+prog=schedule2
 
 function printUsage {
   echo "USAGE:"
@@ -26,7 +26,7 @@ mkdir -p ../newoutputs ../orgoutputs ../t_all ../n_all ../outputs
 
 # run the tests on original code
 ## skip for efficiency
-if [ ! -e "../orgoutputs/t5542" ]; then
+if [ ! -e "../orgoutputs/t2650" ]; then
   # copy the original source code and compile
   mkdir -p ../source
   rm -f ../source/*

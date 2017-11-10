@@ -1,14 +1,14 @@
 #!/bin/bash
 
+start=1
+end=10
 function printUsage {
     echo "Usage: $0 [py script] [start] [end]"
     echo "      [py script]	calculates error nodes"
-    echo "      [start]		start index of test cases, default=1"
-    echo "      [end]		end index of test cases, default=41"
+    echo "      [start]		start index of test cases, default=$start"
+    echo "      [end]		end index of test cases, default=$end"
 }
 
-start=1
-end=32
 if [[ $# -lt 1 ]]; then
 	printUsage
 	echo "Now ignoring the analysis"

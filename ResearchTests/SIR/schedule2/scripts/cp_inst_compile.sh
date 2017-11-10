@@ -28,7 +28,7 @@ fi
 ver=$1
 
 mkdir -p ../source
-cp ../versions.alt/versions.orig/v$ver/$prog.c ../source
+cp ../versions.alt/versions.orig/v$ver/* ../source
 
 cd ../source
 

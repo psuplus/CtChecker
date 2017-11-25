@@ -61,19 +61,6 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
 
           if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
-            if(offset == 0){
-              value.dump();
-              llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
-              *ss << value; // dump value info to ss
-              ss->str(); // flush stream to s
-              if(s.find(match) == 0){
-                errs() << "Adding all to tainted set\n";
-                for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                    it != itEnd; ++it){
-                  ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*it).second);
-                }
-              }
-            }
             const ConsElem * elem;
             if(elemMap.find(offset) != elemMap.end()){
               elem = elemMap[offset];
@@ -106,9 +93,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
             value.dump();
             errs() << "Matching " << match << " with " << value.getName() << ": ";
             errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
-            for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
-                elemIt != elemEnd; ++elemIt)
-              ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*elemIt).second);
+            ifa->setTainted(kind,value);
           }
         }
       }
@@ -118,7 +103,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
       ss->str(); // flush stream to s
       if (s.find(match) == 0) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
-        //errs() << "Match Detected for " << s  << "\n";
+        errs() << "Match Detected for " << s  << "\n";
       }
     }
   }

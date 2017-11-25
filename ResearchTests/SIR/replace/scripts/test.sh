@@ -24,20 +24,19 @@ fi
 
 mkdir -p ../newoutputs ../orgoutputs ../t_all ../n_all ../outputs
 
-# copy the original source code and compile
-mkdir -p ../source
-rm -f ../source/*
-cp ../source.alt/source.orig/* ../source
-sed -i '' 's/getline/getline_new/g' ../source/*.c
-
-(
-  cd ../source;
-  gcc -ansi $prog.c -o $prog.exe
-) &> /dev/null
-
 # run the tests on original code
 ## skip for efficiency
 if [ ! -e "../orgoutputs/t5542" ]; then
+  # copy the original source code and compile
+  mkdir -p ../source
+  rm -f ../source/*
+  cp ../source.alt/source.orig/* ../source
+
+  (
+    cd ../source;
+    gcc -ansi $prog.c -o $prog.exe
+  ) &> /dev/null
+
   echo Running ./runall.sh
   (./runall.sh) &> /dev/null
   mkdir -p ../orgoutputs

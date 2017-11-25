@@ -2,7 +2,7 @@
 
 prog=replace
 EXT=so
-CPPFLAGS=-ansi
+CPPFLAGS="$CPPFLAGS -ansi"
 
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -13,8 +13,7 @@ fi
 
 function printUsage {
   echo "USAGE:"
-  echo "      ./$0 <version>"
-  echo "      <version> varies from 1 to 32"
+  echo "      ./$(basename $0) <version>"
   exit
 }
 

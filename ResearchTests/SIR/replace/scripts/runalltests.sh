@@ -25,7 +25,7 @@ Test	FailsAt	Rank" > /tmp/log
 	fi
 fi
 
-for (( i = $start; i < $end; i++ )); do
+for (( i = $start; i <= $end; i++ )); do
 	echo
 	echo Start Running Test $i
 	./test.sh $i $py

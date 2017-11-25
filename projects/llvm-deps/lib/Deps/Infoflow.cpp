@@ -1230,9 +1230,9 @@ Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink, const AbstractL
   if(elemMap.find(offset) != elemMap.end()){
     const  ConsElem* elem = elemMap[offset];
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
+  } else {
+    errs() << "StructConstraint - elem not found\n";
   }
-
-  errs() << "StructConstraint - elem not found\n";
 }
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
@@ -1754,7 +1754,8 @@ Infoflow::constrainLoadInst(const LoadInst & inst, Flows & flows)
   // pc
   imp.addSourceValue(*inst.getParent());
   // ptr
-  imp.addSourceValue(*inst.getPointerOperand());
+  //imp.addSourceValue(*inst.getPointerOperand());
+  exp.addSourceValue(*inst.getPointerOperand());
   // from memory
   exp.addSourceDirectPtr(*inst.getPointerOperand());
   // to value

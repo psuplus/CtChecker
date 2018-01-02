@@ -1,4 +1,4 @@
-* openSSL 0.9.7k
+* OpenSSL 0.9.7k
   crypto/rsa/rsa_eay.c -- default definitions of rsa_encrypt functions
   function call to if (!rsa->meth->bn_mod_exp(&ret,&f,rsa->e,rsa->n,ctx, rsa->_method_mod_n)) goto err;
   crypto/rsa/rsa_lib.c -- Wrapper functions for RSA encryption depending on engine
@@ -12,7 +12,7 @@
    3. bn_mod_exp(...) f(arg2) and rsa->e(arg3) and rsa->n(arg4)
 ** Flaws found
    ConsElems generated for VOID type maps doesn't match how offset is calculated
-   
+
    For Example:
     [Source:]   %n39 = getelementptr inbounds %struct.rsa_st, %struct.rsa_st* %44, i32 0, i32 4, !dbg !267
     StructType:
@@ -58,7 +58,7 @@
     bn_exp.c line 426 - BN_mod_exp_mont: if (BN_is_zero(aa))
     bn_exp.c line 441 - BN_mod_exp_mont: if (!BN_mod_mul_montgomery(&(val[i]),&(val[i-1]),d,mont,ctx))
     bn_exp.c line 497 - BN_mod_exp_mont: if (!BN_mod_mul_montgomery(r,r,&(val[wvalue>>1]),mont,ctx))
-    bn_exp.c line 526 - MOD_EXP_CTIMR_COPY_TO_PREBUF: if (bn_wexpand(b, top) == NULL)   
+    bn_exp.c line 526 - MOD_EXP_CTIMR_COPY_TO_PREBUF: if (bn_wexpand(b, top) == NULL)
     bn_exp.c line 528 - MOD_EXP_CTIME_COPY_TO_PREBUF: while (b->top < top)
     bn_exp.c line 538 - MOD_EXP_CTIME_COPY_TO_PREBUF: bn_fix_top(b);
     bn_exp.c line 546 - MOD_EXP_CTIME_COPY_FROM_PREBUF: if (bn_wexpand(b, top) == NULL)
@@ -66,7 +66,7 @@
     bn_exp.c line 643 - BN_mod_exp_mont_consttime: if (!BN_mod_mul_montgomery(&(val[i]),&(val[i-1]),d,mont,ctx))
     bn_exp.c line 645 - BN_mod_exp_mont_consttime: if (!BN_mod(am,a,m,ctx))
     bn_exp.c line 900 - BN_mod_exp_simple: if (!BN_nnmod(&(val[0]),a,m,ctx))
-* openSSL 0.9.7c
+* OpenSSL 0.9.7c
 ** RSA_eay.c test
    Tainted: p, q
    Untrusted: r1, m1
@@ -89,3 +89,97 @@
 ** bn_exp.c test
     Tainted: p, m :: Untrusted: a
     No results found.
+* LibGCRYPT 1.7.6
+** mpi-powm.c test
+   Tainted: mod, expo :: Untrusted: base
+   This function is used to do modular exponentiation and uses CRT.
+*** Results - O0
+    mpi-pow.c line 371 - mul_mod: if( ssize < KARATSUBA_THRESHOLD )
+    mpi-pow.c line 376 - mul_mod: if (rsize + ssize > msize)
+    mpi-pow.c line 434 - _gcry_mpi_powm: MPN_NORMALIZE(ep, esize)
+    mpi-pow.c line 461 - _gcry_mpi_powm: if (res->nlimbs)
+    mpi-pow.c line 485 - _gcry_mpi_powm: if (bsize > msize)
+    mpi-pow.c line 493 - _gcry_mpi_powm: MPN_COPY ( bp, base->d, bsize )
+    mpi-pow.c line 500 - _gcry_mpi_powm: MPN_NORMALIZE( bp, bsize )
+    mpi-pow.c line 505 - _gcry_mpi_powm: if (!bsize)
+    mpi-pow.c line 518 - _gcry_mpi_powm: gcry_assert (!bp_marker)
+    mpi-pow.c line 553 - _gcry_mpi_powm: negative_result = (ep[0] & 1) && bsign;
+    mpi-pow.c line 560 - _gcry_mpi_powm: MPN_COPY (precomp[0], bp, bsize)
+    mpi-pow.c line 563 - _gcry_mpi_powm: if (xsize >= base_u_size)
+    mpi-pow.c line 571 - _gcry_mpi_powm: if (max_u_size < base_u_size)
+    mpi-pow.c line 573 - _gcry_mpi_powm: MPN_COPY (precomp[i], rp, rsize)
+    mpi-pow.c line 577 - _gcry_mpi_powm: MPN_ZERO (base_u, max_u_size)
+    mpi-pow.c line 597 - _gcry_mpi_powm: MPN_ZERO (rp, rsize)
+    mpi-pow.c line 599 - _gcry_mpi_powm: MPN_COPY ( rp, bp, bsize )
+    mpi-pow.c line 609 - _gcry_mpi_powm: if (e == 0)
+    mpi-pow.c line 632 - _gcry_mpi_powm: if (c >= W)
+    mpi-pow.c line 657 - _gcry_mpi_powm: for (j += W - c0; j; j--)
+    mpi-pow.c line 691 - _gcry_mpi_powm: if (c != 0)
+    mpi-pow.c line 699 - _gcry_mpi_powm: while (j--)
+    mpi-pow.c line 706 - _gcry_mpi_powm: if (e != 0)
+    mpi-pow.c line 732 - _gcry_mpi_powm: for (; c; c--)
+    mpi-pow.c line 750 - _gcry_mpi_powm: if ( carry_limb )
+    mpi-pow.c line 758 - _gcry_mpi_powm: MPN_COPY (res->d, rp, rsize)
+    mpi-pow.c line 762 - _gcry_mpi_powm: if ( rsize >= msize )
+    mpi-pow.c line 771 - _gcry_mpi_powm: MPN_NORMALIZE (rp, rsize)
+    mpi-pow.c line 780 - _gcry_mpi_powm: if ( negative_result && rsize )
+    mpi-pow.c line 787 - _gcry_mpi_powm: MPN_NORMALIZE(rp, rsize)
+    mpi-pow.c line 796 - _gcry_mpi_powm: if (bp_marker)
+*** Results - O2
+    ./mpi-inline.h line 97  - _gcry_mpih_sub_1: if( s2_limb > x )
+    ./mpi-inline.h line 98  - _gcry_mpih_sub_1: while( --s1_size )
+    ./mpi-inline.h line 101 - _gcry_mpih_sub_1: if( x )
+    ./mpi-inline.h line 108 - _gcry_mpih_sub_1: if( res_ptr != s1_ptr )
+    ./mpi-inline.h line 110 - _gcry_mpih_sub_1: for( i=0; i < s1_size-1; i++ )
+    ./mpi-inline.h line 127 - _gcry_mpih_sub: if( s1_size - s2_size )
+    ./mpi-inline.h line 128 -
+    mpi-pow.c line 371 - mul_mod: if( ssize < KARATSUBA_THRESHOLD ) -
+    mpi-pow.c line 376 - mul_mod: if (rsize + ssize > msize)
+    mpi-pow.c line 485 - _gcry_mpi_powm: if (bsize > msize)
+    mpi-pow.c line 500 - _gcry_mpi_powm: MPN_NORMALIZE( bp, bsize )
+    mpi-pow.c line 505 - _gcry_mpi_powm: if (!bsize)
+    mpi-pow.c line 560 - _gcry_mpi_powm: MPN_COPY (precomp[0], bp, bsize)
+    mpi-pow.c line 563 - _gcry_mpi_powm: if (xsize >= base_u_size)
+    mpi-pow.c line 573 - _gcry_mpi_powm: MPN_COPY (precomp[i], rp, rsize)
+    mpi-pow.c line 577 - _gcry_mpi_powm: MPN_ZERO (base_u, max_u_size)
+    mpi-pow.c line 599 - _gcry_mpi_powm: MPN_COPY ( rp, bp, bsize )
+    mpi-pow.c line 750 - _gcry_mpi_powm: if ( carry_limb )
+    mpi-pow.c line 758 - _gcry_mpi_powm: MPN_COPY (res->d, rp, rsize)
+    mpi-pow.c line 762 - _gcry_mpi_powm: if ( rsize >= msize )
+    mpi-pow.c line 771 - _gcry_mpi_powm: MPN_NORMALIZE (rp, rsize)
+    mpi-pow.c line 780 - _gcry_mpi_powm: if ( negative_result && rsize )
+    mpi-pow.c line 787 - _gcry_mpi_powm: MPN_NORMALIZE(rp, rsize)
+    mpi-pow.c line 796 - _gcry_mpi_powm: if (bp_marker)
+~
+* LibGcrypt 1.5.2
+** mpi-powm.c test
+   Tainted: mod, expo :: Untrusted: base
+   There is supposed to be a square and multiply vulnerability in this version
+*** Results
+    : gcry_mpi_powm function :
+    mpi-pow.c line 105 - if (bsize > msize)
+    mpi-pow.c line 113 - MPN_COPY ( bp, base->d, bsize )
+    mpi-pow.c line 120 - MPN_NORMALIZE( bp, bsize )
+    mpi-pow.c line 125 - if (!bsize)
+    mpi-pow.c line 134 - if ( rp == bp )
+    mpi-pow.c line 137 - gcry_assert (!bp_marker)
+    mpi-pow.c line 140 - MPN_COPY(bp, rp, bsize)
+    mpi-pow.c line 164 - MPN_COPY ( rp, bp, bsize )
+    mpi-pow.c line 181 - negative_result = (ep[0] & 1) && base->sign;
+    mpi-pow.c line 185 - count_leading_zeros (c, e);
+    mpi-pow.c line 199 - while (c)
+    mpi-pow.c line 205 - if ( rsize < KARATSUBA_THRESHOLD )
+    mpi-pow.c line 209 - if ( !tspace )
+    mpi-pow.c line 214 - else if ( tsize < (2*rsize) )
+    mpi-pow.c line 224 - if ( xsize > msize )
+    mpi-pow.c line 233 - if ( (mpi_limb_signed_t)e < 0 ) -- Square and Multipy if bit is negative only
+    mpi-pow.c line 236 - if( bsize < KARATSUBA_THRESHOLD )
+    mpi-pow.c line 243 - if ( xsize > msize )
+    mpi-pow.c line 273 - if ( carry_limb )
+    mpi-pow.c line 281 - MPN_COPY (res->d, rp, rsize)
+    mpi-pow.c line 285 - if ( rsize >= msize )
+    mpi-pow.c line 294 - MPN_NORMALIZE (rp, rsize)
+    mpi-pow.c line 300 - if ( negative_result && rsize )
+    mpi-pow.c line 307 - MPN_NORMALIZE(rp, rsize)
+    mpi-pow.c line 316 - if (bp_marker)
+    mpi-pow.c line 322 - if (tspace)

@@ -16,6 +16,8 @@ FAILS=0
 
 function execute_test() {
     cd $1
+    rm test.bc # make sure that the previously compiled code is gone
+
     if [ "$(uname)" == "Darwin" ]; then
         EXT="dylib"
     else

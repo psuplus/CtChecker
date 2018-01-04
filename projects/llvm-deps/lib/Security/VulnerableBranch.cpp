@@ -61,38 +61,13 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
 
           if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
-            const ConsElem * elem;
-            if(elemMap.find(offset) != elemMap.end()){
-              elem = elemMap[offset];
-            } else {
-              errs() << "No direct element that matches offset.\n";
-              const ConsElem * lastElem = NULL;
-              bool elemAdded = false;
-              for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                  it != itEnd; ++it){
-                if((*it).first > offset && !elemAdded && lastElem != NULL){
-                  elem = lastElem;
-                  elemAdded = true;
-                }
-                if((*it).second != NULL){
-                  lastElem = (*it).second;
-                }
-              }
+            const ConsElem * elem = findConsElemAtOffset(elemMap, offset);
 
-              if(!elemAdded && lastElem != NULL){
-                elem = lastElem;
-              }
-            }
-
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
-            elem->dump(errs());
-            errs() << "\n";
+            errs() << "Matching " << match << " with " << value.getName() << ": "; elem->dump(errs()); errs() << "\n";
             ifa->kit->addConstraint(kind,ifa->kit->highConstant(), *elem);
           } else {
-            errs() << "Visiting: ";
-            value.dump();
+            errs() << "Visiting: "; value.dump();
             errs() << "Matching " << match << " with " << value.getName() << ": ";
-            errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
             ifa->setTainted(kind,value);
           }
         }
@@ -114,7 +89,7 @@ bool
 VulnerableBranch::runOnModule(Module &M) {
   ifa = &getAnalysis<Infoflow>();
   if (!ifa) { errs() << "No instance\n"; return false;}
-   
+
   std::ifstream ftaint("taint.txt"); // read tainted values from txt file
   std::string line;
   while (std::getline(ftaint, line)) {
@@ -137,14 +112,14 @@ VulnerableBranch::runOnModule(Module &M) {
 
   InfoflowSolution* soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> tainted = soln->getAllTaintValues();
- 
+
   kinds.clear();
   kinds.insert("untrust");
   soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> untrusted = soln->getAllTaintValues();
 
-  /** 
-  std::set<const Value*> vul; 
+  /**
+  std::set<const Value*> vul;
   std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
   for(std::set<const Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
     soln->getOriginalLocation(*it);

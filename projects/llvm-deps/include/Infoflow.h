@@ -351,6 +351,7 @@ class Infoflow :
 
   std::string getCaption(const AbstractHandle *N, const DSGraph *G);
   std::string getCaption(const AbstractLoc *N, const DSGraph *G);
+  const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset);
 }
 
 #endif /* INFOFLOW_H */

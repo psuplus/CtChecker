@@ -66,6 +66,168 @@
     bn_exp.c line 643 - BN_mod_exp_mont_consttime: if (!BN_mod_mul_montgomery(&(val[i]),&(val[i-1]),d,mont,ctx))
     bn_exp.c line 645 - BN_mod_exp_mont_consttime: if (!BN_mod(am,a,m,ctx))
     bn_exp.c line 900 - BN_mod_exp_simple: if (!BN_nnmod(&(val[0]),a,m,ctx))
+*** *Commit* caad0843b7 Tainted/Untrusted :: a, p  - p is private key exponent, a plaintext padded
+    bn_exp.c line 142 - BN_exp: if (BN_is_odd(p))
+
+    bn_exp.c line 215 - BN_mod_exp: if (a->top == 1 && !a->neg && (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) == 0))
+    bn_exp.c line 245 - BN_mod_exp: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+
+    bn_exp.c line 379 - BN_mod_exp_mont: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0) - maybe non-vulnerability
+    bn_exp.c line 426 - BN_mod_exp_mont: if (BN_is_zero(aa)) - maybe non-vulnerability
+
+    bn_exp.c line 538 - MOD_EXP_CTIME_COPY_TO_PREBUF: bn_fix_top(b) - constant time called from BN_mod_exp_mont
+    bn_exp.c line 555 - MOD_EXP_CTIME_COPY_FROM_PREBUF: bn_fix_top(b) - constant time called from BN_mod_exp_mont
+    bn_exp.c line 746 - BN_mod_exp_mont_word:if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0) - maybe non-vulnerability?
+    bn_exp.c line 770 - BN_mod_exp_mont_word: if (a == 0) - if a is zeros rr = zero
+
+    BN_mod_exp_mont_word - calculating r * w  potential for timing attack
+    bn_exp.c line 800 - if ((next_w/w) != w)
+    bn_exp.c line 804 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 809 - if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 823 - if ((next_w/a) != w)
+    bn_exp.c line 827 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 832 - if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 841 - if (w != 1)
+    bn_exp.c line 845 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 850 - if (!BN_MOD_MUL_WORD(r, w, m))
+
+    bn_exp.c line 880 - if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+*** *Commit* caad0843b7 Tainted/Untrusted: a, m, p
+    bn_exp.c line 142 - BN_exp: if (BN_is_odd(p))
+    bn_exp.c line 212 - BN_mod_exp: if (BN_is_odd(m))
+    bn_exp.c line 215 - BN_mod_exp: if (a->top == 1 && !a->neg && (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) == 0))
+    bn_exp.c line 245 - BN_mod_exp: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 379 - BN_mod_exp_mont: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 388 - BN_mod_exp_mont: if (!(m->d[0] & 1))
+    bn_exp.c line 426 - BN_mod_exp_mont: if (BN_is_zero(aa))
+    bn_exp.c line 538 - MOD_EXP_CTIME_COPY_TO_PREBUF: bn_fix_top(b)
+    bn_exp.c line 555 - MOD_EXP_CTIME_COPY_FROM_PREBUF: bn_fix_top(b)
+    bn_exp.c line 590 - BN_mod_exp_mont_consttime: if (!(m->d[0] & 1))
+    bn_exp.c line 746 - BN_mod_exp_mont_word: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 756 - BN_mod_exp_mont_word: if (m->top == 0 || !(m->d[0] & 1))
+    bn_exp.c line 770 - BN_mod_exp_mont_word: if (a == 0)
+    bn_exp.c line 800 - BN_mod_exp_mont_word: if ((next_w/w) != w)
+    bn_exp.c line 804 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 809 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 823 - BN_mod_exp_mont_word: if ((next_w/a) != w)
+    bn_exp.c line 827 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 832 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 841 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line 845 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 850 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 880 - BN_mod_exp_simple: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+*** *Commit* caad0843b7 Tainted: p, m :: Untrusted: a
+    bn_exp.c line 770 - if (a == 0)
+    bn_exp.c line 800 - if ((next_w/w) != w)
+    bn_exp.c line 804 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 809 - if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 823 - if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 827 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 832 - if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 841 - if (w != 1)
+    bn_exp.c line 845 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 850 - if (!BN_MOD_MUL_WORD(r, w, m))
+*** *commit* 3798197c41 Tainted/Untrusted: a, p
+    bn_exp.c line 125 - BN_exp: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 133 - BN_exp: if ((r == a) || (r == p))
+    bn_exp.c line 142 - BN_exp: if (BN_is_odd(p))
+    bn_exp.c line 146 - BN_exp: for (i=1; i<bits; i++)
+    bn_exp.c line 149 - BN_exp: if (BN_is_bit_set(p,i))
+
+    bn_exp.c line 215 - BN_mod_exp: if (a->top == 1 && !a->neg && (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) == 0))
+
+    bn_exp.c line 245 - BN_mod_exp_recp: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 254 - BN_mod_exp_recp: if (bits == 0)
+    bn_exp.c line 279 - BN_mod_exp_recp: if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line 286 - BN_mod_exp_recp: window = BN_window_bits_for_exponent_size(bits)
+    bn_exp.c line 287 - BN_mod_exp_recp: if (window > 1)
+    bn_exp.c line 292 - BN_mod_exp_recp: for (i=1; i<j; i++)
+    bn_exp.c line 312 - BN_mod_exp_recp: if (BN_is_bit_set(p,wstart) == 0)
+    bn_exp.c line 317 - BN_mod_exp_recp: if (wstart == 0)
+    bn_exp.c line 328 - BN_mod_exp_recp: for (i=1; i<window; i++)
+    bn_exp.c line 330 - BN_mod_exp_recp: if (wstart-i < 0)
+    bn_exp.c line 331 - BN_mod_exp_recp: if (BN_is_bit_set(p,wstart-i))
+    bn_exp.c line 343 - BN_mod_exp_recp: for (i=0; i<j; i++)
+    bn_exp.c line 357 - BN_mod_exp_recp: if (wstart < 0)
+
+    bn_exp.c line 379 - BN_mod_exp_mont: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 394 - BN_mod_exp_mont: if (bits == 0)
+    bn_exp.c line 418 - BN_mod_exp_mont: if (a->neg || BN_ucmp(a,m) >= 0)
+    bn_exp.c line 420 - BN_mod_exp_mont: if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line 426 - BN_mod_exp_mont: if (BN_is_zero(aa))
+    bn_exp.c line 431 - BN_mod_exp_mont: if (!BN_to_montgomery(&(val[0]),aa,mont,ctx))
+    bn_exp.c line 433 - BN_mod_exp_mont: window = BN_window_bits_for_exponent_size(bits)
+    NOTE: Why is this reported
+      #define BN_window_bits_for_exponent_size(b) \
+          ((b) > 671 ? 6 : \
+          (b) > 239 ? 5 : \
+          (b) >  79 ? 4 : \
+          (b) >  23 ? 3 : 1)
+    bn_exp.c line 434 - BN_mod_exp_mont: if (window > 1)
+    bn_exp.c line 438 - BN_mod_exp_mont: for (i=1; i<j; i++)
+    bn_exp.c line 457 - BN_mod_exp_mont: if (BN_is_bit_set(p,wstart) == 0)
+    bn_exp.c line 464 - BN_mod_exp_mont: if (wstart == 0)
+    bn_exp.c line 475 - BN_mod_exp_mont: for (i=1; i<window; i++)
+    bn_exp.c line 477 - BN_mod_exp_mont: if (wstart-i < 0)
+    bn_exp.c line 478 - BN_mod_exp_mont: if (BN_is_bit_set(p,wstart-i))
+    bn_exp.c line 490 - BN_mod_exp_mont: for (i=0; i<j; i++)
+    bn_exp.c line 504 - BN_mod_exp_mont: if (wstart < 0)
+
+    bn_exp.c line 538 - MOD_EXP_CTIME_COPY_TO_PREBUF: bn_fix_top(b)
+    bn_exp.c line 555 - MOD_EXP_CTIME_COPY_FROM_PREBUF: bn_fix_top(b)
+
+    bn_exp.c line 596 - BN_mod_exp_mont_consttime: if (bits == 0)
+    bn_exp.c line 619 - BN_mod_exp_mont_consttime: window = BN_window_bits_for_ctime_exponent_size(bits)
+    bn_exp.c line 626 - BN_mod_exp_mont_consttime: if ((powerbufFree=(unsigned char*)OPENSSL_malloc(powerbufLen+MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH)) == NULL)
+    bn_exp.c line 643 - BN_mod_exp_mont_consttime: if (a->neg || BN_ucmp(a,m)
+    bn_exp.c line 645 - BN_mod_exp_mont_consttime: if (!BN_mod(am,a,m,ctx))
+    bn_exp.c line 651 - BN_mod_exp_mont_consttime: if (!BN_to_montgomery(am,aa,mont,ctx))
+    bn_exp.c line 660 - BN_mod_exp_mont_consttime: if (window > 1)
+    bn_exp.c line 662 - BN_mod_exp_mont_consttime: for (i=2; i<numPowers; i++)
+    bn_exp.c line 688 - BN_mod_exp_mont_consttime: while (idx >= 0)
+    bn_exp.c line 693 - BN_mod_exp_mont_consttime: for (i=0; i<window; i++,idx--)
+    bn_exp.c line 711 - BN_mod_exp_mont_consttime: if (powerbuf!=NULL)
+
+    bn_exp.c line 746 - BN_mod_exp_mont_word: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 765 - BN_mod_exp_mont_word: if (bits == 0)
+    bn_exp.c line 770 - BN_mod_exp_mont_word: if (a == 0)
+    bn_exp.c line 796 - BN_mod_exp_mont_word: for (b = bits-2; b >= 0; b--)
+    bn_exp.c line 800 - BN_mod_exp_mont_word: if ((next_w/w) != w)
+    bn_exp.c line 804 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 809 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 820 - BN_mod_exp_mont_word: if (BN_is_bit_set(p, b))
+    bn_exp.c line 823 - BN_mod_exp_mont_word: if ((next_w/a) != w)
+    bn_exp.c line 827 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 832 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 841 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line 845 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 850 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+
+    bn_exp.c line 880 - BN_mod_exp_simple: if (BN_get_flags(p, BN_FLG_EXP_CONSTTIME) != 0)
+    bn_exp.c line 889 - BN_mod_exp_simple: if (bits == 0)
+    bn_exp.c line 907 - BN_mod_exp_simple: window = BN_window_bits_for_exponent_size(bits)
+    bn_exp.c line 908 - BN_mod_exp_simple: if (window > 1)
+    bn_exp.c line 913 - BN_mod_exp_simple: for (i=1; i<j; i++)
+    bn_exp.c line 933 - BN_mod_exp_simple: if (BN_is_bit_set(p,wstart) == 0)
+    bn_exp.c line 938 - BN_mod_exp_simple: if (wstart == 0)
+    bn_exp.c line 949 - BN_mod_exp_simple: for (i=1; i<window; i++)
+    bn_exp.c line 951 - BN_mod_exp_simple: if (wstart-i < 0)
+    bn_exp.c line 952 - BN_mod_exp_simple: if (BN_is_bit_set(p,wstart-i))
+    bn_exp.c line 964 - BN_mod_exp_simple: for (i=0; i<j; i++)
+    bn_exp.c line 978 - BN_mod_exp_simple: if (wstart < 0)
+*** *Commit* 3798198c41 BN_mod_exp_Recp only Tainted/Untrusted: a/p
+    bn_test.c line 16
+    bn_test.c line 25
+    bn_test.c line 57
+    bn_test.c line 58
+    bn_test.c line 63
+    bn_test.c line 83
+    bn_test.c line 88
+    bn_test.c line 99
+    bn_test.c line 101
+    bn_test.c line 102
+    bn_test.c line 114
+    bn_test.c line 128
 * OpenSSL 0.9.7c
 ** RSA_eay.c test
    Tainted: p, q
@@ -87,9 +249,74 @@
    rsa_eay.c line 680 - RSA_eay_mod_exp: if (!BN_add(r0,r0,rsa->p))
    rsa_eay.c line 681 - RSA_eay_mod_exp: if (!BN_mul(&r1,r0,rsa->q,ctx))
 ** bn_exp.c test
-    Tainted: p, m :: Untrusted: a
-    No results found.
-* LibGCRYPT 1.7.6
+*** *Commit* caad0843b7 Tainted/Untrusted :: a, p  - p is private key exponent, a plaintext padded
+    bn_exp.c line 134 - BN_exp: if (BN_is_odd(p))  - potential timing channel
+    bn_exp.c line 406 - BN_mod_exp_mont: if (BN_is_zero(aa)) - false positive
+    bn_exp.c line 537 - BN_mod_exp_mont_word: if (a == 0) - seems like a false positive
+
+    BN_mod_exp_mont_word - calculating r * w  potential for timing attack
+    bn_exp.c line 567 - BN_mod_exp_mont_word: if ((next_w/w) != w) -  Detecting Overflow - potential timing
+    bn_exp.c line 571 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont)) tainted w flows from a
+    bn_exp.c line 576 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m)) - tainted w flows from a
+    bn_exp.c line 590 - BN_mod_exp_mont_word: if ((next_w/a) != w) - Detecting Overflow - potential timing
+    bn_exp.c line 594 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 599 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_exp.c line 608 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line 612 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 617 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+*** *Commit* caad0843b7 Tainted/Untrusted: a, m, p
+    bn_exp.c line 134 - BN_exp: if (BN_is_odd(p))
+    bn_exp.c line 204 - BN_mod_exp: if (BN_is_odd(m))
+    bn_exp.c line 368 - if (!(m->d[0] & 1))
+    bn_exp.c line 406 - if (BN_is_zero(aa))
+    bn_exp.c line 523 - BN_mod_exp_mont_word: if (m->top == 0 || !(m->d[0] & 1))
+    bn_exp.c line 537 - BN_mod_exp_mont_word: if (a == 0)
+    bn_exp.c line 567 - BN_mod_exp_mont_word: if ((next_w/w) != w)
+    bn_exp.c line 571 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 576 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 590 - BN_mod_exp_mont_word: if ((next_w/a) != w)
+    bn_exp.c line 594 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 599 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 608 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line 612 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 617 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+*** *Commit* caad0843b7 Tainted: p, m :: Untrusted: a
+    bn_exp.c line 537 - BN_mod_exp_mont_word: if (a == 0)
+    bn_exp.c like 567 - BN_mod_exp_mont_word: if ((next_w/w) != w)
+    bn_exp.c line 571 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 576 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 590 - BN_mod_exp_mont_word: if ((next_w/a) != w)
+    bn_exp.c line 594 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 599 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 608 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line 612 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 617 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+*** *commit* 3798197c41 Tainted/Untrusted: a, p
+    bn_exp.c line 125 - BN_exp: if ((r == a) || (r == p))
+    bn_exp.c line 134 - BN_exp: if (BN_is_odd(p))
+    bn_exp.c line 138 - BN_exp: for (i=1; i<bits; i++)
+    bn_exp.c line 141 - BN_exp: if (BN_is_bit_set(p,i))
+
+    bn_exp.c line 207 - BN_mod_exp: if (a->top == 1 && !a->neg)
+
+    bn_exp.c line 264 - BN_mod_exp_recp: if (!BN_nnmod(&(val[0]),a,m,ctx)
+
+    bn_exp.c line 398 - BN_mod_exp_mont: if (a->neg || BN_ucmp(a,m) >= 0)
+    bn_exp.c line 400 - BN_mod_exp_mont: if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line 406 - BN_mod_exp_mont: if (BN_is_zero(aa))
+    bn_exp.c line 411 - BN_mod_exp_mont: if (!BN_to_montgomery(&(val[0]),aa,mont,ctx))
+
+    bn_exp.c line 537 - BN_mod_exp_mont_word: if (a == 0)
+    bn_exp.c line 567 - BN_mod_exp_mont_word: if ((next_w/w) != w)
+    bn_exp.c line 571 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 576 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 590 - BN_mod_exp_mont_word: if ((next_w/a) != w)
+    bn_exp.c line 594 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 599 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+    bn_exp.c line 608 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line 612 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+    bn_exp.c line 617 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+* LibGcrypt 1.7.6
 ** mpi-powm.c test
    Tainted: mod, expo :: Untrusted: base
    This function is used to do modular exponentiation and uses CRT.

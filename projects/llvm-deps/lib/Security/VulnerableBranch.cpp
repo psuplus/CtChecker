@@ -142,6 +142,8 @@ VulnerableBranch::runOnModule(Module &M) {
            if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end()){
              tainted_branches++;
              errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << "\n";
+             //errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << ":";
+             //v->dump(); errs() << "\n";
            }
          }
       }
@@ -153,7 +155,7 @@ VulnerableBranch::runOnModule(Module &M) {
     double tainted_percentage = tainted_branches*1.0/number_branches * 100.0;
     errs() << ":: Tainted Branches: " << tainted_branches << "\n";
     errs() << ":: Branch Instructions: " << number_branches << "\n";
-    errs() << ":: Vulnerable Branches: " << format("%2.2f\% [%d/%d]\n", tainted_branches, number_branches, tainted_percentage);
+    errs() << ":: Vulnerable Branches: " << format("%2.2f%% [%d/%d]\n", tainted_branches, number_branches, tainted_percentage);
   }
 
 

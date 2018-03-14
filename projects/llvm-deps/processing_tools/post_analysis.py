@@ -20,6 +20,7 @@ from collections import defaultdict
 def filter_lines_from_results(fname):
     '''Filters through vulnerable branch dat file for results'''
     match = '[a-zA-Z/_]+.(c|h|cpp|hpp) line [0-9]+'
+    '''Filters through vulnerable branch dat file for tainted lines'''
     filtered_lines = []
     with open(fname, 'r') as f:
         for line in f:
@@ -29,7 +30,7 @@ def filter_lines_from_results(fname):
     return filtered_lines
 
 def get_lines_from_source(positives):
-    '''Opens file where results are found and gets source for each reported line'''
+    '''Opens file and extracts source associated with tainted result'''
     results = defaultdict(list)
     for k,v in positives.items():
         with open(k, 'r') as f:
@@ -41,7 +42,7 @@ def get_lines_from_source(positives):
     return results
 
 def output_results(lines):
-    '''Writes out to stdout fn.c line # - source'''
+    '''Writes out to stdout ex. fn.c line # - source'''
     for fname, result_pair in lines.items():
         for line, src in result_pair:
             print("{} line {:4d} - {}".format(fname, line, src))

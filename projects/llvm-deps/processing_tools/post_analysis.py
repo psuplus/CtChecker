@@ -18,9 +18,8 @@ import sys
 from collections import defaultdict
 
 def filter_lines_from_results(fname):
-    '''Filters through vulnerable branch dat file for results'''
-    match = '[a-zA-Z/_]+.(c|h|cpp|hpp) line [0-9]+'
     '''Filters through vulnerable branch dat file for tainted lines'''
+    match = '[a-zA-Z0-9/_-]+.(c|h|cpp|hpp) line [0-9]+'
     filtered_lines = []
     with open(fname, 'r') as f:
         for line in f:

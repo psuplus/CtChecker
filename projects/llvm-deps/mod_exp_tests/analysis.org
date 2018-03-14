@@ -1,6 +1,6 @@
 * OpenSSL 1.1.0g
 ** bn_exp.c test
-*** Commit *d72a4c71d7* Tainted/Untrusted: a, p
+*** Commit *319237301b* Tainted/Untrusted: a, p
     bn_exp.c line 146  - BN_mod_exp: if (a->top == 1 && !a->neg
     bn_exp.c line 147  - BN_mod_exp: && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)
     bn_exp.c line 149  - BN_mod_exp: && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0))
@@ -24,7 +24,7 @@
     bn_exp.c line 1226 - BN_mod_exp_mont_word: if (w != 1)
     bn_exp.c line 1228 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
     bn_exp.c line 1232 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
-*** Commit *d72a4c71d7* Tainted/Untrusted: a, p :: Also linked with bn_lib.c becuase of function definitions
+*** Commit *319237301b* Tainted/Untrusted: a, p :: Also linked with bn_lib.c becuase of function definitions
     bn_exp.c line 46   - BN_exp: if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
     bn_exp.c line 47   - BN_exp: || BN_get_flags(a, BN_FLG_CONSTTIME) != 0)
     bn_exp.c line 54   - BN_exp: if ((r == a) || (r == p))
@@ -58,7 +58,7 @@
     bn_exp.c line 268  - BN_mod_exp_recp: for (i = 1; i < window; i++)
     bn_exp.c line 269  - BN_mod_exp_recp: if (wstart - i < 0)
     bn_exp.c line 271  - BN_mod_exp_recp: if (BN_is_bit_set(p, wstart - i))
-    bn_exp.c line 282  - BN_mod_exp_recp: for (i = 0; i < j; i++)
+    bn_exp.c line 282  - BN_mod_exp_recp: for (i = 0; i < j; i++)  ==Sliding L-R Equivalent OpenSSL==
     bn_exp.c line 295  - BN_mod_exp_recp: if (wstart < 0)
 
     bn_exp.c line 317  - BN_mod_exp_mont: if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
@@ -83,7 +83,7 @@
     bn_exp.c line 434  - BN_mod_exp_mont: for (i = 1; i < window; i++)
     bn_exp.c line 435  - BN_mod_exp_mont: if (wstart - i < 0)
     bn_exp.c line 437  - BN_mod_exp_mont: if (BN_is_bit_set(p, wstart - i))
-    bn_exp.c line 448  - BN_mod_exp_mont: for (i = 0; i < j; i++)
+    bn_exp.c line 448  - BN_mod_exp_mont: for (i = 0; i < j; i++)  ==Sliding L-R Equivalent OpenSSL==
     bn_exp.c line 461  - BN_mod_exp_mont: if (wstart < 0)
 
     bn_exp.c line 522  - MOD_EXP_CTIME_COPY_TO_PREBUF: if (top > b->top)
@@ -115,7 +115,7 @@
     bn_exp.c line 1037 - BN_mod_exp_mont_consttime: for (i = 3; i < numPowers; i++)
     bn_exp.c line 1048 - BN_mod_exp_mont_consttime: for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
     bn_exp.c line 1058 - BN_mod_exp_mont_consttime: while (bits >= 0)
-    bn_exp.c line 1062 - BN_mod_exp_mont_consttime: for (i = 0; i < window; i++, bits--)
+    bn_exp.c line 1062 - BN_mod_exp_mont_consttime: for (i = 0; i < window; i++, bits--) ==Sliding L-R Result in OpenSSL== *Constant Time (No Vulnerability)*
     bn_exp.c line 1097 - BN_mod_exp_mont_consttime: if (powerbuf != NULL)
 
     bn_exp.c line 1131 - BN_mod_exp_mont_word: if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
@@ -581,11 +581,239 @@
     bn_exp.c line 608 - BN_mod_exp_mont_word: if (w != 1)
     bn_exp.c line 612 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
     bn_exp.c line 617 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m))
+*** *Commit* 319237301 Tainted/Untrusted: a, p :: Linked with bn_mont.c
+    bn_exp.c line  125 - BN_exp: if ((r == a) || (r == p))
+    bn_exp.c line  134 - BN_exp: if (BN_is_odd(p))
+    bn_exp.c line  138 - BN_exp: for (i=1; i<bits; i++)
+    bn_exp.c line  141 - BN_exp: if (BN_is_bit_set(p,i))
+    bn_exp.c line  207 - BN_mod_exp: if (a->top == 1 && !a->neg)
+    bn_exp.c line  264 - BN_mod_exp_recp: if (!BN_nnmod(&(val[0]),a,m,ctx)) goto err;		/* 1 */
+    bn_exp.c line  398 - BN_mod_exp_mont: if (a->neg || BN_ucmp(a,m) >= 0)
+    bn_exp.c line  400 - BN_mod_exp_mont: if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line  406 - BN_mod_exp_mont: if (BN_is_zero(aa))
+    bn_exp.c line  537 - BN_mod_exp_mont_word: if (a == 0)
+    bn_exp.c line  567 - BN_mod_exp_mont_word: if ((next_w/w) != w) /* overflow */
+    bn_exp.c line  571 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont)) goto err;
+    bn_exp.c line  576 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_exp.c line  590 - BN_mod_exp_mont_word: if ((next_w/a) != w) /* overflow */
+    bn_exp.c line  594 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont)) goto err;
+    bn_exp.c line  599 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_exp.c line  608 - BN_mod_exp_mont_word: if (w != 1)
+    bn_exp.c line  612 - BN_mod_exp_mont_word: if (!BN_TO_MONTGOMERY_WORD(r, w, mont)) goto err;
+    bn_exp.c line  617 - BN_mod_exp_mont_word: if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_mont.c line   83 - if (a == b)
+    bn_mont.c line   85 - if (!BN_sqr(tmp,a,ctx)) goto err;
+    bn_mont.c line   89 - if (!BN_mul(tmp,a,b,ctx)) goto err;
+    bn_mont.c line  112 - if (!BN_copy(r,a)) goto err;
+    bn_mont.c line  121 - if ((al == 0) || (nl == 0)) { r->top=0; return(1); }
+    bn_mont.c line  124 - if (bn_wexpand(r,max) == NULL) goto err;
+    bn_mont.c line  125 - if (bn_wexpand(ret,max) == NULL) goto err;
+    bn_mont.c line  134 - for (i=r->top; i<max; i++) /* memset? XXX */
+    bn_mont.c line  146 - for (i=0; i<nl; i++)
+    bn_mont.c line  166 - if (((nrp[-1]+=v)&BN_MASK2) >= v)
+    bn_mont.c line  170 - if (((++nrp[0])&BN_MASK2) != 0) continue;
+    bn_mont.c line  171 - if (((++nrp[1])&BN_MASK2) != 0) continue;
+    bn_mont.c line  172 - for (x=2; (((++nrp[x])&BN_MASK2) == 0); x++) ;
+    bn_mont.c line  175 - bn_fix_top(r);
+    bn_mont.c line  185 - if (r->top < x)
+    bn_mont.c line  191 - for (i=0; i<al; i+=4)
+    bn_mont.c line  205 - for (; i<al; i++)
+*** *Commit* 319237301 Tainted/Untrusted: a, p :: Linked with bn_mont.c bn_lib.c
+    bn_exp.c line  125 - if ((r == a) || (r == p))
+    bn_exp.c line  131 - if (BN_copy(v,a) == NULL) goto err;
+    bn_exp.c line  134 - if (BN_is_odd(p))
+    bn_exp.c line  135 - { if (BN_copy(rr,a) == NULL) goto err; }
+    bn_exp.c line  138 - for (i=1; i<bits; i++)
+    bn_exp.c line  141 - if (BN_is_bit_set(p,i))
+    bn_exp.c line  207 - if (a->top == 1 && !a->neg)
+    bn_exp.c line  239 - if (bits == 0)
+    bn_exp.c line  252 - if (!BN_copy(aa, m)) goto err;
+    bn_exp.c line  264 - if (!BN_nnmod(&(val[0]),a,m,ctx)) goto err;		/* 1 */
+    bn_exp.c line  265 - if (BN_is_zero(&(val[0])))
+    bn_exp.c line  271 - window = BN_window_bits_for_exponent_size(bits);
+    bn_exp.c line  272 - if (window > 1)
+    bn_exp.c line  277 - for (i=1; i<j; i++)
+    bn_exp.c line  297 - if (BN_is_bit_set(p,wstart) == 0)
+    bn_exp.c line  302 - if (wstart == 0) break;
+    bn_exp.c line  313 - for (i=1; i<window; i++)
+    bn_exp.c line  315 - if (wstart-i < 0) break;
+    bn_exp.c line  316 - if (BN_is_bit_set(p,wstart-i))
+    bn_exp.c line  328 - for (i=0; i<j; i++)
+    bn_exp.c line  342 - if (wstart < 0) break;
+    bn_exp.c line  374 - if (bits == 0)
+    bn_exp.c line  398 - if (a->neg || BN_ucmp(a,m) >= 0)
+    bn_exp.c line  400 - if (!BN_nnmod(&(val[0]),a,m,ctx))
+    bn_exp.c line  406 - if (BN_is_zero(aa))
+    bn_exp.c line  413 - window = BN_window_bits_for_exponent_size(bits);
+    bn_exp.c line  414 - if (window > 1)
+    bn_exp.c line  418 - for (i=1; i<j; i++)
+    bn_exp.c line  437 - if (BN_is_bit_set(p,wstart) == 0)
+    bn_exp.c line  444 - if (wstart == 0) break;
+    bn_exp.c line  455 - for (i=1; i<window; i++)
+    bn_exp.c line  457 - if (wstart-i < 0) break;
+    bn_exp.c line  458 - if (BN_is_bit_set(p,wstart-i))
+    bn_exp.c line  470 - for (i=0; i<j; i++)
+    bn_exp.c line  484 - if (wstart < 0) break;
+    bn_exp.c line  532 - if (bits == 0)
+    bn_exp.c line  537 - if (a == 0)
+    bn_exp.c line  563 - for (b = bits-2; b >= 0; b--)
+    bn_exp.c line  567 - if ((next_w/w) != w) /* overflow */
+    bn_exp.c line  576 - if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_exp.c line  587 - if (BN_is_bit_set(p, b))
+    bn_exp.c line  590 - if ((next_w/a) != w) /* overflow */
+    bn_exp.c line  599 - if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_exp.c line  608 - if (w != 1)
+    bn_exp.c line  617 - if (!BN_MOD_MUL_WORD(r, w, m)) goto err;
+    bn_exp.c line  649 - if (bits == 0)
+    bn_exp.c line  661 - if (BN_is_zero(&(val[0])))
+    bn_exp.c line  667 - window = BN_window_bits_for_exponent_size(bits);
+    bn_exp.c line  668 - if (window > 1)
+    bn_exp.c line  673 - for (i=1; i<j; i++)
+    bn_exp.c line  693 - if (BN_is_bit_set(p,wstart) == 0)
+    bn_exp.c line  698 - if (wstart == 0) break;
+    bn_exp.c line  709 - for (i=1; i<window; i++)
+    bn_exp.c line  711 - if (wstart-i < 0) break;
+    bn_exp.c line  712 - if (BN_is_bit_set(p,wstart-i))
+    bn_exp.c line  724 - for (i=0; i<j; i++)
+    bn_exp.c line  738 - if (wstart < 0) break;
+
+    bn_lib.c line  180 - if (l & 0xffffffff00000000L)
+    bn_lib.c line  182 - if (l & 0xffff000000000000L)
+    bn_lib.c line  184 - if (l & 0xff00000000000000L)
+    bn_lib.c line  192 - if (l & 0x0000ff0000000000L)
+    bn_lib.c line  226 - if (l & 0xffff0000L)
+    bn_lib.c line  228 - if (l & 0xff000000L)
+    bn_lib.c line  236 - if (l & 0xff00L)
+    bn_lib.c line  252 - if (a->top == 0) return(0);
+    bn_lib.c line  263 - if (a == NULL) return;
+    bn_lib.c line  264 - if (a->d != NULL)
+    bn_lib.c line  267 - if (!(BN_get_flags(a,BN_FLG_STATIC_DATA)))
+    bn_lib.c line  272 - if (i)
+    bn_lib.c line  278 - if (a == NULL) return;
+    bn_lib.c line  279 - if ((a->d != NULL) && !(BN_get_flags(a,BN_FLG_STATIC_DATA)))
+    bn_lib.c line  282 - if (a->flags & BN_FLG_MALLOCED)
+    bn_lib.c line  316 - if (words > (INT_MAX/(4*BN_BITS2)))
+    bn_lib.c line  323 - if (BN_get_flags(b,BN_FLG_STATIC_DATA))
+    bn_lib.c line  329 - if (A == NULL)
+    bn_lib.c line  337 - if (B != NULL)
+    bn_lib.c line  339 - for (i=b->top>>2; i>0; i--,A+=4,B+=4)
+    bn_lib.c line  370 - for (i=(words - b->top)>>3; i>0; i--,A+=8)
+    bn_lib.c line  375 - for (i=(words - b->top)&7; i>0; i--,A++)
+    bn_lib.c line  406 - if (words > b->dmax)
+    bn_lib.c line  410 - if (a)
+    bn_lib.c line  413 - if (r)
+    bn_lib.c line  444 - if (words > b->dmax)
+    bn_lib.c line  448 - if (a)
+    bn_lib.c line  450 - if (b->d)
+    bn_lib.c line  465 - if (a == NULL) return NULL;
+    bn_lib.c line  473 - if (r == NULL)
+    bn_lib.c line  486 - if (a == b) return(a);
+    bn_lib.c line  487 - if (bn_wexpand(a,b->top) == NULL) return(NULL);
+    bn_lib.c line  492 - for (i=b->top>>2; i>0; i--,A+=4,B+=4)
+    bn_lib.c line  511 - if ((a->top == 0) && (a->d != NULL))
+    bn_lib.c line  548 - if (a->d != NULL)
+    bn_lib.c line  560 - if (n > sizeof(BN_ULONG))
+    bn_lib.c line  562 - for (i=a->top-1; i>=0; i--)
+    bn_lib.c line  578 - if (bn_expand(a,sizeof(BN_ULONG)*8) == NULL) return(0);
+    bn_lib.c line  584 - if (a->d[0] != 0) a->top=1;
+    bn_lib.c line  597 - if (a->d[i] != 0) a->top=i+1;
+    bn_lib.c line  617 - if (bn_expand(ret,(int)(n+2)*8) == NULL)
+    bn_lib.c line  635 - bn_fix_top(ret);
+    bn_lib.c line  646 - while (i-- > 0)
+    bn_lib.c line  663 - if (i != 0) return(i);
+    bn_lib.c line  666 - for (i=a->top-1; i>=0; i--)
+    bn_lib.c line  670 - if (t1 != t2)
+    bn_lib.c line  682 - if ((a == NULL) || (b == NULL))
+    bn_lib.c line  684 - if (a != NULL)
+    bn_lib.c line  695 - if (a->neg != b->neg)
+    bn_lib.c line  697 - if (a->neg)
+    bn_lib.c line  701 - if (a->neg == 0)
+    bn_lib.c line  705 - if (a->top > b->top) return(gt);
+    bn_lib.c line  706 - if (a->top < b->top) return(lt);
+    bn_lib.c line  707 - for (i=a->top-1; i>=0; i--)
+    bn_lib.c line  711 - if (t1 > t2) return(gt);
+    bn_lib.c line  712 - if (t1 < t2) return(lt);
+    bn_lib.c line  723 - if (a->top <= i)
+    bn_lib.c line  725 - if (bn_wexpand(a,i+1) == NULL) return(0);
+    bn_lib.c line  726 - for(k=a->top; k<i+1; k++)
+    bn_lib.c line  741 - if (a->top <= i) return(0);
+    bn_lib.c line  744 - bn_fix_top(a);
+    bn_lib.c line  752 - if (n < 0) return(0);
+    bn_lib.c line  755 - if (a->top <= i) return(0);
+    bn_lib.c line  765 - if (w >= a->top) return(0);
+    bn_lib.c line  773 - bn_fix_top(a);
+    bn_lib.c line  784 - if (aa != bb) return((aa > bb)?1:-1);
+    bn_lib.c line  789 - if (aa != bb) return((aa > bb)?1:-1);
+    bn_lib.c line  819 - if (a[n+i] != 0)
+
+    bn_mont.c line   83 - if (a == b)
+    bn_mont.c line   85 - if (!BN_sqr(tmp,a,ctx)) goto err;
+    bn_mont.c line   89 - if (!BN_mul(tmp,a,b,ctx)) goto err;
+    bn_mont.c line  112 - if (!BN_copy(r,a)) goto err;
+    bn_mont.c line  121 - if ((al == 0) || (nl == 0)) { r->top=0; return(1); }
+    bn_mont.c line  124 - if (bn_wexpand(r,max) == NULL) goto err;
+    bn_mont.c line  125 - if (bn_wexpand(ret,max) == NULL) goto err;
+    bn_mont.c line  134 - for (i=r->top; i<max; i++) /* memset? XXX */
+    bn_mont.c line  146 - for (i=0; i<nl; i++)
+    bn_mont.c line  166 - if (((nrp[-1]+=v)&BN_MASK2) >= v)
+    bn_mont.c line  170 - if (((++nrp[0])&BN_MASK2) != 0) continue;
+    bn_mont.c line  171 - if (((+ + nrp[1])&BN_MASK2) != 0) continue;
+    bn_mont.c line  172 - for (x=2; (((+ + nrp[x])&BN_MASK2) == 0); x++) ;
+    bn_mont.c line  175 - bn_fix_top(r);
+    bn_mont.c line  185 - if (r->top < x)
+    bn_mont.c line  191 - for (i=0; i<al; i+=4)
+    bn_mont.c line  205 - for (; i<al; i++)
+    bn_mont.c line  227 - if (BN_ucmp(ret, &(mont->N)) >= 0)
+    bn_mont.c line  266 - if (mont->flags & BN_FLG_MALLOCED)
+    bn_mont.c line  298 - if (!BN_is_zero(&Ri))
+    bn_mont.c line  309 - mont->n0 = (Ri.top > 0) ? Ri.d[0] : 0;
+    bn_mont.c line  342 - if (!BN_copy(&(to->RR),&(from->RR))) return NULL;
+    bn_mont.c line  343 - if (!BN_copy(&(to->N),&(from->N))) return NULL;
+    bn_mont.c line  344 - if (!BN_copy(&(to->Ni),&(from->Ni))) return NULL;
+
 * LibGcrypt 1.7.6
 ** mpi-powm.c test
-   Tainted: mod, expo :: Untrusted: base
    This function is used to do modular exponentiation and uses CRT.
-*** Results - O0
+*** Commit *319237301b* - O0 Tainted/Untrusted: base, mod, expo
+    mpi-pow.c line  371 - if( ssize < KARATSUBA_THRESHOLD )
+    mpi-pow.c line  376 - if (rsize + ssize > msize)
+    mpi-pow.c line  434 - MPN_NORMALIZE(ep, esize);
+    mpi-pow.c line  447 - esec = mpi_is_secure(expo);
+    mpi-pow.c line  448 - msec = mpi_is_secure(mod);
+    mpi-pow.c line  449 - bsec = mpi_is_secure(base);
+    mpi-pow.c line  453 - if (!msize)
+    mpi-pow.c line  460 - res->nlimbs = (msize == 1 && mod->d[0] == 1) ? 0 : 1;
+    mpi-pow.c line  461 - if (res->nlimbs)
+    mpi-pow.c line  478 - if (mod_shift_cnt)
+    mpi-pow.c line  481 - MPN_COPY( mp, mod->d, msize );
+    mpi-pow.c line  485 - if (bsize > msize)
+    mpi-pow.c line  500 - MPN_NORMALIZE( bp, bsize );
+    mpi-pow.c line  515 - if ( rp == 0 )
+    mpi-pow.c line  523 - if ( rp == ep )
+    mpi-pow.c line  532 - if (res->alloced < size)
+    mpi-pow.c line  553 - negative_result = (ep[0] & 1) && bsign;
+    mpi-pow.c line  563 - if (xsize >= base_u_size)
+    mpi-pow.c line  571 - if (max_u_size < base_u_size)
+    mpi-pow.c line  577 - MPN_ZERO (base_u, max_u_size);
+    mpi-pow.c line  609 - if (e == 0)
+    mpi-pow.c line  632 - if (c >= W)
+    mpi-pow.c line  657 - for (j += W - c0; j; j--)  ==Paper Result==
+    mpi-pow.c line  691 - if (c != 0)
+    mpi-pow.c line  699 - while (j--)
+    mpi-pow.c line  706 - if (e != 0)
+    mpi-pow.c line  732 - for (; c; c--)
+    mpi-pow.c line  746 - if ( mod_shift_cnt )
+    mpi-pow.c line  750 - if ( carry_limb )
+    mpi-pow.c line  756 - else if (res->d != rp)
+    mpi-pow.c line  762 - if ( rsize >= msize )
+    mpi-pow.c line  769 - if ( mod_shift_cnt )
+    mpi-pow.c line  771 - MPN_NORMALIZE (rp, rsize);
+    mpi-pow.c line  782 - if ( mod_shift_cnt )
+    mpi-pow.c line  787 - MPN_NORMALIZE(rp, rsize);
+    mpi-pow.c line  789 - gcry_assert (res->d == rp);
+    mpi-pow.c line  794 - if (mp_marker)
+    mpi-pow.c line  800 - if (xp_marker)
+*** Results - O0 Tainted: mod, expo :: Untrusted: base
     mpi-pow.c line 371 - mul_mod: if( ssize < KARATSUBA_THRESHOLD )
     mpi-pow.c line 376 - mul_mod: if (rsize + ssize > msize)
     mpi-pow.c line 434 - _gcry_mpi_powm: MPN_NORMALIZE(ep, esize)
@@ -617,7 +845,7 @@
     mpi-pow.c line 780 - _gcry_mpi_powm: if ( negative_result && rsize )
     mpi-pow.c line 787 - _gcry_mpi_powm: MPN_NORMALIZE(rp, rsize)
     mpi-pow.c line 796 - _gcry_mpi_powm: if (bp_marker)
-*** Results - O2
+*** Results - O2 Tainted: mod, expo :: Untrusted: base
     ./mpi-inline.h line 97  - _gcry_mpih_sub_1: if( s2_limb > x )
     ./mpi-inline.h line 98  - _gcry_mpih_sub_1: while( --s1_size )
     ./mpi-inline.h line 101 - _gcry_mpih_sub_1: if( x )

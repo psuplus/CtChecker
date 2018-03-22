@@ -1,0 +1,14 @@
+rsize
+esize
+bsize
+base_u_size
+max_u_size
+msize
+ssize
+xsize
+msign
+bsign
+rsign
+esec
+msec
+bsec

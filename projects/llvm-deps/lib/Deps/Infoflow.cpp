@@ -82,7 +82,8 @@ void Infoflow::registerSignatures() {
   // For now, if we don't know the call don't bother with this.
   // It's expensive for the crazy amount of external calls to various
   // libraries that one encounters, and we don't have time to fix that.
-  RegisterSignature<ArgsToRet> ArgsToRet(*signatureRegistrar);
+  RegisterSignature<TaintReachable> TaintReachable(*signatureRegistrar);
+  //RegisterSignature<ArgsToRet> ArgsToRet(*signatureRegistrar);
 }
 
 const Unit

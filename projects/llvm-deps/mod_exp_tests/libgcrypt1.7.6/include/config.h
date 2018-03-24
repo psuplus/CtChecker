@@ -325,7 +325,9 @@
 #define HAVE_UINTPTR_T 1
 
 /* Defined if a `ulong' is typedef'd */
-#define HAVE_ULONG_TYPEDEF 1
+#ifndef __APPLE__
+#define HAVE_ULONG_TYPEDEF 1 
+#endif
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1

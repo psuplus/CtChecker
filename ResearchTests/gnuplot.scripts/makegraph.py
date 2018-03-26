@@ -9,11 +9,10 @@ s = []
 maxi = 0
 
 for line in f.readlines():
-  a,b,c = line.strip().split("\t")
+  a,b,c,d = line.strip().split("\t")
+  maxi = max(int(d), maxi)
   if c[0] != '>': 
     s.append(int(c))
-    maxi = max(int(c), maxi)
-  else: maxi = max(int(c[1:]), maxi)
 f.close()
 
 s.sort()

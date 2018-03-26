@@ -79,7 +79,7 @@ args.f_error.close()
 failsAt = errorInfo[int(args.ver)]
 if failsAt[0] == -1:
     print "Error: MISSING LINE %s" % str(failsAt[1:])
-    f_out.write("%s\t%s\t>%d\n" % (args.ver, failsAt,len(all_nodes)))
+    f_out.write("%s\t%s\t>%d\t%d\n" % (args.ver, failsAt,len(all_nodes),len(all_nodes)))
     exit()
 
 
@@ -100,7 +100,7 @@ args.f_traces.close()
 
 
 
-tol = len(nds)
+tol = len(all_nodes)
 ###############################################################################################
 
 for k in nds:
@@ -159,10 +159,10 @@ for count in range(1, tol+1):
 
 if foundAt & set(failsAt):
     print "The true error (line: %s) is found at rank %d" % (failsAt, count)
-    f_out.write("%s\t%s\t%d\n" % (args.ver, failsAt, count))
+    f_out.write("%s\t%s\t%d\t%d\n" % (args.ver, failsAt, count, len(all_nodes)))
 else:
     print "The true error (line: %s) falls out of rank %d" % (failsAt, tol)
-    f_out.write("%s\t%s\t>%d\n" % (args.ver, failsAt, tol))
+    f_out.write("%s\t%s\t>%d\t%d\n" % (args.ver, failsAt, tol, len(all_nodes)))
 
 
 if DEBUG:

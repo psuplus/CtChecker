@@ -8,7 +8,7 @@ int main(void)
   a =  key;
   b = key;
 
-  if (a == 2)
+  if (a == 2) // This line should be reported
     ;
   if (b == 2)
     ;

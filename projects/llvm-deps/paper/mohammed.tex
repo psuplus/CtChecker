@@ -1,0 +1,184 @@
+\documentclass[11pt,a4paper]{article}
+
+%\usepackage[margin=0.75in]{geometry}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\title{CSE 597 Homework 1\vspace{-1ex}}
+\author{Adam Mohammed}
+\date{\vspace{-1ex}January 29, 2018}
+
+\begin{document}
+\section{Introduction}
+%
+\section{Background}
+\subsection{Information Flow Analysis}
+% Implicit vs explicit
+\subsection{Field Sensitivity Points to Analysis}
+\subsection{Goal: Timing Channels in Crypto-systems}
+
+\section{Improving Field Sensitivity in Taint Analysis}
+
+  The changes made since the previous versions of the pass were done to improve
+  the sensitivity. The system works by generating constraints for each value that
+  is extracted from the control flow of a program. By creating the constraint
+  pairs, tracking tainted values and their effect on  the rest of the program
+  becomes a problem of tracking the least upper bound for each value.  Originally,
+  there was a mapping between values and AbstractLocs which are the data structure
+  used to represent the organization of memory. For user-defined types, such as
+  classes and structures, one AbstractLoc represented the memory created from
+  defining an object from one of the types. consequently, as the original design
+  worked just one constraint element mapped to the AbstractLoc despite one
+  AbstractLoc representing more than one data field. As a result, if any part of
+  the AbstractLoc had a least upper bound that was the same as the tainted
+  variable all related fields were considered tainted.
+
+  For this work, changes were made to a compile-time analysis tool to improve the
+  accuracy. The tool is built to help the developer find and identify places where
+  secret information may leak to an adversary. By tracking the information flow
+  during the optimization stage of compiling, the tool can reduce the work the
+  developer needs to do to ensure information integrity is maintained. The
+  analysis to provide this level of assurance relies on being able to model the
+  memory and accesses to it in conjunction with the source and control-flow graph
+  representations of the program. The granularity that the analysis can provide
+  can change the number of reported results considerably. Before the changes the
+  granularity of the analysis was done by object (or structure), meaning if an
+  object at any point had information flow from a sensitive piece of information,
+  all data in that object would now be considered sensitive. The major change
+  addressed in this work is to improve the granularity of the analysis. The
+  motivation for this change is to reduce the number of positives that result only
+  as a consequence of the poor granularity.
+
+  Let the variable $k$ be a sensitive variable in the following program. Also, let
+  variable $d$ be a structure which contains two fields $x$ and $y$.
+
+  \begin{algorithm}
+    \caption{Simple Information Flow}
+  \begin{algorithmic}
+    \State $k =$ sensitive information
+    \State $d.x =  k + 1$
+    \State $d.y = 4$
+  \end{algorithmic}
+  \end{algorithm}
+
+  At the start, the $k$ variable holds sensitive information and any flow that has k
+  in its computation should be sensitive. In line 2, $k$ influences the value of $d.x$
+  and as expected $d.x$ is sensitive. Ideally $d.x$ is the only variable other
+  than $k$ that is reported from the analysis. In the original implementation,
+  the compiler uses a memory representation that represents the memory that would
+  be associated with $d$ and because of the object-level granularity, instead of
+  $d.x$ being the only variable that is sensitive from $d$, $d.y$ is also listed
+  as a sensitive variable. This simple case results yields a very conservative
+  bound on what variables of the program have actually been reached by a sensitive
+  piece of information. The draw back from being this conservative is that many of
+  the positives that are reported are just a result of being in the same memory
+  structure element as the actual variable which has been computed from a
+  sensitive piece of information.
+
+
+  In terms of correctness, $d.y$ has actually never been computed from any
+  sensitive information and thus shoud not be a tainted variable. False
+  positives like this propogate throughout the program and for larger programs
+  account for a significant amount of the results. The fix to this issue
+  requires there to be work done with how constraints are created from elements
+  which share the same data type and the same memory element that represented
+  that variable in the analysis. First, the issue is to understand how the
+  analysis as it is done in the original work functions, and then the necessary
+  changes can be addressed.
+
+  The analysis runs as one of the middle layers of compilation. The program
+  traverses through and decodes the operands from each instruction that
+  generates the flow of information between variables in the program.
+
+  The way we set up our constraints to find which values are sensitive, is by
+  traversing through the IR and creating an inequality between the operands used
+  to compute the value, or sources, and the operand which corresponds to the
+  destination for that value, or the sink. Each constrainted is listed in a way
+  such that the source must be less than or equal to the sink. There are 4 main
+  scenarios, neither operand is sensitive, only the source is sensitive, only
+  the sink is sensitive, and finally both operands are sensitive prior to the
+  instruction.
+
+  In the first case, it is trivial, if neither operands are sensitive, the
+  result is a non-sensitive value. In the case of the source being sensitive
+  prior to the operation, but not the sink, the result is that both the source
+  and sink are sensitive following the operation. In the reverse case, the
+  source is non-sensitive and the sink is sensitive, there is no change after
+  this operation. The sink is still sensitive and the source has gained no
+  information about the sink, so it is still non-sensitive.
+
+  By solving a set of constraints mathematically, the values which have become
+  sensitive will all have a sensitive tag. Often, flow of information is not
+  clear just from the operands, which is why a memory model is also used to
+  accurately track information flow. The main issue that requires the memory
+  when pointer math is used to access an element, such as array accesses or
+  class fields accesses. So it is essential to know where each element in a
+  structure or array may lie when evaluating these instructions for information
+  flow.
+
+  As it worked before, each time a operand operated from a base address
+  there was one memory element which represented the data from that pointer. If
+  any field which is based from that pointer was computed from a sensitive
+  value, all fields represented by that pointer would be considered sensitive.
+  This is where the major modification needed to be made. Instead of one memory
+  element representing all fields from a pointer, each pointer would need to map
+  to be able to be treated independently.
+
+% The desired change would allow each field in a
+% user-defined type to be treated independently. The major change made to allow
+% this type of behavior was to change how constraints were generated for
+% AbstractLocs. Instead of one constraint which represented the entire memory
+% location, constraints could be generated based on the offset accessed during a
+% particular instruction. GetElementPtrInst (GEP instructions) are the type of
+% instructions that are used to access a particular offset in to a pointer type
+% in LLVM. The analysis generates constraints by moving through the flow
+% information of the program. When iterating through the flow of information,
+% some changes were made to handle these GEP instructions values differently
+% than other value types.
+
+%#
+%  Any time a GEP instruction was captured, code was added to calculate what
+%  offset was being accessed. If this was the first time an instruction tried to
+%  access that memory as represented by an AbstractLoc, constraint elements were
+%  generated based on the type information for that node in memory. If it had
+%  already been accessed, the constraint element corresponding to the offset from
+%  the instruction was returned. Once the constraint element is identified, the
+%  right and left hand constraint elements are joined to add a constraint rule to
+%  the programs set of constraints. This allowed individual fields from within
+%  the same memory node could be tracked independently and could potentially
+%  reduce the number of false positives compared to the previous design. There
+%  are some challenges with allowing many constraints elements per memory node.
+%
+%  First, the GEP instruction value itself in LLVM represents the offset as an
+%  index, not a byte offset. Meaning that if two separate GEP instruction uses
+%  and offset of 2, one could index 8 bytes into the memory and the other 2
+%  bytes. So in the new design this is handled by inspecting the LLVM value in
+%  conjunction with the type information from the memory node to find the correct
+%  element.
+%
+%  This leads to the second issue, the memory representation used in the analysis
+%  can occasionally not be accompanied by type information. In this case, the
+%  design defaults to using the LLVM representation of whatever type is being
+%  addressed, and assumes field widths and that data elements do not overlap.
+% The last change was made to the files that set the tainted values in either the
+%
+% vulnerable branch pass or the tainted analysis pass. These files read the lines
+% from two files to establish what is to be tainted and untrusted. The values are
+% set to be tainted by iterating through the list of values for the program. If a
+% type which is mapped to a memory location is to be tainted there is a function
+% to get the offset for that piece of memory, and consequently the constraint
+% element tied to it. Previously, these offsets were calculated by going to the
+% memory node type information, but changes were made here to properly get the
+% correct offset when dealing with GEP instructions.maketitle
+\section{Evaluation}
+\subsection{Implementation}
+%
+\subsection{Benchmarks}
+% list of the tests
+
+\subsection{Case Study}
+
+\section{Related Works}
+
+\section{Conclusion}
+
+\end{document}

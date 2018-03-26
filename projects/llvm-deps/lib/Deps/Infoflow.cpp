@@ -82,7 +82,8 @@ void Infoflow::registerSignatures() {
   // For now, if we don't know the call don't bother with this.
   // It's expensive for the crazy amount of external calls to various
   // libraries that one encounters, and we don't have time to fix that.
-  RegisterSignature<ArgsToRet> ArgsToRet(*signatureRegistrar);
+  RegisterSignature<TaintReachable> TaintReachable(*signatureRegistrar);
+  //RegisterSignature<ArgsToRet> ArgsToRet(*signatureRegistrar);
 }
 
 const Unit
@@ -880,7 +881,7 @@ bool Infoflow::offsetForValue(const Value & value, unsigned *Offset) {
     } else {
       return false;
     }
-  } else if (isa<AllocaInst>(value)){
+  } else if (isa<AllocaInst>(value) || isa<Argument>(value)){
     return false;
   }
   return pti->getOffsetForValue(&value, Offset);
@@ -1230,9 +1231,9 @@ Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink, const AbstractL
   if(elemMap.find(offset) != elemMap.end()){
     const  ConsElem* elem = elemMap[offset];
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
+  } else {
+    errs() << "StructConstraint - elem not found\n";
   }
-
-  errs() << "StructConstraint - elem not found\n";
 }
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub, unsigned offset, unsigned numElements) {
@@ -1247,40 +1248,10 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
       errs() << "Adding " << elemMap.size() << " elements\n";
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
     }
-  } else if (elemMap.find(offset) != elemMap.end()){
-    const ConsElem * elem = elemMap[offset];
-    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
-    errs() << "Added: " ;
-    elem->dump(errs());
-    errs() << " to ";
-    lub.dump(errs());
   } else {
-    const ConsElem * lastElem;
-    bool elemAdded = false;
-    for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-        it != itEnd; ++it){
-      if((*it).first > offset && !elemAdded && lastElem != NULL){
-        kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *lastElem);
-        elemAdded = true;
-        errs() << "Added[loop]: " ;
-        lastElem->dump(errs());
-        errs() << " to ";
-        lub.dump(errs());
-      }
-      if((*it).second != NULL){
-        lastElem = (*it).second;
-      }
-    }
-
-    if(!elemAdded && lastElem != NULL){
-      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *lastElem);
-      errs() << "Added[after]: " ;
-      lastElem->dump(errs());
-      errs() << " to ";
-      lub.dump(errs());
-    }
+    const ConsElem * elem = findConsElemAtOffset(elemMap, offset);
+    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
   }
-  errs() << "\n\n";
 }
 
 void
@@ -1754,7 +1725,8 @@ Infoflow::constrainLoadInst(const LoadInst & inst, Flows & flows)
   // pc
   imp.addSourceValue(*inst.getParent());
   // ptr
-  imp.addSourceValue(*inst.getPointerOperand());
+  //imp.addSourceValue(*inst.getPointerOperand());
+  exp.addSourceValue(*inst.getPointerOperand());
   // from memory
   exp.addSourceDirectPtr(*inst.getPointerOperand());
   // to value
@@ -2270,6 +2242,36 @@ Infoflow::removeConstraint(std::string kind, std::string match) {
     }
   }
 }
+
+const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
+  if (elemMap.find(offset) != elemMap.end()) {
+    return elemMap[offset];
+  }
+
+  const ConsElem * elem = NULL;
+  const ConsElem * lastElem = NULL;
+  bool elemAdded = false;
+
+  errs() << "No direct element at offset..searching\n";
+
+  for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+      it != itEnd; ++it){
+    if((*it).first > offset && !elemAdded && lastElem != NULL){
+      elem = lastElem;
+      elemAdded = true;
+    }
+    if((*it).second != NULL){
+      lastElem = (*it).second;
+    }
+  }
+
+  if(!elemAdded && lastElem != NULL){
+    elem = lastElem;
+  }
+
+  return elem;
+}
+
 }
 
 

@@ -19,6 +19,7 @@
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/Support/Debug.h"
+#include  "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
 #include <fstream>
 #include <algorithm>
@@ -61,54 +62,14 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
 
           if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
-            if(offset == 0){
-              value.dump();
-              llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
-              *ss << value; // dump value info to ss
-              ss->str(); // flush stream to s
-              if(s.find(match) == 0){
-                errs() << "Adding all to tainted set\n";
-                for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                    it != itEnd; ++it){
-                  ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*it).second);
-                }
-              }
-            }
-            const ConsElem * elem;
-            if(elemMap.find(offset) != elemMap.end()){
-              elem = elemMap[offset];
-            } else {
-              errs() << "No direct element that matches offset.\n";
-              const ConsElem * lastElem = NULL;
-              bool elemAdded = false;
-              for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                  it != itEnd; ++it){
-                if((*it).first > offset && !elemAdded && lastElem != NULL){
-                  elem = lastElem;
-                  elemAdded = true;
-                }
-                if((*it).second != NULL){
-                  lastElem = (*it).second;
-                }
-              }
+            const ConsElem * elem = findConsElemAtOffset(elemMap, offset);
 
-              if(!elemAdded && lastElem != NULL){
-                elem = lastElem;
-              }
-            }
-
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
-            elem->dump(errs());
-            errs() << "\n";
+            errs() << "Matching " << match << " with " << value.getName() << ": "; elem->dump(errs()); errs() << "\n";
             ifa->kit->addConstraint(kind,ifa->kit->highConstant(), *elem);
           } else {
-            errs() << "Visiting: ";
-            value.dump();
+            errs() << "Visiting: "; value.dump();
             errs() << "Matching " << match << " with " << value.getName() << ": ";
-            errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
-            for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
-                elemIt != elemEnd; ++elemIt)
-              ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*elemIt).second);
+            ifa->setTainted(kind,value);
           }
         }
       }
@@ -118,7 +79,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
       ss->str(); // flush stream to s
       if (s.find(match) == 0) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
-        //errs() << "Match Detected for " << s  << "\n";
+        errs() << "Match Detected for " << s  << "\n";
       }
     }
   }
@@ -129,7 +90,7 @@ bool
 VulnerableBranch::runOnModule(Module &M) {
   ifa = &getAnalysis<Infoflow>();
   if (!ifa) { errs() << "No instance\n"; return false;}
-   
+
   std::ifstream ftaint("taint.txt"); // read tainted values from txt file
   std::string line;
   while (std::getline(ftaint, line)) {
@@ -152,32 +113,52 @@ VulnerableBranch::runOnModule(Module &M) {
 
   InfoflowSolution* soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> tainted = soln->getAllTaintValues();
- 
+
   kinds.clear();
   kinds.insert("untrust");
   soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> untrusted = soln->getAllTaintValues();
 
-  /** 
-  std::set<const Value*> vul; 
+  /**
+  std::set<const Value*> vul;
   std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
   for(std::set<const Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
     soln->getOriginalLocation(*it);
     errs() << "\n";
   }*/
 
+  // Variables to gather branch statistics
+  unsigned long number_branches = 0;
+  unsigned long tainted_branches = 0;
   // iterating over all branches
+  errs() << "#--------------Results------------------\n";
   for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
     for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E; ++I)
       if (const BranchInst* bi = dyn_cast<BranchInst>(&*I)) {
          const MDLocation* loc = bi->getDebugLoc();
+         number_branches++;
          if (bi->isConditional() && loc) {
            const Value* v = bi->getCondition();
-           if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end())
+           if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end()){
+             tainted_branches++;
              errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << "\n";
+             //errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << ":";
+             //v->dump(); errs() << "\n";
+           }
          }
       }
   }
+
+  // Dump statistics
+  if(number_branches > 0){
+    errs() << "#--------------Statistics----------------\n";
+    double tainted_percentage = tainted_branches*1.0/number_branches * 100.0;
+    errs() << ":: Tainted Branches: " << tainted_branches << "\n";
+    errs() << ":: Branch Instructions: " << number_branches << "\n";
+    errs() << ":: Vulnerable Branches: " << format("%2.2f%% [%d/%d]\n", tainted_branches, number_branches, tainted_percentage);
+  }
+
+
   return false;
 }
 

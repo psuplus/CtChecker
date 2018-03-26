@@ -35,10 +35,10 @@ function testing {
 			fi
 			echo Start Running Test $i
 			if [[ $1 == 'node' ]]; then 
-				echo python skeleton.py $nds/$i.nd $trs/$i.tr.s $err $i -b $1 -m $2
+#				echo python skeleton.py $nds/$i.nd $trs/$i.tr.s $err $i -b $1 -m $2
 				python skeleton.py $nds/$i.nd $trs/$i.tr.s $err $i -b $1 -m $2
 			else
-				echo python skeleton.py $nds/$i.nd $trs/$i.tr.p $err $i -b $1 -m $2
+#				echo python skeleton.py $nds/$i.nd $trs/$i.tr.p $err $i -b $1 -m $2
 				python skeleton.py $nds/$i.nd $trs/$i.tr.p $err $i -b $1 -m $2
 			fi
 		else
@@ -56,7 +56,6 @@ elif [[ $# -eq 1 ]]; then
 
 	for a in $bases ; do
 		for b in $methods ; do
-			echo "Testing $a $b"
 			testing $a $b
 		done
 	done

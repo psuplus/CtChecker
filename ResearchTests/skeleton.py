@@ -40,9 +40,10 @@ DEBUG, x2, x3 = args.DEBUG, args.x2, args.x3
 m = METHOD.index(args.method)
 
 p2 = [
-  (lambda n: 0.2),
-  (lambda n: nds[n]["freq"]+1e-20),
-  (lambda n: 0)
+  (lambda n: 0.2),		# const
+  (lambda n: (nds[n][3]+1e-10)/(1+2e-10)),  # freq (P2 = fail%)
+  (lambda n: (nds[n][4]+1e-10)/(1+2e-10)),  # freq (P2 = succ%)
+  (lambda n: nds[n][-1]+1e-20)  # loc
 ][m]
 
 def node_at_line(n):
@@ -53,22 +54,13 @@ def node_info(n):
     if isinstance(n, tuple): n = n[0]
     return all_nodes[n]
 
-f_opt = "w" if args.ver == 1 else "a"
-f_out = open("/tmp/"+args.base+"_"+args.method + ("" if x2 else "_x2") + ("" if x3 else "_x3") + ".log", f_opt)
+f_out = open("/tmp/"+args.base+"_"+args.method + ("" if x2 else "_x2") + ("" if x3 else "_x3") + ".log", 
+             "w" if args.ver == 1 else "a")
 if args.ver == 1:
     f_out.write("Calculate likelyhood with base = %s\tmethod = %s\n" %(args.base, args.method)+
 			"Test\tFailsAt\tRank\n")
 #################################################################################################
 
-# Read in error info
-errorInfo = eval(args.f_error.read())
-args.f_error.close()
-failsAt = errorInfo[int(args.ver)]
-if failsAt[0] == -1:
-    print "Error: MISSING LINE %s" % str(failsAt[1:])
-    f_out.write("%s\t%s\t>\n" % (args.ver, failsAt))
-    exit()
-    
 
 # Read in the nodes
 all_nodes = {}
@@ -81,35 +73,29 @@ for line in args.f_nodes.xreadlines():
 args.f_nodes.close()
 
 
+# Read in error info
+errorInfo = eval(args.f_error.read())
+args.f_error.close()
+failsAt = errorInfo[int(args.ver)]
+if failsAt[0] == -1:
+    print "Error: MISSING LINE %s" % str(failsAt[1:])
+    f_out.write("%s\t%s\t>%d\n" % (args.ver, failsAt,len(all_nodes)))
+    exit()
 
-# Read in the traces
+
+# Read in the simplified trace info
+
 failed_traces = set()
-succeeded_traces = set()
-c = 0
+nds = {}
+# succeeded_traces = set()
+first = True
 for line in args.f_traces.xreadlines():
-    if line.strip():
-        if line[0] != ",":
-            failed = eval(line)
-        else:
-            tr = eval(line[1:])
-            if args.base == BASE[1]:
-                l = len(tr)
-                trace = tuple((tr[i], -1 if i == l-1 else tr[i+1]) for i in range(l))
-            elif args.base == BASE[0]:
-                trace = tr
-            if failed:
-                failed_traces.add(trace)
-                for n in frozenset(trace):
-                    if not nds.get(n, False): nds[n] = {"fail":0, "succ":0}
-                    nds[n]["fail"] = nds[n].get("fail",0) + 1
-            else:
-                succeeded_traces.add(trace)
-                for n in frozenset(trace):
-                    if not nds.get(n, False): nds[n] = {"fail":0, "succ":0}
-                    nds[n]["succ"] = nds[n].get("succ",0) + 1
-            if DEBUG and 0: 
-                c+=1
-                print "\033cVersion %d: Trace %d stored" % (args.ver,c)
+#    print line
+    if first:
+        nds = eval(line)
+        first = False
+    elif line.strip():
+        failed_traces.add(eval(line))
 args.f_traces.close()
 
 
@@ -118,8 +104,9 @@ tol = len(nds)
 ###############################################################################################
 
 for k in nds:
-    nds[k]["total"] = nds[k]["succ"] + nds[k]["fail"]
-    nds[k]["freq"] = float(nds[k]["succ"]) / nds[k]["total"] if nds[k]["total"] else 0
+    nds[k].append(nds[k][0] + nds[k][1])                            # nds[k][2] = total #occurs
+    nds[k].append(float(nds[k][1]) / nds[k][2] if nds[k][2] else 0) # nds[k][3] = fail%
+    nds[k].append(float(nds[k][0]) / nds[k][2] if nds[k][2] else 0) # nds[k][4] = succ%
 
 ###############################################################################################
 
@@ -128,9 +115,13 @@ heap = []
 
 
 for n in possible_nodes:
+#    print p2(n)
     c2 = x2 and -log(p2(n))
     c3 = x3 and -log(1-p2(n))
-    g = c2 * nds[n]["succ"] + c3 * nds[n]["fail"]
+#    nds[n]["kE"] = len(filter(lambda t: n in t, succeeded_traces))
+#    nds[n]["fE"] = len(filter(lambda t: n in t, failed_traces))
+#    g = c2 * nds[n]["kE"] + c3 * nds[n]["fE"]
+    g = c2 * nds[n][0] + c3 * nds[n][1]
     remaining_paths = filter(lambda p: n not in p, failed_traces)
     h = 0 if not remaining_paths else 1 if reduce(lambda x,y: set(x).intersection(y), remaining_paths) else 2
     heapq.heappush(heap, ((h, g), {n}, remaining_paths, c2, c3))
@@ -177,9 +168,9 @@ else:
 if DEBUG:
 #    print "Failed Traces:\n", 
 #    for t in failed_traces: print t
-    print "succ trace patterns: ", len(succeeded_traces)
+#    print "succ trace patterns: ", len(succeeded_traces)
     print "fail trace patterns: ", len(failed_traces)
-    print nds
-    import time
-    time.sleep(1)
+#    print nds
+#    import time
+#    time.sleep(1)
 

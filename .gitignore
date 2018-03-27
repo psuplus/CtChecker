@@ -21,9 +21,9 @@
 #OS X specific files.
 .DS_store
 # Plotting data, and result logs
-.plot
-.log
-.eps
+*.plot
+*.log
+*.eps
 
 #==============================================================================#
 # Explicit files to ignore (only matches one).

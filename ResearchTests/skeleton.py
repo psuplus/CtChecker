@@ -54,7 +54,7 @@ def node_info(n):
     if isinstance(n, tuple): n = n[0]
     return all_nodes[n]
 
-f_out = open("/tmp/"+args.base+"_"+args.method + ("" if x2 else "_x2") + ("" if x3 else "_x3") + ".log", 
+f_out = open(os.path.dirname(args.f_nodes.name)+"/../result_log/"+args.base+"_"+args.method + ("" if x2 else "_x2") + ("" if x3 else "_x3") + ".log", 
              "w" if args.ver == 1 else "a")
 if args.ver == 1:
     f_out.write("Calculate likelyhood with base = %s\tmethod = %s\n" %(args.base, args.method)+

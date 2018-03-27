@@ -2,15 +2,6 @@
 
 echo $0 $@
 
-function printUsage_old {
-    echo "Usage: $0 <nodes folder> <traces folder> <error info> \"<options>\""
-    echo "      <nodes folder>	folder contains all trace info ([i].nd)"
-    echo "      <traces folder>	folder contains all trace info ([i].tr)"
-    echo "      <error info>	file contains errorinfo for all versions"
-    echo "      [options] 	options passed into skeleton.py"
-    echo '      		  `python skeleton.py -h` to see options'
-    exit
-}
 function printUsage {
     echo "Usage: $0 <benchmark_folder> \"<options>\""
     echo "      <benchmark_folder>	root of benchmark, containing t_all/, n_all/, errorInfo"
@@ -22,6 +13,8 @@ nds=$1/n_all
 trs=$1/t_all
 err=$1/errorInfo
 opt=$2
+
+mkdir -p $1/result_log
 
 function testing {
 	printf "\n\noption $1, $2\n\n"
@@ -65,6 +58,4 @@ else
 
 fi
 
-mkdir -p $1/result_log
-mv /tmp/*.log $1/result_log
 echo "The results are stored in $1/result_log"

@@ -1,0 +1,59 @@
+
+Workflow
+
+1. Setting up the environment..
+
+Under this directory, run `source env.sh`
+Under SIR/ , run `source env.sh`
+
+2. For each benchmark, to generate the traces:
+run `./runalltest.sh` in each working benchmark SIR/<bm>/scripts/
+
+
+
+
+
+Some instructions on the script files in this directory...
+
+# bash files
+
+env.sh  -- set up the virtual environment for the project. 
+	`source env.sh`
+
+run.sh  
+
+AnalyzeAllTraces.sh 
+        -- Automated script to analyze all traces in one benchmark
+	`./AnalyzeAllTraces.sh <dir> [<base> <method>]`
+	-- default will test all (base, method) combinations so far
+
+
+# python scripts
+
+tr_simplify.py
+	-- reformat the traces into a more compact form
+	`python tr_simplify.py <traces>`
+	> generates <traces>.s and <traces>.p, 
+		where former is for single-node analysis and
+		  the latter is for paired-node analysis
+
+skeleton.py
+	-- Analyze the compact traces and give rank to nodes
+	`python skeleton.py [-h] [-d] -b {node,edge} -m {const,freq,loc}
+                   <nodes> <traces> <error> <version>`
+	> the results(log) will be generated in /tmp
+
+
+gnuplot.scripts/makegraph.py
+	-- reformat the logs(results) of the analysis to input of gnuplot
+	`python makegraph.py <logfile>`
+	> generates <logfile>.plot
+
+# GNUPLOT scripts
+
+gnuplot.scripts/plot.gnu
+	-- generates graph, should be at the directory of .plot files
+	`gnuplot ../../gnuplot.scripts/plot.gnu`
+	> generates performance.eps
+
+

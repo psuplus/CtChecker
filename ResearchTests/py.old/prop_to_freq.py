@@ -1,14 +1,15 @@
 from math import *
 import sys
 import heapq
+import os
 
 
 if len(sys.argv) < 4:
-    print "USAGE: python ./calculateErrorNodes.py <nodes> <traces> <errorInfo> <version>"
+    print "USAGE: python " + sys.argv[0] + " <nodes> <traces> <errorInfo> <version>"
     print "\t<nodes>\t filepath that stores nodes"
     print "\t<traces>\t filepath that stores traces"
     print "\t<errorInfo>\t filepath that stores error Info, in a form Dict[version: line]"
-    print "\t<version>\t number 1 - 41, which generates the corresponding nodes & traces"
+    print "\t<version>\t number, which generates the corresponding nodes & traces"
     exit
 
 ###########################################################################
@@ -168,7 +169,7 @@ if debug:
             print n, all_nodes[n], p2(n), c2, nds[n].get("kE", None), c3, nds[n].get("fE",None)
 ##########################################################################################
 
-with open("/tmp/log", "a") as file:
+with open("/tmp/" + os.path.basename(sys.argv[0]) + ".log", "a") as file:
     if foundAt & set(failsAt):
         print "The true error is found at rank %d" % count
         file.write("%s\t%s\t%d\n" % (sys.argv[4], failsAt, count))

@@ -1,10 +1,11 @@
 from math import *
+import os
 import sys
 import heapq
 
 
-if len(sys.argv) < 4:
-    print "USAGE: python ./calculateErrorNodes.py <nodes> <traces> <errorInfo> <version>"
+if len(sys.argv) < 5:
+    print "USAGE: python " + sys.argv[0] + " <nodes> <traces> <errorInfo> <version>"
     print "\t<nodes>\t filepath that stores nodes"
     print "\t<traces>\t filepath that stores traces"
     print "\t<errorInfo>\t filepath that stores error Info, in a form Dict[version: line]"
@@ -27,11 +28,13 @@ if len(sys.argv) < 4:
 ###########################################################################
 # Flags and Constants
 ###########################################################################
-debug = True
-x1,x2,x3 = 1,1,1
-p1 = 1e-20
+debug = False
+x1, x2, x3 = 1, 1, 1 # filters of the three terms, 1 = on, 0 = off
+p1 = 1e-100
 c1 = x1 and -log(p1)
-tol = 200 # tolerance of the rank of true error in the heap
+p2method = 0
+p2 = 0.2
+tol = 900 # tolerance of the rank of true error in the heap
 ###########################################################################
 
 
@@ -42,11 +45,12 @@ tol = 200 # tolerance of the rank of true error in the heap
 # Read in the nodes
 f = open(sys.argv[1])
 all_nodes = {}
-nds = {}
+nds={}
 for line in f.xreadlines():
     node, detail = line.strip().split(" = ", 2)
     filename, line, col, scope, inlinedAt = detail[1:-1].split("; ", 5)
     all_nodes[int(node)] = (filename, int(line), int(col), scope, inlinedAt)
+    nds[int(node)] = {"suc": 0, "fail": 0}
 f.close()
 
 # Read in the traces
@@ -58,20 +62,16 @@ for line in f.xreadlines():
         if line[0] != ",":
             failed = eval(line)
         else:
-            tr = eval(line[1:])
-            trace = tuple([(tr[i], tr[i+1]) for i in range(len(tr)-1)] + [(tr[-1], -1)])
+            trace = eval(line[1:])
             if failed:
                 failed_traces.add(trace)
                 for n in frozenset(trace):
-                    if not nds.get(n, False): nds[n] = {"fail":0, "suc":0}
-                    nds[n]["fail"] = nds[n].get("fail",0) + 1
+                    nds[n]["fail"] += 1
             else:
                 succeeded_traces.add(trace)
                 for n in frozenset(trace):
-                    if not nds.get(n, False): nds[n] = {"fail":0, "suc":0}
-                    nds[n]["suc"] = nds[n].get("suc",0) + 1
+                    nds[n]["suc"] += 1
 f.close()
-print nds
 
 # Read in the dictionary (which stores error info (version: line))
 f = open(sys.argv[3])
@@ -91,7 +91,7 @@ for k in nds:
 # function to generating more reasonable p2 value
 # return something between 0 and 1
 ###########################################################################
-def _p2(n):
+def p2(n):
     if p2method == 0:
         ret = p2value
     elif p2method == 1:
@@ -100,22 +100,15 @@ def _p2(n):
         if nds[n].get("len2tail", None) is None:
             l = [f(tr, n) for tr in succeeded_traces if n in tr]
             # print n, l
-            nds[n]["len2tail"] = sum(l)/float(len(l)+1) # use the average for now
+            nds[n]["len2tail"] = sum(l)/float(len(l)+1e-10) if sum(l) else 1e-20 # use the average for now
         ret = nds[n]["len2tail"]
     elif p2method == 3:
         pass
     # print ret
     return ret
 
-def avg(l):
-    return sum(l)/len(l) if l else 0
-
 def f(tr, n):
-    if isinstance(n, set):
-        return 1.0 - avg([tr.index(node) for node in n if node in tr])/float(len(tr)) if n & set(tr) else 1.0
-    else:
-        # return 0.25 + tr[::-1].index(n)/float(2*len(tr)) if n in tr else 1.0
-        return 0.75 - tr.index(n)/float(2*len(tr)) if n in tr else 1.0
+    return 0.75 - tr.index(n)/float(2*len(tr)) if n in tr else -1
 
 ###########################################################################
 
@@ -123,43 +116,44 @@ possible_nodes = reduce(lambda x,y: x | y, map(set, failed_traces), set())
 heap = []
 # Calculate such nodes and add to heap
 for n in possible_nodes:
-    p2 = nds[n]["freq"]
-    p3 = 1-p2
-    c2 = x2 and -log(p2 + 1e-20) * len(filter(lambda t: n in t, succeeded_traces))
-    c3 = x3 and -log(p3 + 1e-20) * len(filter(lambda t: n in t, failed_traces)) # added a small number to avoid domain error
-    g = c1 + c2 + c3
-    remaining_paths = set(filter(lambda p: n not in p, map(frozenset, failed_traces)))
-    h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x & y, remaining_paths) else 2
-    heapq.heappush(heap, (g + h*c1, {n}, remaining_paths, c2, c3))
+    c2 = x2 and -log(p2(n))
+    c3 = x3 and -log(1-p2(n))
+#    nds[n]["kE"] = len(filter(lambda t: n in t, succeeded_traces))
+#    nds[n]["fE"] = len(filter(lambda t: n in t, failed_traces))
+    g = c1 + c2 * nds[n]["succ"] + c3 * nds[n]["fail"]
+    remaining_paths = filter(lambda p: n not in p, failed_traces))
+    h = 0 if not remaining_paths else 1 if reduce(lambda x,y: set(x).intersection(y), remaining_paths) else 2
+    heapq.heappush(heap, (g+h*c1, {n}, remaining_paths))
 
 first = True
 for count in range(1, tol+1):
-    h, nodes, paths, c2, c3 = heapq.heappop(heap)
+    h, nodes, paths = heapq.heappop(heap)
     if not paths:
         if first:
             first = None
-            if debug:
-                print "heapvalue    c1           c2           c3           nodes        nodes_details"
+            print "heapvalue    c1           c2           c3           nodes        nodes_details"
         if debug:
-            print '%-12f %-12f %-12f %-12f %-12s %s' % (h, c1, c2, c3, nodes, str(map(lambda x: all_nodes[x[0]], nodes)))
-        foundAt = set(map(lambda x: all_nodes[x[0]][1], nodes))
+            n=next(iter(nodes))
+            c2 = -log(p2(n))
+            c3 = -log(1-p2(n))
+            print '%-12f %-12f %-12f %-12f %-12s %s' % (h, c1, c2, c3, nodes, str(map(lambda x: all_nodes[x], nodes)))
+        foundAt = set(map(lambda x: all_nodes[x][1], nodes))
         if foundAt & set(failsAt):
             break
-
+"""
     # the else part should not be used for now... (all errors should be size one)
     else:
         remaining_nodes = reduce(lambda x,y: x|y, map(set, paths))
         for n in remaining_nodes:
             ns = nodes | {n}
-            l = [ nds[n]["freq"] for n in ns ]
-            p2 = sum(l)/float(len(l))
-            p3 = 1-p2
-            c2 = x2 and -log(p2 + 1e-20) * len(filter(lambda t: ns & set(t), succeeded_traces))
-            c3 = x3 and -log(p3 + 1e-20) * len(filter(lambda t: ns & set(t), failed_traces))
-            g = c1 * len(ns) + c2 + c3
+            c2 = x2 and -log(p2(n))
+            c3 = x3 and -log(1-p2(n))
+            g = c1 * len(ns) + c2 * len(filter(lambda t: ns & set(t), succeeded_traces)) \
+                + c3 * len(filter(lambda t: ns & set(t), failed_traces))
             remaining_paths = set(filter(lambda p: not(ns & p), map(frozenset, failed_traces)))
             h = 0 if not remaining_paths else 1 if reduce(lambda x,y: x & y, remaining_paths) else 2
-            heapq.heappush(heap, (g+h*c1, ns, remaining_paths, c2, c3))
+            heapq.heappush(heap, (g+h*c1, ns, remaining_paths))
+"""
 
 ##########################################################################################
 # Print Debug info
@@ -168,14 +162,13 @@ if debug:
     print "succ trace patterns: ", len(succeeded_traces)
     print "fail trace patterns: ", len(failed_traces)
     for n in nds:
-        p2 = reduce(lambda x,y: x*y, map(lambda tr: f(tr,n), succeeded_traces), 1.0)
-        p3 = reduce(lambda x,y: x*y, map(lambda tr: 1-f(tr,n), failed_traces), 1.0)
-        c2 = x2 and -log(p2 + 1e-20)
-        c3 = x3 and -log(p3 + 1e-20)
-        print n, all_nodes[n[0]], p2, p3, c2, c3
+        if p2(n) and p2(n) < 1:
+            c2 = x2 and -log(p2(n))
+            c3 = x3 and -log(1-p2(n))
+            print n, all_nodes[n], p2(n), c2, nds[n].get("kE", None), c3, nds[n].get("fE",None)
 ##########################################################################################
 
-with open("/tmp/log", "a") as file:
+with open("/tmp/" + os.path.basename(sys.argv[0]) + ".log", "a") as file:
     if foundAt & set(failsAt):
         print "The true error is found at rank %d" % count
         file.write("%s\t%s\t%d\n" % (sys.argv[4], failsAt, count))

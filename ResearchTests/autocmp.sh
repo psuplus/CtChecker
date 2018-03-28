@@ -3,7 +3,7 @@ export TESTS="gcd welcome compression recursive divBy0 simple"
 
 _script()
 {
-	local cur
+	local cur;
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	case $COMP_CWORD in

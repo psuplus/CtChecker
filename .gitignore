@@ -13,6 +13,7 @@
 *~
 # Merge files created by git.
 *.orig
+!*.orig/
 # Byte compiled python modules.
 *.pyc
 # vim swap files
@@ -20,6 +21,10 @@
 .sw?
 #OS X specific files.
 .DS_store
+# Plotting data, and result logs
+*/result_log/*.plot
+*/result_log/*.log
+*/result_log/*.eps
 
 #==============================================================================#
 # Explicit files to ignore (only matches one).

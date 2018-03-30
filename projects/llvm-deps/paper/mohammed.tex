@@ -3,6 +3,8 @@
 %\usepackage[margin=0.75in]{geometry}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
+\usepackage{listings}
+\lstset{numbers=left, numberstyle=\tiny, breaklines}
 \title{CSE 597 Homework 1\vspace{-1ex}}
 \author{Adam Mohammed}
 \date{\vspace{-1ex}January 29, 2018}
@@ -12,8 +14,68 @@
 %
 \section{Background}
 \subsection{Information Flow Analysis}
-% Implicit vs explicit
+  Information flow analysis is a tool to track the interactions of information
+  throughout the program. Information flow has been used in compilers as well as
+  security to gain knowledge about the structure of the program. The structure
+  can be exploited by compilers to improve cache locality, hide memory latency
+  and other performance tweaks. In security the idea of information flow has
+  been used in things like Mandatory Access Control schemes such as LOMAC and
+  the Biba model. For program level security, a compiler could be able to check
+  the level of integrity for any variable through the use of information flow.
+  By tracking confidential or sensitive pieces of information, any variable or
+  decision which is computed from a confidential data has a flow
+  from the confidential data to the variable or branch. An attacker may be able
+  to exploit parts of a program which are dependent on some confidential data,
+  and with sufficient flow, can possibly reconstruct the confidential data. A
+  toy example is given in Algorithm \ref{alg:simpleflow} to illustrate this concern.
+
+  \begin{algorithm}
+    \caption{Simple Information Flow}
+    \label{alg:simpleflow}
+  \begin{algorithmic}
+    \State $k =$ sensitive information
+    \State $d.x =  k + 1$
+    \State $d.y = 0$
+    \State $a = -1$
+
+    \If {$d.y == k/2$}
+      \State $a = 4$ 
+    \EndIf
+
+    % \If {$d.x == 2$}
+      % \State $b = 2$ 
+    % \Endif
+  \end{algorithmic}
+  \end{algorithm}
+
+  In this simple example $k$ is confidential data, through information flow we
+  can see that the value of $d.x$ is directly computed from $k$. The value $d.y$
+  however is not confidential due to its value having no reliance on the
+  confidential data. The flow between $k$ and $d.x$ is called explicit flow,
+  since the value of $d.x$ is computed from the confidential data. As the
+  analysis continues, any value which is computed from $d.x$ will also be
+  treated as confidential data. There is also implicit flow which can be seen in
+  the first branch on $d.y$ where it is compared with some value computed from
+  $k$. In this case d.y is still considered non-confidential data, since the
+  value has no relation to $k$, but there is a flow from $k$ to $a$ indirectly.
+  Although, $a$ is not computed from $k$, after the branch executes, the value
+  of $a$ may or may not have changed. If it does change, the value of k has been
+  determined. If it does not change, the value of k is not determined, but a
+  possible value has been ruled out. This indirect flow from $k$ to $a$ is what
+  is called implicit flow.
 \subsection{Field Sensitivity Points to Analysis}
+  For an accurate taint tracking analysis it is essential to know what portions of
+  memory are being manipulated. This can be a trivial issue if assumptions such
+  that all variables are constant and no modifications are made, but for most
+  programming paradigms this assumption does not hold. If variables can be just
+  pointers to locations in memory, there needs to be a way to figure out what the
+  pointer is able to address to be able to accurately track the state of the
+  program at any given time. The static analysis tool upon which this improvement
+  was made utilized a points to analysis to track the memory locations pointed to
+  and modified by pointers. Each time the analysis encountered a pointer type the
+  tool enlisted the help of the memory model provided by the points to analysis.
+  The content of a pointer and the address of a pointer can be treated as two
+  separate values and though related, can be tainted individually. 
 \subsection{Goal: Timing Channels in Crypto-systems}
 
 \section{Improving Field Sensitivity in Taint Analysis}
@@ -57,7 +119,17 @@
     \State $k =$ sensitive information
     \State $d.x =  k + 1$
     \State $d.y = 4$
+    %\IF {$d.y == 2$}
+      %\STATE $a = key$[0] 
+    %\ENDIF
+    % \If {$d.x == 2$}
+      % \State $b = 2$ 
+    % \Endif
   \end{algorithmic}
+  \end{algorithm}
+
+  \begin{algorithm}
+
   \end{algorithm}
 
   At the start, the $k$ variable holds sensitive information and any flow that has k
@@ -76,8 +148,8 @@
 
 
   In terms of correctness, $d.y$ has actually never been computed from any
-  sensitive information and thus shoud not be a tainted variable. False
-  positives like this propogate throughout the program and for larger programs
+  sensitive information and thus should not be a tainted variable. False
+  positives like this propagate throughout the program and for larger programs
   account for a significant amount of the results. The fix to this issue
   requires there to be work done with how constraints are created from elements
   which share the same data type and the same memory element that represented
@@ -92,7 +164,7 @@
   The way we set up our constraints to find which values are sensitive, is by
   traversing through the IR and creating an inequality between the operands used
   to compute the value, or sources, and the operand which corresponds to the
-  destination for that value, or the sink. Each constrainted is listed in a way
+  destination for that value, or the sink. Each constrained is listed in a way
   such that the source must be less than or equal to the sink. There are 4 main
   scenarios, neither operand is sensitive, only the source is sensitive, only
   the sink is sensitive, and finally both operands are sensitive prior to the
@@ -122,6 +194,75 @@
   This is where the major modification needed to be made. Instead of one memory
   element representing all fields from a pointer, each pointer would need to map
   to be able to be treated independently.
+
+  Improving field sensitivity helps in reducing the number of false positives.
+  Without augmentation the analysis would over-estimate the number of affected
+  values for any given confidential information flow. In this example a
+  structure type is defined such that it has two fields contained within it,
+  both integers. The only variable that is set to be confidential is
+  \texttt{key}. Lines 6,7,8 are all just declarations, at this point no
+  variables are confidential apart from \texttt{key}. Line 10, the field of
+  \texttt{a} in variable \texttt{u} is set to be the value of \texttt{key}. Here
+  this means that there is a flow of information from the \texttt{key} variable
+  to the \texttt{a} variable in the \texttt{u} data structure. Line 11, though
+  \texttt{b} resides in the same data structure, \texttt{u}, as \texttt{a},
+  there has been no flow from between \texttt{key} and \texttt{b}. At this point
+  the confidential variables are \texttt{key} and $u.a$. As for the branches,
+  line 13 is decided based on confidential data but line 15 is not. Line 14 is
+  considered if implicit flow is considered, because the state of \texttt{ct}
+  change based on the value of \texttt{key}.
+
+\begin{algorithm}
+\lstinputlisting{examples/struct_ex.c}
+\caption{Structure Inaccuracy}
+\label{alg:inacc}
+\end{algorithm}
+
+The intermediate representation that is analyzed is similar to the code shown in
+Algorithm \ref{alg:ab_ir}. This is not the exact representation from LLVM, but
+this does display the vital components that the improved analysis leverages to
+increase sensitivity. This snippet shows the IR code to accomplish lines 10 and
+11 from Algorithm \ref{alg:inacc}. First, the value of key is loaded into a
+register \texttt{\%0}, creating a flow from the value of key to the register
+\texttt{\%0}. Next there is an instruction which gets the address of field
+\texttt{a} from the structure \texttt{u}, which is located at an offset of 0.
+Finally, line 3 completes storing the value of key to the location pointed to by
+\texttt{\%a}. The taint analysis then needs a way to figure out what
+\texttt{\%a} actually points to, to properly track the flow. Since \texttt{u} is
+essentially a base address from which the offsets for fields \texttt{a} and
+\texttt{b} are calculated the points to analysis keeps track of that memory
+location. When an operation occurs in that region of memory, like when we do a
+store to \texttt{u.a} there the points to analysis is used to track the memory location
+that is modified. In this case it is trivial because the base pointer never
+changes, but in cases where the base pointer may be modified, the points to
+analysis maintains accurate representation of memory modifications. With the
+aid of the points-to analysis, the taint analysis can track what parts of
+memory were computed from confidential data. The next constraint that is
+generated is the flow from \texttt{\%0} to the memory location which represents
+\texttt{u} and ideally should only make \texttt{a} confidential. In the original
+analysis, all structures were treated as one entity and flow from a confidential
+source to a memory location was less precise. Precision in this context meant
+that even though \texttt{a} and \texttt{b} are computed from the same base pointer and memory
+location, only \texttt{a} has been affected by the confidential value. The original
+analysis would instead have two values which are confidential \texttt{u.a} and \texttt{u.b}
+due to this precision issue. As a result, the number of false positives are
+lower with the analysis with increased precision. For algorithm \ref{alg:inacc},
+lines 10, 11, 13 and 15 have potentially been computed from the confidential
+value \texttt{key}, when the more precise analysis reports lines 10 and 13 as lines
+which are dependent on the confidential value. Lines 11 and 15 are reported due
+to \texttt{u.b} and \texttt{u.a} both adding constraints on the same memory structure, but not
+distinguishing which part of the structure. The way to address this issue is to
+consider the offset from the base pointer, as seen in lines 2 and 4 of Algorithm
+\ref{alg:ab_ir}, given by the operands \texttt{i31 0} and \texttt{i32 1}.
+
+
+  
+
+\begin{algorithm}
+\lstinputlisting{examples/minimal_struct_ex.ll}
+\caption{LLVM intermediate representation}
+\label{alg:ab_ir}
+\end{algorithm}
 
 % The desired change would allow each field in a
 % user-defined type to be treated independently. The major change made to allow

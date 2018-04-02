@@ -24,6 +24,7 @@ namespace {
 		virtual bool runOnBasicBlock(BasicBlock &BB, Module &M);
 
 		std::map<std::string, Value *> filenames;
+		std::map<DebugLoc, int> nodes;
 
 	};
 }
@@ -51,8 +52,39 @@ bool OutputTrace::runOnFunction(Function &F, Module &M) {
 
 bool OutputTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 	FunctionType *FTy = FunctionType::get(Type::getVoidTy(M.getContext()), {Type::getInt32Ty(M.getContext())});
-	Constant *printTrace = M.getOrInsertFunction("_Z12printBBTracePcii", FTy);
+	Constant *printTrace = M.getOrInsertFunction("_Z10printLnTracei", FTy);
 
+	Instruction *I = BB.getFirstNonPHIOrDbg();
+	while (!I->getDebugLoc()) I++;
+	IRBuilder<> builder(I);
+
+	if (filenames.find(loc->getFilename()) == filenames.end()) {
+		filename = builder.CreateGlobalStringPtr(loc->getFilename(), ".str");
+		filenames[loc->getFilename()] = filename;
+	}
+	else
+		filename = filenames[loc->getFilename()];
+
+	BasicBlock::iterator E = BB.end();
+	for (E--; !E->getDebugLoc(); E--);
+	
+	int lEnt = I->getDebugLoc()->getLine(), lExt = E->getDebugLoc()->getLine();
+
+	int node;
+	if (nodes.find(loc) == nodes.end()) {
+		node = count;
+		dbgs() << count << " = (" << loc->getFilename().str() << "; (" << lEnt << "," << lExt << "); "  << loc->getColumn() << "; " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
+		nodes[loc] = count++;
+	}
+	else
+		node = nodes[loc];
+
+	ConstantInt *nodeCI = ConstantInt::get(M.getContext(), APInt(32, uint64_t(node), false));
+
+	builder.CreateCall(printTrace, {nodeCI});
+
+
+#if 0
 	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {
 		MDLocation *loc = I->getDebugLoc();
 		Value *filename;
@@ -83,6 +115,6 @@ bool OutputTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 		builderExt.CreateCall(printTrace, {filename, lineEnt, lineExt});
 		break;
 	}
-
+#endif
 	return true;
 }

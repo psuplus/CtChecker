@@ -54,7 +54,7 @@ def node_info(n):
     if isinstance(n, tuple): n = n[0]
     return all_nodes[n]
 
-f_out = open(os.path.dirname(args.f_nodes.name)+"/../result_log/"+args.base+"_"+args.method + ("" if x2 else "_x2") + ("" if x3 else "_x3") + ".log", 
+f_out = open(os.path.dirname(os.path.dirname(args.f_nodes.name))+"/../result_log/"+args.base+"_"+args.method + ("" if x2 else "_x2") + ("" if x3 else "_x3") + ".log", 
              "w" if args.ver == 1 else "a")
 if args.ver == 1:
     f_out.write("Calculate likelyhood with base = %s\tmethod = %s\n" %(args.base, args.method)+
@@ -68,7 +68,7 @@ nds={}
 for line in args.f_nodes.xreadlines():
     node, detail = line.strip().split(" = ", 2)
     filename, line, col, scope, inlinedAt = detail[1:-1].split("; ", 5)
-    all_nodes[int(node)] = (filename, int(line), int(col), scope, inlinedAt)
+    all_nodes[int(node)] = (filename, eval(line), int(col), scope, inlinedAt)
     if DEBUG: print all_nodes[int(node)]
 args.f_nodes.close()
 
@@ -138,7 +138,10 @@ for count in range(1, tol+1):
                 first = None
                 print "heapvalue       c2           c3           nodes        nodes_details"
             print '(%1d, %10f) %-12f %-12f %-12s %s' % (h[0], h[1], c2, c3, nodes, str(map(node_info, nodes)))
-        foundAt = set(map(node_at_line, nodes))
+	if isinstance(node_at_line(next(iter(nodes))), tuple):
+            foundAt = reduce(lambda x,y: x|y, map(lambda x,y: set(range(x,y+1)), map(node_at_line, nodes)))
+        else:
+            foundAt = set(map(node_at_line, nodes))
         if foundAt & set(failsAt):
             break
 

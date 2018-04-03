@@ -2,6 +2,7 @@
 
 source=tcas.c
 EXT=so
+option="-prtBBTrace"
 
 if [ "$(uname)" == "Darwin" ]; then
   EXT=dylib
@@ -42,7 +43,7 @@ fi
 clang -g $CPPFLAGS -O0 -emit-llvm -c $source
 
 echo 0 > /tmp/llvm0
-opt -load ../../../../Debug+Asserts/lib/Research.$EXT -prtLnTrace tcas.bc -o $source.bc &> ../nodes
+opt -load ../../../../Debug+Asserts/lib/Research.$EXT $option tcas.bc -o $source.bc &> ../nodes
 
 echo "#define __SOURCE__ \"$source\"" > printLine.cpp
 cat ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp >> printLine.cpp

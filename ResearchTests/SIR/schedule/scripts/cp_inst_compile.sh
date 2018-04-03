@@ -2,6 +2,7 @@
 
 prog=schedule
 EXT=so
+option=-prtBBTrace # or -prtLnTrace
 CPPFLAGS="$CPPFLAGS -Wno-return-type"
 
 
@@ -44,7 +45,7 @@ fi
 clang -g $CPPFLAGS -O0 -emit-llvm -c $prog.c
 
 echo 0 > /tmp/llvm0
-opt -load ../../../../Debug+Asserts/lib/Research.$EXT -prtLnTrace $prog.bc -o $prog.gbc &> ../nodes
+opt -load ../../../../Debug+Asserts/lib/Research.$EXT $option $prog.bc -o $prog.gbc &> ../nodes
 
 echo "#define __SOURCE__ \"$prog.c\"" > printLine.cpp
 cat ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp >> printLine.cpp

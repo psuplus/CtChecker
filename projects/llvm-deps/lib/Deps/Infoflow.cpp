@@ -2212,22 +2212,13 @@ Infoflow::removeConstraint(std::string kind, std::string match) {
             elem->dump(errs());
             errs() << "\n";
             kit->removeConstraintRHS(kind, *elem);
+          } else {
+            for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+                it != itEnd; ++it){
+              const ConsElem * e = it->second;
+              kit->removeConstraintRHS(kind, *e);
+            }
           }
-        }
-      }
-    } else if(const LoadInst * l = dyn_cast<LoadInst>(&value)) {
-      const Value * v = l->getPointerOperand();
-      //v->dump();
-      if(v->hasName() && v->getName() == match) {
-        const std::set<const AbstractLoc *> &locs = locsForValue(value);
-        errs() << "Locs are of size " << locs.size() << "\n";
-        DenseMap<const Value *, const ConsElem *>::iterator valueMap = summarySourceValueConstraintMap.find(&value);
-        if(valueMap != summarySourceValueConstraintMap.end()){
-          errs() << "Removing LOAD ";
-          const ConsElem & elem = *(valueMap->second);
-          elem.dump(errs());
-          errs() << "\n";
-          kit->removeConstraintRHS(kind, elem);
         }
       }
     } else if (s.find(match) == 0 ) {

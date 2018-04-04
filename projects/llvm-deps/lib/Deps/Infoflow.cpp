@@ -26,6 +26,7 @@
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/CommandLine.h"
+#include <fstream>
 
 namespace deps {
 
@@ -101,6 +102,25 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   DEBUG(errs() << "Running on " << unit.function().getName() << " in context [";
   CM.getContextFor(unit.context()).dump();
   errs() << "]\n");
+
+  // start only from entry functions, if "entry.txt" is specified
+  bool needAnalysis = true;
+  if (unit.context() == DefaultID) { // top-level function
+    std::ifstream fentry("entry.txt");
+    if (fentry.good()) { // file exists
+      needAnalysis = false;  // ignore if there is no match
+      std::string line;
+      while (std::getline(fentry, line)) {
+        if (unit.function().getName() == line) {
+          needAnalysis = true;
+          break;
+        }
+      }
+    }
+  }
+  if (!needAnalysis)
+    return Unit();
+
   generateFunctionConstraints(unit.function());
 
   // errs() << "----- Trying to print out kit->vars -----\n";

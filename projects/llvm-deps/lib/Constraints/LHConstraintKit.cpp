@@ -144,7 +144,7 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
     const ConsElem & constraintRight = c.rhs();
     constraintRight.dump(*ss2);
     ss2->str();
-    if(consText.length() > 0 && rhsText.find(consText) == 0){
+    if (&rhs == &constraintRight){
       llvm::errs() << "Constraint erased: ";
       llvm::errs() << consText << "\n";
       set.erase(vIt);

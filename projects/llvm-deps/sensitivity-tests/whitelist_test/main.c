@@ -19,7 +19,7 @@ int main(void)
     ;
   if( b == 3 )
     ;
-  if( c == 3 ) // reported - if bottom part uncommented
+  if( c == 3 ) // unreported / reported iff bottom part uncommented
     ;
   if( d == 3 ) // reported
     ;

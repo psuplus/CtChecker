@@ -26,6 +26,7 @@
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/CommandLine.h"
+#include <fstream>
 
 namespace deps {
 
@@ -101,6 +102,25 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   DEBUG(errs() << "Running on " << unit.function().getName() << " in context [";
   CM.getContextFor(unit.context()).dump();
   errs() << "]\n");
+
+  // start only from entry functions, if "entry.txt" is specified
+  bool needAnalysis = true;
+  if (unit.context() == DefaultID) { // top-level function
+    std::ifstream fentry("entry.txt");
+    if (fentry.good()) { // file exists
+      needAnalysis = false;  // ignore if there is no match
+      std::string line;
+      while (std::getline(fentry, line)) {
+        if (unit.function().getName() == line) {
+          needAnalysis = true;
+          break;
+        }
+      }
+    }
+  }
+  if (!needAnalysis)
+    return Unit();
+
   generateFunctionConstraints(unit.function());
 
   // errs() << "----- Trying to print out kit->vars -----\n";
@@ -2212,22 +2232,13 @@ Infoflow::removeConstraint(std::string kind, std::string match) {
             elem->dump(errs());
             errs() << "\n";
             kit->removeConstraintRHS(kind, *elem);
+          } else {
+            for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+                it != itEnd; ++it){
+              const ConsElem * e = it->second;
+              kit->removeConstraintRHS(kind, *e);
+            }
           }
-        }
-      }
-    } else if(const LoadInst * l = dyn_cast<LoadInst>(&value)) {
-      const Value * v = l->getPointerOperand();
-      //v->dump();
-      if(v->hasName() && v->getName() == match) {
-        const std::set<const AbstractLoc *> &locs = locsForValue(value);
-        errs() << "Locs are of size " << locs.size() << "\n";
-        DenseMap<const Value *, const ConsElem *>::iterator valueMap = summarySourceValueConstraintMap.find(&value);
-        if(valueMap != summarySourceValueConstraintMap.end()){
-          errs() << "Removing LOAD ";
-          const ConsElem & elem = *(valueMap->second);
-          elem.dump(errs());
-          errs() << "\n";
-          kit->removeConstraintRHS(kind, elem);
         }
       }
     } else if (s.find(match) == 0 ) {

@@ -1,0 +1,6 @@
+main.c line 24
+main.c line 31
+main.c line 33
+main.c line 38
+main.c line 40
+main.c line 42

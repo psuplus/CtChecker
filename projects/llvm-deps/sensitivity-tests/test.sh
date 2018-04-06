@@ -43,7 +43,7 @@ function execute_test() {
 
 
     #filter lines for only relevant output
-    grep -e 'line [0-9]\+' $2 | sort -uV  > $3
+    grep -e 'line [0-9]\+' $2 | sort -u  > $3
     cd $HOME_DIR
 }
 

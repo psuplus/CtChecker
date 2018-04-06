@@ -7,6 +7,7 @@
 #include "llvm/IR/DebugInfo.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include <map>
+#include <fstream>
 
 using namespace llvm;
 
@@ -14,6 +15,8 @@ using namespace llvm;
  * debuginfo needs -g while compiling
  * clang -g ...
  */
+
+static int count = 0;
 namespace {
 	struct OutputTrace : public ModulePass {
 		static char ID;
@@ -32,11 +35,20 @@ char OutputTrace::ID = 0;
 static RegisterPass<OutputTrace> X("prtBBTrace", "Output the execution trace.");
 
 bool OutputTrace::runOnModule(Module &M) {
+	std::fstream fs;
+	fs.open ("/tmp/llvm0", std::fstream::in);
+	fs >> count;
+	fs.close();
+
 	bool retval = false;
 
 	for (Module::iterator F = M.begin(), E = M.end(); F != E; F++) {
 		retval |= runOnFunction(*F, M);
 	}
+
+	fs.open("/tmp/llvm0", std::fstream::out);
+	fs << count;
+	fs.close();
 	return retval;
 }
 
@@ -57,13 +69,7 @@ bool OutputTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 	Instruction *I = BB.getFirstNonPHIOrDbg();
 	while (!I->getDebugLoc()) I++;
 	IRBuilder<> builder(I);
-
-	if (filenames.find(loc->getFilename()) == filenames.end()) {
-		filename = builder.CreateGlobalStringPtr(loc->getFilename(), ".str");
-		filenames[loc->getFilename()] = filename;
-	}
-	else
-		filename = filenames[loc->getFilename()];
+	DebugLoc loc = I->getDebugLoc();
 
 	BasicBlock::iterator E = BB.end();
 	for (E--; !E->getDebugLoc(); E--);

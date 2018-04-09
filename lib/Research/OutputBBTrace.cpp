@@ -83,7 +83,6 @@ bool OutputBBTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 			node = count;
 			dbgs() << count << " = (" << loc->getFilename().str() << "; (" << lEnt << "," << lExt << "); "  << loc->getColumn() << "; " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
 			nodes[loc] = count++;
-			break;
 		}
 		else
 			node = nodes[loc];
@@ -91,6 +90,8 @@ bool OutputBBTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 		ConstantInt *nodeCI = ConstantInt::get(M.getContext(), APInt(32, uint64_t(node), false));
 
 		builder.CreateCall(printTrace, {nodeCI});
+
+		break;
 	}
 #if 0
 	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {

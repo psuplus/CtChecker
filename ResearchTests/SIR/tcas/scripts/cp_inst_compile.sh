@@ -43,13 +43,13 @@ fi
 clang -g $CPPFLAGS -O0 -emit-llvm -c $source
 
 echo 0 > /tmp/llvm0
-opt -load ../../../../Debug+Asserts/lib/Research.$EXT $option tcas.bc -o $source.bc &> ../nodes
+opt -load ../../../../Debug+Asserts/lib/Research.$EXT $option tcas.bc -o tcas.c.bc &> ../nodes
 
 echo "#define __SOURCE__ \"$source\"" > printLine.cpp
 cat ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp >> printLine.cpp
 clang $CPPFLAGS -O0 -emit-llvm -c printLine.cpp
 
-llvm-link $source.bc printLine.bc -o tcas.linked.bc
+llvm-link tcas.c.bc printLine.bc -o tcas.linked.bc
 
 llc -filetype=obj tcas.linked.bc -o tcas.o
 

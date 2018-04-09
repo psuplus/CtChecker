@@ -47,26 +47,27 @@ echo "Running rm ../traces/*"
 mkdir -p ../traces
 rm -f ../traces/*
 
-if [ -e "../n_all/a$1.nd" ]; then
-  cp ../n_all/a$1.nd ../nodes
-else
+
+# if [ -e "../n_all/$1.nd" ]; then
+#   cp ../n_all/$1.nd ../nodes
+# else
   echo Running ./cp_inst_compile.sh $1
   (./cp_inst_compile.sh $1) &> /dev/null
-  cp ../nodes ../n_all/a$1.nd
-fi
+  cp ../nodes ../n_all/$1.nd
+# fi
 
-if [ -e "../t_all/a$1.tr" ]; then
-  cp ../t_all/a$1.tr ../trace 
-else
+# if [ -e "../t_all/$1.tr" ]; then
+#   cp ../t_all/$1.tr ../trace 
+# else
   echo Running ./gettraces.sh
   (./gettraces.sh) &> /dev/null
 
   echo Running ./collect_traces.sh
   ./collect_traces.sh
-fi
+# fi
 
 cp ../trace ../t_all/$1.tr
-cp ../nodes ../t_all/$1.n
+cp ../nodes ../t_all/$1.nd
 
 # diff the source files to see where has been changed
 echo "diff <original tcas.c> <new tcas.c>"

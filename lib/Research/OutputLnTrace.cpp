@@ -69,9 +69,9 @@ bool OutputLnTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 	Constant *printTrace = M.getOrInsertFunction("_Z10printTracei", FTy);
 
 	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {
+		while (isa<PHINode>(I)) I++;
 		DebugLoc loc = I->getDebugLoc();
 		if (!loc) continue;
-		if (isa<PHINode>(*I)) I++;
 		IRBuilder<> builder(I);
 
 		int node;

@@ -1,4 +1,4 @@
-#define DEBUG_TYPE "PrintBBLine"
+#define DEBUG_TYPE "PrintBBTrace"
 #include "llvm/Pass.h"
 #include "llvm/IR/Module.h"
 #include "llvm/Support/Debug.h"
@@ -6,6 +6,7 @@
 #include <llvm/IR/IRBuilder.h>
 #include "llvm/IR/DebugInfo.h"
 #include "llvm/IR/DebugInfoMetadata.h"
+#include "llvm/IR/DebugLoc.h"
 #include <map>
 #include <fstream>
 
@@ -18,9 +19,9 @@ using namespace llvm;
 
 static int count = 0;
 namespace {
-	struct OutputTrace : public ModulePass {
+	struct OutputBBTrace : public ModulePass {
 		static char ID;
-		OutputTrace() : ModulePass(ID) {}
+		OutputBBTrace() : ModulePass(ID) {}
 
 		virtual bool runOnModule(Module &M);
 		virtual bool runOnFunction(Function &F, Module &M);
@@ -31,10 +32,10 @@ namespace {
 
 	};
 }
-char OutputTrace::ID = 0;
-static RegisterPass<OutputTrace> X("prtBBTrace", "Output the execution trace.");
+char OutputBBTrace::ID = 0;
+static RegisterPass<OutputBBTrace> X("prtBBTrace", "Output the execution trace.");
 
-bool OutputTrace::runOnModule(Module &M) {
+bool OutputBBTrace::runOnModule(Module &M) {
 	std::fstream fs;
 	fs.open ("/tmp/llvm0", std::fstream::in);
 	fs >> count;
@@ -52,7 +53,7 @@ bool OutputTrace::runOnModule(Module &M) {
 	return retval;
 }
 
-bool OutputTrace::runOnFunction(Function &F, Module &M) {
+bool OutputBBTrace::runOnFunction(Function &F, Module &M) {
 	bool retval = false;
 
 	if (F.hasUWTable())
@@ -62,34 +63,35 @@ bool OutputTrace::runOnFunction(Function &F, Module &M) {
 	return retval;
 }
 
-bool OutputTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
+bool OutputBBTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 	FunctionType *FTy = FunctionType::get(Type::getVoidTy(M.getContext()), {Type::getInt32Ty(M.getContext())});
-	Constant *printTrace = M.getOrInsertFunction("_Z10printLnTracei", FTy);
+	Constant *printTrace = M.getOrInsertFunction("_Z10printTracei", FTy);
 
-	Instruction *I = BB.getFirstNonPHIOrDbg();
-	while (!I->getDebugLoc()) I++;
-	IRBuilder<> builder(I);
-	DebugLoc loc = I->getDebugLoc();
+	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {
+		while (isa<PHINode>(I)) I++;
+		DebugLoc loc = I->getDebugLoc();
+		if (!loc) continue;
+		IRBuilder<> builder(I);
 
-	BasicBlock::iterator E = BB.end();
-	for (E--; !E->getDebugLoc(); E--);
+		for (; !E->getDebugLoc() || E != I; E--);
 	
-	int lEnt = I->getDebugLoc()->getLine(), lExt = E->getDebugLoc()->getLine();
+		int lEnt = I->getDebugLoc()->getLine();
+		int lExt = E->getDebugLoc()->getLine();
 
-	int node;
-	if (nodes.find(loc) == nodes.end()) {
-		node = count;
-		dbgs() << count << " = (" << loc->getFilename().str() << "; (" << lEnt << "," << lExt << "); "  << loc->getColumn() << "; " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
-		nodes[loc] = count++;
+		int node;
+		if (nodes.find(loc) == nodes.end()) {
+			node = count;
+			dbgs() << count << " = (" << loc->getFilename().str() << "; (" << lEnt << "," << lExt << "); "  << loc->getColumn() << "; " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
+			nodes[loc] = count++;
+			break;
+		}
+		else
+			node = nodes[loc];
+
+		ConstantInt *nodeCI = ConstantInt::get(M.getContext(), APInt(32, uint64_t(node), false));
+
+		builder.CreateCall(printTrace, {nodeCI});
 	}
-	else
-		node = nodes[loc];
-
-	ConstantInt *nodeCI = ConstantInt::get(M.getContext(), APInt(32, uint64_t(node), false));
-
-	builder.CreateCall(printTrace, {nodeCI});
-
-
 #if 0
 	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {
 		MDLocation *loc = I->getDebugLoc();

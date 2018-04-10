@@ -18,8 +18,12 @@
 #include "llvm/Pass.h"
 #include "llvm/IR/CallSite.h"
 
-#include <string>
+#include <algorithm>
+#include <fstream>
 #include <set>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace llvm;
 
@@ -43,6 +47,7 @@ private:
   Infoflow *ifa;
 
   void taintStr (std::string kind, std::string match);
+  std::pair<std::string, int> parseWhitelistString(std::string line);
 };
 
 }

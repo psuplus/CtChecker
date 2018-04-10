@@ -2186,7 +2186,7 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
 }
 
 std::pair<std::string, int>
-Infoflow::parseWhitelistString(std::string line) {
+Infoflow::parseTaintString(std::string line) {
   std::pair<std::string, int> ret;
   // Move any extra whitespace to end
   std::string::iterator new_end = unique(line.begin(), line.end(), [] (const char &x, const char &y) {

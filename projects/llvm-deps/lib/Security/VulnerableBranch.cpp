@@ -145,8 +145,8 @@ VulnerableBranch::runOnModule(Module &M) {
   std::ifstream fwhitelist("whitelist.txt");
   while (std::getline(fwhitelist, line)) {
     std::pair<std::string, int> match = parseWhitelistString(line);
-    ifa->removeConstraint("taint", match.first);
-    ifa->removeConstraint("untrust", match.first);
+    ifa->removeConstraint("taint", match);
+    ifa->removeConstraint("untrust", match);
   }
 
   std::set<std::string> kinds;

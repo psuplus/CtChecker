@@ -2186,6 +2186,51 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
 }
 
 void
+Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) {
+  errs() << "Removing values tied to " << match.first << "\n";
+  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
+         end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
+    const Value & value = *(entry->first);
+
+    std::string s;
+    llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
+    *ss << value; // dump value info to ss
+    ss->str(); // flush stream to s
+
+    if(value.hasName() && value.getName() == match.first) {
+      const std::set<const AbstractLoc *> &locs = locsForValue(value);
+      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(),
+            end = locs.end(); loc != end; ++loc) {
+        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
+
+        std::map<unsigned, const ConsElem *> elemMap;
+        if (curElem != locConstraintMap.end()) {
+          elemMap = curElem->second;
+        }
+
+        if (match.second >= 0) {
+          // map sorted by keys -- get nth key as represented by GEPInst
+          std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
+          kit->removeConstraintRHS(kind, *(it->second));
+        } else {
+          for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+              it != itEnd; ++it){
+            const ConsElem * e = it->second;
+            kit->removeConstraintRHS(kind, *e);
+          }
+        }
+      }
+    } else if (s.find(match.first) == 0 ) {
+      errs() << "Removing constraint ";
+      const ConsElem & elem = *(entry->second);
+      elem.dump(errs());
+      errs() << "\n";
+      kit->removeConstraintRHS(kind, elem);
+    }
+  }
+}
+
+void
 Infoflow::removeConstraint(std::string kind, std::string match) {
   errs() << "Removing values tied to " << match << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),

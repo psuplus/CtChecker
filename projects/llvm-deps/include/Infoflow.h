@@ -289,6 +289,8 @@ class Infoflow :
     void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &, const ConsElem &, unsigned offset, unsigned);
     void putOrConstrainConsElemStruct(bool, bool, const AbstractLoc & ,const ConsElem &, unsigned, const Value * v=NULL);
     void putOrConstrainConsElemCollapsed(bool, bool, const AbstractLoc &, const ConsElem &, unsigned, const StructType*);
+
+    std::pair<std::string, int> parseWhitelistString(std::string line);
     void removeConstraint (std::string kind, std::string match);
     void removeConstraint (std::string kind, std::pair<std::string, int> match);
 

@@ -47,7 +47,6 @@ private:
   Infoflow *ifa;
 
   void taintStr (std::string kind, std::string match);
-  std::pair<std::string, int> parseWhitelistString(std::string line);
 };
 
 }

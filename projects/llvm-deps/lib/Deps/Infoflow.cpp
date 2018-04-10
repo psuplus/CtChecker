@@ -2185,6 +2185,46 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   return OS.str();
 }
 
+std::pair<std::string, int>
+Infoflow::parseWhitelistString(std::string line) {
+  std::pair<std::string, int> ret;
+  // Move any extra whitespace to end
+  std::string::iterator new_end = unique(line.begin(), line.end(), [] (const char &x, const char &y) {
+      return x == y and x == ' ';
+    });
+
+  // Remove the extra space
+  line.erase(new_end, line.end());
+
+  // Delete Trailing White space
+  while (line[line.length() - 1]  == ' ') {
+    line.pop_back();
+  }
+
+  // Split up line
+  std::vector<std::string> splits;
+  char delimiter = ' ';
+
+  size_t i  = 0;
+  size_t pos = line.find(delimiter);
+
+  while (pos != std::string::npos) {
+    splits.push_back(line.substr(i, pos-i));
+    i = pos + 1;
+    pos = line.find(delimiter, i);
+  }
+  splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
+
+  // Create match/offset pair
+  if (splits.size() == 2) {
+    ret = std::make_pair(splits[0], std::stoi(splits[1]));
+  } else {
+    ret = std::make_pair(splits[0], -1);
+  }
+
+  return ret;
+}
+
 void
 Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) {
   errs() << "Removing values tied to " << match.first << "\n";

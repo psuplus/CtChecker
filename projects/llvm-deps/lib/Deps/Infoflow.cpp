@@ -2249,7 +2249,22 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
         }
 
         if (match.second >= 0) {
-          // map sorted by keys -- get nth key as represented by GEPInst
+          // Check if we are loading from a pointer.
+          bool linkExists = curElem->first->hasLink(0);
+
+          if (linkExists) {
+            // If the value is a pointer, use pointsto analysis to resolve the target
+            const DSNodeHandle nh = curElem->first->getLink(0);
+            const AbstractLoc * node = nh.getNode();
+            errs() << "Linked Node";
+            node->dump();
+            DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = locConstraintMap.find(node);
+
+            // Instead look at this set of constraint elements
+            elemMap = childElem->second;
+          }
+
+          // Remove the relevant constraint
           std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
           kit->removeConstraintRHS(kind, *(it->second));
         } else {

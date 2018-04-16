@@ -2185,6 +2185,91 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   return OS.str();
 }
 
+std::pair<std::string, int>
+Infoflow::parseTaintString(std::string line) {
+  std::pair<std::string, int> ret;
+  // Move any extra whitespace to end
+  std::string::iterator new_end = unique(line.begin(), line.end(), [] (const char &x, const char &y) {
+      return x == y and x == ' ';
+    });
+
+  // Remove the extra space
+  line.erase(new_end, line.end());
+
+  // Delete Trailing White space
+  while (line[line.length() - 1]  == ' ') {
+    line.pop_back();
+  }
+
+  // Split up line
+  std::vector<std::string> splits;
+  char delimiter = ' ';
+
+  size_t i  = 0;
+  size_t pos = line.find(delimiter);
+
+  while (pos != std::string::npos) {
+    splits.push_back(line.substr(i, pos-i));
+    i = pos + 1;
+    pos = line.find(delimiter, i);
+  }
+  splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
+
+  // Create match/offset pair
+  if (splits.size() == 2) {
+    ret = std::make_pair(splits[0], std::stoi(splits[1]));
+  } else {
+    ret = std::make_pair(splits[0], -1);
+  }
+
+  return ret;
+}
+
+void
+Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) {
+  errs() << "Removing values tied to " << match.first << "\n";
+  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
+         end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
+    const Value & value = *(entry->first);
+
+    std::string s;
+    llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
+    *ss << value; // dump value info to ss
+    ss->str(); // flush stream to s
+
+    if(value.hasName() && value.getName() == match.first) {
+      const std::set<const AbstractLoc *> &locs = locsForValue(value);
+      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(),
+            end = locs.end(); loc != end; ++loc) {
+        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
+
+        std::map<unsigned, const ConsElem *> elemMap;
+        if (curElem != locConstraintMap.end()) {
+          elemMap = curElem->second;
+        }
+
+        if (match.second >= 0) {
+          // map sorted by keys -- get nth key as represented by GEPInst
+          std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
+          kit->removeConstraintRHS(kind, *(it->second));
+        } else {
+          for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+              it != itEnd; ++it){
+            const ConsElem * e = it->second;
+            kit->removeConstraintRHS(kind, *e);
+          }
+        }
+      }
+    } else if (s.find(match.first) == 0 ) {
+      errs() << "Removing constraint ";
+      const ConsElem & elem = *(entry->second);
+      elem.dump(errs());
+      errs() << "\n";
+      kit->removeConstraintRHS(kind, elem);
+    }
+  }
+}
+
 void
 Infoflow::removeConstraint(std::string kind, std::string match) {
   errs() << "Removing values tied to " << match << "\n";

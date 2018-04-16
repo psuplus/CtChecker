@@ -18,8 +18,12 @@
 #include "llvm/Pass.h"
 #include "llvm/IR/CallSite.h"
 
-#include <string>
+#include <algorithm>
+#include <fstream>
 #include <set>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace llvm;
 
@@ -42,7 +46,7 @@ public:
 private:
   Infoflow *ifa;
 
-  void taintStr (std::string kind, std::string match);
+  void taintStr (std::string kind, std::pair<std::string,int> match);
 };
 
 }

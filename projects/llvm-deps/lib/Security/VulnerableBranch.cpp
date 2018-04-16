@@ -21,8 +21,6 @@
 #include "llvm/Support/Debug.h"
 #include  "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
-#include <fstream>
-#include <algorithm>
 
 // For __cxa_demangle (demangling c++ function names)
 // Requires libstdc++
@@ -37,7 +35,7 @@ char VulnerableBranch::ID;
 
 /** Taint a Value whose name matches s */
 void
-VulnerableBranch::taintStr (std::string kind, std::string match) {
+VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) {
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(),
     end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
     const Value& value = *(entry->first);
@@ -46,7 +44,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
     // value.dump();
 
     std::string s;
-    if (value.hasName() && value.getName() == match ) {
+    if (value.hasName() && value.getName() == match.first ) {
        s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       unsigned offset = 0;
@@ -60,15 +58,21 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
         if(curElem != ifa->locConstraintMap.end()){
           elemMap = curElem->second;
 
-          if (hasOffset) {
+          if (match.second >= 0){
+            std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
+            errs() << "Setting high constant to ";
+            it->second->dump(errs());
+            errs() << "\n";
+            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(it->second));
+          } else if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
             const ConsElem * elem = findConsElemAtOffset(elemMap, offset);
 
-            errs() << "Matching " << match << " with " << value.getName() << ": "; elem->dump(errs()); errs() << "\n";
+            errs() << "Matching " << match.first << " with " << value.getName() << ": "; elem->dump(errs()); errs() << "\n";
             ifa->kit->addConstraint(kind,ifa->kit->highConstant(), *elem);
           } else {
             errs() << "Visiting: "; value.dump();
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
+            errs() << "Matching " << match.first << " with " << value.getName() << ": ";
             ifa->setTainted(kind,value);
           }
         }
@@ -77,7 +81,7 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
       llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
       *ss << value; // dump value info to ss
       ss->str(); // flush stream to s
-      if (s.find(match) == 0) {// test if the value's content starts with match
+      if (s.find(match.first) == 0) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
         errs() << "Match Detected for " << s  << "\n";
       }
@@ -85,6 +89,8 @@ VulnerableBranch::taintStr (std::string kind, std::string match) {
   }
   errs() << "DONE\n";
 }
+
+
 
 bool
 VulnerableBranch::runOnModule(Module &M) {
@@ -94,18 +100,21 @@ VulnerableBranch::runOnModule(Module &M) {
   std::ifstream ftaint("taint.txt"); // read tainted values from txt file
   std::string line;
   while (std::getline(ftaint, line)) {
-    taintStr ("taint", line);
+    std::pair<std::string, int> match = ifa->parseTaintString(line);
+    taintStr ("taint", match);
   }
 
   std::ifstream funtrust("untrust.txt"); // read tainted values from txt file
   while (std::getline(funtrust, line)) {
-    taintStr ("untrust", line);
+    std::pair<std::string, int> match = ifa->parseTaintString(line);
+    taintStr ("untrust", match);
   }
 
   std::ifstream fwhitelist("whitelist.txt");
   while (std::getline(fwhitelist, line)) {
-    ifa->removeConstraint("taint", line);
-    ifa->removeConstraint("untrust", line);
+    std::pair<std::string, int> match = ifa->parseTaintString(line);
+    ifa->removeConstraint("taint", match);
+    ifa->removeConstraint("untrust", match);
   }
 
   std::set<std::string> kinds;

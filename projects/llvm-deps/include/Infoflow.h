@@ -290,7 +290,10 @@ class Infoflow :
     void putOrConstrainConsElemStruct(bool, bool, const AbstractLoc & ,const ConsElem &, unsigned, const Value * v=NULL);
     void putOrConstrainConsElemCollapsed(bool, bool, const AbstractLoc &, const ConsElem &, unsigned, const StructType*);
 
+    std::pair<std::string, int> parseTaintString(std::string line);
     void removeConstraint (std::string kind, std::string match);
+    void removeConstraint (std::string kind, std::pair<std::string, int> match);
+
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);
     const ConsElem &getOrCreateVargConsElemSummarySource(const Function &);

@@ -73,7 +73,7 @@ bool OutputBBTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 		if (!loc) continue;
 		IRBuilder<> builder(I);
 
-		for (; !E->getDebugLoc() || E != I; E--);
+		for (; !E->getDebugLoc() && E != I; E--);
 	
 		int lEnt = I->getDebugLoc()->getLine();
 		int lExt = E->getDebugLoc()->getLine();

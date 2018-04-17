@@ -52,6 +52,13 @@ elif [[ $# -eq 1 ]]; then
 			testing $a $b
 		done
 	done
+	
+	cd $1/result_log
+	
+	for f in *.log ; do 
+		python ../../../plotting/makegraph.py $f
+	done
+	gnuplot ../../../plotting/plot.gnu 
 
 else
 	testing $opt

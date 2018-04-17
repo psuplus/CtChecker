@@ -509,6 +509,11 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   return offset;
 }
 
+// findOffsetFromFieldIndex is called from the GEPInstCalculateStructOffset function
+// This function takes the type information from the LLVM type and walks through and finds
+// the relevant byte offset that the field index (last operand of GEP inst) is located within
+// the structure. This method allows for the gaps in the structure to be properly marked
+// even when the is type information missing in the AbstractLoc's type information map for that node
 unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fieldIdx) {
   unsigned field_offset = 0;
   unsigned field_ct = 0;

@@ -525,6 +525,13 @@ unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fie
     if(elem->isPointerTy()){
       size = sizeof(int*);
       //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
+    } else if (elem->isArrayTy()) {
+    const ArrayType * arr = dyn_cast<ArrayType>(elem);
+    uint64_t numberElements = arr->getNumElements();
+    const Type *t = arr->getElementType();
+      //errs() << "Array of " << arr->getNumElements() << "of type ";
+      //t->dump();
+      size = numberElements*(t->getPrimitiveSizeInBits() / 8);
     }
     field_offset += size;
 
@@ -2392,7 +2399,7 @@ void Infoflow::constrainOffsetFromIndex(std::string kind, const Value * v, std::
   if (const StructType* st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx);
     const ConsElem * elem = elemMap[offset];
-    errs() << "Setting high constant to ";
+    errs() << "Setting high constant to " << offset << ":";
     //it->second->dump(errs());
     elem->dump(errs());
     errs() << "\n";

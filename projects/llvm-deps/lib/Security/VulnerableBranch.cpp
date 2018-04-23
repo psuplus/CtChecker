@@ -33,6 +33,49 @@ X("vulnerablebranch", "An analysis for identifying vulnerable branches");
 
 char VulnerableBranch::ID;
 
+void VulnerableBranch::constrainOffsetFromIndex(std::string kind, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
+unsigned offset = 0;
+ const StructType* st = NULL;
+if(const AllocaInst *al = dyn_cast<AllocaInst>(v)){
+  if((st = dyn_cast<StructType>(al->getAllocatedType()))){
+  } else if (isa<ArrayType>(al->getAllocatedType())) {
+    const ConsElem * elem = elemMap[fieldIdx];
+    // If it is not a heap array the elemMap should have the same number of elements as the array
+    // So just taint that one otherwise taint all elements in the map
+    if (elemMap.size() > (unsigned) fieldIdx) {
+      ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *elem);
+    }else {
+      ifa->constrainAllConsElem(kind, elemMap);
+    }
+  }
+ } else if (const Argument * arg = dyn_cast<Argument>(v)) {
+  //errs() << "ISA argument";
+  //v->dump();
+  Type* t = arg->getType();
+  if(t->isPointerTy()){
+    size_t subTypeLength = t->subtypes().size();
+    if (subTypeLength == 1) {
+      Type* structType = t->getContainedType(0);
+      st = dyn_cast<StructType>(structType);
+    } else {
+      errs() << "Type has multiple subtypes, unclear how to proceed.\n";
+    }
+  }
+ }
+
+ if(st) {
+   offset = ifa->findOffsetFromFieldIndex(st, (unsigned) fieldIdx);
+   const ConsElem * elem = elemMap[offset];
+   errs() << "Setting high constant to ";
+   //it->second->dump(errs());
+   elem->dump(errs());
+   errs() << "\n";
+   ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *elem);
+ } else {
+   errs() << "St not found\n";
+ }
+
+}
 /** Taint a Value whose name matches s */
 void
 VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) {
@@ -59,11 +102,8 @@ VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) 
           elemMap = curElem->second;
 
           if (match.second >= 0){
-            std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
-            errs() << "Setting high constant to ";
-            it->second->dump(errs());
-            errs() << "\n";
-            ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(it->second));
+            //std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
+            constrainOffsetFromIndex(kind, &value,elemMap ,match.second);
           } else if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
             const ConsElem * elem = findConsElemAtOffset(elemMap, offset);

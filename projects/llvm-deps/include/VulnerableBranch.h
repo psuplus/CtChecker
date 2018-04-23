@@ -47,6 +47,7 @@ private:
   Infoflow *ifa;
 
   void taintStr (std::string kind, std::pair<std::string,int> match);
+  void constrainOffsetFromIndex(std::string, const Value*, std::map<unsigned, const ConsElem*>, int);
 };
 
 }

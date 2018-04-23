@@ -2359,6 +2359,15 @@ Infoflow::removeConstraint(std::string kind, std::string match) {
   }
 }
 
+void
+Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*> elemMap) {
+  errs() << "Tainting all constraint elements from value\n";
+  for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), end = elemMap.end(); it != end; ++it){
+    kit->addConstraint(kind, kit->highConstant(), *(it->second));
+  }
+}
+
+
 const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
   if (elemMap.find(offset) != elemMap.end()) {
     return elemMap[offset];

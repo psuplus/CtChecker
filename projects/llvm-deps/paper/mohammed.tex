@@ -63,23 +63,33 @@
   determined. If it does not change, the value of k is not determined, but a
   possible value has been ruled out. This indirect flow from $k$ to $a$ is what
   is called implicit flow.
-\subsection{Field Sensitivity Points to Analysis}
-  For an accurate taint tracking analysis it is essential to know what portions of
-  memory are being manipulated. This can be a trivial issue if assumptions such
-  that all variables are constant and no modifications are made, but for most
-  programming paradigms this assumption does not hold. If variables can be just
-  pointers to locations in memory, there needs to be a way to figure out what the
-  pointer is able to address to be able to accurately track the state of the
-  program at any given time. The static analysis tool upon which this improvement
-  was made utilized a points to analysis to track the memory locations pointed to
-  and modified by pointers. Each time the analysis encountered a pointer type the
-  tool enlisted the help of the memory model provided by the points to analysis.
-  The content of a pointer and the address of a pointer can be treated as two
-  separate values and though related, can be tainted individually. 
-\subsection{Goal: Timing Channels in Crypto-systems}
+\subsection{Points-to Analysis}
+
+For an accurate sensitive data tracking analysis it is essential to know what
+portions of memory are being manipulated. This can be a trivial issue if
+assumptions such that all variables are constant and no modifications are made,
+but for most programming paradigms this assumption does not hold. If it is
+possible for a variable to point to locations in memory, tracking the flow of
+sensitive data depends on where the pointers lead. The need for a analysis to
+keep track of the data which is pointed to by each pointer. This analysis is
+necessary to understand the program state at any given time. The points-to
+analysis represents the data as nodes in a graph. Each node represents one data
+structure and each edge pointing to that node is a pointer by which the node can
+be reached. Each of these nodes provides a conservative representation of the
+type information for the data structure it represents. The type information
+available from each node is only available if the points-to analysis determines
+the representation is unable to be modified during the run-time. In the case
+where the type information is able to be modified during run-time the points-to
+analysis returns no type information for the node. In the improved sensitive
+data tracking analysis, when pointers are encountered the target of the pointer
+is resolved using the points-to analysis.
+
+\subsection{Timing Channels in Crypto-systems}
 
 \section{Improving Field Sensitivity in Taint Analysis}
 
+  In this work, improvements were made over a baseline taint analysis. The
+  original taint  
   The changes made since the previous versions of the pass were done to improve
   the sensitivity. The system works by generating constraints for each value that
   is extracted from the control flow of a program. By creating the constraint

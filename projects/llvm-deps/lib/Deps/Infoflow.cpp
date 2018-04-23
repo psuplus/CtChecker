@@ -2368,6 +2368,49 @@ Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsEl
 }
 
 
+void Infoflow::constrainOffsetFromIndex(std::string kind, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
+  unsigned offset = 0;
+  const StructType* st = NULL;
+  if(const AllocaInst *al = dyn_cast<AllocaInst>(v)){
+    if((st = dyn_cast<StructType>(al->getAllocatedType()))){
+    } else if (isa<ArrayType>(al->getAllocatedType())) {
+      const ConsElem * elem = elemMap[fieldIdx];
+      // If it is not a heap array the elemMap should have the same number of elements as the array
+      // So just taint that one otherwise taint all elements in the map
+      if (elemMap.size() > (unsigned) fieldIdx) {
+        kit->addConstraint(kind, kit->highConstant(), *elem);
+      }else {
+        constrainAllConsElem(kind, elemMap);
+      }
+    }
+  } else if (const Argument * arg = dyn_cast<Argument>(v)) {
+    //errs() << "ISA argument";
+    //v->dump();
+    Type* t = arg->getType();
+    if(t->isPointerTy()){
+      size_t subTypeLength = t->subtypes().size();
+      if (subTypeLength == 1) {
+        Type* structType = t->getContainedType(0);
+        st = dyn_cast<StructType>(structType);
+      } else {
+        errs() << "Type has multiple subtypes, unclear how to proceed.\n";
+      }
+    }
+  }
+
+  if(st) {
+    offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx);
+    const ConsElem * elem = elemMap[offset];
+    errs() << "Setting high constant to ";
+    //it->second->dump(errs());
+    elem->dump(errs());
+    errs() << "\n";
+    kit->addConstraint(kind, kit->highConstant(), *elem);
+  } else {
+    errs() << "Structure Type not found\n";
+  }
+}
+
 const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
   if (elemMap.find(offset) != elemMap.end()) {
     return elemMap[offset];

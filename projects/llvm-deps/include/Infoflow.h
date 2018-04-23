@@ -294,6 +294,7 @@ class Infoflow :
     void removeConstraint (std::string kind, std::string match);
     void removeConstraint (std::string kind, std::pair<std::string, int> match);
     void constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*>);
+    void constrainOffsetFromIndex(std::string, const Value*, std::map<unsigned, const ConsElem*>, int);
 
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);

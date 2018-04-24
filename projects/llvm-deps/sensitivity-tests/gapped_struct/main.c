@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 typedef struct {
   int a;
   int b;
@@ -11,8 +9,10 @@ int main(void)
 {
   int bad = 4;
   Context c;
+  Context d;
   c.b = 0;
   c.c = bad;
+  d.b = 0;
 
   if (c.b == 1) // this would be reported if using AbstractLoc TypeMap only
     ;
@@ -20,5 +20,10 @@ int main(void)
   if (c.c == 1) // Vulnerable Branch
     ;
 
+  if (d.b == 1) // Not tainted
+    ;
+
+  if (d.c == 1) // Vulnerable Branch
+    ;
   return 0;
 }

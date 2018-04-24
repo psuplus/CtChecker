@@ -39,28 +39,37 @@ function execute_test() {
                                   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
                                   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
                                   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-                                  -vulnerablebranch  -debug < test.bc 2>$2 > /dev/null
+                                  -vulnerablebranch  -debug < test.bc 2>$2  > /dev/null
 
+    exit_code="$?"
 
+    if [[ "${exit_code}"  -ne 0 ]]; then
+        echo "Failed to run analysis" > $3
+    else
     #filter lines for only relevant output
     grep -e 'line [0-9]\+' $2 | sort -u  > $3
+    fi
     cd $HOME_DIR
 }
 
 for d in $(find ./* -maxdepth 1 -type d);
 do
-    execute_test $d tmp filtered
-    CHECK=$(diff $d/filtered $d/expected.txt | wc -l)
-    if [ $CHECK -eq 0 ]
-    then
-        echo "PASS:" $d
-        ((++PASSES))
+    if execute_test $d tmp filtered; then
+        CHECK=$(diff $d/filtered $d/expected.txt | wc -l)
+        if [ $CHECK -eq 0 ]
+        then
+            echo "PASS:" $d
+            ((++PASSES))
+        else
+            echo "FAIL:" $d "... see result.log"
+            cp $d/filtered $d/result.log
+            ((++FAILS))
+        fi
+        rm $d/tmp $d/filtered;
     else
-        echo "FAIL:" $d "... see result.log"
-        cp $d/filtered $d/result.log
         ((++FAILS))
+        echo "FAIL:" $d " execute function failed"
     fi
-    rm $d/tmp $d/filtered
 done
 
 ((TOTAL=PASSES+FAILS))

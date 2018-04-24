@@ -1,0 +1,19 @@
+mpi/mpi-pow.c line  377 - if( ssize < KARATSUBA_THRESHOLD )
+mpi/mpi-pow.c line  382 - if (rsize + ssize > msize)
+mpi/mpi-pow.c line  440 - MPN_NORMALIZE(ep, esize);
+mpi/mpi-pow.c line  484 - if (mod_shift_cnt)
+mpi/mpi-pow.c line  506 - MPN_NORMALIZE( bp, bsize );
+mpi/mpi-pow.c line  529 - if ( rp == ep )
+mpi/mpi-pow.c line  559 - negative_result = (ep[0] & 1) && bsign;
+mpi/mpi-pow.c line  569 - if (xsize >= base_u_size)
+mpi/mpi-pow.c line  577 - if (max_u_size < base_u_size)
+mpi/mpi-pow.c line  582 - if (msize > max_u_size)
+mpi/mpi-pow.c line  585 - MPN_ZERO (base_u, max_u_size);
+mpi/mpi-pow.c line  617 - if (e == 0)
+mpi/mpi-pow.c line  641 - if (c >= W)
+mpi/mpi-pow.c line  667 - for (j += W - c0; j >= 0; j--)
+mpi/mpi-pow.c line  702 - while (j--)
+mpi/mpi-pow.c line  715 - if ( mod_shift_cnt )
+mpi/mpi-pow.c line  719 - if ( carry_limb )
+mpi/mpi-pow.c line  738 - if ( mod_shift_cnt )
+mpi/mpi-pow.c line  751 - if ( mod_shift_cnt )

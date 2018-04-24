@@ -509,6 +509,11 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   return offset;
 }
 
+// findOffsetFromFieldIndex is called from the GEPInstCalculateStructOffset function
+// This function takes the type information from the LLVM type and walks through and finds
+// the relevant byte offset that the field index (last operand of GEP inst) is located within
+// the structure. This method allows for the gaps in the structure to be properly marked
+// even when the is type information missing in the AbstractLoc's type information map for that node
 unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fieldIdx) {
   unsigned field_offset = 0;
   unsigned field_ct = 0;
@@ -520,6 +525,13 @@ unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fie
     if(elem->isPointerTy()){
       size = sizeof(int*);
       //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
+    } else if (elem->isArrayTy()) {
+    const ArrayType * arr = dyn_cast<ArrayType>(elem);
+    uint64_t numberElements = arr->getNumElements();
+    const Type *t = arr->getElementType();
+      //errs() << "Array of " << arr->getNumElements() << "of type ";
+      //t->dump();
+      size = numberElements*(t->getPrimitiveSizeInBits() / 8);
     }
     field_offset += size;
 
@@ -2249,7 +2261,22 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
         }
 
         if (match.second >= 0) {
-          // map sorted by keys -- get nth key as represented by GEPInst
+          // Check if we are loading from a pointer.
+          bool linkExists = curElem->first->hasLink(0);
+
+          if (linkExists) {
+            // If the value is a pointer, use pointsto analysis to resolve the target
+            const DSNodeHandle nh = curElem->first->getLink(0);
+            const AbstractLoc * node = nh.getNode();
+            errs() << "Linked Node";
+            node->dump();
+            DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = locConstraintMap.find(node);
+
+            // Instead look at this set of constraint elements
+            elemMap = childElem->second;
+          }
+
+          // Remove the relevant constraint
           std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
           kit->removeConstraintRHS(kind, *(it->second));
         } else {
@@ -2337,6 +2364,59 @@ Infoflow::removeConstraint(std::string kind, std::string match) {
       }
     }
   }
+}
+
+void
+Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*> elemMap) {
+  errs() << "Tainting all constraint elements from value\n";
+  for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), end = elemMap.end(); it != end; ++it){
+    kit->addConstraint(kind, kit->highConstant(), *(it->second));
+  }
+}
+
+
+// Converts a value and extracts the structure type
+// If there are multiple levels of pointers, traverses all the way down to root
+// and returns the structure type at the root
+const StructType* convertValueToStructType(const Value * v) {
+  Type* t = v->getType();
+  const StructType* st = NULL;
+  while (t->isPointerTy()){
+    size_t subTypeLength = t->subtypes().size();
+    if (subTypeLength == 1) {
+      t = t->getContainedType(0);
+      if((st = dyn_cast<StructType>(t))){
+        st->dump();
+      }
+    } else {
+      errs() << "Type has multiple subtypes, unclear how to proceed.\n";
+    }
+  }
+  return st;
+}
+
+void Infoflow::constrainOffsetFromIndex(std::string kind, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
+  if (const StructType* st = convertValueToStructType(v)) {
+    unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx);
+    const ConsElem * elem = elemMap[offset];
+    errs() << "Setting high constant to " << offset << ":";
+    //it->second->dump(errs());
+    elem->dump(errs());
+    errs() << "\n";
+    kit->addConstraint(kind, kit->highConstant(), *elem);
+  } else if(const AllocaInst *al = dyn_cast<AllocaInst>(v)){
+    if (isa<ArrayType>(al->getAllocatedType())) {
+      const ConsElem * elem = elemMap[fieldIdx];
+      // If it is not a heap array the elemMap should have the same number of elements as the array
+      // So just taint that one otherwise taint all elements in the map
+      if (elemMap.size() > (unsigned) fieldIdx) {
+        kit->addConstraint(kind, kit->highConstant(), *elem);
+      }else {
+        constrainAllConsElem(kind, elemMap);
+      }
+    }
+  }
+
 }
 
 const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset){

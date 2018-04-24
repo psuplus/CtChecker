@@ -498,7 +498,44 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   if (locs.size() > 1){   // if multiple DSNodes just return the offset
     return offset;
   }
+  offset = 0;
+  unsigned ind = 0;
 
+  unsigned next = 0;
+  unsigned endPos = 0;
+  for (std::set<const AbstractLoc *>::iterator loc = locs.begin(); loc != locs.end(); ++loc){
+    if(!((*loc)->isNodeCompletelyFolded()) && (*loc)->type_begin() != (*loc)->type_end()){
+      for(DSNode::const_type_iterator i = (*loc)->type_begin(), e = (*loc)->type_end();
+          i != e; ++i){
+        if(ind == ptrOff)
+          return offset;
+        if (i->first >= endPos){
+          next = i->first;
+          offset = next;
+        }
+        if (i->first == next){
+          offset = next;
+          unsigned elemMax = 0;
+          unsigned start = i->first;
+          if(i->second)
+            for (svset<Type*>::const_iterator ni = i->second->begin(),
+                   ne = i->second->end(); ni != ne; ++ni) {
+              Type * t = *ni;
+
+              unsigned size = t->getPrimitiveSizeInBits()/8;
+              if(size == 0 && isa<PointerType>(t))
+                size = 8;
+
+              if (size > elemMax ) {
+                elemMax = size;
+                endPos = start+size;
+                next = endPos;
+              }
+            }
+        }
+      }
+    }
+  }
 
   // if the offset is non zero, get offset by adding together largest blocks
   // until the position in the structure is met.
@@ -1160,11 +1197,11 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
                 if(size == 0 && isa<PointerType>(t))
                   size = 8;
 
-                // errs() << "Item: ";
-                // t->print(errs());
-                // errs() << " " << t->getPrimitiveSizeInBits() << ", ";
-                // errs() << "range: " << i->first;
-                // errs() << "->" << end;
+                errs() << "Item: ";
+                t->print(errs());
+                errs() << " " << t->getPrimitiveSizeInBits() << ", ";
+                errs() << "range: " << i->first;
+                errs() << "->" << start+size;
                 if (size > elemMax ) {
                   elemMax = size;
                   endPos = start+size;

@@ -87,6 +87,21 @@ is resolved using the points-to analysis.
 \subsection{Timing Channels in Crypto-systems}
 
 \section{Improving Field Sensitivity in Taint Analysis}
+In this work, improvements were made over a baseline taint analysis. The
+original taint analysis will be referred to as the baseline analysis and the
+improved analysis will be referred to as the improved analysis. The changes
+made from the baseline to the improved analysis were done to improve the
+field sensitivity. The system works by generating constraints for each value
+that is extracted from the control flow of a program. By creating the con-
+straint pairs, tracking tainted values and their effect on the rest of the pro-
+gram becomes a problem of tracking the least upper bound for each value.
+A real example from AES is taken to show how the sensitivity is improved.
+
+\begin{algorithm}
+  \caption{Public and private data in structure}
+  \label{alg:aes_struclt}
+  \lstinputlisting{examples/aes.c}
+\end{algorithm}
 
   In this work, improvements were made over a baseline taint analysis. The
   original taint  
@@ -104,27 +119,30 @@ is resolved using the points-to analysis.
   the AbstractLoc had a least upper bound that was the same as the tainted
   variable all related fields were considered tainted.
 
-  For this work, changes were made to a compile-time analysis tool to improve the
-  accuracy. The tool is built to help the developer find and identify places where
-  secret information may leak to an adversary. By tracking the information flow
-  during the optimization stage of compiling, the tool can reduce the work the
-  developer needs to do to ensure information integrity is maintained. The
-  analysis to provide this level of assurance relies on being able to model the
-  memory and accesses to it in conjunction with the source and control-flow graph
-  representations of the program. The granularity that the analysis can provide
-  can change the number of reported results considerably. Before the changes the
-  granularity of the analysis was done by object (or structure), meaning if an
-  object at any point had information flow from a sensitive piece of information,
-  all data in that object would now be considered sensitive. The major change
-  addressed in this work is to improve the granularity of the analysis. The
-  motivation for this change is to reduce the number of positives that result only
-  as a consequence of the poor granularity.
+  For this work, changes were made to a compile-time analysis to improve
+  the precision. The analysis is built to help the developer find and identify
+  places where secret information may leak to an adversary. By tracking the
+  information flow during the optimization stage of compiling, the analysis can
+  reduce the work the developer needs to do to ensure information integrity is
+  maintained. The analysis to provide this level of assurance relies on being
+  able to model the memory and accesses to it in conjunction with the source
+  and control-flow graph representations of the program. The granularity
+  that the analysis can provide can change the number of reported results
+  considerably. Before the changes the granularity of the analysis was done
+  by object (or structure), meaning if an object at any point had information
+  flow from a sensitive piece of information, all data in that object would
+  now be considered sensitive. The major change addressed in this work is to
+  improve the granularity of the analysis. The motivation for this change is
+  to reduce the number of positives that result only as a consequence of the
+  poor granularity.
 
-  Let the variable $k$ be a sensitive variable in the following program. Also, let
-  variable $d$ be a structure which contains two fields $x$ and $y$.
+
+  Algorithm \ref{alg:simpleflow}, let the variable $k$ be a sensitive variable in the following program. Also, let
+  variable $d$ be a structure which contains two fields $x$ and $y$. 
 
   \begin{algorithm}
     \caption{Simple Information Flow}
+    \label{alg:simpleflow}
   \begin{algorithmic}
     \State $k =$ sensitive information
     \State $d.x =  k + 1$
@@ -156,7 +174,6 @@ is resolved using the points-to analysis.
   structure element as the actual variable which has been computed from a
   sensitive piece of information.
 
-
   In terms of correctness, $d.y$ has actually never been computed from any
   sensitive information and thus should not be a tainted variable. False
   positives like this propagate throughout the program and for larger programs
@@ -171,39 +188,39 @@ is resolved using the points-to analysis.
   traverses through and decodes the operands from each instruction that
   generates the flow of information between variables in the program.
 
-  The way we set up our constraints to find which values are sensitive, is by
-  traversing through the IR and creating an inequality between the operands used
-  to compute the value, or sources, and the operand which corresponds to the
-  destination for that value, or the sink. Each constrained is listed in a way
-  such that the source must be less than or equal to the sink. There are 4 main
-  scenarios, neither operand is sensitive, only the source is sensitive, only
-  the sink is sensitive, and finally both operands are sensitive prior to the
-  instruction.
+  Establishing constraints is done by traversing through the IR and creating a
+  set of inequalities between the the source and sink values for each
+  instruction. Mathematically, if information flows from a source to a sink, the
+  sink must be considered at least as sensitive as the components of which it is
+  computed. Thus any information that is considered sensitive is given a high
+  starting sensitivity value to force any information it touches to also raise
+  the sensitivity value of any variable which is computed from it. Once the set
+  of constraints are created and solved, a variable is considered sensitive if
+  its sensitivity value is at least that of the value assigned to sensitive
+  information.
 
-  In the first case, it is trivial, if neither operands are sensitive, the
-  result is a non-sensitive value. In the case of the source being sensitive
-  prior to the operation, but not the sink, the result is that both the source
-  and sink are sensitive following the operation. In the reverse case, the
-  source is non-sensitive and the sink is sensitive, there is no change after
-  this operation. The sink is still sensitive and the source has gained no
-  information about the sink, so it is still non-sensitive.
+  
+  For this to function as expected, just looking at the operands in the IR is
+  not enough. If information flows from pointer operands, the points-to analysis
+  is recruited to more precisely track the true source and sink data operands.
+  Pointers and the target data are represented in a graph in the points-to
+  analysis. Any operand which is a pointer, should have a node in the points-to
+  graph and then the node itself can be used to help identify and properly
+  constrain the data elements that are used in the computation of each variable.
 
-  By solving a set of constraints mathematically, the values which have become
-  sensitive will all have a sensitive tag. Often, flow of information is not
-  clear just from the operands, which is why a memory model is also used to
-  accurately track information flow. The main issue that requires the memory
-  when pointer math is used to access an element, such as array accesses or
-  class fields accesses. So it is essential to know where each element in a
-  structure or array may lie when evaluating these instructions for information
-  flow.
-
-  As it worked before, each time a operand operated from a base address
+  In the baseline analysis, each time a operand operated from a base address
   there was one memory element which represented the data from that pointer. If
   any field which is based from that pointer was computed from a sensitive
   value, all fields represented by that pointer would be considered sensitive.
   This is where the major modification needed to be made. Instead of one memory
   element representing all fields from a pointer, each pointer would need to map
   to be able to be treated independently.
+
+\begin{algorithm}
+\lstinputlisting{examples/struct_ex.c}
+\caption{Structure Inaccuracy}
+\label{alg:inacc}
+\end{algorithm}
 
   Improving field sensitivity helps in reducing the number of false positives.
   Without augmentation the analysis would over-estimate the number of affected
@@ -223,10 +240,11 @@ is resolved using the points-to analysis.
   change based on the value of \texttt{key}.
 
 \begin{algorithm}
-\lstinputlisting{examples/struct_ex.c}
-\caption{Structure Inaccuracy}
-\label{alg:inacc}
+\lstinputlisting{examples/minimal_struct_ex.ll}
+\caption{LLVM intermediate representation}
+\label{alg:ab_ir}
 \end{algorithm}
+
 
 The intermediate representation that is analyzed is similar to the code shown in
 Algorithm \ref{alg:ab_ir}. This is not the exact representation from LLVM, but
@@ -267,12 +285,6 @@ consider the offset from the base pointer, as seen in lines 2 and 4 of Algorithm
 
 
   
-
-\begin{algorithm}
-\lstinputlisting{examples/minimal_struct_ex.ll}
-\caption{LLVM intermediate representation}
-\label{alg:ab_ir}
-\end{algorithm}
 
 % The desired change would allow each field in a
 % user-defined type to be treated independently. The major change made to allow
@@ -322,7 +334,58 @@ consider the offset from the base pointer, as seen in lines 2 and 4 of Algorithm
 % correct offset when dealing with GEP instructions.maketitle
 \section{Evaluation}
 \subsection{Implementation}
-%
+
+Achieving the improved precision of the analysis, is done primarily through
+handling LLVM's pointer instruction differently than other instructions. The
+pointer instruction in the IR is the GetElementPtr instruction. This instruction
+is used when computing an address from a base pointer. For arrays, for example
+it has the index of the element and the bounds of the array if they are known.
+For structures, the instruction contains the structure type which is being
+addressed and the index of the field in the structure that is being referenced.
+The baseline analysis lacked the ability to consider the index available in
+these instructions. The points-to analysis had type and offset
+information for the targets of the pointers. Improving the analysis was achieved
+by i) creating the appropriate number of constraint elements for each node in
+the points-to graph, ii) converting the field index from the GEP instruction to
+a byte offset, and iii) constraining the correct elements based on
+the GEP instruction and data type information.
+
+When a pointer value is encountered for the first time, a node is created for it
+in the points-to graph, and a set of constraint elements are created for that
+data structure. The points-to analysis was left unmodified, so the focus will be
+on the semantics of how constraint elements were changed. In the baseline, only
+one constraint element represented any target of a pointer. In the improved
+analysis, type information from the points-to analysis was used to generate the
+appropriate number of constraint elements. In a stack allocated array, one
+constraint element was created for each element in the array. For structures and
+classes, each field is located at some offset away from the base address of the
+structure and a constraint element was created for each field and mapped to
+associated byte offset. This change enables the precision of the baseline to be
+improved by correctly selecting the corresponding constraint element based on
+the IR.
+
+For any GEP instruction, constraint elements are generated using the type
+information from the points-to analysis when available. Each constraint element
+is created by iterating through the type information of the node from the
+points-to analysis. For each type there is an associated byte offset, using this
+offset and the size as reported by LLVM, a constraint element is created with
+the correspoinding starting byte offset and the ending byte offset based on the
+width of the field. It is necessary to account for the width and start location
+of each field because there may be padding between fields of a structure.
+Padding between fields may be present in the type information because of an
+unused field in code. The points-to analysis will not have type information on
+unused fields so it is important to account for these gaps. Another reason to
+account for the padding is due to structures which are not aligned with each
+field following sequentially after the previous field. When the type information
+is not available one constraint element is created for the whole node so at
+worst the improved analysis will be equivalent to that of the baseline.
+
+For any given GEP instruction, the points-to analysis has a node in its graph
+which represents the memory target of a pointer. For every graph there is a
+defined data layout, which has information about alignment and padding of the
+data structures which reside in that graph. LLVM also has a structure type
+itself 
+\subsubsection{Index to Offset}
 \subsection{Benchmarks}
 % list of the tests
 

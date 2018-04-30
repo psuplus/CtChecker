@@ -68,7 +68,6 @@ void PointsToInterface::mergeAllIncomplete() {
 }
 
 bool PointsToInterface::runOnModule(Module &M) {
-  TD = &M.getDataLayout();
   EquivsAnalysis = &getAnalysis<DSNodeEquivs>();
   Classes = &EquivsAnalysis->getEquivalenceClasses();
   mergeAllIncomplete();

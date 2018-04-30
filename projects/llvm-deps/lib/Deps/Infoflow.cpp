@@ -2194,8 +2194,7 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
 
     if(value.hasName() && value.getName() == match.first) {
       const std::set<const AbstractLoc *> &locs = locsForValue(value);
-      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(),
-            end = locs.end(); loc != end; ++loc) {
+      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
         DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
 
         std::map<unsigned, const ConsElem *> elemMap;
@@ -2247,6 +2246,12 @@ Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsEl
     kit->addConstraint(kind, kit->highConstant(), *(it->second));
   }
 }
+void
+Infoflow::constrainAllConsElem(std::string kind, std::set<const ConsElem*> elems) {
+  for(std::set<const ConsElem*>::iterator it = elems.begin(), end = elems.end(); it != end; ++it){
+    kit->addConstraint(kind, kit->highConstant(), *(*it));
+  }
+}
 
 
 // Converts a value and extracts the structure type
@@ -2269,7 +2274,7 @@ StructType* convertValueToStructType(const Value * v) {
   return st;
 }
 
-void Infoflow::constrainOffsetFromIndex(std::string kind, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx, const AbstractLoc* loc) {
+void Infoflow::constrainOffsetFromIndex(std::string kind, const AbstractLoc* loc, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
   if (StructType* st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx, loc);
     const ConsElem * elem = elemMap[offset];

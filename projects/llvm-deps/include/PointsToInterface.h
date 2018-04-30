@@ -66,6 +66,7 @@ private:
 
 public:
   static char ID;
+  const DataLayout * TD;
 
   PointsToInterface() : ModulePass(ID) {}
 

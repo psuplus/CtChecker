@@ -59,7 +59,7 @@ VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) 
           elemMap = curElem->second;
 
           if (match.second >= 0){
-            ifa->constrainOffsetFromIndex(kind, &value,elemMap ,match.second);
+            ifa->constrainOffsetFromIndex(kind, &value,elemMap ,match.second, curElem->first);
           } else if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
             const ConsElem * elem = findConsElemAtOffset(elemMap, offset);

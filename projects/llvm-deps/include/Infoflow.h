@@ -268,7 +268,7 @@ class Infoflow :
     unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst*);
     unsigned GEPInstCalculateStructOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
     unsigned GEPInstCalculateOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
-    unsigned findOffsetFromFieldIndex(const StructType *, unsigned);
+    unsigned findOffsetFromFieldIndex(StructType *, unsigned, const AbstractLoc*);
     bool checkGEPOperandsConstant(const GetElementPtrInst*);
     void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
     void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);
@@ -294,7 +294,7 @@ class Infoflow :
     void removeConstraint (std::string kind, std::string match);
     void removeConstraint (std::string kind, std::pair<std::string, int> match);
     void constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*>);
-    void constrainOffsetFromIndex(std::string, const Value*, std::map<unsigned, const ConsElem*>, int);
+    void constrainOffsetFromIndex(std::string, const Value*, std::map<unsigned, const ConsElem*>, int, const AbstractLoc*);
 
     const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
     void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID, const Function &, const ConsElem &);

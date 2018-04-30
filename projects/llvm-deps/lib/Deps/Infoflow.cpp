@@ -1117,81 +1117,27 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
-    // Create an element to represent each type if the information exists
-    unsigned next = 0;
-    unsigned endPos = 0;
-    if(numElements == 0 && !loc.isNodeCompletelyFolded()){
-      if(loc.type_begin() != loc.type_end()){
-        for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
-            i != e; ++i){
-          // Sometimes values aren't packed tightly
-          // i.e. {0:i32, 8:i32, 16: i32}
-          if (i->first >= endPos){
-            next = i->first;
-          }
-          if (i->first == next){
-            unsigned elemMax = 0;
-            unsigned start = i->first;
-            if(i->second)
-              for (svset<Type*>::const_iterator ni = i->second->begin(),
-                     ne = i->second->end(); ni != ne; ++ni) {
-                Type * t = *ni;
 
-                //unsigned size = t->getPrimitiveSizeInBits()/8;
-                unsigned size = pti->TD->getTypeStoreSize(t);
-                if(size == 0 && isa<PointerType>(t))
-                  size = 8;
-
-                // errs() << "Item: ";
-                // t->print(errs());
-                // errs() << " " << t->getPrimitiveSizeInBits() << ", ";
-                // errs() << "range: " << i->first;
-                // errs() << "->" << end;
-                if (size > elemMax ) {
-                  elemMax = size;
-                  endPos = start+size;
-                  next = endPos;
-                }
-              }
-            // errs () << "Max element size: " << elemMax;
-            // errs() << "\n";
-            std::string label = "[" + std::to_string(start) + "," + std::to_string(endPos) + "]";
-            const ConsElem & elem = kit->newVar(name+label);
-            locConstraintMap[&loc].insert(std::make_pair(start, &elem));
-
-          }
-        }
-      return locConstraintMap[&loc];
-      } else if (v != NULL) {
-        const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
-        const StructType* s = dyn_cast<StructType>(gep->getSourceElementType());
-        if(s != NULL){
-          unsigned field_offset = 0;
-          StructType::element_iterator typeIt = s->element_begin();
-          StructType::element_iterator typeEnd = s->element_end();
-          while(typeIt != typeEnd){
-            const Type * elem = *typeIt;
-            unsigned size = elem->getPrimitiveSizeInBits() / 8 ;
-            if(elem->isPointerTy()){
-              size = sizeof(int*);
-              //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
-            }
-            const ConsElem & consElem = kit->newVar(name+": elem " + std::to_string(field_offset) + "::");
-            locConstraintMap[&loc].insert(std::make_pair(field_offset, &consElem));
-            field_offset += size;
-
-            ++typeIt;
-          }
+    if (v != NULL && !loc.isNodeCompletelyFolded()) {
+      const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
+      if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
+        const DataLayout &TD = loc.getParentGraph()->getDataLayout();
+        const StructLayout *SL = TD.getStructLayout(s);
+        int index = 0;
+        for(Type::subtype_iterator it = s->element_begin(); it != s->element_end(); ++it, ++index){
+          unsigned start = SL->getElementOffset(index);
+          unsigned end = start + TD.getTypeStoreSize(*it);
+          std::string label = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+          const ConsElem & elem = kit->newVar(name+label);
+          locConstraintMap[&loc].insert(std::make_pair(start, &elem));
         }
         return locConstraintMap[&loc];
-      } else  {
+      } else if (numElements == 0) {
         numElements = 1;
       }
-    } else if (numElements == 0) {
+    } else if (numElements == 0){
       numElements = 1;
     }
-
-
 
     errs() << "Created " << numElements << " constraint variable(s) for node of size ";
     errs() << loc.getSize() << "\n";

@@ -272,6 +272,7 @@ class Infoflow :
     bool checkGEPOperandsConstant(const GetElementPtrInst*);
     void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
     void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);
+    std::set<const ConsElem *> findRelevantConsElem(const AbstractLoc*, std::map<unsigned, const ConsElem *>, unsigned);
 
     const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
     void putOrConstrainConsElem(bool imp, bool sink, const ContextID, const Value &, const ConsElem &);
@@ -293,6 +294,7 @@ class Infoflow :
     std::pair<std::string, int> parseTaintString(std::string line);
     void removeConstraint (std::string kind, std::string match);
     void removeConstraint (std::string kind, std::pair<std::string, int> match);
+    void removeConstraintFromIndex(std::string, const AbstractLoc*, const Value *, std::map<unsigned, const ConsElem*>, int);
     void constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*>);
     void constrainOffsetFromIndex(std::string, const Value*, std::map<unsigned, const ConsElem*>, int, const AbstractLoc*);
 

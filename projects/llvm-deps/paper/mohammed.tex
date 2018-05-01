@@ -350,6 +350,7 @@ the points-to graph, ii) converting the field index from the GEP instruction to
 a byte offset, and iii) constraining the correct elements based on
 the GEP instruction and data type information.
 
+\subsubsection{Constraint Element Generation}
 When a pointer value is encountered for the first time, a node is created for it
 in the points-to graph, and a set of constraint elements are created for that
 data structure. The points-to analysis was left unmodified, so the focus will be
@@ -369,7 +370,7 @@ information from the points-to analysis when available. Each constraint element
 is created by iterating through the type information of the node from the
 points-to analysis. For each type there is an associated byte offset, using this
 offset and the size as reported by LLVM, a constraint element is created with
-the correspoinding starting byte offset and the ending byte offset based on the
+the corresponding starting byte offset and the ending byte offset based on the
 width of the field. It is necessary to account for the width and start location
 of each field because there may be padding between fields of a structure.
 Padding between fields may be present in the type information because of an
@@ -380,12 +381,78 @@ field following sequentially after the previous field. When the type information
 is not available one constraint element is created for the whole node so at
 worst the improved analysis will be equivalent to that of the baseline.
 
-For any given GEP instruction, the points-to analysis has a node in its graph
-which represents the memory target of a pointer. For every graph there is a
-defined data layout, which has information about alignment and padding of the
-data structures which reside in that graph. LLVM also has a structure type
-itself 
-\subsubsection{Index to Offset}
+Algorithm \ref{alg:generate_conselem} shows how the points-to analysis is
+leveraged to create constraint elements for the proper byte offsets and widths.
+Let \texttt{s} be the LLVM representation of the structure type referenced by
+the GEP instruction, and \texttt{node} be the node in the memory graph provided
+by the points-to analysis. The algorithm works by retrieving the graph in which
+the node resides and then retrieving the data layout as specified by the
+compiler for that graph. The data layout contains information like the field
+lengths of each type and the alignment within a data structure. The structure
+type itself \texttt{s} does not have the alignment and padding information, only
+the types of each field within the data structure. The data layout is used to
+retrieve the structure layout of the structure type from the GEP instruction.
+The structure layout is vital because it allows the index from the GEP
+instruction to be converted to a byte offset within the data structure. The
+data layout also provides the size of each type, so that the constraint element
+is created at the corrects starting and ending offset.
+\begin{algorithm}
+  \caption{Creating constraint elements for each field in a type}
+  \label{alg:generate_conselem}
+  \lstinputlisting{examples/createConsElem.cpp}
+\end{algorithm}
+
+The elements created using this strategy enable the analysis to be more precise.
+GEP instructions can also be used to index arrays, so that is handled by
+computing the number of elements that array may hold. For stack arrays that
+number is known, but for heap arrays the number is variable. For stack arrays
+each, since the number of elements is known, one constraint element is created
+per array element. For heap arrays, one constraint element is created for the
+entire array.
+
+Similarly, if type information is unavailable then a conservative approach is
+used. One constraint element is created for the entire data structure. When
+the information is available, the analysis is able to be improved by
+constraining the correct constraint element for each instruction. When that
+information is unavailable, the improved analysis is unable to be more precise
+than the baseline analysis.
+
+\subsubsection{Constraining Operands}
+Each time an instruction where information flow exists, constraints are
+generated between the operands of that instruction. The idea of this is simple,
+given a set of constraint elements select the ones which are used in the
+operation and constrain them as necessary. The baseline analysis handled
+individual variables in a precise manner as long as the variable was not a
+structure or array. The baseline analysis had no way of identifying the offset
+from a GEP instruction, and even if it did, the mapping between a memory node to
+a constraint element was one-to-one. In the previous section, the mapping from
+memory node to constraint element was made to be one-to-many. As one node may
+represent multiple fields which together make the structure or array. It is now
+necessary to pick the correct element from this one-to-many mapping when
+generating the constraint for each instruction. Again, this is done by analyzing
+the GEP instruction.
+
+The last operand of a GEP instruction is the index of the field within the data
+structure. Each constraint element for a memory node is created for a byte
+offset range, so it is necessary to correctly calculate the byte offset from the
+field index provided by the GEP instruction. This is very similar to the
+strategy used to generate the constraints at the correct byte locations. Given
+the structure type, field index and node from the points-to analysis, the offset
+is calculated as shown in Algorithm \ref{alg:find_offset}. Given the node, the
+data layout and associated structure layout can be found and then the index can
+be converted to a byte offset.
+
+\begin{algorithm}
+  \caption{Calculating byte offset from index}
+  \label{alg:find_offset}
+  \lstinputlisting{examples/findoffset.cpp}
+\end{algorithm}
+
+If the GEP instruction is in reference to an array access, then the offset is
+just calculated using the size of the element type and the index. If no type
+information exists for the node, only a single constraint element would exist
+for the node, so that is the constraint which is selected to be constrained. 
+
 \subsection{Benchmarks}
 % list of the tests
 

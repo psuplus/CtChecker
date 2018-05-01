@@ -66,22 +66,27 @@ bool OutputBBTrace::runOnFunction(Function &F, Module &M) {
 bool OutputBBTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 	FunctionType *FTy = FunctionType::get(Type::getVoidTy(M.getContext()), {Type::getInt32Ty(M.getContext())});
 	Constant *printTrace = M.getOrInsertFunction("_Z10printTracei", FTy);
+	
+//	BasicBlock::iterator I = BB.getFirstInsertionPt();
 
-	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {
+	for (BasicBlock::iterator I = BB.getFirstInsertionPt(), E = BB.end(); I != E; I++) {
 		while (isa<PHINode>(I)) I++;
+
 		DebugLoc loc = I->getDebugLoc();
 		if (!loc) continue;
 		IRBuilder<> builder(I);
 
-		for (; !E->getDebugLoc() && E != I; E--);
-	
-		int lEnt = I->getDebugLoc()->getLine();
-		int lExt = E->getDebugLoc()->getLine();
+		int lEnt = loc->getLine(), cEnt = loc->getColumn();
+
+		E--;
+		while (!E->getDebugLoc()) E--;
+		int lExt = E->getDebugLoc()->getLine(), cExt = E->getDebugLoc()->getColumn();
 
 		int node;
 		if (nodes.find(loc) == nodes.end()) {
 			node = count;
-			dbgs() << count << " = (" << loc->getFilename().str() << "; (" << lEnt << "," << lExt << "); "  << loc->getColumn() << "; " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
+			dbgs() << count << " = (" << loc->getFilename().str() << "; (" << lEnt << "," << lExt << "); "  \
+				<< "(" << cEnt << "," << cExt << "); " << loc->getScope() <<"; " << loc->getInlinedAt() << ") \n";
 			nodes[loc] = count++;
 		}
 		else
@@ -90,9 +95,10 @@ bool OutputBBTrace::runOnBasicBlock(BasicBlock &BB, Module &M) {
 		ConstantInt *nodeCI = ConstantInt::get(M.getContext(), APInt(32, uint64_t(node), false));
 
 		builder.CreateCall(printTrace, {nodeCI});
-
+	
 		break;
 	}
+
 #if 0
 	for (BasicBlock::iterator I = BB.begin(), E = BB.end(); I != E; I++) {
 		MDLocation *loc = I->getDebugLoc();

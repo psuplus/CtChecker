@@ -27,6 +27,7 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/CommandLine.h"
 #include <fstream>
+#include <iterator>
 
 namespace deps {
 
@@ -406,44 +407,57 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // If the offset is somehow larger than the map, add all
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
-    if((*I)->isNodeCompletelyFolded()){
-      errs() << "Adding " << elemMap.size() << "relevant source elements\n";
-      for(std::map<unsigned, const ConsElem *>::iterator i = elemMap.begin(), e = elemMap.end();
-          i != e; ++i){
-        sourceSet.insert((*i).second);
-      }
-    } else if (elemMap.find(offset) != elemMap.end()){
-      sourceSet.insert(elemMap[offset]);
-      errs() << "Adding Constraint Source: elem #" << offset << "/" << elemMap.size() << "\n";
-      elemMap[offset]->dump(errs());
-      errs() << "\n";
-    } else {
-      const ConsElem * lastElem = NULL;
+    std::set<const ConsElem*> sourceElems = findRelevantConsElem(*I, elemMap, offset);
+    for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i)
+      sourceSet.insert(*i);
+  }
+}
+
+
+// Returns a set of the correct constraint elements to be handled
+std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node, std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
+
+  std::set<const ConsElem*> elements;
+
+  if (node->isNodeCompletelyFolded()){
+    // All elements are relevant
+    for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(); it!= elemMap.end(); ++it){
+      elements.insert(it->second);
+    }
+  } else if (elemMap.find(offset) != elemMap.end()){
+    // Add the element which matches the offset
+    elements.insert(elemMap[offset]);
+  } else {
+    // Do a search to find the element which spans the range of the offset requested
+    // if elements 0-4 4-8  exist and offset is 5, return element 4-8
+    // TODO: Handle if the element selected spans more than one constraint element.
+
+    if (elemMap.begin() != elemMap.end()){
+      const ConsElem * prevElem = NULL;
       bool elemAdded = false;
-      if(elemMap.begin() != elemMap.end()){
-        for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-            it != itEnd; ++it){
-          if((*it).first > offset && !elemAdded && lastElem != NULL){
-            sourceSet.insert(lastElem);
-            errs() << "Added1 element [" << it->first <<  "]";
-            lastElem->dump(errs());
+      for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+          it != itEnd && !elemAdded; ++it){
+        if (it->first > offset){
+          if (prevElem == NULL){
+            prevElem = it->second;
+          } else {
             elemAdded = true;
-          }
-          if( (*it).second ){
-            lastElem = it->second;
-            errs() << "[Set LastElem]: " << it->first << "\n";
+            elements.insert(prevElem);
           }
         }
 
-        if(!elemAdded && lastElem != NULL){
-          sourceSet.insert(lastElem);
-          errs() << "Added2 : " ;
-          lastElem->dump(errs());
-          errs() << elemMap.size() << "\n";
-        }
+        prevElem = it->second;
+      }
+
+      // In case end of map reached and no element added
+      if (prevElem != NULL && !elemAdded){
+        elements.insert(prevElem);
       }
     }
   }
+
+  DEBUG(errs() << "SIZE OF ELEMENTS : " << elements.size() << "\n");
+  return elements;
 }
 
 //
@@ -493,7 +507,7 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
   uint64_t ptrOff = ptrOffset->getZExtValue();
   unsigned offset = ptrOff;
-  const StructType* structType = dyn_cast<StructType>(gep->getSourceElementType());
+  StructType* structType = dyn_cast<StructType>(gep->getSourceElementType());
 
   if (locs.size() > 1){   // if multiple DSNodes just return the offset
     return offset;
@@ -504,7 +518,7 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   // until the position in the structure is met.
   // Treat offset received from previous line as the index of the actual type in a structure
 
-  offset = findOffsetFromFieldIndex(structType, offset);
+  offset = findOffsetFromFieldIndex(structType, offset, *(locs.begin()));
 
   return offset;
 }
@@ -514,32 +528,12 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
 // the relevant byte offset that the field index (last operand of GEP inst) is located within
 // the structure. This method allows for the gaps in the structure to be properly marked
 // even when the is type information missing in the AbstractLoc's type information map for that node
-unsigned Infoflow::findOffsetFromFieldIndex(const StructType* type, unsigned fieldIdx) {
-  unsigned field_offset = 0;
-  unsigned field_ct = 0;
-  StructType::element_iterator typeIt = type->element_begin();
-  StructType::element_iterator typeEnd = type->element_end();
-  while(field_ct != fieldIdx && typeIt != typeEnd){
-    const Type * elem = *typeIt;
-    unsigned size = elem->getPrimitiveSizeInBits() / 8 ;
-    if(elem->isPointerTy()){
-      size = sizeof(int*);
-      //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
-    } else if (elem->isArrayTy()) {
-    const ArrayType * arr = dyn_cast<ArrayType>(elem);
-    uint64_t numberElements = arr->getNumElements();
-    const Type *t = arr->getElementType();
-      //errs() << "Array of " << arr->getNumElements() << "of type ";
-      //t->dump();
-      size = numberElements*(t->getPrimitiveSizeInBits() / 8);
-    }
-    field_offset += size;
-
-    field_ct++;
-    ++typeIt;
-  }
-  return field_offset;
+unsigned Infoflow::findOffsetFromFieldIndex(StructType* type, unsigned fieldIdx, const AbstractLoc* loc) {
+  const DataLayout &TD = loc->getParentGraph()->getDataLayout();
+  const StructLayout *SL = TD.getStructLayout(type);
+  return SL->getElementOffset(fieldIdx);
 }
+
 //
 // checkGEPOperandsConst returns true if all operands used in the offset
 // calculations are constant. The calculating functions assume that these
@@ -1136,80 +1130,27 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
-    // Create an element to represent each type if the information exists
-    unsigned next = 0;
-    unsigned endPos = 0;
-    if(numElements == 0 && !loc.isNodeCompletelyFolded()){
-      if(loc.type_begin() != loc.type_end()){
-        for(DSNode::const_type_iterator i = loc.type_begin(), e = loc.type_end();
-            i != e; ++i){
-          // Sometimes values aren't packed tightly
-          // i.e. {0:i32, 8:i32, 16: i32}
-          if (i->first >= endPos){
-            next = i->first;
-          }
-          if (i->first == next){
-            unsigned elemMax = 0;
-            unsigned start = i->first;
-            if(i->second)
-              for (svset<Type*>::const_iterator ni = i->second->begin(),
-                     ne = i->second->end(); ni != ne; ++ni) {
-                Type * t = *ni;
 
-                unsigned size = t->getPrimitiveSizeInBits()/8;
-                if(size == 0 && isa<PointerType>(t))
-                  size = 8;
-
-                // errs() << "Item: ";
-                // t->print(errs());
-                // errs() << " " << t->getPrimitiveSizeInBits() << ", ";
-                // errs() << "range: " << i->first;
-                // errs() << "->" << end;
-                if (size > elemMax ) {
-                  elemMax = size;
-                  endPos = start+size;
-                  next = endPos;
-                }
-              }
-            // errs () << "Max element size: " << elemMax;
-            // errs() << "\n";
-            std::string label = "[" + std::to_string(start) + "," + std::to_string(endPos) + "]";
-            const ConsElem & elem = kit->newVar(name+label);
-            locConstraintMap[&loc].insert(std::make_pair(start, &elem));
-
-          }
-        }
-      return locConstraintMap[&loc];
-      } else if (v != NULL) {
-        const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
-        const StructType* s = dyn_cast<StructType>(gep->getSourceElementType());
-        if(s != NULL){
-          unsigned field_offset = 0;
-          StructType::element_iterator typeIt = s->element_begin();
-          StructType::element_iterator typeEnd = s->element_end();
-          while(typeIt != typeEnd){
-            const Type * elem = *typeIt;
-            unsigned size = elem->getPrimitiveSizeInBits() / 8 ;
-            if(elem->isPointerTy()){
-              size = sizeof(int*);
-              //errs() << "\n" <<field_ct << "is a ptr of size " << size << "\n";
-            }
-            const ConsElem & consElem = kit->newVar(name+": elem " + std::to_string(field_offset) + "::");
-            locConstraintMap[&loc].insert(std::make_pair(field_offset, &consElem));
-            field_offset += size;
-
-            ++typeIt;
-          }
+    if (v != NULL && !loc.isNodeCompletelyFolded()) {
+      const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
+      if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
+        const DataLayout &TD = loc.getParentGraph()->getDataLayout();
+        const StructLayout *SL = TD.getStructLayout(s);
+        int index = 0;
+        for(Type::subtype_iterator it = s->element_begin(); it != s->element_end(); ++it, ++index){
+          unsigned start = SL->getElementOffset(index);
+          unsigned end = start + TD.getTypeStoreSize(*it);
+          std::string label = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+          const ConsElem & elem = kit->newVar(name+label);
+          locConstraintMap[&loc].insert(std::make_pair(start, &elem));
         }
         return locConstraintMap[&loc];
-      } else  {
+      } else if (numElements == 0) {
         numElements = 1;
       }
-    } else if (numElements == 0) {
+    } else if (numElements == 0){
       numElements = 1;
     }
-
-
 
     errs() << "Created " << numElements << " constraint variable(s) for node of size ";
     errs() << loc.getSize() << "\n";
@@ -1277,12 +1218,14 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   if(loc.isNodeCompletelyFolded()){
     for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
         it != itEnd; ++it){
-      errs() << "Adding " << elemMap.size() << " elements\n";
+      DEBUG(errs() << "Adding " << elemMap.size() << " elements\n");
       kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
     }
   } else {
-    const ConsElem * elem = findConsElemAtOffset(elemMap, offset);
-    kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
+    std::set<const ConsElem *> elems = findRelevantConsElem(&loc, elemMap, offset);
+    for(std::set<const ConsElem*>::iterator i = elems.begin(); i != elems.end(); ++i){
+      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*i));
+    }
   }
 }
 
@@ -2251,8 +2194,7 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
 
     if(value.hasName() && value.getName() == match.first) {
       const std::set<const AbstractLoc *> &locs = locsForValue(value);
-      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(),
-            end = locs.end(); loc != end; ++loc) {
+      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
         DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
 
         std::map<unsigned, const ConsElem *> elemMap;
@@ -2277,9 +2219,9 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
           }
 
           // Remove the relevant constraint
-          std::map<unsigned, const ConsElem *>::iterator it = std::next(elemMap.begin(), match.second);
-          kit->removeConstraintRHS(kind, *(it->second));
+          removeConstraintFromIndex(kind, *loc, &value, elemMap, match.second);
         } else {
+          // Removes any constraints tied to that AbstractLoc
           for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
               it != itEnd; ++it){
             const ConsElem * e = it->second;
@@ -2298,79 +2240,16 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
 }
 
 void
-Infoflow::removeConstraint(std::string kind, std::string match) {
-  errs() << "Removing values tied to " << match << "\n";
-  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
-         end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
-    const Value & value = *(entry->first);
-
-    std::string s;
-    llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
-    *ss << value; // dump value info to ss
-    ss->str(); // flush stream to s
-    if(value.hasName() && value.getName() == match) {
-      s = value.getName();
-      const std::set<const AbstractLoc *> &locs = locsForValue(value);
-      unsigned offset = 0;
-      bool hasOffset = offsetForValue(value, &offset);
-      errs() << "Length of set for " << s << " is " << locs.size() << "\n";
-      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(),
-            end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
-        std::map<unsigned, const ConsElem *> elemMap;
-        if(curElem != locConstraintMap.end()) {
-          elemMap = curElem->second;
-
-          if(hasOffset) {
-            const ConsElem * elem;
-            if(elemMap.find(offset) != elemMap.end()){
-              elem = elemMap[offset];
-            } else {
-              errs() << "No direct element that matches offset.\n";
-              const ConsElem * lastElem;
-              bool elemAdded = false;
-              for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                  it != itEnd; ++it){
-                if((*it).first > offset && !elemAdded && lastElem != NULL){
-                  elem = lastElem;
-                  elemAdded = true;
-                }
-                if((*it).second != NULL){
-                  lastElem = (*it).second;
-                }
-              }
-            }
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
-            elem->dump(errs());
-            errs() << "\n";
-            kit->removeConstraintRHS(kind, *elem);
-          } else {
-            for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                it != itEnd; ++it){
-              const ConsElem * e = it->second;
-              kit->removeConstraintRHS(kind, *e);
-            }
-          }
-        }
-      }
-    } else if (s.find(match) == 0 ) {
-      DenseMap<const Value *, const ConsElem *>::iterator valueMap = summarySourceValueConstraintMap.find(&value);
-      if(valueMap != summarySourceValueConstraintMap.end()){
-        errs() << "Removing constraint ";
-        const ConsElem & elem = *(valueMap->second);
-        elem.dump(errs());
-        errs() << "\n";
-        kit->removeConstraintRHS(kind, elem);
-      }
-    }
-  }
-}
-
-void
 Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*> elemMap) {
   errs() << "Tainting all constraint elements from value\n";
   for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), end = elemMap.end(); it != end; ++it){
     kit->addConstraint(kind, kit->highConstant(), *(it->second));
+  }
+}
+void
+Infoflow::constrainAllConsElem(std::string kind, std::set<const ConsElem*> elems) {
+  for(std::set<const ConsElem*>::iterator it = elems.begin(), end = elems.end(); it != end; ++it){
+    kit->addConstraint(kind, kit->highConstant(), *(*it));
   }
 }
 
@@ -2378,9 +2257,9 @@ Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsEl
 // Converts a value and extracts the structure type
 // If there are multiple levels of pointers, traverses all the way down to root
 // and returns the structure type at the root
-const StructType* convertValueToStructType(const Value * v) {
+StructType* convertValueToStructType(const Value * v) {
   Type* t = v->getType();
-  const StructType* st = NULL;
+  StructType* st = NULL;
   while (t->isPointerTy()){
     size_t subTypeLength = t->subtypes().size();
     if (subTypeLength == 1) {
@@ -2395,9 +2274,9 @@ const StructType* convertValueToStructType(const Value * v) {
   return st;
 }
 
-void Infoflow::constrainOffsetFromIndex(std::string kind, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
-  if (const StructType* st = convertValueToStructType(v)) {
-    unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx);
+void Infoflow::constrainOffsetFromIndex(std::string kind, const AbstractLoc* loc, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
+  if (StructType* st = convertValueToStructType(v)) {
+    unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx, loc);
     const ConsElem * elem = elemMap[offset];
     errs() << "Setting high constant to " << offset << ":";
     //it->second->dump(errs());
@@ -2419,6 +2298,16 @@ void Infoflow::constrainOffsetFromIndex(std::string kind, const Value * v, std::
 
 }
 
+void Infoflow::removeConstraintFromIndex(std::string kind, const AbstractLoc* loc, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx){
+  DEBUG(errs() << "Looking for field " << fieldIdx << " in ");
+  v->dump();
+  if (StructType* st = convertValueToStructType(v)) {
+    unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx, loc);
+    std::set<const ConsElem*> elems = findRelevantConsElem(loc, elemMap, offset);
+    for(std::set<const ConsElem*>::iterator i = elems.begin(); i != elems.end(); ++i)
+      kit->removeConstraintRHS(kind, **i);
+  }
+}
 const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
   if (elemMap.find(offset) != elemMap.end()) {
     return elemMap[offset];

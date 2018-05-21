@@ -26,7 +26,7 @@ else
 	export LDFLAGS=
 fi
 
-export TEST=$(dirname $(readlink -f env.sh))
+export TEST=$(dirname $($READLINK -f env.sh))
 export BASE=$(dirname $TEST)
 export LLVMBIN="$BASE/Debug+Asserts/bin"
 export LLVMLIB="$BASE/Debug+Asserts/lib"

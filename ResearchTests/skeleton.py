@@ -68,7 +68,7 @@ nds={}
 for line in args.f_nodes.xreadlines():
     node, detail = line.strip().split(" = ", 2)
     filename, line, col, scope, inlinedAt = detail[1:-1].split("; ", 5)
-    all_nodes[int(node)] = (filename, eval(line), int(col), scope, inlinedAt)
+    all_nodes[int(node)] = (filename, eval(line), eval(col), scope, inlinedAt)
     if DEBUG: print all_nodes[int(node)]
 args.f_nodes.close()
 

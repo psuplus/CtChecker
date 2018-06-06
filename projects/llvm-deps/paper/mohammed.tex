@@ -37,40 +37,40 @@ dependent on some confidential data, and with sufficient flow, can possibly
 reconstruct the confidential data. An example is given in Algorithm
 \ref{alg:simpleflow} to illustrate this concern.
 
-  \begin{algorithm}
-    \caption{Simple Information Flow}
-    \label{alg:simpleflow}
-  \begin{algorithmic}
-    \State $k =$ sensitive information
-    \State $d.x =  k + 1$
-    \State $d.y = 0$
-    \State $a = -1$
+\begin{algorithm}
+  \caption{Simple Information Flow}
+  \label{alg:simpleflow}
+\begin{algorithmic}
+  \State $k =$ sensitive information
+  \State $d.x =  k + 1$
+  \State $d.y = 0$
+  \State $a = -1$
 
-    \If {$d.y == k/2$}
-      \State $a = 4$ 
-    \EndIf
+  \If {$d.y == k/2$}
+    \State $a = 4$ 
+  \EndIf
 
-    % \If {$d.x == 2$}
-      % \State $b = 2$ 
-    % \Endif
-  \end{algorithmic}
-  \end{algorithm}
+  % \If {$d.x == 2$}
+    % \State $b = 2$ 
+  % \Endif
+\end{algorithmic}
+\end{algorithm}
 
-  In this simple example $k$ is confidential data, through information flow we
-  can see that the value of $d.x$ is directly computed from $k$. The value $d.y$
-  however is not confidential due to its value having no reliance on the
-  confidential data. The flow between $k$ and $d.x$ is called explicit flow,
-  since the value of $d.x$ is computed from the confidential data. As the
-  analysis continues, any value which is computed from $d.x$ will also be
-  treated as confidential data. There is also implicit flow which can be seen in
-  the first branch on $d.y$ where it is compared with some value computed from
-  $k$. In this case $d.y$ is still considered non-confidential data, since the
-  value has no relation to $k$, but there is a flow from $k$ to $a$ indirectly.
-  Although, $a$ is not computed from $k$, after the branch executes, the value
-  of $a$ may or may not have changed. If it does change, the value of $k$ has been
-  determined. If it does not change, the value of $k$ is not determined, but a
-  possible value has been ruled out. This indirect flow from $k$ to $a$ is what
-  is called implicit flow.
+In this simple example $k$ is confidential data, through information flow we
+can see that the value of $d.x$ is directly computed from $k$. The value $d.y$
+however is not confidential due to its value having no reliance on the
+confidential data. The flow between $k$ and $d.x$ is called explicit flow,
+since the value of $d.x$ is computed from the confidential data. As the
+analysis continues, any value which is computed from $d.x$ will also be
+treated as confidential data. There is also implicit flow which can be seen in
+the first branch on $d.y$ where it is compared with some value computed from
+$k$. In this case $d.y$ is still considered non-confidential data, since the
+value has no relation to $k$, but there is a flow from $k$ to $a$ indirectly.
+Although, $a$ is not computed from $k$, after the branch executes, the value
+of $a$ may or may not have changed. If it does change, the value of $k$ has been
+determined. If it does not change, the value of $k$ is not determined, but a
+possible value has been ruled out. This indirect flow from $k$ to $a$ is what
+is called implicit flow.
 \subsection{Points-to Analysis}
 
 A Points-to analysis is a reference tracking analysis to identify the targets of
@@ -98,12 +98,49 @@ also has a method of determining the validity of the type information.
 \subsection{Timing Channels in Crypto-systems}
 
 \section{Improving Field Sensitivity in Taint Analysis}
-In this work, improvements were made over a baseline taint analysis. The
-original taint analysis will be referred to as the baseline analysis and the
-improved analysis will be referred to as the improved analysis. The changes made
-from the baseline to the improved analysis were done to improve the field
-sensitivity. The system works by generating constraints for each value that is
-extracted from the control flow of a program. By creating the constraint
+Improvements to the precision of the baseline taint analysis. Improvements in
+precision also increased the accuracy of the analysis by reducing the number of
+false positives from the final results. In order to understand the improvements,
+the baseline taint analysis and its implementation must be understood. The
+analysis breaks down simply in to three component parts, identifying information
+flows, generating a constraint set to represent the information flow, and
+finally solving the set of constraints.
+
+The first component of the analysis which identifies the information flows of
+the program, works on the instruction level. For each program the analysis will
+create two sets of constraints, one for explicit information flow, and another
+which includes implicit flow. The program attempts to start from the main
+function, but if it does not exist all functions will be analyzed the start
+point. Any function which calls other functions within its definition, is
+analyzed in its own context, so information can flow through the arguments as
+well. Each contexts instructions are parsed to identify operands and operation.
+The operands are divided into source and sink operands and based on the
+operation. The flow is added to the corresponding set based on whether or not
+flow is explicit or implicit.
+
+Once the flows through the program are identified, each constraint which makes
+up the set, is generated by iterating through the flows. A constraint is added
+to the set constraining the sink element in relation to the source element. In a
+taint/confidential analysis, the sink must be at least as confidential as the
+source in the final result. The outcome of this is if information is
+confidential and flows to another value, that information is also considered
+confidential. After all the flows are constrained, the set is complete and a
+solution is found.
+
+Given the set of constraints for the program, the least solution is found. From
+the solution each sink operand will have a value is greater than or equal to
+that of the initial confidential data, then that value is identified as being
+confidential as well. In the case of crypto-systems, it can be helpful to find
+all the values which may have been computed from confidential data. These values
+are possible locations for leakage of confidential information, and an attacker
+may be able to exploit the computed confidential data to learn information or
+reconstruct the original confidential data.
+
+
+
+The changes made from the baseline to the improved analysis were done to improve
+the field sensitivity. The system works by generating constraints for each value
+that is extracted from the control flow of a program. By creating the constraint
 pairs, tracking tainted values and their effect on the rest of the program
 becomes a problem of tracking the least upper bound for each value. A real
 example from AES is taken to show how the sensitivity is improved.

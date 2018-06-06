@@ -9,6 +9,7 @@
 \author{Adam Mohammed}
 \date{\vspace{-1ex}January 29, 2018}
 
+\lstset{language=c}
 \begin{document}
 \section{Introduction}
 %
@@ -136,19 +137,74 @@ are possible locations for leakage of confidential information, and an attacker
 may be able to exploit the computed confidential data to learn information or
 reconstruct the original confidential data.
 
+Consider Algorithm \ref{alg:simpleflow} for example of how the analysis
+functions. First the flow of information must be identified. For simplicity,
+this example will just consider the source code, not the instructions. The more
+detailed analysis will be done in the implementation section. In Algorithm
+\ref{alg:simpleflow}, $k$ is just a constant set to some confidential value, no
+information flows there. Next, $d.x$ is calculated by adding 1 to the value of $k$,
+so there is flow from $k$ to $d.x$. With $d.y$ and $a$, in lines 3 and 4 respectively,
+they are set with constants, so no flow happens there. Then, a branch is
+encountered where the value of $a$ is modified based on the values of $d.y$ and
+$k$. Let the branch condition be $b$, there will be flow from $d.y$ and $k$ to
+$b$. Lastly due to the branch, there is an implicit flow from $d.y$ to $a$ and $k$ to
+$a$.
 
+For explicit flow the set of constraints is as follows.
+\[
+  k \leq d.x
+\]
+\[
+  d.y \leq b
+\]
+\[
+  k \leq b
+\]
+In this case it is easy to see that $d.x$ should be at least as confidential as $k$
+since it is directly computed from $k$. Similarly, the branch condition $b$ is
+confidential since it must be at least as confidential as $k$. The value $d.y$
+is not confidential, but is irrelevant because confidential information is used
+to determine the outcome of the branch. 
 
-The changes made from the baseline to the improved analysis were done to improve
-the field sensitivity. The system works by generating constraints for each value
-that is extracted from the control flow of a program. By creating the constraint
-pairs, tracking tainted values and their effect on the rest of the program
-becomes a problem of tracking the least upper bound for each value. A real
-example from AES is taken to show how the sensitivity is improved.
+If implicit constraints are to be considered then the set is as follows.
+\[
+  k \leq d.x
+\]
+\[
+  d.y \leq b
+\]
+\[
+  k \leq b
+\]
+\[
+  b \leq a
+\]
+
+In this case the all the constraints are the same apart from the addition of the
+last constraint. There is another constraint between the branch condition and a,
+because after the branch, the value of a is dependent on the outcome of the
+branch. If an attacker had a method of inspecting the value of $a$, they would
+learn information about $b$ which is derived from $k$.
 
 \begin{algorithm}
   \caption{Public and private data in structure}
   \label{alg:aes_struclt}
-  \lstinputlisting{examples/aes.c}
+  \begin{lstlisting}
+  struct AES_KEY_t {
+    unsigned * rd_key;
+    int rounds;
+  };
+
+  typedef AES_KEY_t AES_KEY;
+
+  void AES_enc(char * in, char * out, AES_KEY) {
+    unsigned * rk = key->rd_key;
+    if (key->rounds > 10) {
+      ...;
+    }
+  }
+  \end{lstlisting}
+  %\lstinputlisting{examples/aes.c}
 \end{algorithm}
 
   In this work, improvements were made over a baseline taint analysis. The
@@ -187,22 +243,6 @@ example from AES is taken to show how the sensitivity is improved.
 
   Algorithm \ref{alg:simpleflow}, let the variable $k$ be a sensitive variable in the following program. Also, let
   variable $d$ be a structure which contains two fields $x$ and $y$. 
-
-  \begin{algorithm}
-    \caption{Simple Information Flow}
-    \label{alg:simpleflow}
-  \begin{algorithmic}
-    \State $k =$ sensitive information
-    \State $d.x =  k + 1$
-    \State $d.y = 4$
-    %\IF {$d.y == 2$}
-      %\STATE $a = key$[0] 
-    %\ENDIF
-    % \If {$d.x == 2$}
-      % \State $b = 2$ 
-    % \Endif
-  \end{algorithmic}
-  \end{algorithm}
 
   \begin{algorithm}
 

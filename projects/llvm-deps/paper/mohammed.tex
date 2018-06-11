@@ -186,6 +186,34 @@ because after the branch, the value of a is dependent on the outcome of the
 branch. If an attacker had a method of inspecting the value of $a$, they would
 learn information about $b$ which is derived from $k$.
 
+The baseline analysis generates a set of constraints similar to the examples
+above, but with some imprecision. During the stage of generating constraints
+from the information flow, the points-to analysis is leveraged to figure out
+what is being pointed to by the variable $d$ to subsequently find the correct
+instance of $x$. The points-to analysis will represent the data structure
+pointed to by $d$ with one node in the graph, and the constraint generated
+refers only to that node, instead of to the specific field in the node. The
+effect on the constraints is as follows for explicit flow.
+
+\[
+  k \leq d
+\]
+\[
+  d \leq b
+\]
+\[
+  k \leq b
+\]
+
+The result is that $d.x$ and $d.y$ are indistinguishable from each other and the
+results will report both $d.x$ and $d.y$ as confidential even though manual
+scanning of the source shows that $d.y$ is never calculated from confidential
+data. This is a common problem when analyzing sources. Take this implementation
+of AES, where the data structure used is comprised of both confidential and
+public data. The AES_KEY struct has the confidential rd_key and a second field
+rounds that is considered to be public. Algorithm \ref{alg:aes_struclt} shows
+where the inaccuracy can be found in actual source code.
+
 \begin{algorithm}
   \caption{Public and private data in structure}
   \label{alg:aes_struclt}

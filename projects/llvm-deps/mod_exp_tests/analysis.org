@@ -895,7 +895,93 @@
     mpi/mpi-pow.c line  769 - if ( mod_shift_cnt ) // TP small - leading zeros in mod
     mpi/mpi-pow.c line  782 - if ( mod_shift_cnt ) // TP small - leading zeros in mod
     #+END_SRC
-   
+** mpi-pow.c mpih-mul.c mpih-div.c test   
+*** Commit *65fc715* - O0 Tainted/Untrusted: mod 4, expo 4 - Whitelist: res, rp, rsize
+    #+BEGIN_SRC c
+    mpi/mpih-div.c line  227 - if( n1 >= d ) {
+    mpi/mpih-div.c line  233 - for( i = nsize - 2; i >= 0; i--)
+    mpi/mpih-div.c line  237 - for( i = qextra_limbs - 1; i >= 0; i-- )
+    mpi/mpih-div.c line  256 - if( n1 >= d1 && (n1 > d1 || n0 >= d0) ) {
+    mpi/mpih-div.c line  261 - for( i = qextra_limbs + nsize - 2 - 1; i >= 0; i-- ) {
+    mpi/mpih-div.c line  265 - if( i >= qextra_limbs )
+    mpi/mpih-div.c line  270 - if( n1 == d1 ) {
+    mpi/mpih-div.c line  277 - if( r < d1 ) {   /* Carry in the addition? */
+    mpi/mpih-div.c line  292 - if( n1 > r || (n1 == r && n0 > n2) ) {
+    mpi/mpih-div.c line  297 - if( r >= d1 )    /* If not carry, test Q again.  */
+    mpi/mpih-div.c line  319 - if( n0 >= dX ) {
+    mpi/mpih-div.c line  320 - if(n0 > dX || _gcry_mpih_cmp(np, dp, dsize - 1) >= 0 ) {
+    mpi/mpih-div.c line  327 - for( i = qextra_limbs + nsize - dsize - 1; i >= 0; i--) {
+    mpi/mpih-div.c line  332 - if( i >= qextra_limbs ) {
+    mpi/mpih-div.c line  342 - if( n0 == dX ) {
+    mpi/mpih-div.c line  353 - while( n1 > r || (n1 == r && n0 > np[dsize - 2])) {
+    mpi/mpih-div.c line  356 - if( r < dX ) /* I.e. "carry in previous addition?" */
+    mpi/mpih-div.c line  368 - if( n2 != cy_limb ) {
+    mpi/mpi-pow.c line  371 - if( ssize < KARATSUBA_THRESHOLD )
+    mpi/mpi-pow.c line  376 - if (rsize + ssize > msize)
+    mpi/mpi-pow.c line  434 - MPN_NORMALIZE(ep, esize);
+    mpi/mpi-pow.c line  478 - if (mod_shift_cnt)
+    mpi/mpi-pow.c line  523 - if ( rp == ep )
+    mpi/mpi-pow.c line  553 - negative_result = (ep[0] & 1) && bsign;
+    mpi/mpi-pow.c line  563 - if (xsize >= base_u_size)
+    mpi/mpi-pow.c line  571 - if (max_u_size < base_u_size)
+    mpi/mpi-pow.c line  577 - MPN_ZERO (base_u, max_u_size);
+    mpi/mpi-pow.c line  609 - if (e == 0)
+    mpi/mpi-pow.c line  632 - if (c >= W)
+    mpi/mpi-pow.c line  657 - for (j += W - c0; j; j--)
+    mpi/mpi-pow.c line  691 - if (c != 0)
+    mpi/mpi-pow.c line  699 - while (j--)
+    mpi/mpi-pow.c line  706 - if (e != 0)
+    mpi/mpi-pow.c line  732 - for (; c; c--)
+    mpi/mpi-pow.c line  746 - if ( mod_shift_cnt )
+    mpi/mpi-pow.c line  750 - if ( carry_limb )
+    mpi/mpi-pow.c line  769 - if ( mod_shift_cnt )
+    mpi/mpi-pow.c line  782 - if ( mod_shift_cnt )
+    mpi/mpih-mul.c line   83 - if( v_limb <= 1 ) {
+    mpi/mpih-mul.c line   84 - if( v_limb == 1 )
+    mpi/mpih-mul.c line   85 - MPN_COPY( prodp, up, size );
+    mpi/mpih-mul.c line   87 - MPN_ZERO( prodp, size );
+    mpi/mpih-mul.c line   98 - for( i = 1; i < size; i++ ) {
+    mpi/mpih-mul.c line  100 - if( v_limb <= 1 ) {
+    mpi/mpih-mul.c line  102 - if( v_limb == 1 )
+    mpi/mpih-mul.c line  120 - if( size & 1 ) {
+    mpi/mpih-mul.c line  134 - MPN_MUL_N_RECURSE( prodp, up, vp, esize, tspace );
+    mpi/mpih-mul.c line  165 - MPN_MUL_N_RECURSE(prodp + size, up + hsize, vp + hsize, hsize, tspace);
+    mpi/mpih-mul.c line  170 - if( _gcry_mpih_cmp(up + hsize, up, hsize) >= 0 ) {
+    mpi/mpih-mul.c line  178 - if( _gcry_mpih_cmp(vp + hsize, vp, hsize) >= 0 ) {
+    mpi/mpih-mul.c line  190 - MPN_MUL_N_RECURSE(tspace, prodp, prodp + hsize, hsize, tspace + size);
+    mpi/mpih-mul.c line  193 - MPN_COPY (prodp + hsize, prodp + size, hsize);
+    mpi/mpih-mul.c line  209 - MPN_MUL_N_RECURSE(tspace, up, vp, hsize, tspace + size);
+    mpi/mpih-mul.c line  214 - if( cy )
+    mpi/mpih-mul.c line  217 - MPN_COPY(prodp, tspace, hsize);
+    mpi/mpih-mul.c line  219 - if( cy )
+    mpi/mpih-mul.c line  385 - if( !ctx->tspace || ctx->tspace_size < vsize ) {
+    mpi/mpih-mul.c line  386 - if( ctx->tspace )
+    mpi/mpih-mul.c line  389 - ctx->tspace = mpi_alloc_limb_space (2 * vsize,
+    mpi/mpih-mul.c line  395 - MPN_MUL_N_RECURSE( prodp, up, vp, vsize, ctx->tspace );
+    mpi/mpih-mul.c line  400 - if( usize >= vsize ) {
+    mpi/mpih-mul.c line  401 - if( !ctx->tp || ctx->tp_size < vsize ) {
+    mpi/mpih-mul.c line  402 - if( ctx->tp )
+    mpi/mpih-mul.c line  405 - ctx->tp = mpi_alloc_limb_space (2 * vsize,
+    mpi/mpih-mul.c line  412 - MPN_MUL_N_RECURSE( ctx->tp, up, vp, vsize, ctx->tspace );
+    mpi/mpih-mul.c line  418 - } while( usize >= vsize );
+    mpi/mpih-mul.c line  421 - if( usize ) {
+    mpi/mpih-mul.c line  422 - if( usize < KARATSUBA_THRESHOLD ) {
+    mpi/mpih-mul.c line  426 - if( !ctx->next ) {
+    mpi/mpih-mul.c line  446 - if( ctx->tp )
+    mpi/mpih-mul.c line  448 - if( ctx->tspace )
+    mpi/mpih-mul.c line  450 - for( ctx=ctx->next; ctx; ctx = ctx2 ) {
+    mpi/mpih-mul.c line  452 - if( ctx->tp )
+    mpi/mpih-mul.c line  454 - if( ctx->tspace )
+    mpi/mpih-mul.c line  483 - if( vsize < KARATSUBA_THRESHOLD ) {
+    mpi/mpih-mul.c line  487 - if( !vsize )
+    mpi/mpih-mul.c line  493 - if( v_limb <= 1 ) {
+    mpi/mpih-mul.c line  494 - if( v_limb == 1 )
+    mpi/mpih-mul.c line  495 - MPN_COPY( prodp, up, usize );
+    mpi/mpih-mul.c line  497 - MPN_ZERO( prodp, usize );
+    mpi/mpih-mul.c line  508 - for( i = 1; i < vsize; i++ ) {
+    mpi/mpih-mul.c line  510 - if( v_limb <= 1 ) {
+    mpi/mpih-mul.c line  512 - if( v_limb == 1 )
+    #+END_SRC
 * LibGcrypt 1.5.2
 ** mpi-powm.c test
    Tainted: mod, expo :: Untrusted: base

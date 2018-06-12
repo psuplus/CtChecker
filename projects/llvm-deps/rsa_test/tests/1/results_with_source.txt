@@ -1,0 +1,87 @@
+rsa.c line  166 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->P, ( nbits + 1 ) >> 1, 0,
+rsa.c line  169 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->Q, ( nbits + 1 ) >> 1, 0,
+rsa.c line  206 - if( ret != 0 )
+rsa.c line  225 - if( ( ctx->N.p[0] & 1 ) == 0 ||
+rsa.c line  393 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &ctx->Vf, ctx->len - 1, f_rng, p_rng ) );
+rsa.c line  439 - MBEDTLS_MPI_CHK( rsa_prepare_blinding( ctx, f_rng, p_rng ) );
+rsa.c line  491 - if( ret != 0 )
+rsa.c line  525 - while( dlen > 0 )
+rsa.c line  528 - if( dlen < hlen )
+rsa.c line  536 - for( i = 0; i < use_len; ++i )
+rsa.c line  588 - if( ( ret = f_rng( p_rng, p, hlen ) ) != 0 )
+rsa.c line  661 - } while( *p == 0 && --rng_dl && ret == 0 );
+rsa.c line  665 - if( rng_dl == 0 || ret != 0 )
+rsa.c line  762 - if( ret != 0 )
+rsa.c line  819 - if( bad != 0 )
+rsa.c line  822 - if( ilen - ( p - buf ) > output_max_len )
+rsa.c line  861 - if( ret != 0 )
+rsa.c line  904 - if( bad )
+rsa.c line  907 - if( ilen - ( p - buf ) > output_max_len )
+rsa.c line 1003 - if( ( ret = f_rng( p_rng, salt, slen ) ) != 0 )
+rsa.c line 1085 - if( mbedtls_oid_get_oid_by_md( md_alg, &oid, &oid_size ) != 0 )
+rsa.c line 1095 - if( ( nb_pad < 8 ) || ( nb_pad > olen ) )
+rsa.c line 1146 - MBEDTLS_MPI_CHK( mbedtls_rsa_private( ctx, f_rng, p_rng, sig, sig_try ) );
+rsa.c line 1154 - if( diff_no_optimize != 0 )
+rsa.c line 1239 - if( ret != 0 )
+rsa.c line 1244 - if( buf[siglen - 1] != 0xBC )
+rsa.c line 1278 - if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+rsa.c line 1288 - while( p < buf + siglen && *p == 0 )
+rsa.c line 1291 - if( p == buf + siglen ||
+rsa.c line 1381 - if( ret != 0 )
+rsa.c line 1673 - if( mbedtls_rsa_pkcs1_encrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PUBLIC, PT_LEN,
+rsa.c line 1685 - if( mbedtls_rsa_pkcs1_decrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, &len,
+rsa.c line 1712 - if( mbedtls_rsa_pkcs1_sign( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA1, 0,
+rsa.c line 1724 - if( mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA1, 0,
+bignum.c line  154 - if( X->p[i] != 0 )
+bignum.c line  195 - if( Y->p[i] != 0 )
+bignum.c line  353 - if( ( ( X->p[i] >> j ) & 1 ) != 0 )
+bignum.c line  369 - if( x & mask ) break;
+bignum.c line  388 - if( X->p[i] != 0 )
+bignum.c line  510 - if( r < 10 )
+bignum.c line  656 - if( fwrite( p, 1, plen, fout ) != plen ||
+bignum.c line  678 - if( buf[n] != 0 )
+bignum.c line  813 - if( X->p[i - 1] != 0 )
+bignum.c line  817 - if( Y->p[j - 1] != 0 )
+bignum.c line  828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+bignum.c line  829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+bignum.c line  843 - if( X->p[i - 1] != 0 )
+bignum.c line  847 - if( Y->p[j - 1] != 0 )
+bignum.c line  861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+bignum.c line  862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+bignum.c line  907 - if( B->p[j - 1] != 0 )
+bignum.c line  924 - while( c != 0 )
+bignum.c line  954 - while( c != 0 )
+bignum.c line  992 - if( B->p[n - 1] != 0 )
+bignum.c line 1128 - for( ; i >= 16; i -= 16 )
+bignum.c line 1143 - for( ; i >= 8; i -= 8 )
+bignum.c line 1154 - for( ; i > 0; i-- )
+bignum.c line 1166 - }
+bignum.c line 1185 - if( A->p[i - 1] != 0 )
+bignum.c line 1189 - if( B->p[j - 1] != 0 )
+bignum.c line 1243 - if( 0 == d || u1 >= d )
+bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+bignum.c line 1522 - if( A->s < 0 && y != 0 )
+bignum.c line 1563 - m = ( B->n < n ) ? B->n : n;
+bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+bignum.c line 1736 - if( ei == 0 && state == 0 )
+bignum.c line 1739 - if( ei == 0 && state == 1 )
+bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
+bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+bignum.c line 1881 - MBEDTLS_MPI_CHK( f_rng( p_rng, buf, size ) );
+bignum.c line 1923 - while( ( TU.p[0] & 1 ) == 0 )
+bignum.c line 1927 - if( ( U1.p[0] & 1 ) != 0 || ( U2.p[0] & 1 ) != 0 )
+bignum.c line 1937 - while( ( TV.p[0] & 1 ) == 0 )
+bignum.c line 1941 - if( ( V1.p[0] & 1 ) != 0 || ( V2.p[0] & 1 ) != 0 )
+bignum.c line 2025 - if( ( X->p[0] & 1 ) == 0 )
+bignum.c line 2035 - if( r == 0 )
+bignum.c line 2079 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+bignum.c line 2090 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+bignum.c line 2198 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( X, n * ciL, f_rng, p_rng ) );
+bignum.c line 2209 - while( ( ret = mbedtls_mpi_is_prime( X, f_rng, p_rng ) ) != 0 )
+bignum.c line 2211 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+bignum.c line 2228 - if( r == 0 )
+bignum.c line 2230 - else if( r == 1 )
+bignum.c line 2243 - if( ( ret = mpi_check_small_factors(  X         ) ) == 0 &&
+bignum.c line 2245 - ( ret = mpi_miller_rabin(  X, f_rng, p_rng  ) ) == 0 &&
+bignum.c line 2251 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )

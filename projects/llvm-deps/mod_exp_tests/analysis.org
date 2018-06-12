@@ -871,6 +871,31 @@
     mpi-pow.c line 787 - _gcry_mpi_powm: MPN_NORMALIZE(rp, rsize)
     mpi-pow.c line 796 - _gcry_mpi_powm: if (bp_marker)
 ~
+*** Commit *65fc715* - O0 Tainted/Untrusted: mod 4, expo 4 - Whitelist: res, rp, rsize
+    #+BEGIN_SRC c
+    mpi/mpi-pow.c line  371 - if( ssize < KARATSUBA_THRESHOLD ) // FP(?) base_u_size
+    mpi/mpi-pow.c line  376 - if (rsize + ssize > msize) // TP Small leak on 
+    mpi/mpi-pow.c line  434 - MPN_NORMALIZE(ep, esize); // TP Small leak, changes esize to the first non-zero
+    mpi/mpi-pow.c line  478 - if (mod_shift_cnt) // TP small leak 
+    mpi/mpi-pow.c line  500 - MPN_NORMALIZE( bp, bsize ); // TP unk - bp tainted from divrem with mod - This is because mpih-div.c not included
+    mpi/mpi-pow.c line  523 - if ( rp == ep ) // TP small - ep is data pointer for expo
+    mpi/mpi-pow.c line  553 - negative_result = (ep[0] & 1) && bsign; // TP small - short circuit on ep.
+    mpi/mpi-pow.c line  563 - if (xsize >= base_u_size) // Possible FP, xsize tainted due to mpih_mul.c not being linked in line  557
+    mpi/mpi-pow.c line  571 - if (max_u_size < base_u_size) // same as above
+    mpi/mpi-pow.c line  577 - MPN_ZERO (base_u, max_u_size); // same as above, for loop tainted due to missing function sig
+    mpi/mpi-pow.c line  609 - if (e == 0) // TP small - directly on expo limb
+    mpi/mpi-pow.c line  632 - if (c >= W) // TP > 1 bit - compare leading zeros to window size
+    mpi/mpi-pow.c line  657 - for (j += W - c0; j; j--) // TP > 1 bit - loop length depends on 0's in expo 
+    mpi/mpi-pow.c line  691 - if (c != 0) // TP > 1 bit, c intially leading zeros, decreased by trailing 0's this is remainder
+    mpi/mpi-pow.c line  699 - while (j--) // TP > 1 bit - square based on number of left over + trailing zeros
+    mpi/mpi-pow.c line  706 - if (e != 0) // TP small leak - current limb of exponent
+    mpi/mpi-pow.c line  732 - for (; c; c--) // TP > 1 bit - c based on trailing zeros in expo
+    mpi/mpi-pow.c line  746 - if ( mod_shift_cnt ) // TP small - leading zeros in mod
+    mpi/mpi-pow.c line  750 - if ( carry_limb ) // Possible FP, due to missing function signature
+    mpi/mpi-pow.c line  769 - if ( mod_shift_cnt ) // TP small - leading zeros in mod
+    mpi/mpi-pow.c line  782 - if ( mod_shift_cnt ) // TP small - leading zeros in mod
+    #+END_SRC
+   
 * LibGcrypt 1.5.2
 ** mpi-powm.c test
    Tainted: mod, expo :: Untrusted: base

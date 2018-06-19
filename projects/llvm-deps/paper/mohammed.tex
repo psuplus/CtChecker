@@ -210,7 +210,7 @@ results will report both $d.x$ and $d.y$ as confidential even though manual
 scanning of the source shows that $d.y$ is never calculated from confidential
 data. This is a common problem when analyzing sources. Take this implementation
 of AES, where the data structure used is comprised of both confidential and
-public data. The AES_KEY struct has the confidential rd_key and a second field
+public data. The AES\_KEY struct has the confidential rd\_key and a second field
 rounds that is considered to be public. Algorithm \ref{alg:aes_struclt} shows
 where the inaccuracy can be found in actual source code.
 

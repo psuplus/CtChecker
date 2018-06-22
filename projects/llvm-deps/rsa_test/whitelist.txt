@@ -1,4 +1,0 @@
-wbits
-wsize
-N
-E

@@ -21,6 +21,10 @@ int main() {
   int z = flow_between_args(&x, y);
 
 
+  char a;
+  char b;
+  int c = flow_between_args(&a, b);
+
   if (p == 0) // should be untainted, but the absloc for c is tainted (from t) and flows to d
     ;
   if (q == 0) // untainted
@@ -42,5 +46,12 @@ int main() {
   if (z == 1) // tainted from y because of undefined function
     ;
 
+
+  if (a == 0) // Tainted by taint.txt
+    ;
+  if (b == 0) // Untainted even with undefined signature due to copy
+    ;
+  if (c == 0) // Tainted because of undefined signature
+    ;
   return 0;
 }

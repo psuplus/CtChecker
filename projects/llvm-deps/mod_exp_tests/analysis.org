@@ -1968,14 +1968,14 @@ UH   bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL ) // Branch on point
    #+END_SRC
    
 *** Classification
-    | Err. Type        | Qty | Comments                                                     |
-    | False Positive   |   0 |                                                              |
-    | Validation       |   4 |                                                              |
-    | Looped Branch    |  11 |                                                              |
-    | Un-looped Branch |   6 |                                                              |
+    | Err. Type        | Qty | Comments                                                      |
+    | False Positive   |   0 |                                                               |
+    | Validation       |   4 |                                                               |
+    | Looped Branch    |  11 |                                                               |
+    | Un-looped Branch |   6 |                                                               |
     | High entropy     |  19 | The high entropy results are mostly on size of various inputs |
-    | Low entropy      |   2 | All of the low entropy results are on looped branches    |
-    | Total Reported   |  21 |                                                              |
+    | Low entropy      |   2 | All of the low entropy results are on looped branches         |
+    | Total Reported   |  21 |                                                               |
 
 * Classification Hueristic
 ** Argument validation/Error Checking
@@ -2008,4 +2008,21 @@ UH   bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL ) // Branch on point
    +Number of limbs
    +Sign (A->neg) 
    
+** Results Summary 
    
+   
+  +-------------+----------+----------+----------+----------+-----------+-----------+
+  |             |       Entropy       |       Branch        |           |           |
+  +-------------+----------+----------+----------+----------+-----------+-----------+
+  |Library      | Low      |High      |Looped    |Single    | Validation|    F P    |
+  +-------------+----------+----------+----------+----------+-----------+-----------+
+  |OpenSSL1.1.0g|2         |9         |6         |5         |8          |0          |
+  |Simple       |          |          |          |          |           |           |
+  +-------------+----------+----------+----------+----------+-----------+-----------+
+  |1.1.0g       |1         |16        |7         |10        |11         |0          |
+  |mont_word    |          |          |          |          |           |           |
+  +-------------+----------+----------+----------+----------+-----------+-----------+
+  |1.1.0g       |1         |16        |7         |10        |11         |0          |
+  |mont_word    |          |          |          |          |           |           |
+  +-------------+----------+----------+----------+----------+-----------+-----------+
+

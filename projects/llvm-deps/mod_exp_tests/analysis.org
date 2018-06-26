@@ -977,45 +977,45 @@
       bn_exp.c line  149 - && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
 
       /* BN_mod_exp_recp */
-VL    bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-VL    bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-VL    bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-UL    bn_exp.c line  192 - if (BN_is_one(m)) {
-UL    bn_exp.c line  208 - if (m->neg) {
-VL    bn_exp.c line  210 - if (!BN_copy(aa, m))
-VL    bn_exp.c line  213 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
-VL    bn_exp.c line  216 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
-VL    bn_exp.c line  220 - if (!BN_nnmod(val[0], a, m, ctx))
-VL    bn_exp.c line  230 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
-VRL   bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-RH    bn_exp.c line  251 - if (BN_is_bit_set(p, wstart) == 0) {
-RH    bn_exp.c line  271 - if (BN_is_bit_set(p, wstart - i)) {
+VH    bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+VH    bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+VH    bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+UH    bn_exp.c line  192 - if (BN_is_one(m)) {
+UH    bn_exp.c line  208 - if (m->neg) {
+VH    bn_exp.c line  210 - if (!BN_copy(aa, m))
+VH    bn_exp.c line  213 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
+VH    bn_exp.c line  216 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
+VH    bn_exp.c line  220 - if (!BN_nnmod(val[0], a, m, ctx))
+VH    bn_exp.c line  230 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
+VRH   bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+RL   bn_exp.c line  251 - if (BN_is_bit_set(p, wstart) == 0) {
+RL    bn_exp.c line  271 - if (BN_is_bit_set(p, wstart - i)) {
 
       /* BN_mod_exp_mont */
-VL    bn_exp.c line  317 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-VL    bn_exp.c line  318 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-VL    bn_exp.c line  319 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-VL    bn_exp.c line  327 - if (!BN_is_odd(m)) {
-UL    bn_exp.c line  334 - if (BN_is_one(m)) {
-VL    bn_exp.c line  359 - if (!BN_MONT_CTX_set(mont, m, ctx))
-UH    bn_exp.c line  363 - if (a->neg || BN_ucmp(a, m) >= 0) {
-VL    bn_exp.c line  364 - if (!BN_nnmod(val[0], a, m, ctx))
-UL    bn_exp.c line  369 - if (BN_is_zero(aa)) {
-VL    bn_exp.c line  374 - if (!BN_to_montgomery(val[0], aa, mont, ctx))
-VL    bn_exp.c line  379 - if (!BN_mod_mul_montgomery(d, val[0], val[0], mont, ctx))
-RL    bn_exp.c line  382 - for (i = 1; i < j; i++) {
-VRL   bn_exp.c line  383 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-UL    bn_exp.c line  398 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
-VL    bn_exp.c line  399 - if (bn_wexpand(r, j) == NULL)
-RL    bn_exp.c line  403 - for (i = 1; i < j; i++)
-VL    bn_exp.c line  413 - if (!BN_to_montgomery(r, BN_value_one(), mont, ctx))
-RH    bn_exp.c line  416 - if (BN_is_bit_set(p, wstart) == 0) {
-VRL   bn_exp.c line  418 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
-RH    bn_exp.c line  437 - if (BN_is_bit_set(p, wstart - i)) {
-RH    bn_exp.c line  448 - for (i = 0; i < j; i++) {
-VRL   bn_exp.c line  449 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
-VRL   bn_exp.c line  454 - if (!BN_mod_mul_montgomery(r, r, val[wvalue >> 1], mont, ctx))
-VL    bn_exp.c line  475 - if (!BN_from_montgomery(rr, r, mont, ctx))
+VH    bn_exp.c line  317 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+VH    bn_exp.c line  318 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+VH    bn_exp.c line  319 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+VH    bn_exp.c line  327 - if (!BN_is_odd(m)) {
+UH    bn_exp.c line  334 - if (BN_is_one(m)) {
+VH    bn_exp.c line  359 - if (!BN_MONT_CTX_set(mont, m, ctx))
+UL    bn_exp.c line  363 - if (a->neg || BN_ucmp(a, m) >= 0) {
+VH    bn_exp.c line  364 - if (!BN_nnmod(val[0], a, m, ctx))
+UH    bn_exp.c line  369 - if (BN_is_zero(aa)) {
+VH    bn_exp.c line  374 - if (!BN_to_montgomery(val[0], aa, mont, ctx))
+VH    bn_exp.c line  379 - if (!BN_mod_mul_montgomery(d, val[0], val[0], mont, ctx))
+RH    bn_exp.c line  382 - for (i = 1; i < j; i++) {
+VRH   bn_exp.c line  383 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+UH    bn_exp.c line  398 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+VH    bn_exp.c line  399 - if (bn_wexpand(r, j) == NULL)
+RH    bn_exp.c line  403 - for (i = 1; i < j; i++)
+VH    bn_exp.c line  413 - if (!BN_to_montgomery(r, BN_value_one(), mont, ctx))
+RL    bn_exp.c line  416 - if (BN_is_bit_set(p, wstart) == 0) {
+VRH   bn_exp.c line  418 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+RL    bn_exp.c line  437 - if (BN_is_bit_set(p, wstart - i)) {
+RL    bn_exp.c line  448 - for (i = 0; i < j; i++) {
+VRH   bn_exp.c line  449 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+VRH   bn_exp.c line  454 - if (!BN_mod_mul_montgomery(r, r, val[wvalue >> 1], mont, ctx))
+VH    bn_exp.c line  475 - if (!BN_from_montgomery(rr, r, mont, ctx))
 
       bn_exp.c line  522 - if (top > b->top)
       bn_exp.c line  525 - for (i = 0, j = idx; i < top; i++, j += width) {
@@ -1024,58 +1024,58 @@ VL    bn_exp.c line  475 - if (!BN_from_montgomery(rr, r, mont, ctx))
       bn_exp.c line  566 - for (i = 0; i < top; i++, table += width) {
 
       /* BN_mod_exp_mont_consttime */
-VL    bn_exp.c line  621 - if (!BN_is_odd(m)) {
-UL    bn_exp.c line  631 - if (BN_is_one(m)) {
-VL    bn_exp.c line  651 - if (!BN_MONT_CTX_set(mont, m, ctx))
-UL    bn_exp.c line  709 - ((2 * top) > 
-UL    bn_exp.c line  712 - if (powerbufLen < 3072)
-UL    bn_exp.c line  717 - if ((powerbufFree =
-UL    bn_exp.c line  726 - if (powerbufLen < 3072)
-UL    bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
-RL    bn_exp.c line  743 - for (i = 1; i < top; i++)
-VL *  bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
-UL    bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
-VL    bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
-VL    bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
-VL    bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))
-VL    bn_exp.c line 1024 - if (!BN_mod_mul_montgomery(&tmp, &am, &am, mont, ctx))
-VRL   bn_exp.c line 1031 - if (!BN_mod_mul_montgomery(&tmp, &am, &tmp, mont, ctx))
-VRL   bn_exp.c line 1055 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &tmp, mont, ctx))
-VRL   bn_exp.c line 1068 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &am, mont, ctx))
-VL    bn_exp.c line 1083 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))
-VL    bn_exp.c line 1089 - if (powerbuf != NULL) {
+VH    bn_exp.c line  621 - if (!BN_is_odd(m)) {
+UH    bn_exp.c line  631 - if (BN_is_one(m)) {
+VH    bn_exp.c line  651 - if (!BN_MONT_CTX_set(mont, m, ctx))
+UH    bn_exp.c line  709 - ((2 * top) > 
+UH    bn_exp.c line  712 - if (powerbufLen < 3072)
+UH    bn_exp.c line  717 - if ((powerbufFree =
+UH    bn_exp.c line  726 - if (powerbufLen < 3072)
+UH    bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+RH    bn_exp.c line  743 - for (i = 1; i < top; i++)
+VH *  bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
+UH    bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+VH    bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
+VH    bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
+VH    bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))
+VH    bn_exp.c line 1024 - if (!BN_mod_mul_montgomery(&tmp, &am, &am, mont, ctx))
+VRH   bn_exp.c line 1031 - if (!BN_mod_mul_montgomery(&tmp, &am, &tmp, mont, ctx))
+VRH   bn_exp.c line 1055 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &tmp, mont, ctx))
+VRH   bn_exp.c line 1068 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &am, mont, ctx))
+VH    bn_exp.c line 1083 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))
+VH    bn_exp.c line 1089 - if (powerbuf != NULL) {
 
       /* BN_mod_exp_mont_word */
-VL    bn_exp.c line 1123 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-VL    bn_exp.c line 1124 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-UL    bn_exp.c line 1133 - if (!BN_is_odd(m)) {
-UL    bn_exp.c line 1137 - if (m->top == 1)
-UL    bn_exp.c line 1143 - if (BN_is_one(m)) {
-VL    bn_exp.c line 1151 - if (a == 0) {
-VL    bn_exp.c line 1169 - if (!BN_MONT_CTX_set(mont, m, ctx))
-RL    bn_exp.c line 1182 - if ((next_w / w) != w) { /* overflow */
-VRL   bn_exp.c line 1184 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-VRL   bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
-RH    bn_exp.c line 1200 - if (BN_is_bit_set(p, b)) {
-VRL   bn_exp.c line 1202 - if ((next_w / a) != w) { /* overflow */
-VRL   bn_exp.c line 1204 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-VRL   bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
-UL    bn_exp.c line 1218 - if (w != 1) {
-VL    bn_exp.c line 1220 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-VL    bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
+VH    bn_exp.c line 1123 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+VH    bn_exp.c line 1124 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+UH    bn_exp.c line 1133 - if (!BN_is_odd(m)) {
+UH    bn_exp.c line 1137 - if (m->top == 1)
+UH    bn_exp.c line 1143 - if (BN_is_one(m)) {
+VH    bn_exp.c line 1151 - if (a == 0) {
+VH    bn_exp.c line 1169 - if (!BN_MONT_CTX_set(mont, m, ctx))
+RH    bn_exp.c line 1182 - if ((next_w / w) != w) { /* overflow */
+VRH   bn_exp.c line 1184 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+VRH   bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
+RL    bn_exp.c line 1200 - if (BN_is_bit_set(p, b)) {
+VRH   bn_exp.c line 1202 - if ((next_w / a) != w) { /* overflow */
+VRH   bn_exp.c line 1204 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+VRH   bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
+UH    bn_exp.c line 1218 - if (w != 1) {
+VH    bn_exp.c line 1220 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+VH    bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
 
       /* bn_mod_exp_simple */
-VL    bn_exp.c line 1255 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-VL    bn_exp.c line 1256 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-UL    bn_exp.c line 1266 - if (BN_is_one(m)) {
-VL    bn_exp.c line 1281 - if (!BN_nnmod(val[0], a, m, ctx))
-VL    bn_exp.c line 1291 - if (!BN_mod_mul(d, val[0], val[0], m, ctx))
-VRL   bn_exp.c line 1295 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-RH    bn_exp.c line 1312 - if (BN_is_bit_set(p, wstart) == 0) {
-VRL   bn_exp.c line 1314 - if (!BN_mod_mul(r, r, r, m, ctx))
-RH    bn_exp.c line 1332 - if (BN_is_bit_set(p, wstart - i)) {
-VRL   bn_exp.c line 1344 - if (!BN_mod_mul(r, r, r, m, ctx))
-VRL   bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
+VH    bn_exp.c line 1255 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+VH    bn_exp.c line 1256 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+UH    bn_exp.c line 1266 - if (BN_is_one(m)) {
+VH    bn_exp.c line 1281 - if (!BN_nnmod(val[0], a, m, ctx))
+VH    bn_exp.c line 1291 - if (!BN_mod_mul(d, val[0], val[0], m, ctx))
+VRH   bn_exp.c line 1295 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+RL    bn_exp.c line 1312 - if (BN_is_bit_set(p, wstart) == 0) {
+VRH   bn_exp.c line 1314 - if (!BN_mod_mul(r, r, r, m, ctx))
+RL    bn_exp.c line 1332 - if (BN_is_bit_set(p, wstart - i)) {
+VRH   bn_exp.c line 1344 - if (!BN_mod_mul(r, r, r, m, ctx))
+VRH   bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
     #+END_SRC
 
 **** Classification - BN_mod_exp_simple
@@ -1084,18 +1084,18 @@ VRL   bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
     | Validation       |   8 |          |
     | Looped Branch    |   6 |          |
     | Un-looped Branch |   6 |          |
-    | Low entropy      |   9 |          |
-    | High entropy     |   2 |          |
+    | High entropy     |   9 |          |
+    | Low entropy      |   2 |          |
     | Total Reported   |  11 |          |
-
+    
 **** Classification - BN_mod_exp_mont_word
     | Err. Type        | Qty | Comments           |
     | False Positive   |   0 | if (a == 0) maybe? |
     | Validation       |  11 |                    |
     | Looped Branch    |   7 |                    |
     | Un-looped Branch |  10 |                    |
-    | Low entropy      |  16 |                    |
-    | High entropy     |   1 |                    |
+    | High entropy     |  16 |                    |
+    | Low entropy      |   1 |                    |
     | Total Reported   |  17 |                    |
 
 **** Classification - BN_mod_exp_mont_consttime
@@ -1104,8 +1104,8 @@ VRL   bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
     | Validation       |  10 |          |
     | Looped Branch    |   4 |          |
     | Un-looped Branch |  16 |          |
-    | Low entropy      |  20 |          |
-    | High entropy     |   0 |          |
+    | High entropy     |  20 |          |
+    | Low entropy      |   0 |          |
     | Total Reported   |  20 |          |
 
 **** Classification - BN_mod_exp_mont
@@ -1114,8 +1114,8 @@ VRL   bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
     | Validation       |  15 |          |
     | Looped Branch    |   9 |          |
     | Un-looped Branch |  15 |          |
-    | Low entropy      |  20 |          |
-    | High entropy     |   4 |          |
+    | High entropy     |  20 |          |
+    | Low entropy      |   4 |          |
     | Total Reported   |  24 |          |
 
 **** Classification - BN_mod_exp_recp
@@ -1124,10 +1124,10 @@ VRL   bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
     | Validation       |   9 |          |
     | Looped Branch    |   3 |          |
     | Un-looped Branch |  10 |          |
-    | Low entropy      |  11 |          |
-    | High entropy     |   2 |          |
+    | High entropy     |  11 |          |
+    | Low entropy      |   2 |          |
     | Total Reported   |  13 |          |
-
+    
 * LibGcrypt 1.5.2
 ** mpi-powm.c test
    Tainted: mod, expo :: Untrusted: base
@@ -1404,14 +1404,14 @@ UL  mpi/mpi-pow.c line  751 - if ( mod_shift_cnt ) // Nested branch based on fir
   #+END_SRC
   
 *** Classification
-    | Err. Type        | Qty | Comments                                                     |
-    | False Positive   |   1 |                                                              |
-    | Validation       |   0 |                                                              |
-    | Looped Branch    |  11 |                                                              |
-    | Un-looped Branch |   7 |                                                              |
-    | Low entropy      |  15 | The low entropy results are mostly on size of various inputs |
-    | High entropy     |   3 | All of the high entropy results are on looped branches       |
-    | Total Reported   |  19 |                                                              |
+    | Err. Type        | Qty | Comments                                                      |
+    | False Positive   |   1 |                                                               |
+    | Validation       |   0 |                                                               |
+    | Looped Branch    |  11 |                                                               |
+    | Un-looped Branch |   7 |                                                               |
+    | High entropy     |  15 | The high entropy results are mostly on size of various inputs |
+    | Low entropy      |   3 | All of the low entropy results are on looped branches         |
+    | Total Reported   |  19 |                                                               |
 
 * BearSSL 0.5
 ** i32_modpow.c
@@ -1459,7 +1459,7 @@ UL  mpi/mpi-pow.c line  751 - if ( mod_shift_cnt ) // Nested branch based on fir
     i32_decred.c line   82 - if (q > len) {
     i32_decred.c line   89 - if (q <= len) {
     i32_decred.c line  104 - for (k = len - q; k < len; k += 4) {
-    i32_decode.c line   38 - if (u < 4) {
+    ghi32_decode.c line   38 - if (u < 4) {
     i32_decode.c line   41 - if (u < 2) {
     i32_decode.c line   42 - if (u == 0) {
     i32_decode.c line   48 - if (u == 2) {
@@ -1509,6 +1509,9 @@ UL  mpi/mpi-pow.c line  751 - if ( mod_shift_cnt ) // Nested branch based on fir
     | Validation       |   0 | Bear uses primitive types so not much error checking is done           |
     | Looped Branch    |   0 | The 3 reported results are looped branches but are false positives     |
     | Un-looped Branch |   0 | None Reported                                                          |
+    | High Entropy     |   3 | M is just a length                                                     |
+    | Low Entropy      |   0 |                                                                        |
+    | Total            |   3 |                                                                        |
 
 * mbedTLS 
 ** rsa.c bignum.c
@@ -1941,27 +1944,27 @@ UL  mpi/mpi-pow.c line  751 - if ( mod_shift_cnt ) // Nested branch based on fir
      bignum.c line 1565 - for( i = 0; i < n; i++ )
 
      /* mbedtls_mpi_exp_mod */
-VL   bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 ) // Branc on `N` input validation
-VL   bignum.c line 1620 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 ) // Branch on `E` input validation
-UL   bignum.c line 1633 - wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :  // Branch on `E` wsize 
-UL   bignum.c line 1634 - ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;
-VL   bignum.c line 1636 - if( wsize > MBEDTLS_MPI_WINDOW_SIZE ) // Branch on wsize based on length `E`
-UL   bignum.c line 1648 - if( neg ) // Branch on A(?) tained later maybe
-VL   bignum.c line 1658 - if( _RR == NULL || _RR->p == NULL ) // Branch on ptr, tainted later
-UL   bignum.c line 1673 - if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 ) // Branch between plaintext and mod
-UL   bignum.c line 1686 - if( wsize > 1 ) // branch on `E` length
-RL   bignum.c line 1696 - for( i = 0; i < wsize - 1; i++ ) // Repeated branch; Fixed iteration loop
-RL   bignum.c line 1702 - for( i = j + 1; i < ( one << wsize ); i++ ) // Repeated branch; fixed # iteration loop
-RL   bignum.c line 1721 - if( nblimbs == 0 ) // Repeated branch in loop, based on limbs in E
-RH   bignum.c line 1736 - if( ei == 0 && state == 0 ) // Repeated branch in loop, key dependent
-RH   bignum.c line 1739 - if( ei == 0 && state == 1 ) // Repeated branch in loop, key dependent
-RL   bignum.c line 1756 - if( nbits == wsize ) // Branch on length of E repeated
-RL   bignum.c line 1761 - for( i = 0; i < wsize; i++ ) // Nested loop, repeated branch fixed number fixed # of iter.
-RL   bignum.c line 1778 - for( i = 0; i < nbits; i++ ) // Branch on nbits 
-RL   bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 ) //  branch on key
-RL   bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 ) // Branch on E data
-RL   bignum.c line 1801 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ ) // Repeated branch fixed # iter
-UL   bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL ) // Branch on pointer
+VH   bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 ) // Branc on `N` input validation
+VH   bignum.c line 1620 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 ) // Branch on `E` input validation
+UH   bignum.c line 1633 - wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :  // Branch on `E` wsize 
+UH   bignum.c line 1634 - ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;
+VH   bignum.c line 1636 - if( wsize > MBEDTLS_MPI_WINDOW_SIZE ) // Branch on wsize based on length `E`
+UH   bignum.c line 1648 - if( neg ) // Branch on A(?) tained later maybe
+VH   bignum.c line 1658 - if( _RR == NULL || _RR->p == NULL ) // Branch on ptr, tainted later
+UH   bignum.c line 1673 - if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 ) // Branch between plaintext and mod
+UH   bignum.c line 1686 - if( wsize > 1 ) // branch on `E` length
+RH   bignum.c line 1696 - for( i = 0; i < wsize - 1; i++ ) // Repeated branch; Fixed iteration loop
+RH   bignum.c line 1702 - for( i = j + 1; i < ( one << wsize ); i++ ) // Repeated branch; fixed # iteration loop
+RH   bignum.c line 1721 - if( nblimbs == 0 ) // Repeated branch in loop, based on limbs in E
+RL   bignum.c line 1736 - if( ei == 0 && state == 0 ) // Repeated branch in loop, key dependent
+RL   bignum.c line 1739 - if( ei == 0 && state == 1 ) // Repeated branch in loop, key dependent
+RH   bignum.c line 1756 - if( nbits == wsize ) // Branch on length of E repeated
+RH   bignum.c line 1761 - for( i = 0; i < wsize; i++ ) // Nested loop, repeated branch fixed number fixed # of iter.
+RH   bignum.c line 1778 - for( i = 0; i < nbits; i++ ) // Branch on nbits 
+RH   bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 ) //  branch on key
+RH   bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 ) // Branch on E data
+RH   bignum.c line 1801 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ ) // Repeated branch fixed # iter
+UH   bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL ) // Branch on pointer
    #+END_SRC
    
 *** Classification
@@ -1970,8 +1973,8 @@ UL   bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL ) // Branch on point
     | Validation       |   4 |                                                              |
     | Looped Branch    |  11 |                                                              |
     | Un-looped Branch |   6 |                                                              |
-    | Low entropy      |  19 | The low entropy results are mostly on size of various inputs |
-    | High entropy     |   2 | All of the high entropy results are on looped branches       |
+    | High entropy     |  19 | The high entropy results are mostly on size of various inputs |
+    | Low entropy      |   2 | All of the low entropy results are on looped branches    |
     | Total Reported   |  21 |                                                              |
 
 * Classification Hueristic

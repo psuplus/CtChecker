@@ -35,16 +35,20 @@ char VulnerableBranch::ID;
 
 /** Taint a Value whose name matches s */
 void
-VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) {
+VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::string> match) {
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(),
     end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
     const Value& value = *(entry->first);
 
     // errs() << "Visiting ";
     // value.dump();
+    std::string match_name;
+    int t_offset;
+    std::string fn_name;
+    std::tie(match_name, t_offset, fn_name) = match;
 
     std::string s;
-    if (value.hasName() && value.getName() == match.first ) {
+    if (value.hasName() && value.getName() == match_name) {
        s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       unsigned offset = 0;
@@ -58,15 +62,15 @@ VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) 
         if(curElem != ifa->locConstraintMap.end()){
           elemMap = curElem->second;
 
-          if (match.second >= 0){
-            ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,match.second);
+          if (t_offset >= 0){
+            ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,t_offset);
           } else if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";
             std::set<const ConsElem*> elems = ifa->findRelevantConsElem(*loc, elemMap, offset);
             ifa->constrainAllConsElem(kind, elems);
           } else {
             errs() << "Visiting: "; value.dump();
-            errs() << "Matching " << match.first << " with " << value.getName() << ": ";
+            errs() << "Matching " << match_name << " with " << value.getName() << ": ";
             ifa->setTainted(kind,value);
           }
         }
@@ -75,7 +79,7 @@ VulnerableBranch::taintStr (std::string kind, std::pair<std::string,int> match) 
       llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
       *ss << value; // dump value info to ss
       ss->str(); // flush stream to s
-      if (s.find(match.first) == 0) {// test if the value's content starts with match
+      if (s.find(match_name) == 0) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
         errs() << "Match Detected for " << s  << "\n";
       }
@@ -94,19 +98,19 @@ VulnerableBranch::runOnModule(Module &M) {
   std::ifstream ftaint("taint.txt"); // read tainted values from txt file
   std::string line;
   while (std::getline(ftaint, line)) {
-    std::pair<std::string, int> match = ifa->parseTaintString(line);
+    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
     taintStr ("taint", match);
   }
 
   std::ifstream funtrust("untrust.txt"); // read tainted values from txt file
   while (std::getline(funtrust, line)) {
-    std::pair<std::string, int> match = ifa->parseTaintString(line);
+    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
     taintStr ("untrust", match);
   }
 
   std::ifstream fwhitelist("whitelist.txt");
   while (std::getline(fwhitelist, line)) {
-    std::pair<std::string, int> match = ifa->parseTaintString(line);
+    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
     ifa->removeConstraint("taint", match);
     ifa->removeConstraint("untrust", match);
   }

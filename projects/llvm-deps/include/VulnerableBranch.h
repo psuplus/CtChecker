@@ -46,7 +46,7 @@ public:
 private:
   Infoflow *ifa;
 
-  void taintStr (std::string kind, std::pair<std::string,int> match);
+  void taintStr (std::string kind, std::tuple<std::string,int,std::string> match);
 };
 
 }

@@ -2140,9 +2140,9 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   return OS.str();
 }
 
-std::pair<std::string, int>
+std::tuple<std::string, int, std::string>
 Infoflow::parseTaintString(std::string line) {
-  std::pair<std::string, int> ret;
+  std::tuple<std::string, int, std::string> ret;
   // Move any extra whitespace to end
   std::string::iterator new_end = unique(line.begin(), line.end(), [] (const char &x, const char &y) {
       return x == y and x == ' ';
@@ -2171,18 +2171,22 @@ Infoflow::parseTaintString(std::string line) {
   splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
 
   // Create match/offset pair
-  if (splits.size() == 2) {
-    ret = std::make_pair(splits[0], std::stoi(splits[1]));
-  } else {
-    ret = std::make_pair(splits[0], -1);
+  if (splits.size() == 1) {
+    ret = std::make_tuple(splits[0], -1, "");
+  } else if (splits.size() == 2 && isdigit(splits[1][0])) {
+    ret = std::make_tuple(splits[0], std::stoi(splits[1]), "");
+  } else if (splits.size() == 2) {
+    ret = std::make_tuple(splits[0], -1, splits[2]);
+  } else if (splits.size() == 3) {
+    ret = std::make_tuple(splits[0], std::stoi(splits[1]), splits[2]);
   }
 
   return ret;
 }
 
 void
-Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) {
-  errs() << "Removing values tied to " << match.first << "\n";
+Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::string> match) {
+  errs() << "Removing values tied to " << std::get<0>(match) << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
          end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
     const Value & value = *(entry->first);
@@ -2192,7 +2196,11 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
     *ss << value; // dump value info to ss
     ss->str(); // flush stream to s
 
-    if(value.hasName() && value.getName() == match.first) {
+    std::string match_name;
+    int t_offset;
+    std::string fn_name;
+    std::tie(match_name, t_offset, fn_name) = match;
+    if(value.hasName() && value.getName() == match_name) {
       const std::set<const AbstractLoc *> &locs = locsForValue(value);
       for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
         DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
@@ -2202,7 +2210,7 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
           elemMap = curElem->second;
         }
 
-        if (match.second >= 0) {
+        if (t_offset >= 0) {
           // Check if we are loading from a pointer.
           bool linkExists = curElem->first->hasLink(0);
 
@@ -2219,7 +2227,7 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
           }
 
           // Remove the relevant constraint
-          removeConstraintFromIndex(kind, *loc, &value, elemMap, match.second);
+          removeConstraintFromIndex(kind, *loc, &value, elemMap, t_offset);
         } else {
           // Removes any constraints tied to that AbstractLoc
           for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
@@ -2229,7 +2237,7 @@ Infoflow::removeConstraint(std::string kind, std::pair<std::string, int> match) 
           }
         }
       }
-    } else if (s.find(match.first) == 0 ) {
+    } else if (s.find(match_name) == 0 ) {
       errs() << "Removing constraint ";
       const ConsElem & elem = *(entry->second);
       elem.dump(errs());

@@ -33,6 +33,15 @@ X("vulnerablebranch", "An analysis for identifying vulnerable branches");
 
 char VulnerableBranch::ID;
 
+const Function* findEnclosingFunc(const Value* V) {
+  if (const Argument* Arg = dyn_cast<Argument>(V)) {
+    return Arg->getParent();
+  }
+  if (const Instruction* I = dyn_cast<Instruction>(V)) {
+    return I->getParent()->getParent();
+  }
+  return NULL;
+}
 /** Taint a Value whose name matches s */
 void
 VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::string> match) {
@@ -47,12 +56,19 @@ VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::st
     std::string fn_name;
     std::tie(match_name, t_offset, fn_name) = match;
 
+    const Function * fn = findEnclosingFunc(&value);
+    bool function_matches = false;
+    if(fn_name.size() == 0 || (fn->hasName() && fn->getName() == fn_name)) {
+        function_matches = true;
+    }
+
     std::string s;
-    if (value.hasName() && value.getName() == match_name) {
+    if (value.hasName() && value.getName() == match_name && function_matches) {
        s = value.getName();
       const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
       unsigned offset = 0;
-      errs() << "Trying to get offset..\n";
+      errs() << "Trying to get offset.. for  "<< s << " in  function " << fn_name <<   "\n";
+
       bool hasOffset = ifa->offsetForValue(value, &offset);
       errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
       for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
@@ -79,7 +95,7 @@ VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::st
       llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
       *ss << value; // dump value info to ss
       ss->str(); // flush stream to s
-      if (s.find(match_name) == 0) {// test if the value's content starts with match
+      if (s.find(match_name) == 0 && function_matches) {// test if the value's content starts with match
         ifa->setTainted(kind, value);
         errs() << "Match Detected for " << s  << "\n";
       }

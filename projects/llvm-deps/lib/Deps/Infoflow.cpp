@@ -2176,7 +2176,7 @@ Infoflow::parseTaintString(std::string line) {
   } else if (splits.size() == 2 && isdigit(splits[1][0])) {
     ret = std::make_tuple(splits[0], std::stoi(splits[1]), "");
   } else if (splits.size() == 2) {
-    ret = std::make_tuple(splits[0], -1, splits[2]);
+    ret = std::make_tuple(splits[0], -1, splits[1]);
   } else if (splits.size() == 3) {
     ret = std::make_tuple(splits[0], std::stoi(splits[1]), splits[2]);
   }

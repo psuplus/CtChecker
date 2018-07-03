@@ -1033,8 +1033,8 @@ UH    bn_exp.c line  717 - if ((powerbufFree =
 UH    bn_exp.c line  726 - if (powerbufLen < 3072)
 UH    bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
 RH    bn_exp.c line  743 - for (i = 1; i < top; i++)
-VH *  bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
-UH    bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+VH    bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
+UH *  bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
 VH    bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
 VH    bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
 VH    bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))

@@ -47,7 +47,7 @@ function execute_test() {
         echo "Failed to run analysis" > $3
     else
     #filter lines for only relevant output
-    grep -e 'line [0-9]\+' $2 | sort -u  > $3
+    grep -e 'line [0-9]\+' $2 | sort -uV  > $3
     fi
     cd $HOME_DIR
 }

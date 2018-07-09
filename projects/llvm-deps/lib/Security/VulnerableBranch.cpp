@@ -84,8 +84,9 @@ VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::st
           elemMap = curElem->second;
 
           if (t_offset >= 0){
-            
-            bool linkExists = curElem->first->hasLink(0);
+            bool linkExists = false;
+            if((*loc)->getSize() > 0)
+              linkExists = curElem->first->hasLink(0);
 
             if (linkExists) {
               // If the value is a pointer, use pointsto analysis to resolve the target

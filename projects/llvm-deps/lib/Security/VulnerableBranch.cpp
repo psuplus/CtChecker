@@ -84,6 +84,26 @@ VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::st
           elemMap = curElem->second;
 
           if (t_offset >= 0){
+            
+            bool linkExists = curElem->first->hasLink(0);
+
+            if (linkExists) {
+              // If the value is a pointer, use pointsto analysis to resolve the target
+              const DSNodeHandle nh = curElem->first->getLink(0);
+              const AbstractLoc * node = nh.getNode();
+              errs() << "Linked Node";
+              node->dump();
+              DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
+
+              // Instead look at this set of constraint elements
+              elemMap = childElem->second;
+            }
+
+            if(linkExists){
+              // if the value is a pointer use pointsto analysis to resolve the target
+              const DSNodeHandle nh = curElem->first->getLink(0);
+            }
+
             ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,t_offset);
           } else if (hasOffset) {
             errs() << "Using element at offset " << offset << "\n";

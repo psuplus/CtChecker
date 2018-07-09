@@ -2285,12 +2285,17 @@ StructType* convertValueToStructType(const Value * v) {
 void Infoflow::constrainOffsetFromIndex(std::string kind, const AbstractLoc* loc, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {
   if (StructType* st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned) fieldIdx, loc);
-    const ConsElem * elem = elemMap[offset];
-    errs() << "Setting high constant to " << offset << ":";
-    //it->second->dump(errs());
-    elem->dump(errs());
-    errs() << "\n";
-    kit->addConstraint(kind, kit->highConstant(), *elem);
+    errs() << "Index " << fieldIdx << "->" << offset << "\n";
+    if (elemMap.find(offset) != elemMap.end()){
+      const ConsElem * elem = elemMap[offset];
+      errs() << "Setting high constant to " << offset << ":";
+      //it->second->dump(errs());
+      elem->dump(errs());
+      errs() << "\n";
+      kit->addConstraint(kind, kit->highConstant(), *elem);
+    } else {
+      constrainAllConsElem(kind,elemMap);
+    }
   } else if(const AllocaInst *al = dyn_cast<AllocaInst>(v)){
     if (isa<ArrayType>(al->getAllocatedType())) {
       const ConsElem * elem = elemMap[fieldIdx];

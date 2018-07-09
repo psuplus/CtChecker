@@ -1256,7 +1256,7 @@ RH     bn_exp.c line 1200 - if (BN_is_bit_set(p, b)) {
 RL     bn_exp.c line 1202 - if ((next_w / a) != w) { /* overflow */
 V      bn_exp.c line 1204 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
 V      bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
-UL       bn_exp.c line 1218 - if (w != 1) {
+UL     bn_exp.c line 1218 - if (w != 1) {
 V      bn_exp.c line 1220 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
 V      bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
 
@@ -1721,7 +1721,7 @@ UL    mpi/mpi-pow.c line  749 - if ( negative_result && rsize )
 UL    mpi/mpi-pow.c line  751 - if ( mod_shift_cnt )
 UL    mpi/mpi-pow.c line  756 - MPN_NORMALIZE(rp, rsize);
 VL    mpi/mpi-pow.c line  758 - gcry_assert (res->d == rp);
-    #+END_SRC 
+     #+END_SRC 
     
 **** With whitelist
      Tainted/Untrusted: mod 4, expo 4
@@ -2347,116 +2347,116 @@ UH   bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL ) // Branch on point
    Entry: mbedtls_mpi_exp_mod
    
    #+BEGIN_SRC c
-     bignum.c line   97 - if( X == NULL )
-     bignum.c line  100 - if( X->p != NULL )
-     bignum.c line  118 - if( nblimbs > MBEDTLS_MPI_MAX_LIMBS )
-     bignum.c line  121 - if( X->n < nblimbs )
-     bignum.c line  123 - if( ( p = (mbedtls_mpi_uint*)mbedtls_calloc( nblimbs, ciL ) ) == NULL )
-     bignum.c line  126 - if( X->p != NULL )
-     bignum.c line  185 - if( X == Y )
-     bignum.c line  188 - if( Y->p == NULL )
-     bignum.c line  194 - for( i = Y->n - 1; i > 0; i-- )
-     bignum.c line  195 - if( Y->p[i] != 0 )
-     bignum.c line  369 - if( x & mask ) break;
-     bignum.c line  384 - if( X->n == 0 )
-     bignum.c line  387 - for( i = X->n - 1; i > 0; i-- )
-     bignum.c line  388 - if( X->p[i] != 0 )
-     bignum.c line  726 - if( X->n * biL < i )
-     bignum.c line  734 - if( v0 > 0 )
-     bignum.c line  736 - for( i = X->n; i > v0; i-- )
-     bignum.c line  739 - for( ; i > 0; i-- )
-     bignum.c line  746 - if( t1 > 0 )
-     bignum.c line  748 - for( i = v0; i < X->n; i++ )
-     bignum.c line  773 - if( v0 > X->n || ( v0 == X->n && v1 > 0 ) )
-     bignum.c line  779 - if( v0 > 0 )
-     bignum.c line  781 - for( i = 0; i < X->n - v0; i++ )
-     bignum.c line  784 - for( ; i < X->n; i++ )
-     bignum.c line  791 - if( v1 > 0 )
-     bignum.c line  793 - for( i = X->n; i > 0; i-- )
-     bignum.c line  812 - for( i = X->n; i > 0; i-- )
-     bignum.c line  813 - if( X->p[i - 1] != 0 )
-     bignum.c line  816 - for( j = Y->n; j > 0; j-- )
-     bignum.c line  817 - if( Y->p[j - 1] != 0 )
-     bignum.c line  820 - if( i == 0 && j == 0 )
-     bignum.c line  823 - if( i > j ) return(  1 );
-     bignum.c line  824 - if( j > i ) return( -1 );
-     bignum.c line  826 - for( ; i > 0; i-- )
-     bignum.c line  828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
-     bignum.c line  829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
-     bignum.c line  842 - for( i = X->n; i > 0; i-- )
-     bignum.c line  843 - if( X->p[i - 1] != 0 )
-     bignum.c line  846 - for( j = Y->n; j > 0; j-- )
-     bignum.c line  847 - if( Y->p[j - 1] != 0 )
-     bignum.c line  850 - if( i == 0 && j == 0 )
-     bignum.c line  853 - if( i > j ) return(  X->s );
-     bignum.c line  854 - if( j > i ) return( -Y->s );
-     bignum.c line  856 - if( X->s > 0 && Y->s < 0 ) return(  1 );
-     bignum.c line  857 - if( Y->s > 0 && X->s < 0 ) return( -1 );
-     bignum.c line  859 - for( ; i > 0; i-- )
-     bignum.c line  861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
-     bignum.c line  862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
-     bignum.c line  906 - for( j = B->n; j > 0; j-- )
-     bignum.c line  907 - if( B->p[j - 1] != 0 )
-     bignum.c line  917 - for( i = 0; i < j; i++, o++, p++ )
-     bignum.c line  924 - while( c != 0 )
-     bignum.c line  926 - if( i >= X->n )
-     bignum.c line  948 - for( i = c = 0; i < n; i++, s++, d++ )
-     bignum.c line  954 - while( c != 0 )
-     bignum.c line  991 - for( n = B->n; n > 0; n-- )
-     bignum.c line  992 - if( B->p[n - 1] != 0 )
-     bignum.c line 1011 - if( A->s * B->s < 0 )
-     bignum.c line 1042 - if( A->s * B->s > 0 )
-     bignum.c line 1128 - for( ; i >= 16; i -= 16 )
-     bignum.c line 1143 - for( ; i >= 8; i -= 8 )
-     bignum.c line 1154 - for( ; i > 0; i-- )
-     bignum.c line 1166 - }
-     bignum.c line 1184 - for( i = A->n; i > 0; i-- )
-     bignum.c line 1185 - if( A->p[i - 1] != 0 )
-     bignum.c line 1188 - for( j = B->n; j > 0; j-- )
-     bignum.c line 1189 - if( B->p[j - 1] != 0 )
-     bignum.c line 1195 - for( i++; j > 0; j-- )
-     bignum.c line 1243 - if( 0 == d || u1 >= d )
-     bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
-     bignum.c line 1328 - if( mbedtls_mpi_cmp_int( B, 0 ) == 0 )
-     bignum.c line 1351 - if( k < biL - 1 )
-     bignum.c line 1363 - while( mbedtls_mpi_cmp_mpi( &X, &Y ) >= 0 )
-     bignum.c line 1370 - for( i = n; i > t ; i-- )
-     bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
-     bignum.c line 1386 - T1.p[0] = ( t < 1 ) ? 0 : Y.p[t - 1];
-     bignum.c line 1391 - T2.p[0] = ( i < 2 ) ? 0 : X.p[i - 2];
-     bignum.c line 1392 - T2.p[1] = ( i < 1 ) ? 0 : X.p[i - 1];
-     bignum.c line 1394 - }
-     bignum.c line 1401 - if( mbedtls_mpi_cmp_int( &X, 0 ) < 0 )
-     bignum.c line 1422 - if( mbedtls_mpi_cmp_int( R, 0 ) == 0 )
-     bignum.c line 1457 - if( mbedtls_mpi_cmp_int( B, 0 ) < 0 )
-     bignum.c line 1462 - while( mbedtls_mpi_cmp_int( R, 0 ) < 0 )
-     bignum.c line 1465 - while( mbedtls_mpi_cmp_mpi( R, B ) >= 0 )
-     bignum.c line 1556 - if( T->n < N->n + 1 || T->p == NULL )
-     bignum.c line 1563 - m = ( B->n < n ) ? B->n : n;
-     bignum.c line 1565 - for( i = 0; i < n; i++ )
-     
-     /* mbedtls_mpi_exp_mod */
-V    bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
-V    bignum.c line 1620 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 )
-UL   bignum.c line 1633 - wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :
-UL   bignum.c line 1634 - ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;
-V    bignum.c line 1636 - if( wsize > MBEDTLS_MPI_WINDOW_SIZE )
-UL   bignum.c line 1648 - if( neg )
-V    bignum.c line 1658 - if( _RR == NULL || _RR->p == NULL )
-C   bignum.c line 1673 - if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 )
-UL   bignum.c line 1686 - if( wsize > 1 )
-RL   bignum.c line 1696 - for( i = 0; i < wsize - 1; i++ )
-RL   bignum.c line 1702 - for( i = j + 1; i < ( one << wsize ); i++ )
-RL   bignum.c line 1721 - if( nblimbs == 0 )
-RH   bignum.c line 1736 - if( ei == 0 && state == 0 )
-RH   bignum.c line 1739 - if( ei == 0 && state == 1 )
-RL   bignum.c line 1756 - if( nbits == wsize )
-RL   bignum.c line 1761 - for( i = 0; i < wsize; i++ )
-RL   bignum.c line 1778 - for( i = 0; i < nbits; i++ )
-RH   bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
-UL   bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
-RL     bignum.c line 1801 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
-V     bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL )
+          bignum.c line   97 - if( X == NULL )
+          bignum.c line  100 - if( X->p != NULL )
+          bignum.c line  118 - if( nblimbs > MBEDTLS_MPI_MAX_LIMBS )
+          bignum.c line  121 - if( X->n < nblimbs )
+          bignum.c line  123 - if( ( p = (mbedtls_mpi_uint*)mbedtls_calloc( nblimbs, ciL ) ) == NULL )
+          bignum.c line  126 - if( X->p != NULL )
+          bignum.c line  185 - if( X == Y )
+          bignum.c line  188 - if( Y->p == NULL )
+          bignum.c line  194 - for( i = Y->n - 1; i > 0; i-- )
+          bignum.c line  195 - if( Y->p[i] != 0 )
+          bignum.c line  369 - if( x & mask ) break;
+          bignum.c line  384 - if( X->n == 0 )
+          bignum.c line  387 - for( i = X->n - 1; i > 0; i-- )
+          bignum.c line  388 - if( X->p[i] != 0 )
+          bignum.c line  726 - if( X->n * biL < i )
+          bignum.c line  734 - if( v0 > 0 )
+          bignum.c line  736 - for( i = X->n; i > v0; i-- )
+          bignum.c line  739 - for( ; i > 0; i-- )
+          bignum.c line  746 - if( t1 > 0 )
+          bignum.c line  748 - for( i = v0; i < X->n; i++ )
+          bignum.c line  773 - if( v0 > X->n || ( v0 == X->n && v1 > 0 ) )
+          bignum.c line  779 - if( v0 > 0 )
+          bignum.c line  781 - for( i = 0; i < X->n - v0; i++ )
+          bignum.c line  784 - for( ; i < X->n; i++ )
+          bignum.c line  791 - if( v1 > 0 )
+          bignum.c line  793 - for( i = X->n; i > 0; i-- )
+          bignum.c line  812 - for( i = X->n; i > 0; i-- )
+          bignum.c line  813 - if( X->p[i - 1] != 0 )
+          bignum.c line  816 - for( j = Y->n; j > 0; j-- )
+          bignum.c line  817 - if( Y->p[j - 1] != 0 )
+          bignum.c line  820 - if( i == 0 && j == 0 )
+          bignum.c line  823 - if( i > j ) return(  1 );
+          bignum.c line  824 - if( j > i ) return( -1 );
+          bignum.c line  826 - for( ; i > 0; i-- )
+          bignum.c line  828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+          bignum.c line  829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+          bignum.c line  842 - for( i = X->n; i > 0; i-- )
+          bignum.c line  843 - if( X->p[i - 1] != 0 )
+          bignum.c line  846 - for( j = Y->n; j > 0; j-- )
+          bignum.c line  847 - if( Y->p[j - 1] != 0 )
+          bignum.c line  850 - if( i == 0 && j == 0 )
+          bignum.c line  853 - if( i > j ) return(  X->s );
+          bignum.c line  854 - if( j > i ) return( -Y->s );
+          bignum.c line  856 - if( X->s > 0 && Y->s < 0 ) return(  1 );
+          bignum.c line  857 - if( Y->s > 0 && X->s < 0 ) return( -1 );
+          bignum.c line  859 - for( ; i > 0; i-- )
+          bignum.c line  861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+          bignum.c line  862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+          bignum.c line  906 - for( j = B->n; j > 0; j-- )
+          bignum.c line  907 - if( B->p[j - 1] != 0 )
+          bignum.c line  917 - for( i = 0; i < j; i++, o++, p++ )
+          bignum.c line  924 - while( c != 0 )
+          bignum.c line  926 - if( i >= X->n )
+          bignum.c line  948 - for( i = c = 0; i < n; i++, s++, d++ )
+          bignum.c line  954 - while( c != 0 )
+          bignum.c line  991 - for( n = B->n; n > 0; n-- )
+          bignum.c line  992 - if( B->p[n - 1] != 0 )
+          bignum.c line 1011 - if( A->s * B->s < 0 )
+          bignum.c line 1042 - if( A->s * B->s > 0 )
+          bignum.c line 1128 - for( ; i >= 16; i -= 16 )
+          bignum.c line 1143 - for( ; i >= 8; i -= 8 )
+          bignum.c line 1154 - for( ; i > 0; i-- )
+          bignum.c line 1166 - }
+          bignum.c line 1184 - for( i = A->n; i > 0; i-- )
+          bignum.c line 1185 - if( A->p[i - 1] != 0 )
+          bignum.c line 1188 - for( j = B->n; j > 0; j-- )
+          bignum.c line 1189 - if( B->p[j - 1] != 0 )
+          bignum.c line 1195 - for( i++; j > 0; j-- )
+          bignum.c line 1243 - if( 0 == d || u1 >= d )
+          bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+          bignum.c line 1328 - if( mbedtls_mpi_cmp_int( B, 0 ) == 0 )
+          bignum.c line 1351 - if( k < biL - 1 )
+          bignum.c line 1363 - while( mbedtls_mpi_cmp_mpi( &X, &Y ) >= 0 )
+          bignum.c line 1370 - for( i = n; i > t ; i-- )
+          bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+          bignum.c line 1386 - T1.p[0] = ( t < 1 ) ? 0 : Y.p[t - 1];
+          bignum.c line 1391 - T2.p[0] = ( i < 2 ) ? 0 : X.p[i - 2];
+          bignum.c line 1392 - T2.p[1] = ( i < 1 ) ? 0 : X.p[i - 1];
+          bignum.c line 1394 - }
+          bignum.c line 1401 - if( mbedtls_mpi_cmp_int( &X, 0 ) < 0 )
+          bignum.c line 1422 - if( mbedtls_mpi_cmp_int( R, 0 ) == 0 )
+          bignum.c line 1457 - if( mbedtls_mpi_cmp_int( B, 0 ) < 0 )
+          bignum.c line 1462 - while( mbedtls_mpi_cmp_int( R, 0 ) < 0 )
+          bignum.c line 1465 - while( mbedtls_mpi_cmp_mpi( R, B ) >= 0 )
+          bignum.c line 1556 - if( T->n < N->n + 1 || T->p == NULL )
+          bignum.c line 1563 - m = ( B->n < n ) ? B->n : n;
+          bignum.c line 1565 - for( i = 0; i < n; i++ )
+
+          /* mbedtls_mpi_exp_mod */
+     V    bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+     V    bignum.c line 1620 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 )
+     UL   bignum.c line 1633 - wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :
+     UL   bignum.c line 1634 - ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;
+     V    bignum.c line 1636 - if( wsize > MBEDTLS_MPI_WINDOW_SIZE )
+     UL   bignum.c line 1648 - if( neg )
+     V    bignum.c line 1658 - if( _RR == NULL || _RR->p == NULL )
+     C   bignum.c line 1673 - if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 )
+     UL   bignum.c line 1686 - if( wsize > 1 )
+     RL   bignum.c line 1696 - for( i = 0; i < wsize - 1; i++ )
+     RL   bignum.c line 1702 - for( i = j + 1; i < ( one << wsize ); i++ )
+     RL   bignum.c line 1721 - if( nblimbs == 0 )
+     RH   bignum.c line 1736 - if( ei == 0 && state == 0 )
+     RH   bignum.c line 1739 - if( ei == 0 && state == 1 )
+     RL   bignum.c line 1756 - if( nbits == wsize )
+     RL   bignum.c line 1761 - for( i = 0; i < wsize; i++ )
+     RL   bignum.c line 1778 - for( i = 0; i < nbits; i++ )
+     RH   bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
+     UL   bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+     RL     bignum.c line 1801 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
+     V     bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL )
    #+END_SRC
    
 *** With whitelist

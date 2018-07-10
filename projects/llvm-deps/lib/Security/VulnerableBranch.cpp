@@ -42,6 +42,66 @@ const Function* findEnclosingFunc(const Value* V) {
   }
   return NULL;
 }
+
+bool VulnerableBranch::hasPointerTarget(const AbstractLoc * loc) {
+  bool linkExists = false;
+  if (loc->getSize() > 0)
+    linkExists = loc->hasLink(0);
+
+  return linkExists;
+}
+
+std::map<unsigned, const ConsElem *> VulnerableBranch::getPointerTarget(const AbstractLoc * loc) {
+    // If the value is a pointer, use pointsto analysis to resolve the target
+    const DSNodeHandle nh = loc->getLink(0);
+    const AbstractLoc * node = nh.getNode();
+    errs() << "Linked Node";
+    node->dump();
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
+    // Instead look at this set of constraint elements
+    return childElem->second;
+}
+
+void VulnerableBranch::constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name) {
+
+  std::string s = value.getName();
+  const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
+
+  unsigned offset = 0;
+  errs() << "Trying to get offset.. for  "<< s << "\n";
+
+  bool hasOffset = ifa->offsetForValue(value, &offset);
+  errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
+
+  if(locs.size() == 0) {
+    ifa->setTainted(kind,value);
+  }
+
+  for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
+          end = locs.end(); loc != end; ++loc) {
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
+    std::map<unsigned, const ConsElem *> elemMap;
+    if(curElem != ifa->locConstraintMap.end()){
+      elemMap = curElem->second;
+
+      if (t_offset >= 0){       // Use offset provided in taint/untrust.txt
+        if(hasPointerTarget(*loc)){
+          elemMap = getPointerTarget(*loc);
+        }
+        ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,t_offset);
+      } else if (hasOffset) {   // Use offset provided from instruction
+        errs() << "Using element at offset " << offset << "\n";
+        std::set<const ConsElem*> elems = ifa->findRelevantConsElem(*loc, elemMap, offset);
+        ifa->constrainAllConsElem(kind, elems);
+      } else {  // see if the value itself matches any in the taint files
+        errs() << "Visiting: "; value.dump();
+        errs() << "Matching " << match_name << " with " << value.getName() << ": ";
+        ifa->setTainted(kind,value);
+      }
+    }
+  }
+}
+
 /** Taint a Value whose name matches s */
 void
 VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::string> match) {
@@ -63,61 +123,10 @@ VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::st
       function_matches = true;
     }
 
-    std::string s;
     if (value.hasName() && value.getName() == match_name && function_matches) {
-       s = value.getName();
-      const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
-      unsigned offset = 0;
-      errs() << "Trying to get offset.. for  "<< s << " in  function " << fn_name <<   "\n";
-
-      bool hasOffset = ifa->offsetForValue(value, &offset);
-      errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
-
-      if(locs.size() == 0) {
-        ifa->setTainted(kind,value);
-      }
-      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
-             end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
-        std::map<unsigned, const ConsElem *> elemMap;
-        if(curElem != ifa->locConstraintMap.end()){
-          elemMap = curElem->second;
-
-          if (t_offset >= 0){
-            bool linkExists = false;
-            if((*loc)->getSize() > 0)
-              linkExists = curElem->first->hasLink(0);
-
-            if (linkExists) {
-              // If the value is a pointer, use pointsto analysis to resolve the target
-              const DSNodeHandle nh = curElem->first->getLink(0);
-              const AbstractLoc * node = nh.getNode();
-              errs() << "Linked Node";
-              node->dump();
-              DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
-
-              // Instead look at this set of constraint elements
-              elemMap = childElem->second;
-            }
-
-            if(linkExists){
-              // if the value is a pointer use pointsto analysis to resolve the target
-              const DSNodeHandle nh = curElem->first->getLink(0);
-            }
-
-            ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,t_offset);
-          } else if (hasOffset) {
-            errs() << "Using element at offset " << offset << "\n";
-            std::set<const ConsElem*> elems = ifa->findRelevantConsElem(*loc, elemMap, offset);
-            ifa->constrainAllConsElem(kind, elems);
-          } else {
-            errs() << "Visiting: "; value.dump();
-            errs() << "Matching " << match_name << " with " << value.getName() << ": ";
-            ifa->setTainted(kind,value);
-          }
-        }
-      }
+      constrainValue(kind, value, t_offset, match_name);
     } else {
+      std::string s;
       llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
       *ss << value; // dump value info to ss
       ss->str(); // flush stream to s

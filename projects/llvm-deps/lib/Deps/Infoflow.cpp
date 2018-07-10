@@ -2249,14 +2249,17 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
 
 void
 Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*> elemMap) {
-  errs() << "Tainting all constraint elements from value\n";
+  //errs() << "Tainting all constraint elements from value\n";
   for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), end = elemMap.end(); it != end; ++it){
+    //it->second->dump(errs());
     kit->addConstraint(kind, kit->highConstant(), *(it->second));
   }
 }
 void
 Infoflow::constrainAllConsElem(std::string kind, std::set<const ConsElem*> elems) {
+  //errs() << "Tainting all constraint elements from value\n";
   for(std::set<const ConsElem*>::iterator it = elems.begin(), end = elems.end(); it != end; ++it){
+    //(*it)->dump(errs());
     kit->addConstraint(kind, kit->highConstant(), *(*it));
   }
 }

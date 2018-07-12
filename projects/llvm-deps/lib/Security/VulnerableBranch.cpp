@@ -104,9 +104,7 @@ void VulnerableBranch::constrainValue(std::string kind, const Value & value, int
 
 /** Taint a Value whose name matches s */
 void
-VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::string> match) {
-  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(),
-    end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
+VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::string> match) {for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(), end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
     const Value& value = *(entry->first);
 
     // errs() << "Visiting ";
@@ -123,7 +121,7 @@ VulnerableBranch::taintStr (std::string kind, std::tuple<std::string,int,std::st
       function_matches = true;
     }
 
-    if (value.hasName() && value.getName() == match_name && function_matches) {
+    if (function_matches && value.hasName() && value.getName() == match_name ) {
       constrainValue(kind, value, t_offset, match_name);
     } else {
       std::string s;

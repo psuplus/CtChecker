@@ -2200,7 +2200,14 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
     int t_offset;
     std::string fn_name;
     std::tie(match_name, t_offset, fn_name) = match;
-    if(value.hasName() && value.getName() == match_name) {
+
+    const Function * fn = findEnclosingFunc(&value);
+    bool function_matches = false;
+    if(fn_name.size() == 0 || (fn && fn->hasName() && fn->getName() == fn_name)) {
+      function_matches = true;
+    }
+
+    if(function_matches  && value.hasName() && value.getName() == match_name) {
       const std::set<const AbstractLoc *> &locs = locsForValue(value);
       for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
         DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);

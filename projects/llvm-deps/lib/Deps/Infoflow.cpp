@@ -2219,7 +2219,9 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
 
         if (t_offset >= 0) {
           // Check if we are loading from a pointer.
-          bool linkExists = curElem->first->hasLink(0);
+          bool linkExists = false;
+          if(curElem->first->getSize() > 0)
+            linkExists = curElem->first->hasLink(0);
 
           if (linkExists) {
             // If the value is a pointer, use pointsto analysis to resolve the target

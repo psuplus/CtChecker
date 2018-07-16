@@ -412,7 +412,7 @@ L   mpi/mpi-pow.c line  725 - else if (res->d != rp)
 L   mpi/mpi-pow.c line  727 - MPN_COPY (res->d, rp, rsize);
 L   mpi/mpi-pow.c line  731 - if ( rsize >= msize )
 L   mpi/mpi-pow.c line  738 - if ( mod_shift_cnt )
-H   mpi/mpi-pow.c line  740 - MPN_NORMALIZE (rp, rsize);
+L   mpi/mpi-pow.c line  740 - MPN_NORMALIZE (rp, rsize);
 L   mpi/mpi-pow.c line  743 - for (i = 0; i < (1 << (W - 1)); i++)
 L   mpi/mpi-pow.c line  744 - _gcry_mpi_free_limb_space( precomp[i], esec ? precomp_size[i] : 0 );
 L   mpi/mpi-pow.c line  745 - _gcry_mpi_free_limb_space (base_u, esec ? max_u_size : 0);
@@ -489,6 +489,44 @@ L   mpi/mpi-pow.c line  769 - if (xp_marker)
     mpi/mpi-pow.c line  769 - if (xp_marker)
     #+END_SRC
     
+** Round 1C - No whitelist
+   Taint/Untrust: mod 4, expo 4
+   Whitelist: 
+   #+BEGIN_SRC c
+     mpi/mpi-pow.c line  377 - if( ssize < KARATSUBA_THRESHOLD )
+     mpi/mpi-pow.c line  382 - if (rsize + ssize > msize)
+
+H    mpi/mpi-pow.c line  440 - MPN_NORMALIZE(ep, esize);
+L    mpi/mpi-pow.c line  467 - if (res->nlimbs)
+L    mpi/mpi-pow.c line  469 - RESIZE_IF_NEEDED (res, 1);
+H    mpi/mpi-pow.c line  484 - if (mod_shift_cnt)
+H    mpi/mpi-pow.c line  506 - MPN_NORMALIZE( bp, bsize );
+F    mpi/mpi-pow.c line  521 - if ( rp == bp )
+F    mpi/mpi-pow.c line  529 - if ( rp == ep )
+L    mpi/mpi-pow.c line  538 - if (res->alloced < size)
+L    mpi/mpi-pow.c line  559 - negative_result = (ep[0] & 1) && bsign;
+L    mpi/mpi-pow.c line  569 - if (xsize >= base_u_size)
+L    mpi/mpi-pow.c line  577 - if (max_u_size < base_u_size)
+L    mpi/mpi-pow.c line  579 - MPN_COPY (precomp[i], rp, rsize);
+L    mpi/mpi-pow.c line  582 - if (msize > max_u_size)
+L    mpi/mpi-pow.c line  585 - MPN_ZERO (base_u, max_u_size);
+L    mpi/mpi-pow.c line  605 - MPN_ZERO (rp, rsize);
+H    mpi/mpi-pow.c line  617 - if (e == 0)
+H    mpi/mpi-pow.c line  641 - if (c >= W)
+H    mpi/mpi-pow.c line  667 - for (j += W - c0; j >= 0; j--)
+H    mpi/mpi-pow.c line  702 - while (j--)
+L    mpi/mpi-pow.c line  715 - if ( mod_shift_cnt )
+L    mpi/mpi-pow.c line  719 - if ( carry_limb )
+L    mpi/mpi-pow.c line  725 - else if (res->d != rp)
+L    mpi/mpi-pow.c line  727 - MPN_COPY (res->d, rp, rsize);
+L    mpi/mpi-pow.c line  731 - if ( rsize >= msize )
+L    mpi/mpi-pow.c line  738 - if ( mod_shift_cnt )
+H    mpi/mpi-pow.c line  740 - MPN_NORMALIZE (rp, rsize);
+L    mpi/mpi-pow.c line  749 - if ( negative_result && rsize )
+L    mpi/mpi-pow.c line  751 - if ( mod_shift_cnt )
+H    mpi/mpi-pow.c line  756 - MPN_NORMALIZE(rp, rsize);
+V    mpi/mpi-pow.c line  758 - gcry_assert (res->d == rp);
+   #+END_SRC 
 * BearSSL 0.5
 ** Round 1 - No whitelist
    Taint/Untrusted: e, m @ br_i32_mod_pow

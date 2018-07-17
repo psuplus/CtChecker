@@ -56,6 +56,9 @@ std::map<unsigned, const ConsElem *> VulnerableBranch::getPointerTarget(const Ab
     const DSNodeHandle nh = loc->getLink(0);
     const AbstractLoc * node = nh.getNode();
     errs() << "Linked Node";
+    if ( node == NULL || node->getSize () == 0)
+      return std::map<unsigned, const ConsElem *>();
+
     node->dump();
     DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
     // Instead look at this set of constraint elements
@@ -86,7 +89,9 @@ void VulnerableBranch::constrainValue(std::string kind, const Value & value, int
 
       if (t_offset >= 0){       // Use offset provided in taint/untrust.txt
         if(hasPointerTarget(*loc)){
-          elemMap = getPointerTarget(*loc);
+          std::map<unsigned, const ConsElem *> childMap = getPointerTarget(*loc);
+          if (childMap.size() > 0)
+            elemMap = childMap;
         }
         ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,t_offset);
       } else if (hasOffset) {   // Use offset provided from instruction

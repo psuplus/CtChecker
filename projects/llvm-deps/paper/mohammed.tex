@@ -102,6 +102,42 @@ also has a method of determining the validity of the type information.
 
 \subsection{Timing Channels in Crypto-systems}
 
+A timing channel is a side channel in which an attacker uses execution time to
+learn information about sensitive data. In some implementations of sliding
+window exponentiation, the sequences of squares and multiplies could be measured
+due to differences in each methods execution time. This attack though timing
+based can be observed in source code in OpenSSL's previous implementation of
+sliding window exponentiation, shown in Algorithm \ref{alg:timing_sqr_mlt}. 
+
+\begin{algorithm}
+  \caption{Square and Multiply Timing Channel}
+\begin{lstlisting}
+for (i = 1; i < bits; i++) {
+    if (!BN_sqr(v, v, ctx))
+        goto err;
+    if (BN_is_bit_set(p, i)) {
+        if (!BN_mul(rr, rr, v, ctx))
+            goto err;
+    }
+}
+\end{lstlisting}
+\label{alg:timing_sqr_mlt}
+\end{algorithm}
+
+The for-loop here iterates through the number of bits in the confidential power
+\texttt{p}, each time through squaring \texttt{v} until a set bit is encountered
+in \texttt{p}. Once a set bit is encountered, an additional multiply step is
+executed before proceeding to the next loop iteration. This lends itself to a
+timing attack due to multiplication more expensive to compute than a square. The
+timing channel exists because the number of operations executed during one
+iteration changes based on the value of the confidential data. The result is if
+one can determine the locations of the multiplies and the length of time
+expected between each multiplication, the key can be rebuilt as has been done
+by Bernstein et al \cite{bernstein2017sliding}. There are other forms of timing
+channels which may or may not be viewable in source code, such as disk access
+timing or network timing attacks. 
+
+% More on timing channels?
 
 \section{Improving Field Sensitivity in Taint Analysis}
 Improvements to the precision of the baseline taint analysis. Improvements in

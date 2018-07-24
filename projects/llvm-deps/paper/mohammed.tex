@@ -4,6 +4,7 @@
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{listings}
+\usepackage{float}
 \lstset{numbers=left, numberstyle=\tiny, breaklines}
 \title{CSE 597 Homework 1\vspace{-1ex}}
 \author{Adam Mohammed}
@@ -302,7 +303,7 @@ the set of constraints for a programs source code is created, the least solution
 is found and the results show the line number where the branch occurs. This list
 of results shows the branches which are tainted and untrusted. 
 
-\begin{algorithm}
+\begin{algorithm} [H]
   \caption{Public and private data in structure}
   \label{alg:aes_struclt}
   \begin{lstlisting}
@@ -335,15 +336,14 @@ into either a high or low-risk set, and the final sorts the high-risk results
 depending on the surrounding source context.
 
 Stage 1 is a filter which removes the error handling and input validation
-results. For normal operation of a program, these branches check sensitive
-data but allow an early exit if the branch condition evaluates to true. In
-Algorithm \ref{alg:stage0_src}, the variable \texttt{N} is tainted, so the branch is
+results. For normal operation of a program, these branches check sensitive data
+but allow an early exit if the branch condition evaluates to true. In Algorithm
+\ref{alg:stage0_src}, the variable \texttt{N} is tainted, so the branch is
 vulnerable due to the condition depending on \texttt{N} and the data held within
 \texttt{N}. The result of this branch is not helpful in the case of an attacker
 attempting to learn the value of \texttt{N}. As long as the input is valid, the
-condition of this branch will always evaluate to false. Vulnerable branches
-which are found by the analysis are removed if the branch target leads to exit
-code. If the branch leads to exit code, it is a candidate for removal in this stage.
+condition of this branch will always evaluate to false. If the branch leads to
+exit code, it is a candidate for removal in this stage.
 
 \begin{algorithm}
 \caption{Validation Source Code}
@@ -354,10 +354,10 @@ if( mbedtls_mpi_cmp_int( N, 0 ) <= 0 || ( N->p[0] & 1 ) == 0 )
 \label{alg:stage0_src}
 \end{algorithm}
 
-Stage 2 operates on the remaining results to sort them into high and low
-risk categories. A high risk branch will be due to one of the operands being
-either directly related to the sensitive data or derived from more than 1 bit of
-sensitive data. Low risk branches, are branches which the operand is based on 1
+Stage 2 operates on the remaining results to sort them into high and low-risk
+categories. A high-risk branch will be due to one of the operands being either
+directly related to the sensitive data or derived from more than 1 bit of
+sensitive data. Low-risk branches, are branches which the operand is based on 1
 bit of the key or the same operand could derived from some set of sensitive data
 values.
 
@@ -381,29 +381,30 @@ if (esize * BITS_PER_MPI_LIMB > 512)
 \end{algorithm}
 
 
-This is a snippet of some of the modular exponentiation code from Libgcrypt
-1.8.2. The values pointed to by \texttt{ep} are marked as tainted at the start of the
-analysis. The result of analyzing this code is that lines 10 and 11 are
-reported. Line 10 is the macro defined in the lines 1-8. Line 10 is reported due
-to the macro having the \texttt{if} branch directly dependent on the data
-pointed to by \texttt{ep}. Since the branch is directly dependent on the tainted
-data that branch is considered high-risk. Line 11 however is a branch based on
-\texttt{esize}, the value begin modified within the \texttt{MPN\_NORMALIZE}
-macro. The value of \texttt{esize} is not unique to the tainted data, meaning there
-exists a set of tainted values which may yield the same \texttt{esize}. If a
-value is derived from tainted data, as \texttt{esize} is, but the result is not
-unique to that instance of tainted data, it is considered low-risk.
+Algorithm \ref{alg:branch_risk_examples} is a snippet of some of the modular
+exponentiation code from Libgcrypt 1.8.2. For instance, say the values pointed
+to by \texttt{ep} are marked as tainted at the start of the analysis, and the
+analysis reports that lines 10 and 11 are vulnerable. Line 10 is the macro
+defined in the lines 1-8. Line 10 is reported due to the macro having the
+\texttt{if} branch directly dependent on the data pointed to by \texttt{ep}.
+Since the branch is directly dependent on the tainted data that branch is
+considered high-risk. Line 11 however is a branch based on \texttt{esize}, the
+value begin modified within the \texttt{MPN\_NORMALIZE} macro. The value of
+\texttt{esize} is not unique to the tainted data, meaning there exists a set of
+tainted values which may yield the same \texttt{esize}. If a value is derived
+from tainted data, as \texttt{esize} is, but the result is not unique to that
+instance of tainted data, it is considered low-risk.
 
-If a classification is unclear, such as a mutable type being passed into a
-function with tainted data, the result is added to the high-risk set to be
-conservative. Further categorization can be performed on the high-risk set of
-results in Stage 3. Additionally, if there are a large number of low-risk
-result, Stage 2 can be repeated, by appending the low-risk variables to the
-whitelist.
+If for any reason, the classification is unclear, such as a mutable type being
+passed to source code that is not analyzed, the data is treated as high risk.
+This is done in order to be conservative. Further categorization can be
+performed on the high-risk set of results in Stage 3. Additionally, if there are
+a large number of low-risk result, Stage 2 can be repeated, by appending the
+low-risk variables to the whitelist.
 
 Stage 3 specifically looks a the context of the high-risk results from Stage 2.
-Each of the results will be classified as either a single branch, repeated
-branch, controllable branch or in extreme cases both controllable and repeated.
+Each of the results will be classified as one of the following: a single branch, repeated
+branch, controllable branch or both (e.g. both controllable and repeated).
 Single branches are branches which are not within a loop. Repeated branches are
 branches that are part of a loop definition or within the body of a loop.
 Controllable branches are that which the branch result is both untrusted and

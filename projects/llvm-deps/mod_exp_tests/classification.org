@@ -1384,7 +1384,7 @@ L     bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL )
    Tainted/Untrusted: N, E
    Whitelist
    
-   #+BEGIN_SRC cxx
+   #+BEGIN_SRC cpp 
     bignum.c line   63 - volatile mbedtls_mpi_uint *p = v; while( n-- ) *p++ = 0;
     bignum.c line   97 - if( X == NULL )
     bignum.c line  100 - if( X->p != NULL )

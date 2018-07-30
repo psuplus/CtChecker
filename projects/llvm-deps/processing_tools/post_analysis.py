@@ -50,13 +50,14 @@ def main():
     '''Looks at results from Vulnerable/Taint Analysis and records the associated
     line with it
     '''
-    positives = defaultdict(set) # only report each line once, set
+    positives = defaultdict(list) # only report each line once: set
+                                  # to keep repeated lines use: list
 
     for line in filter_lines_from_results(sys.argv[1]):
         s = line.strip().split()
         if len(s) == 3:
             fn, _, ln = s
-            positives[fn].add(int(ln)-1) # Subtract 1 because indices of lines starts at 0
+            positives[fn].append(int(ln)-1) # Subtract 1 because indices of lines starts at 0
 
     res = get_lines_from_source(positives)
     output_results(res)

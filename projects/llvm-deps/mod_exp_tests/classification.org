@@ -455,8 +455,9 @@ L    mpi/mpi-pow.c line  756 - MPN_NORMALIZE(rp, rsize);
    
 ** Round 1B - No whitelist
    #+BEGIN_SRC c
-    mpi/mpi-pow.c line  377 - if( ssize < KARATSUBA_THRESHOLD )
-    mpi/mpi-pow.c line  382 - if (rsize + ssize > msize)
+L   mpi/mpi-pow.c line  377 - if( ssize < KARATSUBA_THRESHOLD )
+L   mpi/mpi-pow.c line  382 - if (rsize + ssize > msize)
+H   mpi/mpi-pow.c line  440 - MPN_NORMALIZE(ep, esize);
 H   mpi/mpi-pow.c line  440 - MPN_NORMALIZE(ep, esize);
 L   mpi/mpi-pow.c line  442 - if (esize * BITS_PER_MPI_LIMB > 512)
 L   mpi/mpi-pow.c line  444 - else if (esize * BITS_PER_MPI_LIMB > 256)
@@ -474,6 +475,7 @@ H   mpi/mpi-pow.c line  484 - if (mod_shift_cnt)
 L*  mpi/mpi-pow.c line  487 - MPN_COPY( mp, mod->d, msize );
 L   mpi/mpi-pow.c line  491 - if (bsize > msize)
 L   mpi/mpi-pow.c line  499 - MPN_COPY ( bp, base->d, bsize );
+H   mpi/mpi-pow.c line  506 - MPN_NORMALIZE( bp, bsize );
 H   mpi/mpi-pow.c line  506 - MPN_NORMALIZE( bp, bsize );
 V   mpi/mpi-pow.c line  511 - if (!bsize)
 F   mpi/mpi-pow.c line  521 - if ( rp == bp )
@@ -501,18 +503,20 @@ L   mpi/mpi-pow.c line  645 - if ( --i < 0 )
 H   mpi/mpi-pow.c line  667 - for (j += W - c0; j >= 0; j--)
 L   mpi/mpi-pow.c line  698 - if ( i < 0 )
 H   mpi/mpi-pow.c line  702 - while (j--)
-L   mpi/mpi-pow.c line  715 - if ( mod_shift_cnt )
+H   mpi/mpi-pow.c line  715 - if ( mod_shift_cnt )
 L   mpi/mpi-pow.c line  719 - if ( carry_limb )
 L   mpi/mpi-pow.c line  725 - else if (res->d != rp)
 L   mpi/mpi-pow.c line  727 - MPN_COPY (res->d, rp, rsize);
 L   mpi/mpi-pow.c line  731 - if ( rsize >= msize )
-L   mpi/mpi-pow.c line  738 - if ( mod_shift_cnt )
-L   mpi/mpi-pow.c line  740 - MPN_NORMALIZE (rp, rsize);
+H   mpi/mpi-pow.c line  738 - if ( mod_shift_cnt )
+H   mpi/mpi-pow.c line  740 - MPN_NORMALIZE (rp, rsize);
+H   mpi/mpi-pow.c line  740 - MPN_NORMALIZE (rp, rsize);
 L   mpi/mpi-pow.c line  743 - for (i = 0; i < (1 << (W - 1)); i++)
 L   mpi/mpi-pow.c line  744 - _gcry_mpi_free_limb_space( precomp[i], esec ? precomp_size[i] : 0 );
 L   mpi/mpi-pow.c line  745 - _gcry_mpi_free_limb_space (base_u, esec ? max_u_size : 0);
 L   mpi/mpi-pow.c line  749 - if ( negative_result && rsize )
-L   mpi/mpi-pow.c line  751 - if ( mod_shift_cnt )
+H   mpi/mpi-pow.c line  751 - if ( mod_shift_cnt )
+H   mpi/mpi-pow.c line  756 - MPN_NORMALIZE(rp, rsize);
 H   mpi/mpi-pow.c line  756 - MPN_NORMALIZE(rp, rsize);
 V   mpi/mpi-pow.c line  758 - gcry_assert (res->d == rp);
 L   mpi/mpi-pow.c line  763 - if (mp_marker)

@@ -752,7 +752,149 @@ for the node, so that is the constraint which is selected to be constrained.
 % list of the tests
 
 \subsection{Case Study}
+The baseline and improved analysis were compared using current software TLS and
+SSL libraries. The libraries analyzed were Libgcrypt, OpenSSL, mbed TLS, and
+BearSSL. The case study was done by comparing the modular exponentiation
+algorithms between each of the libraries. Each of the libraries were tested
+using similar parameters to compare the number and classification of the
+results. Ideally, the improved analysis would have fewer low-risk results and
+the number of high-risk results would not change. The Libgcrypt and OpenSSL
+libraries were chosen due to their wide-spread use. The mbed TLS library is
+built for embedded platforms, so this was chosen to search for shortcuts that
+may provide vulnerabilities. BearSSL is chosen because it claims to be a
+constant-time cryptographic library.
 
+The first comparison is the baseline and the improved analysis run with the same
+inputs. For each of these tests, the file that contained the modular
+exponentiation algorithm was analyzed. The file was compiled with only the
+files which were needed to compile it to LLVM bitcode. The results are shown in
+Table \ref{tbl:baseline_improved_same}.
+
+\begin{table}
+   \caption{Baseline and Improved Results - Same Input}
+   \centering
+   \begin{tabular}{|l| l| r r r|}
+     \hline
+ \textbf{Library} & \textbf{Tainted} & \textbf{\# Branches} & \textbf{Baseline} & \textbf{Improved} \\
+     \hline
+ \textit{Libgcrypt 1.8.2} & mod, expo&	246 &	69 &	68 \\
+ \textit{mbedTLS 2.9.0} & E, N&	1471 &	25 &	25 \\
+ \textit{BearSSL 0.5} & e, m&	141 &	36 &	10 \\
+ \textit{OpenSSL 1.1.0g} & m, p&  & & \\
+ recp	& & 498 &	1 &	24 \\
+ mont	& & 498 &	6 &	34 \\
+ mont\_consttime	& & 498 &	8 &	30\\
+ mont\_word	& & 498 &	11 &	22\\
+ simple	& & 498 &	0 &	22 \\
+     \hline
+   \end{tabular}
+   \label{tbl:baseline_improved_same}
+ \end{table}
+%% \begin{table}
+  %% \caption{Baseline and Improved Results - Same Input}
+  %% \begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|}
+    %% \hline
+%% Library & Num. Branches & Baseline & Positives & False Positives & Low-Risk & Validation & Single & Looped & Controlled & Both \\
+    %% \hline
+%% LibGcrypt 1.8.2 &	246 &	69 &	68 &	2 &	47 &	3 &	4 &	12 &	0 &	0 \\
+%% mbedTLS 2.9.0 &	1471 &	25 &	25 &	0 &	18 &	3 &	0 &	3 &	1 &	0 \\
+%% BearSSL 0.5 &	141 &	36 &	10 &	0 &	10 &	0 &	0 &	0 &	0 &	0 \\
+    %% \hline
+%% OpenSSL 1.1.0g &  & & & & & & & & & \\
+%% recp	& 498 &	1 &	24 &	0 &	11 &	11 &	0 &	2 &	0 &	0 \\
+%% mont	& 498 &	6 &	34 &	0 &	14 &	16 &	0 &	2 &	2 &	0 \\
+%% mont\_consttime	& 498 &	8 &	30 &	0 &	16 &	12 &	0 &	0 &	2 &	0 \\
+%% mont\_word	& 498 &	11 &	22 &	0 &	5 &	13 &	1 &	1 &	0 &	2 \\
+%% simple	& 498 &	0 &	22 &	0 &	12 &	8 &	0 &	2 &	0 &	0 \\
+    %% \hline
+  %% \end{tabular}
+  %% \label{tbl:baseline_improved_same}
+%% \end{table}
+
+ The results in Table \ref{tbl:baseline_improved_same} show the total number of
+ branches analyzed in the IR code, the number of reported results from the
+ baseline and then the results in the improved analysis. A minor change was made
+ to information flow between function arguments between the baseline and
+ improved analysis. The baseline shows the effect of this change on the
+ different libraries analyzed.
+
+ In the baseline analysis if a function was called without the source being
+ provided, and an argument was tainted, one constraint would be created from the
+ tainted variable to the return value of the function. This was modified due to
+ the common use of mutable data pointers and output arguments passed to
+ functions. In the improved analysis any function call without source code
+ provided, created flows between each of the mutable arguments. For example, if
+ a function with two arguments, one tainted and the other pointing to mutable
+ memory, the mutable memory could leak all of the tainted information following
+ the function call.
+
+ Libgcrypt had difference of a low-risk branch being removed from the improved
+ results. Mbed TLS had the same results as the baseline. The branches in
+ Libgcrypt were largely dependent on sizes specified for the operands of the
+ modular exponentiation and the change to undefined functions was expected to
+ not have an effect on the overall number of results. The reasoning is similar
+ for mbed TLS. BearSSL had a significant decrease in number of results reported,
+ but this is due to being able to specify exactly which function to analyze from
+ input files.
+
+ The largest changes were found in the OpenSSL library. OpenSSL provides a few
+ different implementations for modular exponentiation and the results were
+ separated based on the associated function. Only the source which contained
+ these algorithms was analyzed which meant that there were many calls to
+ undefined functions. OpenSSL also has a large number of branches which check
+ if an error occurred during the function call. This was expected to increase due
+ to the change to allow flow between function arguments. Flow between these
+ arguments causes variables which were considered not tainted in the baseline to
+ be tainted in the improved analysis. The upcoming section will analyze what
+ these results are and if they are meaningful. 
+ % number this section so that they can reference it
+
+
+ The ability to constrain individual elements of a compound data structure was
+ the major change to the system. For each of the libraries, with the exception
+ of BearSSL, a multi-precision integer data structure was used. This data
+ structure had a field that stores the sensitive information. The remaining
+ fields maintain some state for the program, allocation status, and flags and
+ such. For this case study, the assumption is that the other fields in the
+ structure could be considered public and only the data, which makes up the value
+ stored in the structure, is tainted. The results of that study are shown in
+ Table \ref{tbl:improved_with_offset}.
+
+ \begin{table}
+   \centering
+   \caption{Improved Analysis - Results with Partially Tainted Data Structure}
+   \begin{tabular}{|l|l|r|r|}
+     \hline
+     \textbf{Library} & \textbf{Tainted} & \textbf{No Offset} & \textbf{Offset} \\
+     \hline
+     \textit{Libgcrypt 1.8.2} & mod 4, expo 4 & 68 & 34 \\
+     \textit{mbedTLS 2.9.0} & E 2, N 2 & 25 & 25 \\
+     \textit{OpenSSL 1.1.0g} & m 0, p 0 & & \\
+     recp & & 24 & 10 \\
+     mont & & 34 & 24 \\
+     mont\_consttime & & 30 & 21\\
+     mont\_word & & 22 &  18 \\
+     simple & & 22 & 0\\
+     \hline
+   \end{tabular}
+   \label{tbl:improved_with_offset}
+\end{table}
+
+In the improved analysis, an offset can be specified to taint that part of the
+structure alone. The ``No Offset'' column show the number of reported positives
+from the improved analysis with the same tainted values excluding the offset
+parameters. The analysis resulted in half of the reported result when specifying
+an offset within the data structure. Though mbed TLS did have a structure,
+specifying an offset did not improve the results. OpenSSL did also have a
+reduction in the number of positives. The reduction in the positive alone is not
+a good measure, however. After classification, the results are either removed
+if they are part of error checking or sorted in to high and low-risk categories.
+Ideally the reduction in results leads to fewer low-risk results while
+maintaining all of the high-risk results. The classification of these results
+can be found in tables \ref{tbl:no_offset_classification} and \ref{tbl:offset_classifications}.
+
+
+ 
 \section{Related Works}
 
 \section{Conclusion}

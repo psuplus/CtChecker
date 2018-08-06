@@ -95,7 +95,7 @@ V      bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
    Whitlisted: 
   #+BEGIN_SRC c   
     /* BN_exp */
-V   bn_exp.c line   47 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0) {
+F   bn_exp.c line   47 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0) {
 F   bn_exp.c line   54 - if ((r == a) || (r == p))
 L   bn_exp.c line   66 - if (BN_is_odd(p)) {
 L   bn_exp.c line   74 - for (i = 1; i < bits; i++) {
@@ -103,18 +103,18 @@ H   bn_exp.c line   77 - if (BN_is_bit_set(p, i)) {
   
     /* BN_mod_exp */
 L   bn_exp.c line  144 - if (BN_is_odd(m)) {
-L   bn_exp.c line  146 - if (a->top == 1 && !a->neg
-L   bn_exp.c line  147 - && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)
-L   bn_exp.c line  148 - && (BN_get_flags(a, BN_FLG_CONSTTIME) == 0)
-L   bn_exp.c line  149 - && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
+F   bn_exp.c line  146 - if (a->top == 1 && !a->neg
+F   bn_exp.c line  147 - && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)
+F   bn_exp.c line  148 - && (BN_get_flags(a, BN_FLG_CONSTTIME) == 0)
+F   bn_exp.c line  149 - && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
 
     /* BN_mod_exp_recp */
-V   bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-V   bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-V   bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+F   bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+F   bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+F   bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
 L   bn_exp.c line  190 - if (bits == 0) {
 L   bn_exp.c line  192 - if (BN_is_one(m)) {
-L   bn_exp.c line  208 - if (m->neg) {
+F   bn_exp.c line  208 - if (m->neg) {
 V   bn_exp.c line  210 - if (!BN_copy(aa, m))
 V   bn_exp.c line  213 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
 V   bn_exp.c line  216 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
@@ -133,9 +133,9 @@ L   bn_exp.c line  282 - for (i = 0; i < j; i++) {
 L   bn_exp.c line  295 - if (wstart < 0)
 
     /* BN_mod_exp_mont */
-V   bn_exp.c line  317 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-V   bn_exp.c line  318 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-V   bn_exp.c line  319 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+F   bn_exp.c line  317 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+F   bn_exp.c line  318 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+F   bn_exp.c line  319 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
 V   bn_exp.c line  327 - if (!BN_is_odd(m)) {
 L   bn_exp.c line  332 - if (bits == 0) {
 L   bn_exp.c line  334 - if (BN_is_one(m)) {
@@ -179,7 +179,7 @@ L   bn_exp.c line  569 - for (j = 0; j < xstride; j++) {
 
     /* BN_mod_exp_mont_consttime */
 V   bn_exp.c line  621 - if (!BN_is_odd(m)) {
-L   bn_exp.c line  629 - if (bits == 0) {
+F   bn_exp.c line  629 - if (bits == 0) {
 L   bn_exp.c line  631 - if (BN_is_one(m)) {
 V   bn_exp.c line  651 - if (!BN_MONT_CTX_set(mont, m, ctx))
 L   bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
@@ -210,7 +210,7 @@ L   bn_exp.c line 1089 - if (powerbuf != NULL) {
 V   bn_exp.c line 1123 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
 V   bn_exp.c line 1124 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
 V   bn_exp.c line 1133 - if (!BN_is_odd(m)) {
-L   bn_exp.c line 1137 - if (m->top == 1)
+F   bn_exp.c line 1137 - if (m->top == 1)
 L   bn_exp.c line 1141 - if (bits == 0) {
 L   bn_exp.c line 1143 - if (BN_is_one(m)) {
 L   bn_exp.c line 1151 - if (a == 0) {

@@ -181,19 +181,21 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     // For variables and vargs elements, add all of these directly to 'Sources'
     for (FlowRecord::value_iterator source = record.source_value_begin(), end = record.source_value_end();
         source != end; ++source) {
+      const ConsElem * elem  = &getOrCreateConsElem(record.sourceContext(), **source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->valueIsSink(**source)) {
-	       Sources.insert(&getOrCreateConsElem(record.sourceContext(), **source));
+	       Sources.insert(elem);
       } else {
-	       sinkSources.insert(&getOrCreateConsElem(record.sourceContext(), **source));
+	       sinkSources.insert(elem);
       }
     }
 
     for (FlowRecord::fun_iterator source = record.source_varg_begin(), end = record.source_varg_end();
         source != end; ++source) {
+      const ConsElem * elem = &getOrCreateVargConsElem(record.sourceContext(), **source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->vargIsSink(**source)) {
-	       Sources.insert(&getOrCreateVargConsElem(record.sourceContext(), **source));
+	       Sources.insert(elem);
       } else {
-	       sinkSources.insert(&getOrCreateVargConsElem(record.sourceContext(), **source));
+	       sinkSources.insert(elem);
       }
     }
 
@@ -201,36 +203,10 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     // as sources for this record...
     std::set<const AbstractLoc *> SourceLocs;
     std::set<const AbstractLoc *> sinkSourceLocs;
-    for (FlowRecord::value_iterator source = record.source_directptr_begin(), end = record.source_directptr_end();
-        source != end; ++source) {
-      const std::set<const AbstractLoc *> & locs = locsForValue(**source);
-      if (!DepsDropAtSink || !sourceSinkAnalysis->directPtrIsSink(**source)) {
-        if(isa<GetElementPtrInst>(*source)){ // If value is GEP Instruction handle differently
-          processGetElementPtrInstSource(*source, Sources, locs);
-        } else
-          SourceLocs.insert(locs.begin(), locs.end());
-      } else {
-        if(isa<GetElementPtrInst>(*source)){ // If value is GEP Instruction handle differently
-          processGetElementPtrInstSource(*source, sinkSources, locs);
-        } else
-          sinkSourceLocs.insert(locs.begin(), locs.end());
-      }
-    }
-    for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
-         source != end; ++source) {
-      const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**source);
-      if (!DepsDropAtSink || !sourceSinkAnalysis->reachPtrIsSink(**source)) {
-        if(isa<GetElementPtrInst>(*source)){
-          processGetElementPtrInstSource(*source, Sources, locs);
-        } else
-          SourceLocs.insert(locs.begin(), locs.end());
-      } else {
-        if(isa<GetElementPtrInst>(*source)){
-          processGetElementPtrInstSource(*source, sinkSources, locs);
-        } else
-          sinkSourceLocs.insert(locs.begin(), locs.end());
-      }
-    }
+
+    constrainDirectSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
+
+    constrainReachSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
 
     // ...And convert those locs into ConsElem's and store them into Sources
     for(std::set<const AbstractLoc *>::const_iterator I = SourceLocs.begin(),
@@ -320,6 +296,78 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
   }
 }
 
+
+void
+Infoflow::constrainDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
+  
+  FlowRecord::value_set directSource;
+  FlowRecord::value_set directSink;
+    for (FlowRecord::value_iterator source = record.source_directptr_begin(), end = record.source_directptr_end();
+         source != end; ++source) {
+      if (!DepsDropAtSink || !sourceSinkAnalysis->directPtrIsSink(**source)) {
+        directSource.insert(*source);
+      } else {
+        directSink.insert(*source);
+      }
+    }
+
+    //Sort the Sources/Sinks handling the GEPinstructions separately
+    // NON-GEP values get the corresponding AbsLocs added to the Source/SinkSet
+    // GEP instructions are constrained directly based on offset
+    // TO DISABLE OFFSET:
+    // constrainDirectValuesIncludingOffset(directSource, Sources, SourceLocs, false);
+    // constrainDirectValuesIncludingOffset(directSink, sinkSources, sinkSourceLocs, false);
+    constrainDirectValuesIncludingOffset(directSource, Sources, SourceLocs);
+    constrainDirectValuesIncludingOffset(directSink, sinkSources, sinkSourceLocs);
+}
+
+void
+Infoflow::constrainDirectValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations, bool offset_used) {
+  for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
+    const std::set<const AbstractLoc *> & locs = locsForValue(**it);
+    if(isa<GetElementPtrInst>(*it) && offset_used){
+      processGetElementPtrInstSource(*it, elems, locs);
+    } else {
+      locations.insert(locs.begin(), locs.end());
+    }
+  }
+}
+
+void
+Infoflow::constrainReachSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
+  
+  FlowRecord::value_set reachSource;
+  FlowRecord::value_set reachSink;
+    for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
+         source != end; ++source) {
+      if (!DepsDropAtSink || !sourceSinkAnalysis->reachPtrIsSink(**source)) {
+        reachSource.insert(*source);
+      } else {
+        reachSink.insert(*source);
+      }
+    }
+
+    //Sort the Sources/Sinks handling the GEPinstructions separately
+    // NON-GEP values get the corresponding AbsLocs added to the Source/SinkSet
+    // GEP instructions are constrained directly based on offset
+    // TO DISABLE OFFSET:
+    // constrainReachValuesIncludingOffset(reachSource, Sources, SourceLocs, false);
+    // constrainReachValuesIncludingOffset(reachSink, sinkSources, sinkSourceLocs, false);
+    constrainReachValuesIncludingOffset(reachSource, Sources, SourceLocs);
+    constrainReachValuesIncludingOffset(reachSink, sinkSources, sinkSourceLocs);
+}
+
+void
+Infoflow::constrainReachValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations, bool offset_used) {
+  for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
+    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**it);
+    if(isa<GetElementPtrInst>(*it) && offset_used){
+      processGetElementPtrInstSource(*it, elems, locs);
+    } else {
+      locations.insert(locs.begin(), locs.end());
+    }
+  }
+}
 ///
 /// This function takes any GetElementPtrInst values and extracts the offset
 /// the instruction is dealing with. That offset is used to constrain the

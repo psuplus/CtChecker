@@ -120,6 +120,10 @@ class Infoflow :
   friend class VulnerableBranch;
 
   public:
+    typedef std::set<const AbstractLoc *> AbsLocSet;
+    typedef std::set<const ConsElem *> ConsElemSet;
+    typedef FlowRecord::value_iterator value_iterator;
+    typedef FlowRecord::value_set value_set;
     static char ID;
     Infoflow ();
   virtual ~Infoflow() { delete kit; delete signatureRegistrar; }
@@ -262,6 +266,10 @@ class Infoflow :
     virtual const Unit signatureForExternalCall(const ImmutableCallSite & cs, const Unit input);
 
     void constrainFlowRecord(const FlowRecord &);
+    void constrainDirectSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
+    void constrainDirectValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet & , bool offset_used = true);
+  void constrainReachSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
+  void constrainReachValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet & , bool offset_used = true);
 
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 

@@ -80,6 +80,10 @@ void VulnerableBranch::constrainValue(std::string kind, const Value & value, int
     ifa->setTainted(kind,value);
   }
 
+  if ( !ifa->offset_used ){
+    t_offset = -1; // if offset is disabled ignore offset from taintfile
+  }
+
   for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
           end = locs.end(); loc != end; ++loc) {
     DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);

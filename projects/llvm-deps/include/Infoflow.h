@@ -125,6 +125,7 @@ class Infoflow :
     typedef FlowRecord::value_iterator value_iterator;
     typedef FlowRecord::value_set value_set;
     static char ID;
+    bool offset_used;
     Infoflow ();
   virtual ~Infoflow() { delete kit; delete signatureRegistrar; }
     const char *getPassName() const { return "Infoflow"; }
@@ -266,11 +267,16 @@ class Infoflow :
     virtual const Unit signatureForExternalCall(const ImmutableCallSite & cs, const Unit input);
 
     void constrainFlowRecord(const FlowRecord &);
-    void constrainDirectSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
-    void constrainDirectValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet & , bool offset_used = true);
-  void constrainReachSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
-  void constrainReachValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet & , bool offset_used = true);
 
+    void constrainMemoryLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &);
+    void constrainDirectSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
+    void constrainDirectValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
+    void constrainReachSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
+    void constrainReachValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
+
+    void constrainSinkMemoryLocations(const FlowRecord &, const ConsElem &, const ConsElem &, bool, bool);
+  void constrainDirectSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
+  void constrainReachSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
     const std::string stringFromValue(const Value &);

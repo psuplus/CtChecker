@@ -57,7 +57,9 @@ Y ("pdtcache", "Cache PostDom Analysis Results", true, true);
 Infoflow::Infoflow () :
     // The parameters to the template are an input and output type for the user's analysis and a non-negative integer k.
     CallSensitiveAnalysisPass<Unit,Unit,1,CallerContext>(ID, DepsCollapseExtContext, DepsCollapseIndContext),
-    kit(new LHConstraintKit()) { }
+    kit(new LHConstraintKit()) {
+  offset_used = false;
+}
 
 void
 Infoflow::doInitialization() {
@@ -201,30 +203,8 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
 
     // For memory-based sources, build up the set of memory locations that act
     // as sources for this record...
-    std::set<const AbstractLoc *> SourceLocs;
-    std::set<const AbstractLoc *> sinkSourceLocs;
-
-    constrainDirectSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
-
-    constrainReachSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
-
-    // ...And convert those locs into ConsElem's and store them into Sources
-    for(std::set<const AbstractLoc *>::const_iterator I = SourceLocs.begin(),
-        E = SourceLocs.end(); I != E; ++I) {
-      std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**I);
-      for(std::map<unsigned, const ConsElem *>::const_iterator it = elemMap.begin(), itEnd = elemMap.end();
-          it != itEnd; ++it){
-        Sources.insert((*it).second);
-      }
-    }
-    for(std::set<const AbstractLoc *>::const_iterator I = sinkSourceLocs.begin(),
-        E = sinkSourceLocs.end(); I != E; ++I) {
-      std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**I);
-      for(std::map<unsigned, const ConsElem *>::const_iterator it = elemMap.begin(), itEnd = elemMap.end();
-          it != itEnd; ++it){
-        sinkSources.insert((*it).second);
-      }
-    }
+    // Turning off offset can be done in the direct/reachptr constraining functions
+    constrainMemoryLocations(record, Sources, sinkSources);
   }
 
   bool regFlow = !Sources.empty();
@@ -261,41 +241,38 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
   }
 
   // To try to save constraint generation, gather memory locations as before:
-  std::set<const AbstractLoc *> SinkLocs;
-  for (FlowRecord::value_iterator sink = record.sink_directptr_begin(), end = record.sink_directptr_end();
-      sink != end; ++sink) {
-    const std::set<const AbstractLoc *> & locs = locsForValue(**sink);
-    if(isa<GetElementPtrInst>(*sink)){
-      if (regFlow)
-        processGetElementPtrInstSink(*sink, implicit, false, *sourceElem, locs);
-      if (sinkFlow)
-        processGetElementPtrInstSink(*sink, implicit, true, *sinkSourceElem, locs);
-    } else {
-      SinkLocs.insert(locs.begin(), locs.end());
-    }
-  }
-  for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(), end = record.sink_reachptr_end();
-      sink != end; ++sink) {
-    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**sink);
-    if(isa<GetElementPtrInst>(*sink)) {
-      if (regFlow)
-        processGetElementPtrInstSink(*sink,implicit, false, *sourceElem, locs);
-      if (sinkFlow)
-        processGetElementPtrInstSink(*sink, implicit, true, *sinkSourceElem, locs);
-    }
-    SinkLocs.insert(locs.begin(), locs.end());
-  }
-
-  // And add constraints for each of the sink memory locations
-  for (std::set<const AbstractLoc *>::iterator loc = SinkLocs.begin(), end = SinkLocs.end();
-      loc != end ; ++loc) {
-    if (regFlow)
-      putOrConstrainConsElem(implicit, false, **loc, *sourceElem);
-    if (sinkFlow)
-      putOrConstrainConsElem(implicit, true, **loc, *sinkSourceElem);
-  }
+  constrainSinkMemoryLocations(record, *sourceElem, *sinkSourceElem, regFlow, sinkFlow);
 }
 
+
+void
+Infoflow::constrainMemoryLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources) {
+
+  std::set<const AbstractLoc *> SourceLocs;
+  std::set<const AbstractLoc *> sinkSourceLocs;
+
+  constrainDirectSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
+
+  constrainReachSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
+
+  // ...And convert those locs into ConsElem's and store them into Sources
+  for(std::set<const AbstractLoc *>::const_iterator I = SourceLocs.begin(),
+      E = SourceLocs.end(); I != E; ++I) {
+    std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**I);
+    for(std::map<unsigned, const ConsElem *>::const_iterator it = elemMap.begin(), itEnd = elemMap.end();
+        it != itEnd; ++it){
+      Sources.insert((*it).second);
+    }
+  }
+  for(std::set<const AbstractLoc *>::const_iterator I = sinkSourceLocs.begin(),
+      E = sinkSourceLocs.end(); I != E; ++I) {
+    std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**I);
+    for(std::map<unsigned, const ConsElem *>::const_iterator it = elemMap.begin(), itEnd = elemMap.end();
+        it != itEnd; ++it){
+      sinkSources.insert((*it).second);
+    }
+  }
+}
 
 void
 Infoflow::constrainDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
@@ -322,7 +299,7 @@ Infoflow::constrainDirectSourceLocations(const FlowRecord & record, ConsElemSet 
 }
 
 void
-Infoflow::constrainDirectValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations, bool offset_used) {
+Infoflow::constrainDirectValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
@@ -358,7 +335,7 @@ Infoflow::constrainReachSourceLocations(const FlowRecord & record, ConsElemSet &
 }
 
 void
-Infoflow::constrainReachValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations, bool offset_used) {
+Infoflow::constrainReachValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet &elems, AbsLocSet &locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
@@ -368,6 +345,61 @@ Infoflow::constrainReachValuesIncludingOffset(FlowRecord::value_set values, Cons
     }
   }
 }
+
+
+void
+Infoflow::constrainSinkMemoryLocations(const FlowRecord &record, const ConsElem &source, const ConsElem &sinkSource, bool regFlow, bool sinkFlow){
+  bool implicit = record.isImplicit();
+
+  std::set<const AbstractLoc *> SinkLocs;
+  constrainDirectSinkLocations(record,SinkLocs, source, sinkSource, regFlow, sinkFlow);
+  constrainReachSinkLocations(record, SinkLocs, source, sinkSource, regFlow, sinkFlow);
+
+  // And add constraints for each of the sink memory locations
+  for (std::set<const AbstractLoc *>::iterator loc = SinkLocs.begin(), end = SinkLocs.end();
+       loc != end ; ++loc) {
+    if (regFlow)
+      putOrConstrainConsElem(implicit, false, **loc, source);
+    if (sinkFlow)
+      putOrConstrainConsElem(implicit, true, **loc, sinkSource);
+  }
+
+}
+
+void
+Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & SinkLocs, const ConsElem &source, const ConsElem& sinkSource, bool regFlow, bool sinkFlow){
+  bool implicit = record.isImplicit();
+  for (FlowRecord::value_iterator sink = record.sink_directptr_begin(), end = record.sink_directptr_end();
+       sink != end; ++sink) {
+    const std::set<const AbstractLoc *> & locs = locsForValue(**sink);
+    if(isa<GetElementPtrInst>(*sink) && offset_used){
+      if (regFlow)
+        processGetElementPtrInstSink(*sink, implicit, false, source, locs);
+      if (sinkFlow)
+        processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
+    } else {
+      SinkLocs.insert(locs.begin(), locs.end());
+    }
+  }
+}
+
+void
+Infoflow::constrainReachSinkLocations(const FlowRecord & record, AbsLocSet & SinkLocs, const ConsElem &source, const ConsElem& sinkSource, bool regFlow, bool sinkFlow){
+  bool implicit = record.isImplicit();
+
+  for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(), end = record.sink_reachptr_end();
+       sink != end; ++sink) {
+    const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**sink);
+    if(isa<GetElementPtrInst>(*sink) && offset_used) {
+      if (regFlow)
+        processGetElementPtrInstSink(*sink,implicit, false, source, locs);
+      if (sinkFlow)
+        processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
+    }
+    SinkLocs.insert(locs.begin(), locs.end());
+  }
+}
+
 ///
 /// This function takes any GetElementPtrInst values and extracts the offset
 /// the instruction is dealing with. That offset is used to constrain the
@@ -2309,7 +2341,8 @@ Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsEl
   //errs() << "Tainting all constraint elements from value\n";
   for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), end = elemMap.end(); it != end; ++it){
     //it->second->dump(errs());
-    kit->addConstraint(kind, kit->highConstant(), *(it->second));
+    if((it->second) != NULL)
+      kit->addConstraint(kind, kit->highConstant(), *(it->second));
   }
 }
 void

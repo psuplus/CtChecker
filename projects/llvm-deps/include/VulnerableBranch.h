@@ -15,6 +15,7 @@
 #define VULNERABLEBRANCH_H_
 
 #include "Infoflow.h"
+#include "TaintAnalysisBase.h"
 #include "llvm/Pass.h"
 #include "llvm/IR/CallSite.h"
 
@@ -45,11 +46,8 @@ public:
 
 private:
   Infoflow *ifa;
+  TaintAnalysisBase parser;
 
-  void taintStr (std::string kind, std::tuple<std::string,int,std::string> match);
-  bool hasPointerTarget(const AbstractLoc * loc);
-  std::map<unsigned, const ConsElem *> getPointerTarget(const AbstractLoc * loc);
-  void constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name);
 };
 
 }

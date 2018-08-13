@@ -25,6 +25,7 @@
 #include "InfoflowSignature.h"
 #include "PointsToInterface.h"
 #include "SourceSinkAnalysis.h"
+#include "TaintAnalysisBase.h"
 
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
@@ -118,6 +119,7 @@ class Infoflow :
   friend class InfoflowSolution;
   friend class TaintAnalysis;
   friend class VulnerableBranch;
+  friend class TaintAnalysisBase;
 
   public:
     typedef std::set<const AbstractLoc *> AbsLocSet;

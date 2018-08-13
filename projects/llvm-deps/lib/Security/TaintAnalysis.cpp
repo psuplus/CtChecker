@@ -38,14 +38,11 @@ TaintAnalysis::runOnModule(Module &M) {
   if (!ifa) { errs() << "No instance\n"; return false;}
   parser.setInfoflow(ifa);
 
-  std::ifstream infile("taint.txt"); // read tainted values from txt file
-  std::string line;
-  while (std::getline(infile, line)) {
-    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
-    parser.taintStr ("test", match);
-  }
+
+  parser.loadTaintUntrustFile("test", "taint.txt");
 
   std::ifstream whitelistFile("whitelist.txt");
+  std::string line;
   while (std::getline(whitelistFile, line)) {
     std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
     ifa->removeConstraint("taint", match);

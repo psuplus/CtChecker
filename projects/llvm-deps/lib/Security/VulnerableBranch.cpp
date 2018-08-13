@@ -39,20 +39,14 @@ VulnerableBranch::runOnModule(Module &M) {
   parser.setInfoflow(ifa);
   if (!ifa) { errs() << "No instance\n"; return false;}
 
-  std::ifstream ftaint("taint.txt"); // read tainted values from txt file
-  std::string line;
-  while (std::getline(ftaint, line)) {
-    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
-    parser.taintStr ("taint", match);
-  }
+  // Default loads from taint.txt
+  parser.loadTaintFile();
 
-  std::ifstream funtrust("untrust.txt"); // read tainted values from txt file
-  while (std::getline(funtrust, line)) {
-    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
-    parser.taintStr ("untrust", match);
-  }
+  // Default loads from untrust.txt
+  parser.loadUntrustFile();
 
   std::ifstream fwhitelist("whitelist.txt");
+  std::string line;
   while (std::getline(fwhitelist, line)) {
     std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
     ifa->removeConstraint("taint", match);

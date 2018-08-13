@@ -12,7 +12,7 @@ class Infoflow;
 class TaintAnalysisBase {
 private:
   Infoflow * ifa;
-public:
+protected:
   void taintStr(std::string, std::tuple<std::string,int,std::string>);
 
   bool hasPointerTarget(const AbstractLoc *loc);
@@ -21,9 +21,14 @@ public:
 
   void constrainValue(std::string kind, const Value &, int, std::string);
 
+public:
   void setInfoflow(Infoflow * flow){
     ifa = flow;
   }
+
+  void loadTaintFile(std::string filename = "taint.txt");
+  void loadUntrustFile(std::string filnemae = "untrust.txt");
+  void loadTaintUntrustFile(std::string, std::string);
 
 };
 

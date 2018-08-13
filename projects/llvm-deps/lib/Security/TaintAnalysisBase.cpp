@@ -1,5 +1,6 @@
-#include "TaintAnalysisBase.h"
+#include <fstream>
 
+#include "TaintAnalysisBase.h"
 
 using namespace llvm;
 namespace deps {
@@ -84,7 +85,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
       elemMap = curElem->second;
 
       if (elemMap.size() != numElements) {
-        errs() << "Num Element mis-match: " << numElements << ":" << elemMap.size() << "\n";
+        errs() << "Size of type doesn't match number of cons elems:" << numElements << ":" << elemMap.size() << "\n";
         ifa->setTainted(kind,value);
       } else if (t_offset >= 0){       // Use offset provided in taint/untrust.txt
         if(hasPointerTarget(*loc)){
@@ -141,5 +142,25 @@ TaintAnalysisBase::taintStr (std::string kind, std::tuple<std::string,int,std::s
   errs() << "DONE\n";
 }
 
+
+void
+TaintAnalysisBase::loadTaintFile(std::string filename) {
+  loadTaintUntrustFile("taint", filename);
+}
+
+void
+TaintAnalysisBase::loadUntrustFile(std::string filename) {
+  loadTaintUntrustFile("untrust", filename);
+}
+
+void
+TaintAnalysisBase::loadTaintUntrustFile(std::string kind, std::string filename) {
+  std::ifstream infile(filename); // read tainted values from txt file
+  std::string line;
+  while (std::getline(infile, line)) {
+    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
+    taintStr (kind, match);
+  }
+}
 
 }

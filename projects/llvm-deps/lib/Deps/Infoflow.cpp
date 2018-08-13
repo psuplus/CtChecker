@@ -176,6 +176,7 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
   const ConsElem *sourceElem = NULL;
   const ConsElem *sinkSourceElem = NULL;
 
+
   // First, build up the set of ConsElem's that represent the sources:
   std::set<const ConsElem *> Sources;
   std::set<const ConsElem *> sinkSources;
@@ -312,7 +313,6 @@ Infoflow::constrainDirectValuesIncludingOffset(FlowRecord::value_set values, Con
 
 void
 Infoflow::constrainReachSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
-  
   FlowRecord::value_set reachSource;
   FlowRecord::value_set reachSink;
     for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
@@ -475,10 +475,10 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 
   // If operands are constant taint only that element
   unsigned offset = GEPInstCalculateOffset(gep,locs);
-  errs() << "\nSourceOffset: " << offset << "\n";
+  //errs() << "\nSourceOffset: " << offset << "\n";
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
-    (*I)->dump();
+    //(*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
@@ -536,7 +536,7 @@ std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node
     }
   }
 
-  DEBUG(errs() << "SIZE OF ELEMENTS : " << elements.size() << "\n");
+  //DEBUG(errs() << "SIZE OF ELEMENTS : " << elements.size() << "\n");
   return elements;
 }
 
@@ -1214,16 +1214,7 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
     if (v != NULL && !loc.isNodeCompletelyFolded()) {
       const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
       if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
-        const DataLayout &TD = loc.getParentGraph()->getDataLayout();
-        const StructLayout *SL = TD.getStructLayout(s);
-        int index = 0;
-        for(Type::subtype_iterator it = s->element_begin(); it != s->element_end(); ++it, ++index){
-          unsigned start = SL->getElementOffset(index);
-          unsigned end = start + TD.getTypeStoreSize(*it);
-          std::string label = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
-          const ConsElem & elem = kit->newVar(name+label);
-          locConstraintMap[&loc].insert(std::make_pair(start, &elem));
-        }
+        locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
         return locConstraintMap[&loc];
       } else if (numElements == 0) {
         numElements = 1;
@@ -1244,6 +1235,23 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
   } else {
     return (curElem->second);
   }
+}
+
+std::map<unsigned, const ConsElem *>
+Infoflow::createConsElemFromStruct(const AbstractLoc& loc , StructType * s) {
+  std::map<unsigned, const ConsElem *> elemMap;
+  const DataLayout &TD = loc.getParentGraph()->getDataLayout();
+  const StructLayout *SL = TD.getStructLayout(s);
+  std::string name = getCaption(&loc, NULL);
+  int index = 0;
+  for(Type::subtype_iterator it = s->element_begin(); it != s->element_end(); ++it, ++index){
+    unsigned start = SL->getElementOffset(index);
+    unsigned end = start + TD.getTypeStoreSize(*it);
+    std::string label = "[" + std::to_string(start) + "," + std::to_string(end) + "]";
+    const ConsElem & elem = kit->newVar(name+label);
+    elemMap.insert(std::make_pair(start, &elem));
+  }
+  return elemMap;
 }
 
 std::map<unsigned, const ConsElem *>

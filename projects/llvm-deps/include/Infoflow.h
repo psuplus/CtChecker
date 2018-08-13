@@ -299,6 +299,7 @@ class Infoflow :
     const ConsElem &getOrCreateConsElem(const Value &);
     std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
     std::map<unsigned, const ConsElem *> getOrCreateConsElemTyped(const AbstractLoc &, unsigned, const Value* v=NULL);
+    std::map<unsigned, const ConsElem *> createConsElemFromStruct(const AbstractLoc &, StructType*);
 
     std::map<unsigned, const ConsElem *> getOrCreateConsElemCollapsedStruct(const AbstractLoc &, const StructType*);
     void putOrConstrainConsElem(bool imp, bool sink, const Value &, const ConsElem &);
@@ -373,6 +374,7 @@ class Infoflow :
 
 };
 
+  StructType* convertValueToStructType(const Value * v);
   std::string getCaption(const AbstractHandle *N, const DSGraph *G);
   std::string getCaption(const AbstractLoc *N, const DSGraph *G);
   const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset);

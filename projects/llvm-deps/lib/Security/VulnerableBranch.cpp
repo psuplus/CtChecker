@@ -80,6 +80,27 @@ void VulnerableBranch::constrainValue(std::string kind, const Value & value, int
     ifa->setTainted(kind,value);
   }
 
+  unsigned numElements = 1;
+  value.dump();
+  //errs() << "Value Type : ";
+  Type *t = value.getType();
+  t->dump();
+  //errs() << "\n";
+
+  if(const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&value)){
+    numElements = gep->getNumIndices();
+  }
+  if (t->isPointerTy()){
+    while(t->isPointerTy()){
+      t = t->getContainedType(0);
+    }
+    if (StructType * st = dyn_cast<StructType>(t)){
+      numElements  = st->getNumElements();
+    } else if(ArrayType * arr_t = dyn_cast<ArrayType>(t)) {
+      numElements = arr_t->getNumElements();
+    }
+  }
+
   if ( !ifa->offset_used ){
     t_offset = -1; // if offset is disabled ignore offset from taintfile
   }
@@ -91,7 +112,10 @@ void VulnerableBranch::constrainValue(std::string kind, const Value & value, int
     if(curElem != ifa->locConstraintMap.end()){
       elemMap = curElem->second;
 
-      if (t_offset >= 0){       // Use offset provided in taint/untrust.txt
+      if (elemMap.size() != numElements) {
+        errs() << "Num Element mis-match: " << numElements << ":" << elemMap.size() << "\n";
+        ifa->setTainted(kind,value);
+      } else if (t_offset >= 0){       // Use offset provided in taint/untrust.txt
         if(hasPointerTarget(*loc)){
           std::map<unsigned, const ConsElem *> childMap = getPointerTarget(*loc);
           if (childMap.size() > 0)

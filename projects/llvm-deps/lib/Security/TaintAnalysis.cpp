@@ -31,94 +31,24 @@ X("taintanalysis", "A simple taint analysis");
 
 char TaintAnalysis::ID;
 
-/** Taint a Value whose name matches s */
-void
-TaintAnalysis::taintStr (std::string kind, std::string match) {
-  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = ifa->summarySourceValueConstraintMap.begin(),
-         end = ifa->summarySourceValueConstraintMap.end(); entry != end; ++entry) {
-    const Value& value = *(entry->first);
-
-    // errs() << "Visiting ";
-    // value.dump();
-
-    std::string s;
-    if (value.hasName() && value.getName() == match) {
-      s = value.getName();
-      const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
-      unsigned offset = 0;
-      bool hasOffset = ifa->offsetForValue(value, &offset);
-      errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
-      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
-             end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
-        std::map<unsigned, const ConsElem *> elemMap;
-        if(curElem != ifa->locConstraintMap.end()){
-          elemMap = curElem->second;
-
-          if (hasOffset) {
-            errs() << "Using elem at offset " << offset << "\n";
-            const ConsElem * elem;
-            if (elemMap.find(offset) != elemMap.end()){
-              elem = elemMap[offset];
-            } else {
-              errs() << "No direct element that matches offset.\n";
-              const ConsElem * lastElem;
-              bool elemAdded = false;
-              for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                  it != itEnd; ++it){
-                if((*it).first > offset && !elemAdded && lastElem != NULL){
-                  elem = lastElem;
-                  elemAdded = true;
-                }
-                if((*it).second != NULL){
-                  lastElem = (*it).second;
-                }
-              }
-
-              if(!elemAdded && lastElem != NULL){
-                elem = lastElem;
-              }
-            }
-
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
-            elem->dump(errs());
-            errs() << "\n";
-            ifa->kit->addConstraint(kind,ifa->kit->highConstant(), *elem);
-          } else {
-            errs() << "Visiting: ";
-            value.dump();
-            errs() << "Matching " << match << " with " << value.getName() << ": ";
-            errs() << "No offset found and elemMap size " << elemMap.size() << "\n";
-            for(std::map<unsigned, const ConsElem*>::iterator elemIt = elemMap.begin(), elemEnd = elemMap.end();
-                elemIt != elemEnd; ++elemIt)
-              ifa->kit->addConstraint(kind, ifa->kit->highConstant(), *(*elemIt).second);
-          }
-        }
-      }
-    } else {
-      llvm::raw_string_ostream* ss = new llvm::raw_string_ostream(s);
-      *ss << value; // dump value info to ss
-      ss->str(); // flush stream to s
-      if (s.find(match) == 0) // test if the value's content starts with match
-        ifa->setTainted(kind, value);
-    }
-  }
-}
 
 bool 
 TaintAnalysis::runOnModule(Module &M) {
   ifa = &getAnalysis<Infoflow>();
   if (!ifa) { errs() << "No instance\n"; return false;}
+  parser.setInfoflow(ifa);
 
   std::ifstream infile("taint.txt"); // read tainted values from txt file
   std::string line;
   while (std::getline(infile, line)) {
-    taintStr ("test", line);
+    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
+    parser.taintStr ("test", match);
   }
 
   std::ifstream whitelistFile("whitelist.txt");
   while (std::getline(whitelistFile, line)) {
-    taintStr("white", line);
+    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
+    ifa->removeConstraint("taint", match);
   }
 
   std::set<std::string> kinds;

@@ -15,6 +15,7 @@
 #define TAINTANALYSIS_H_
 
 #include "Infoflow.h"
+#include "TaintAnalysisBase.h"
 #include "llvm/Pass.h"
 #include "llvm/IR/CallSite.h"
 
@@ -41,6 +42,7 @@ public:
 
 private:
   Infoflow *ifa;
+  TaintAnalysisBase parser;
 
   void taintStr (std::string kind, std::string match);
 };

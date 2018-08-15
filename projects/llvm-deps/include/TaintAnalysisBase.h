@@ -24,6 +24,7 @@ protected:
   unsigned getNumElements(const Value & v);
 
   unsigned fieldIndexToByteOffset(int index, const Value *, const AbstractLoc *);
+
   std::set<const ConsElem *>gatherRelevantConsElems(const AbstractLoc *, unsigned, unsigned);
 
 public:

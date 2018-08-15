@@ -270,15 +270,15 @@ class Infoflow :
 
     void constrainFlowRecord(const FlowRecord &);
 
-    void constrainMemoryLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &);
-    void constrainDirectSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
-    void constrainDirectValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
-    void constrainReachSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
-    void constrainReachValuesIncludingOffset(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
+    void addMemorySourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &);
+    void addDirectSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
+    void addDirectValuesToSources(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
+    void addReachSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
+    void addReachValuesToSources(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
 
     void constrainSinkMemoryLocations(const FlowRecord &, const ConsElem &, const ConsElem &, bool, bool);
-  void constrainDirectSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
-  void constrainReachSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
+    void constrainDirectSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
+    void constrainReachSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
     const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
     const std::string stringFromValue(const Value &);

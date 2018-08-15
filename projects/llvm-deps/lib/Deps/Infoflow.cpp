@@ -205,7 +205,7 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     // For memory-based sources, build up the set of memory locations that act
     // as sources for this record...
     // Turning off offset can be done in the direct/reachptr constraining functions
-    constrainMemoryLocations(record, Sources, sinkSources);
+    addMemorySourceLocations(record, Sources, sinkSources);
   }
 
   bool regFlow = !Sources.empty();
@@ -247,14 +247,14 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
 
 
 void
-Infoflow::constrainMemoryLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources) {
+Infoflow::addMemorySourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources) {
 
   std::set<const AbstractLoc *> SourceLocs;
   std::set<const AbstractLoc *> sinkSourceLocs;
 
-  constrainDirectSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
+  addDirectSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
 
-  constrainReachSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
+  addReachSourceLocations(record, Sources, sinkSources, SourceLocs, sinkSourceLocs);
 
   // ...And convert those locs into ConsElem's and store them into Sources
   for(std::set<const AbstractLoc *>::const_iterator I = SourceLocs.begin(),
@@ -276,7 +276,7 @@ Infoflow::constrainMemoryLocations(const FlowRecord & record, ConsElemSet & Sour
 }
 
 void
-Infoflow::constrainDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
+Infoflow::addDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
   
   FlowRecord::value_set directSource;
   FlowRecord::value_set directSink;
@@ -293,14 +293,14 @@ Infoflow::constrainDirectSourceLocations(const FlowRecord & record, ConsElemSet 
     // NON-GEP values get the corresponding AbsLocs added to the Source/SinkSet
     // GEP instructions are constrained directly based on offset
     // TO DISABLE OFFSET:
-    // constrainDirectValuesIncludingOffset(directSource, Sources, SourceLocs, false);
-    // constrainDirectValuesIncludingOffset(directSink, sinkSources, sinkSourceLocs, false);
-    constrainDirectValuesIncludingOffset(directSource, Sources, SourceLocs);
-    constrainDirectValuesIncludingOffset(directSink, sinkSources, sinkSourceLocs);
+    // addDirectValuesToSources(directSource, Sources, SourceLocs, false);
+    // addDirectValuesToSources(directSink, sinkSources, sinkSourceLocs, false);
+    addDirectValuesToSources(directSource, Sources, SourceLocs);
+    addDirectValuesToSources(directSink, sinkSources, sinkSourceLocs);
 }
 
 void
-Infoflow::constrainDirectValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
+Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
@@ -312,7 +312,7 @@ Infoflow::constrainDirectValuesIncludingOffset(FlowRecord::value_set values, Con
 }
 
 void
-Infoflow::constrainReachSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
+Infoflow::addReachSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
   FlowRecord::value_set reachSource;
   FlowRecord::value_set reachSink;
     for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
@@ -328,14 +328,14 @@ Infoflow::constrainReachSourceLocations(const FlowRecord & record, ConsElemSet &
     // NON-GEP values get the corresponding AbsLocs added to the Source/SinkSet
     // GEP instructions are constrained directly based on offset
     // TO DISABLE OFFSET:
-    // constrainReachValuesIncludingOffset(reachSource, Sources, SourceLocs, false);
-    // constrainReachValuesIncludingOffset(reachSink, sinkSources, sinkSourceLocs, false);
-    constrainReachValuesIncludingOffset(reachSource, Sources, SourceLocs);
-    constrainReachValuesIncludingOffset(reachSink, sinkSources, sinkSourceLocs);
+    // addReachValuesToSources(reachSource, Sources, SourceLocs, false);
+    // addReachValuesToSources(reachSink, sinkSources, sinkSourceLocs, false);
+    addReachValuesToSources(reachSource, Sources, SourceLocs);
+    addReachValuesToSources(reachSink, sinkSources, sinkSourceLocs);
 }
 
 void
-Infoflow::constrainReachValuesIncludingOffset(FlowRecord::value_set values, ConsElemSet &elems, AbsLocSet &locations) {
+Infoflow::addReachValuesToSources(FlowRecord::value_set values, ConsElemSet &elems, AbsLocSet &locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){

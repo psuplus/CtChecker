@@ -1,7 +1,6 @@
 #include <fstream>
 
 #include "TaintAnalysisBase.h"
-#include "ValueToStruct.h"
 
 using namespace llvm;
 namespace deps {
@@ -27,7 +26,8 @@ bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
   return linkExists;
 }
 
-std::map<unsigned, const ConsElem *> TaintAnalysisBase::getPointerTarget(const AbstractLoc * loc) {
+std::map<unsigned, const ConsElem *>
+TaintAnalysisBase::getPointerTarget(const AbstractLoc * loc) {
     // If the value is a pointer, use pointsto analysis to resolve the target
     const DSNodeHandle nh = loc->getLink(0);
     const AbstractLoc * node = nh.getNode();
@@ -103,8 +103,8 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
   }
 
   return relevant;
-
 }
+
 /** Taint a Value whose name matches s */
 void
 TaintAnalysisBase::taintStr (std::string kind, std::tuple<std::string,int,std::string> match) {

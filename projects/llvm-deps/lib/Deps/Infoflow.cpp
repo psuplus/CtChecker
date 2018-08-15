@@ -498,6 +498,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node, std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
 
   std::set<const ConsElem*> elements;
+  errs() << "Trying to find element at offset "  << offset << "\n";
 
   if (node->isNodeCompletelyFolded()){
     // All elements are relevant
@@ -539,6 +540,7 @@ std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node
   //DEBUG(errs() << "SIZE OF ELEMENTS : " << elements.size() << "\n");
   return elements;
 }
+
 
 //
 // Funtctions to parse teh GetElementPtrInst and return the correct offset
@@ -2359,6 +2361,15 @@ Infoflow::constrainAllConsElem(std::string kind, std::set<const ConsElem*> elems
   for(std::set<const ConsElem*>::iterator it = elems.begin(), end = elems.end(); it != end; ++it){
     //(*it)->dump(errs());
     kit->addConstraint(kind, kit->highConstant(), *(*it));
+  }
+}
+void
+Infoflow::constrainAllConsElem(std::string kind, const Value & v, std::set<const ConsElem*> elems) {
+  //errs() << "Tainting all constraint elements from value\n";
+  if (elems.size() == 0) {
+    setTainted(kind,v);
+  } else {
+    constrainAllConsElem(kind, elems);
   }
 }
 

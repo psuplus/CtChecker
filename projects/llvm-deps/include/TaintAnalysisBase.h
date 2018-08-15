@@ -21,6 +21,11 @@ protected:
 
   void constrainValue(std::string kind, const Value &, int, std::string);
 
+  unsigned getNumElements(const Value & v);
+
+  unsigned fieldIndexToByteOffset(int index, const Value *, const AbstractLoc *);
+  std::set<const ConsElem *>gatherRelevantConsElems(const AbstractLoc *, unsigned, unsigned);
+
 public:
   void setInfoflow(Infoflow * flow){
     ifa = flow;

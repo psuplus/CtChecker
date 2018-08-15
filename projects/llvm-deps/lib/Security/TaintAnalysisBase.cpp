@@ -1,6 +1,7 @@
 #include <fstream>
 
 #include "TaintAnalysisBase.h"
+#include "ValueToStruct.h"
 
 using namespace llvm;
 namespace deps {
@@ -19,6 +20,9 @@ bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
   bool linkExists = false;
   if (loc->getSize() > 0)
     linkExists = loc->hasLink(0);
+
+  if(linkExists)
+    linkExists = loc->getLink(0).getNode()->getSize() > 0;
 
   return linkExists;
 }
@@ -41,70 +45,65 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
 
   std::string s = value.getName();
   const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
-
-  unsigned offset = 0;
-  errs() << "Trying to get offset.. for  "<< s << "\n";
-
-  bool hasOffset = ifa->offsetForValue(value, &offset);
-  errs() << "Length of Set for " << s << " is " << locs.size() << "\n";
-
   if(locs.size() == 0) {
     ifa->setTainted(kind,value);
   }
 
-  unsigned numElements = 1;
+  unsigned offset = 0;
+  //errs() << "Trying to get offset.. for  "<< s << "\n";
+  bool hasOffset = ifa->offsetForValue(value, &offset);
+  unsigned numElements = getNumElements(value);
   value.dump();
-  //errs() << "Value Type : ";
-  Type *t = value.getType();
-  t->dump();
-  //errs() << "\n";
+  errs() << " has " << numElements << " elements.\n";
 
-  if(const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&value)){
-    numElements = gep->getNumIndices();
-  }
-  if (t->isPointerTy()){
-    while(t->isPointerTy()){
-      t = t->getContainedType(0);
-    }
-    if (StructType * st = dyn_cast<StructType>(t)){
-      numElements  = st->getNumElements();
-    } else if(ArrayType * arr_t = dyn_cast<ArrayType>(t)) {
-      numElements = arr_t->getNumElements();
-    }
-  }
 
   if ( !ifa->offset_used ){
     t_offset = -1; // if offset is disabled ignore offset from taintfile
+    hasOffset = false;
   }
 
-  for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
-          end = locs.end(); loc != end; ++loc) {
-    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(*loc);
-    std::map<unsigned, const ConsElem *> elemMap;
-    if(curElem != ifa->locConstraintMap.end()){
-      elemMap = curElem->second;
 
-      if (elemMap.size() != numElements) {
-        errs() << "Size of type doesn't match number of cons elems:" << numElements << ":" << elemMap.size() << "\n";
-        ifa->setTainted(kind,value);
-      } else if (t_offset >= 0){       // Use offset provided in taint/untrust.txt
-        if(hasPointerTarget(*loc)){
-          std::map<unsigned, const ConsElem *> childMap = getPointerTarget(*loc);
-          if (childMap.size() > 0)
-            elemMap = childMap;
-        }
-        ifa->constrainOffsetFromIndex(kind, curElem->first, &value, elemMap ,t_offset);
-      } else if (hasOffset) {   // Use offset provided from instruction
-        errs() << "Using element at offset " << offset << "\n";
-        std::set<const ConsElem*> elems = ifa->findRelevantConsElem(*loc, elemMap, offset);
-        ifa->constrainAllConsElem(kind, elems);
-      } else {  // see if the value itself matches any in the taint files
-        errs() << "Visiting: "; value.dump();
-        errs() << "Matching " << match_name << " with " << value.getName() << ": ";
-        ifa->setTainted(kind,value);
-      }
+  std::set<const AbstractLoc *>::const_iterator loc = locs.begin();
+  std::set<const AbstractLoc *>::const_iterator end = locs.end();
+
+
+  for(;loc != end; ++loc){
+
+    std::set<const ConsElem *> elementsToConstrain;
+    if (t_offset >= 0 ) {
+      offset = fieldIndexToByteOffset(t_offset, &value, *loc);
+      hasOffset = true;
     }
+
+    if(hasOffset)
+      elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
+
+    errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
+    ifa->constrainAllConsElem(kind, value, elementsToConstrain);
+
   }
+}
+
+
+std::set<const ConsElem *>
+TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned offset, unsigned numElements) {
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(node);
+  std::map<unsigned, const ConsElem *> elemMap;
+  std::set<const ConsElem *> relevant;
+  if(curElem == ifa->locConstraintMap.end())
+    return relevant;
+
+  elemMap = curElem->second;
+  if(hasPointerTarget(node)){
+    elemMap = getPointerTarget(node);
+  }
+
+  if(numElements == elemMap.size()) {
+    relevant = ifa->findRelevantConsElem(node, elemMap, offset);
+  }
+
+  return relevant;
+
 }
 /** Taint a Value whose name matches s */
 void
@@ -142,6 +141,19 @@ TaintAnalysisBase::taintStr (std::string kind, std::tuple<std::string,int,std::s
   errs() << "DONE\n";
 }
 
+unsigned
+TaintAnalysisBase::fieldIndexToByteOffset(int index, const Value * v, const AbstractLoc * loc) {
+  unsigned offset = 0;
+  if(StructType * st = convertValueToStructType(v)){
+    offset = ifa->findOffsetFromFieldIndex(st, index, loc);
+  } else if (const AllocaInst * al = dyn_cast<AllocaInst> (v)) {
+    if(isa<ArrayType>(al->getAllocatedType())){
+      offset = index;
+    }
+  }
+  return offset;
+}
+
 
 void
 TaintAnalysisBase::loadTaintFile(std::string filename) {
@@ -161,6 +173,28 @@ TaintAnalysisBase::loadTaintUntrustFile(std::string kind, std::string filename) 
     std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
     taintStr (kind, match);
   }
+}
+
+unsigned
+TaintAnalysisBase::getNumElements(const Value & value) {
+
+  if(const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&value)) {
+    return gep->getNumIndices();
+  }
+
+  Type * t = value.getType();
+  // If necessary strip pointers away
+  while(t->isPointerTy()){
+    t = t->getContainedType(0);
+  }
+
+  if(StructType * structType = dyn_cast<StructType>(t)){
+    return structType->getNumElements();
+  } else if (ArrayType * arrayType = dyn_cast<ArrayType>(t)){
+    return arrayType->getNumElements();
+  }
+
+  return 1;
 }
 
 }

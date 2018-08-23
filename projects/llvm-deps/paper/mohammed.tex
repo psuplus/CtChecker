@@ -748,48 +748,84 @@ just calculated using the size of the element type and the index. If no type
 information exists for the node, only a single constraint element would exist
 for the node, so that is the constraint which is selected to be constrained. 
 
+\subsubsection{Missing Type Information}
+
+The type information used to generate the constraints came from the points-to
+analysis. The analysis is conservative in the type information it
+provides. This means that the type information given is limited to only fields
+that have been used in the source, and the type information is cleared if the
+analysis can not make definitively determine the types along with their offsets.
+The requirement to have a field used in the source means that often the type
+information from the structure is incomplete due to unused fields or fields
+which external functions may use. The points-to analysis clearing type
+information removes the ability to have a field sensitive constraint at all.
+
+In the case of missing the unused data information, the solution is to utilize
+the information that the points-to analysis uses to build the type map. Given a
+structure type in LLVM, the list of fields and their types are known. The
+points-to analysis relies on the data layout provided in the bitcode. Constraint
+elements are created by querying the data layout to identify the initial byte at
+which the type starts and the width of the type to find where that type should
+end. The start and end of the elements are recorded when creating the constraint
+elements for that type.
+
+Building the type information always instead of on-demand is necessary when
+there are external function calls where the source is not linked. If a pointer
+which holds sensitive data is a parameter for that function, then it is possible
+that sensitive data may flow to other arugments or the return value. When the
+field-sensitivity was implemeted, some of the higher-risk results had been
+removed. This happened because the pointer to sensitive data was no longer
+considered sensitive as it was when offset was unused. Before, it was enough to
+see if any of the arguments were sensitive, and create flows from the senitive
+data to all sinks from that function. After the field sensitivity change, the
+pointer and its data are constrained seperately, so when external calls happen,
+the analysis creates constraints from each of the fields which are reachable
+from that pointer in addition to the normal flows which are provided by the
+function call.
+
+If there is no type information at all, then the improved and baseline analysis
+function the same way, there is one element that represents that type and that
+one element is constrained regardless of offset. The points-to analysis denotes
+unsafe type information by collapsing the node in the memory graph.
 \subsection{Benchmarks}
 % list of the tests
 
 \subsection{Case Study}
+%The case study serves to demonstrate the changes to the results with the
+%improved analysis over the baseline. Each version of the analysis is compared by
+%analyzing the modular exponentiation code used in SSL and TLS libraries.
+%OpenSSL and Libgcrypt were selected due to vulnerabilities that were able to be
+%found by this analysis. The mbed TLS uses the same modular exponentiation as
+%OpenSSL and libgcrypt but does not provide constant time implentations. BearSSL
+%is selected due to its claim to be a constant time library.
+
 The baseline and improved analysis were compared using current software TLS and
 SSL libraries. The libraries analyzed were Libgcrypt, OpenSSL, mbed TLS, and
 BearSSL. The case study was done by comparing the modular exponentiation
-algorithms between each of the libraries. Each of the libraries were tested
-using similar parameters to compare the number and classification of the
-results. Ideally, the improved analysis would have fewer low-risk results and
-the number of high-risk results would not change. The Libgcrypt and OpenSSL
-libraries were chosen due to their wide-spread use. The mbed TLS library is
-built for embedded platforms, so this was chosen to search for shortcuts that
-may provide vulnerabilities. BearSSL is chosen because it claims to be a
-constant-time cryptographic library.
+algorithms between each of the libraries. The Libgcrypt and OpenSSL libraries
+were chosen due to their wide-spread use. The mbed TLS library is built for
+embedded platforms, so this was chosen to search for shortcuts that may provide
+vulnerabilities. BearSSL is chosen because it claims to be a constant-time
+cryptographic library.
 
-The first comparison is the baseline and the improved analysis run with the same
-inputs. For each of these tests, the file that contained the modular
-exponentiation algorithm was analyzed. The file was compiled with only the
-files which were needed to compile it to LLVM bitcode. The results are shown in
-Table \ref{tbl:baseline_improved_same}.
+\subsubsection{Experiments}
+The parameters used to test the libraries were set such that the data alone was
+set to be tainted, meaning that no other members which shared the same structure
+should be treated as sensitive data. The results of the improved analysis should
+eliminate many of the false-positives, and some of the low-risk results. The
+number of high-risk results should not change.
 
-\begin{table}
-   \caption{Baseline and Improved Results - Same Input}
-   \centering
-   \begin{tabular}{|l| l| r r r|}
-     \hline
- \textbf{Library} & \textbf{Tainted} & \textbf{\# Branches} & \textbf{Baseline} & \textbf{Improved} \\
-     \hline
- \textit{Libgcrypt 1.8.2} & mod, expo&	246 &	69 &	68 \\
- \textit{mbedTLS 2.9.0} & E, N&	1471 &	25 &	25 \\
- \textit{BearSSL 0.5} & e, m&	141 &	36 &	10 \\
- \textit{OpenSSL 1.1.0g} & m, p&  & & \\
- recp	& & 498 &	1 &	24 \\
- mont	& & 498 &	6 &	34 \\
- mont\_consttime	& & 498 &	8 &	30\\
- mont\_word	& & 498 &	11 &	22\\
- simple	& & 498 &	0 &	22 \\
-     \hline
-   \end{tabular}
-   \label{tbl:baseline_improved_same}
- \end{table}
+The source code which dealt with modular exponentiation was analyzed in the
+following configurations:
+\begin{enumerate}
+
+\item Run Analysis with modulus and power data set tainted/untrusted
+\item Sort results into False Positives, Low and High Risk
+\item Rerun analysis with whitelist to remove some/all of false-positives and
+low-risk results.
+\item Classify new high-risk results into categories based on context.
+\end{enumerate}
+
 %% \begin{table}
   %% \caption{Baseline and Improved Results - Same Input}
   %% \begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|}
@@ -811,87 +847,154 @@ Table \ref{tbl:baseline_improved_same}.
   %% \label{tbl:baseline_improved_same}
 %% \end{table}
 
- The results in Table \ref{tbl:baseline_improved_same} show the total number of
- branches analyzed in the IR code, the number of reported results from the
- baseline and then the results in the improved analysis. A minor change was made
- to information flow between function arguments between the baseline and
- improved analysis. The baseline shows the effect of this change on the
- different libraries analyzed.
+\subsubsection{Classification Stage 1}
+ The results from the experiments are sorted into four categories:
+ false-positives, validation, low-risk and high-risk. The categories are used to
+ build a whitelist to further refine the results from the analysis.
 
- In the baseline analysis if a function was called without the source being
- provided, and an argument was tainted, one constraint would be created from the
- tainted variable to the return value of the function. This was modified due to
- the common use of mutable data pointers and output arguments passed to
- functions. In the improved analysis any function call without source code
- provided, created flows between each of the mutable arguments. For example, if
- a function with two arguments, one tainted and the other pointing to mutable
- memory, the mutable memory could leak all of the tainted information following
- the function call.
+ Results which are classified as false positives are marked due to not being
+ calculated from sensitive data, being marked sensitive as a result of
+ imprecision. This analysis is not flow-sensitive, so results which involve
+ values which are re-computed from sensitive data later in an execution are also
+ considered false-positives. In the baseline analysis, false positives show up
+ due to the fact that a structure or an array is treated as one entity. Fields
+ within that structure or array which have not been computed from sensitive data
+ are reported falsely.
+ 
+ Validation results are branches which lead to exit or error handling code.
+ Validation branches will not execute for valid inputs. For any valid input
+ then, the result of this branch will be the same. The branch may check
+ sensitive data but if the result of the branch is known to an adversary, only
+ trivial information would be gained (i.e. whether or not the data is valid).
 
- Libgcrypt had difference of a low-risk branch being removed from the improved
- results. Mbed TLS had the same results as the baseline. The branches in
- Libgcrypt were largely dependent on sizes specified for the operands of the
- modular exponentiation and the change to undefined functions was expected to
- not have an effect on the overall number of results. The reasoning is similar
- for mbed TLS. BearSSL had a significant decrease in number of results reported,
- but this is due to being able to specify exactly which function to analyze from
- input files.
+ Results which are not in the first two categories are then sorted between the
+ low- and high-risk sets of results. The distinction between a low and a
+ high-risk result is on how much information is contained about sensitive data
+ if the outcome of a branch result is known. High-risk means that there is a
+ possibility to leak multiple bits of sensitive data from either a single or
+ repeated execution of the branch. Low-risk results can be identified if the
+ values in the branch condition can be the same across a set of sensitive
+ values. For example, many number libraries have a branch based on the length of
+ a sensitive value, but that value is going to be the same for a range of
+ values. If the number of results is large, it may be helpful to sort the
+ results this way in order to rank results based these categorizations.
+ 
+ If the analysis reports a large number of results, it can be helpful to utilize
+ the classifications done to remove entries from the list. The whitelist can be
+ compiled by identifying the variables which propogate and adding them to the
+ whitelist. The whitelist is often very small yet can eliminate many of the
+ false-positive or low-risk results.
 
- The largest changes were found in the OpenSSL library. OpenSSL provides a few
- different implementations for modular exponentiation and the results were
- separated based on the associated function. Only the source which contained
- these algorithms was analyzed which meant that there were many calls to
- undefined functions. OpenSSL also has a large number of branches which check
- if an error occurred during the function call. This was expected to increase due
- to the change to allow flow between function arguments. Flow between these
- arguments causes variables which were considered not tainted in the baseline to
- be tainted in the improved analysis. The upcoming section will analyze what
- these results are and if they are meaningful. 
- % number this section so that they can reference it
+ \subsubsection{Classification Stage 2}
 
+ The second stage of classsifcation was done after adding a small set of
+ variables to the whitelist. This stage breaks down the high-risk category from the
+ previous stage based on the surrounding context. The first criterion is whether
+ or not the branch is within a loop. The second criterion is if the branch is
+ controllable. The high-risk results can then be classified as either, single,
+ repeated, controllable, or loop-controllable.
 
- The ability to constrain individual elements of a compound data structure was
- the major change to the system. For each of the libraries, with the exception
- of BearSSL, a multi-precision integer data structure was used. This data
- structure had a field that stores the sensitive information. The remaining
- fields maintain some state for the program, allocation status, and flags and
- such. For this case study, the assumption is that the other fields in the
- structure could be considered public and only the data, which makes up the value
- stored in the structure, is tainted. The results of that study are shown in
- Table \ref{tbl:improved_with_offset}.
+ Controllable means that the branch outcome is dependent on input from an
+ untrusted source. In the case of modular exponentiation, the plaintext used in
+ the cryptographic algorithms is untrusted, ignoring the effects of blinding. So
+ a branch would be controllable if there was a comparison between the untrusted
+ data and tainted data such as the power or modulus.
 
- \begin{table}
-   \centering
-   \caption{Improved Analysis - Results with Partially Tainted Data Structure}
-   \begin{tabular}{|l|l|r|r|}
-     \hline
-     \textbf{Library} & \textbf{Tainted} & \textbf{No Offset} & \textbf{Offset} \\
-     \hline
-     \textit{Libgcrypt 1.8.2} & mod 4, expo 4 & 68 & 34 \\
-     \textit{mbedTLS 2.9.0} & E 2, N 2 & 25 & 25 \\
-     \textit{OpenSSL 1.1.0g} & m 0, p 0 & & \\
-     recp & & 24 & 10 \\
-     mont & & 34 & 24 \\
-     mont\_consttime & & 30 & 21\\
-     mont\_word & & 22 &  18 \\
-     simple & & 22 & 0\\
-     \hline
-   \end{tabular}
-   \label{tbl:improved_with_offset}
+ Single branches are branches are not within a loop and are not controllabe.
+ Controllable branches are not within a loop. Repeated branches are within a
+ loop and are not controllable. Loop-controllable branches are branches which
+ are within a loop and are controllable.
+
+\subsubsection{Experimental Results}
+
+In this section results from the baseline and the improved analysis are
+compared. The source which contained the the modular exponentiation functions
+were compiled with only the necessary header files. This meant that some
+calls were only to functions which were declared but not yet defined.
+
+In order for the improved analysis to in fact be an improvement over the
+baseline system, the analysis will have to reduce the number of results.
+Reducing the results should not be at the cost of high-risk results either.
+After the first stage the classification results without the improvement are
+shown in Table \ref{tbl:first-stage-no-offset} and with the improvment the
+results are shown in Table \ref{tbl:first-stage-with-offset}. For some
+libraries, the number of false positives is high, such as in Libgcrypt. Many of
+these false positives are due to lack of field sensitivity. OpenSSL has multiple
+implementations of the modular exponentiation. The results were separated to
+show the results that corresponded to that implementation.
+
+\begin{table}
+  \centering
+  \begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
+    \hline
+    \textbf{Library }& \textbf{Total Positives} & \textbf{False Positive} & \textbf{Validation} & \textbf{Low-Risk} & \textbf{High-Risk} \\
+    \hline
+    \textbf{Libgcrypt 1.8.2} & 68 & 37 & 0 & 17 & 14\\
+    \textbf{mbedTLS 2.9.0} & 25 & 8 & 0 & 13 & 4 \\
+    \textbf{BearSSL 0.5} & 10 & 9 & 1 & 0 & 0 \\
+    \textbf{OpenSSL 1.1.0g} & & & & &  \\
+    Reciprocal & 24 & 4  & 6 & 12 & 2 \\
+    Montgomery & 34 & 4   & 11   & 15  &  4  \\
+    Montgomery Const. Time & 30 & 0   & 12    &  16   &  2  \\
+    Montgomery Word & 22 & 3   & 11    & 3    & 4   \\
+    Simple & 22 & 2    & 6    & 12    & 2   \\
+    \hline
+  \end{tabular}
+  \caption{Stage 1 Classification - Field Insensitive}
+  \label{tbl:first-stage-no-offset}
 \end{table}
 
-In the improved analysis, an offset can be specified to taint that part of the
-structure alone. The ``No Offset'' column show the number of reported positives
-from the improved analysis with the same tainted values excluding the offset
-parameters. The analysis resulted in half of the reported result when specifying
-an offset within the data structure. Though mbed TLS did have a structure,
-specifying an offset did not improve the results. OpenSSL did also have a
-reduction in the number of positives. The reduction in the positive alone is not
-a good measure, however. After classification, the results are either removed
-if they are part of error checking or sorted in to high and low-risk categories.
-Ideally the reduction in results leads to fewer low-risk results while
-maintaining all of the high-risk results. The classification of these results
-can be found in tables \ref{tbl:no_offset_classification} and \ref{tbl:offset_classifications}.
+
+With the field-sensitive analysis, the constraints generated were now able to
+include offsets and the total number of results were fewer. The analysis changes
+had a significant effect in reducing the number of false positive results for
+Libgcrypt, but only small effects in the other libraries. The most important
+part is that the high-risk category had the same number of results even with the
+reduction in total number of results. The number of high-risk results staying
+the same as a result of the field sensitivity change, that alone actually loses
+some of the high-risk results. OpenSSL does much of its work in functions
+external ot the modular exponentiation code, meaning that there is little to no
+manipulation of the data directly in the source analyzed.
+
+\begin{table}
+  \begin{tabular}{|p{2.5cm} | p{1.5cm}| p{1.5cm} | p{1.7cm}| p{1.5cm}| p{1.5cm}|}
+    \hline
+    \textbf{Library} &Total Positives&False Positives&Validation&Low-Risk&High-Risk\\
+    \hline
+    \textbf{Libgcrypt 1.8.2} & 34 &  2 & 1 & 17 & 14\\
+    \textbf{mbedTLS 2.9.0} & 25   & 8  & 0 & 13 & 4 \\
+    \textbf{BearSSL 0.5}& 10 & 9 & 1 & 0 & 0 \\
+    \textbf{OpenSSL 1.1.0g}& & & & & \\
+    \textit{Reciprocal} & 13 & 4  & 6 & 1 & 2 \\
+    \textit{Montgomery} & 25 & 4   & 11   & 6  &  4  \\
+    \textit{Montgomery Const. Time} & 21 & 0   & 12    &  7   &  2  \\
+    \textit{Montgomery Word} & 20 & 3   & 11    & 2    & 4   \\
+    \textit{Simple} & 11 & 2    & 6    & 1    & 2   \\
+    \hline
+  \end{tabular}
+  \caption{Stage 1 Classification - Field Sensitive}
+  \label{tbl:first-stage-with-offset}
+\end{table}
+
+
+ Libgcrypt had many false-positives removed between the improved and the
+ baseline analysis. The false positives here were due to the multi-precision
+ integer structures having multiple non-sensitive fields. Many of the branches
+ flagged as vulnerable were falsely reported due to the baseline analysis being
+ not being field-sensitive.
+
+ In the mbed TLS library had no changes when the offset was used, so the results
+ here were not due to field-sensitivity issues. BearSSL does not use a structure,
+ but instead just an array to represent multi-precision integers. There were no
+ additional fields so field-sensitivity had no effect on the results for this
+ library either. The false positives however were due to the length being
+ computed from the data within the integers.
+
+ OpenSSL showed some reduction in the number of results while maintaining all of
+ the high-risk results. The number of false positives did not change, but the
+ number of low-risk results were removed by adding field-sensitivity. OpenSSL
+ does not mutate the multi-precision integers in the files analyzed so many
+ calculations and the flow between them are uncertain. 
 
 
  

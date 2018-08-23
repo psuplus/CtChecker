@@ -1,2 +1,2 @@
-mod
-expo
+mod 4
+expo 4

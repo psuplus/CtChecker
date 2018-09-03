@@ -100,6 +100,9 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
 
   if(numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
+  } else {
+    errs() << "Map size does not match number of elements\n";
+    node->dump();
   }
 
   return relevant;

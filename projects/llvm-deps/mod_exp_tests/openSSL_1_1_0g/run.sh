@@ -23,7 +23,7 @@ LEVEL="../../../../"
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 $LEVEL/Debug+Asserts/bin/clang -isystem include -Iinclude -O0 -g -emit-llvm -o bn_exp.bc -c bn_exp.c
 $LEVEL/Debug+Asserts/bin/clang -isystem include -Iinclude -O0 -g -emit-llvm -o bn_lib.bc -c bn_lib.c
-$LEVEL/Debug+Asserts/bin/llvm-link bn_exp.bc -o bn_test.bc
+$LEVEL/Debug+Asserts/bin/llvm-link bn_exp.bc bn_lib.bc -o bn_test.bc
 $LEVEL/Debug+Asserts/bin/clang -isystem include -Iinclude -O0 -g -emit-llvm -S bn_exp.c
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc

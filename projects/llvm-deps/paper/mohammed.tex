@@ -1042,7 +1042,9 @@ not a constant-time implementation.
 The modulus is adjusted based on its value as well through the code shown in
 Algorithm \ref{alg:libgcrypt_clz}. In this snippet, the number of leading zeros
 is stored, and leaks information about the number of zero bits at the start of
-the modulus. 
+the modulus. This \textit{mod\_shift\_cnt} is used later in lines 715, 738, and
+751. All cases of these branches are done outside of loops, so the
+classification for this result is high-risk single.
 
 \begin{algorithm}
 \begin{lstlisting}
@@ -1060,6 +1062,28 @@ else
   \caption{Libgcrypt - Count Leading Zeros}
   \label{alg:libgcrypt_clz}
 \end{algorithm}
+
+The next pre-processing step compares the base and the modulus sizes. The sizes
+themselves are not tainted. The tainted variabl here is mp, a pointer to the
+modulus data. In the analysis, the \textit{divrem} function is not included
+source code, so the mutable parameters, in this case \textit{bp} is tainted as a
+result. The normalize code is the same seen earlier, with a while loop which
+branches on the size of the data, and a if which branches based on the data
+located at the pointer. In this case the pointer is \textit{bp} considered a
+high-risk variable due to having flow from the modulus data. The
+\textit{MPN\_NORMALIZE} line is classified as high-risk.
+
+\begin{lstlisting}
+  if (bsize > msize)
+    {
+      MPN_COPY ( bp, base->d, bsize );
+      _gcry_mpih_divrem( bp + msize, 0, bp, bsize, mp, msize );
+      bsize = msize;
+      /* Canonicalize the base, since we are going to multiply with it
+         quite a few times.  */
+      MPN_NORMALIZE( bp, bsize );
+    }
+\end{lstlisting}
 
 The next two results are within the main processing loop portion of the modular
 exponentiation code. The main loop of the has a precomputed set of powers and
@@ -1079,10 +1103,10 @@ directly, and $c$ is computed directly from the limbs data, these are high-risk
 variables.
 
 Within the main porcessing loop, the first branch is on $e$ checking if there
-are no set bits in $e$. If this is the case, the process just moves on to the
+are no set bits in the \textit{limb} $e$. If this is the case, the process just moves on to the
 next limb. If there are set bits, in $e$ the rest of the limb is scanned in
 order to compute the result. If the outcome of this branch is determined, then
-the value of the entire limb is known.
+the value of the entire \textit{limb} is known and this is a high-risk result.
 \begin{algorithm}
   \caption{Libgcrypt Modular Exponentiation Processing Loop}
   \label{alg:libgcrypt_mainloop}
@@ -1107,16 +1131,22 @@ for(;;){
 
 
 The operations done within the else are done to select the proper precomputed
-values based on the value of the limb. The variable $c$ which contains the
-number of leading zeros is used in a branch within this else. The outcome of
-this branch changes the amount of shift done to the variable which is used as a
-key to extract the correct precomputed value.
+values based on the value of the limb. The variable $c$ is the position of the
+first set bit within a \textit{limb}.  The value of $c$ is computed by looking
+at each bit from a \textit{limb} in the exponent, making $c$ high-risk. This
+branch is in the main processing loop, so it is classified as a looped high-risk result.
 
 
 \begin{algorithm}
   \caption{Libgcrypt Modular Exponentiation Processing Else Cont'd}
   \label{alg:libgcrypt_elseprocess}
 \begin{lstlisting}
+count_leading_zeros (c0, e);
+e = (e << c0);
+c -= c0;
+j += c0;
+
+e0 = (e >> (BITS_PER_MPI_LIMB - W));
 if (c >= W)
   c0 = 0;
 else
@@ -1141,7 +1171,12 @@ At the end of each loop iteration, a non-constant time for-loop runs. The
 for-loop varies with the number of leading zeros for the exponent. The value of
 $j$ depends on the $c0$, a value derived from the limb of the exponent. This
 makes $j$ a high-risk variable, and the for loop branch iterates $j > 0$ meaning
-that the number of iterations of the loop is not constant time. 
+that the number of iterations of the loop is not constant time. In this section
+of the source, there are precautions taken to target some timing channels such
+as indexing inot the precomp array. The conditional set makes it such that for
+each value of k, the array value is stored. Similarly, to mask the size of the
+answer stored in \textit{base\_u}, the \textit{base\_u\_size} is computed and set each time, but only
+the bit mask allows only the true size to be set.
 
 \begin{algorithm}
   \caption{Libgcrypt - Pre-computed table indexing}
@@ -1184,6 +1219,28 @@ that the number of iterations of the loop is not constant time.
   \end{lstlisting}
 \end{algorithm}
 
+This loop is done after the main processing loop. The value of \textit{j} is
+related to the number of non-set bits in the last processed limb making it a
+high-risk variable. The branch is the condition for a loop, so this is a looped
+high-risk result. 
+\begin{algorithm}
+\begin{lstlisting}
+    while (j--)
+      {
+        mul_mod (xp, &xsize, rp, rsize, rp, rsize, mp, msize, &karactx);
+        tp = rp; rp = xp; xp = tp;
+        rsize = xsize;
+      }
+\end{lstlisting}
+\end{algorithm}
+
+
+There are two more high-risk results after the main processing is over,
+involving the result data on lines 740 and 756. This data has flow from the
+modulus and exponent and so it is considered sensitive. The rsize values are
+also considered sensitive due to the flow between parameters in the
+\textit{mul\_mod} calls. Both of the branches from the \textit{MPN\_NORMALIZE}
+macro are reported and are considered both high-risk looped results.
 
 \section{Related Works}
 

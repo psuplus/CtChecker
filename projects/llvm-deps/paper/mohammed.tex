@@ -5,9 +5,30 @@
 \usepackage{algpseudocode}
 \usepackage{algorithmicx}
 \usepackage{listings}
+\usepackage{graphicx}
 \usepackage{float}
-\lstset{numbers=left, numberstyle=\tiny, breaklines}
-\title{CSE 597 Homework 1\vspace{-1ex}}
+
+\lstdefinestyle{codestyle}{
+  basicstyle=\fontsize{9}{11}\selectfont\ttfamily,
+  numberstyle=\small,
+  breaklines=false,
+  tabsize=2,
+  captionpos=b,
+  language=C++
+}
+\lstset{style=codestyle}
+\renewcommand{\lstlistingname}{Code Fragment}
+\renewcommand{\lstlistoflistings}{List of \lstlistingname s}
+
+%% Commands
+\newcommand{\codevar}[1]{\textit{#1}}
+\newcommand{\codefn}[1]{\textit{#1}}
+\newcommand{\codefile}[1]{\textit{#1}}
+\newcommand{\ruleabove}{\vspace{5pt}\hrule}
+\newcommand{\rulebelow}{\hrule\vspace{5pt}}
+
+
+\title{}
 \author{Adam Mohammed}
 \date{\vspace{-1ex}January 29, 2018}
 
@@ -127,7 +148,7 @@ for (i = 1; i < bits; i++) {
 \end{algorithm}
 
 The for-loop here iterates through the number of bits in the confidential power
-\texttt{p}, each time through squaring \texttt{v} until a set bit is encountered
+\textit{p}, each time through squaring \texttt{v} until a set bit is encountered
 in \texttt{p}. Once a set bit is encountered, an additional multiply step is
 executed before proceeding to the next loop iteration. This lends itself to a
 timing attack due to multiplication more expensive to compute than a square. The
@@ -926,11 +947,12 @@ show the results that corresponded to that implementation.
 
 \begin{table}
   \centering
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
     \hline
-    \textbf{Library }& \textbf{Total Positives} & \textbf{False Positive} & \textbf{Validation} & \textbf{Low-Risk} & \textbf{High-Risk} \\
+    \textbf{Library }& \textbf{TP} & \textbf{FP} & \textbf{V} & \textbf{LR} & \textbf{HR} \\
     \hline
-    \textbf{Libgcrypt 1.8.2} & 68 & 37 & 0 & 17 & 14\\
+    \textbf{Libgcrypt 1.8.2} & 68 & 36 & 1 & 17 & 14\\
     \textbf{mbedTLS 2.9.0} & 25 & 8 & 0 & 13 & 4 \\
     \textbf{BearSSL 0.5} & 10 & 9 & 1 & 0 & 0 \\
     \textbf{OpenSSL 1.1.0g} & & & & &  \\
@@ -940,7 +962,7 @@ show the results that corresponded to that implementation.
     Montgomery Word & 22 & 3   & 11    & 3    & 4   \\
     Simple & 22 & 2    & 6    & 12    & 2   \\
     \hline
-  \end{tabular}
+  \end{tabular}}
   \caption{Stage 1 Classification - Field Insensitive}
   \label{tbl:first-stage-no-offset}
 \end{table}
@@ -954,13 +976,13 @@ part is that the high-risk category had the same number of results even with the
 reduction in total number of results. The number of high-risk results staying
 the same as a result of the field sensitivity change, that alone actually loses
 some of the high-risk results. OpenSSL does much of its work in functions
-external ot the modular exponentiation code, meaning that there is little to no
+external to the modular exponentiation code, meaning that there is little to no
 manipulation of the data directly in the source analyzed.
 
 \begin{table}
   \begin{tabular}{|p{2.5cm} | p{1.5cm}| p{1.5cm} | p{1.7cm}| p{1.5cm}| p{1.5cm}|}
     \hline
-    \textbf{Library} &Total Positives&False Positives&Validation&Low-Risk&High-Risk\\
+    \textbf{Library} &\textbf{TP}&\textbf{FP}&\textbf{V}&\textbf{LR}&\textbf{HR}\\
     \hline
     \textbf{Libgcrypt 1.8.2} & 34 &  2 & 1 & 17 & 14\\
     \textbf{mbedTLS 2.9.0} & 25   & 8  & 0 & 13 & 4 \\
@@ -978,11 +1000,11 @@ manipulation of the data directly in the source analyzed.
 \end{table}
 
 
- Libgcrypt had many false-positives removed between the improved and the
- baseline analysis. The false positives here were due to the multi-precision
- integer structures having multiple non-sensitive fields. Many of the branches
- flagged as vulnerable were falsely reported due to the baseline analysis being
- not being field-sensitive.
+Libgcrypt had many false-positives removed between the improved and the baseline
+analysis. The false positives here were due to the multi-precision integer
+structures having multiple fields containing public data. Many of the branches
+flagged as vulnerable were falsely reported due to the baseline analysis being
+not being field-sensitive.
 
  In the mbed TLS library had no changes when the offset was used, so the results
  here were not due to field-sensitivity issues. BearSSL does not use a structure,
@@ -1017,20 +1039,23 @@ There were no controllable branches which are the most severe, allowing for the
 users input text to be directly compared to the sensitive data. At the start of
 the modular exponentiation, the first looped positive is found. The exponent is
 given in the multi-precision structure, and one of the first operations done is
-to find the size through the normalization code given in Algorithm
-\ref{alg:libgcrypt_normalize}
+to find the size through the normalization code given in the code fragment
+\ref{code:libgcrypt_normalize}.
 
-\begin{algorithm}
-\begin{lstlisting}
-	while( (n) > 0 ) {
-    if( (d)[(n)-1] )
-      break;
-	  (n)--;
-	}
+\vspace{5pt}
+\hrule
+\begin{lstlisting}[caption=Libgcrypt 1.8.2 - mpi-internal.h lines 113-120, label=code:libgcrypt_normalize]
+#define MPN_NORMALIZE(d, n)  \
+    do {		                 \
+	while( (n) > 0 ) {         \
+	    if( (d)[(n)-1] )       \
+		break;	                 \
+	    (n)--;	               \
+	}		                       \
+    } while(0)
 \end{lstlisting}
-  \caption{Libgcrypt - MPN\_NORMALIZE}
-  \label{alg:libgcrypt_normalize}
-\end{algorithm}
+\hrule
+\vspace{5pt}
 
 This code is listed within the macro \texttt{MPN\_NORMALZE} and the input
 parameters are a pointer $d$ and a size $n$. The exponent data pointer is passed
@@ -1040,14 +1065,15 @@ not a constant-time implementation.
     
 
 The modulus is adjusted based on its value as well through the code shown in
-Algorithm \ref{alg:libgcrypt_clz}. In this snippet, the number of leading zeros
+Algorithm \ref{code:libgcrypt_clz}. In this snippet, the number of leading zeros
 is stored, and leaks information about the number of zero bits at the start of
 the modulus. This \textit{mod\_shift\_cnt} is used later in lines 715, 738, and
 751. All cases of these branches are done outside of loops, so the
 classification for this result is high-risk single.
 
-\begin{algorithm}
-\begin{lstlisting}
+\vspace{5pt}
+\hrule
+\begin{lstlisting}[caption=Libgcrypt 1.8.2 - mpi-pow.c lines 483-487, label=code:libgcrypt_clz]
 # define count_leading_zeros(count, x) \
     __asm__ ("clz %0,%1"               \
 	     : "=r" ((USItype)(count)) \
@@ -1059,9 +1085,8 @@ if (mod_shift_cnt)
 else
   MPN_COPY( mp, mod->d, msize );
 \end{lstlisting}
-  \caption{Libgcrypt - Count Leading Zeros}
-  \label{alg:libgcrypt_clz}
-\end{algorithm}
+\hrule
+\vspace{5pt}
 
 The next pre-processing step compares the base and the modulus sizes. The sizes
 themselves are not tainted. The tainted variabl here is mp, a pointer to the
@@ -1073,23 +1098,27 @@ located at the pointer. In this case the pointer is \textit{bp} considered a
 high-risk variable due to having flow from the modulus data. The
 \textit{MPN\_NORMALIZE} line is classified as high-risk.
 
-\begin{lstlisting}
+\vspace{5pt}
+\hrule
+\begin{lstlisting}[caption=Libgcrypt 1.8.2 - mpi-pow.c lines 491-507]
   if (bsize > msize)
     {
+      ... 
       MPN_COPY ( bp, base->d, bsize );
       _gcry_mpih_divrem( bp + msize, 0, bp, bsize, mp, msize );
       bsize = msize;
-      /* Canonicalize the base, since we are going to multiply with it
-         quite a few times.  */
+      ...
       MPN_NORMALIZE( bp, bsize );
     }
 \end{lstlisting}
+\hrule
+\vspace{5pt}
 
 The next two results are within the main processing loop portion of the modular
 exponentiation code. The main loop of the has a precomputed set of powers and
 the correct member of that set is selected based on the set bit of the exponent.
 The first high-risk result from this comparison is shown in line 2 of the
-abbreviated main loop code shown in Algorithm \ref{alg:libgcrypt_mainloop}.
+abbreviated main loop code shown in Code Fragment \ref{code:libgcrypt_mainloop}.
 
 The multi-precision integer structure represent large numbers by paritioning
 each number into multiple \textit{limbs}. Each of these limbs is
@@ -1103,44 +1132,42 @@ directly, and $c$ is computed directly from the limbs data, these are high-risk
 variables.
 
 Within the main porcessing loop, the first branch is on $e$ checking if there
-are no set bits in the \textit{limb} $e$. If this is the case, the process just moves on to the
+are no set bits in the limb $e$. If this is the case, the process just moves on to the
 next limb. If there are set bits, in $e$ the rest of the limb is scanned in
 order to compute the result. If the outcome of this branch is determined, then
-the value of the entire \textit{limb} is known and this is a high-risk result.
-\begin{algorithm}
-  \caption{Libgcrypt Modular Exponentiation Processing Loop}
-  \label{alg:libgcrypt_mainloop}
-\begin{lstlisting}
-for(;;){
-      if (e == 0)
-        {
-          j += c;
-          if ( --i < 0 )
-            break;
+the value of the entire limb is known and this is a high-risk result.
 
-          e = ep[i];
-          c = BITS_PER_MPI_LIMB;
-        }
-      else
-        {
-             ...
-        }
-}
+\vspace{5pt}
+\hrule
+\begin{lstlisting}[caption=Libgcrypt lines 609-626, label=code:libgcrypt_mainloop]
+e = ep[i];
+e = (e << c) << 1;
+...
+for(;;)
+  if (e == 0)
+    {
+      j += c;
+      if ( --i < 0 )
+        break;
+
+      e = ep[i];
+      c = BITS_PER_MPI_LIMB;
+    } else ...
 \end{lstlisting}
-\end{algorithm}
+\hrule
+\vspace{5pt}
 
 
 The operations done within the else are done to select the proper precomputed
 values based on the value of the limb. The variable $c$ is the position of the
-first set bit within a \textit{limb}.  The value of $c$ is computed by looking
-at each bit from a \textit{limb} in the exponent, making $c$ high-risk. This
+first set bit within a limb.  The value of $c$ is computed by looking
+at each bit from a limb in the exponent, making $c$ high-risk. This
 branch is in the main processing loop, so it is classified as a looped high-risk result.
 
 
-\begin{algorithm}
-  \caption{Libgcrypt Modular Exponentiation Processing Else Cont'd}
-  \label{alg:libgcrypt_elseprocess}
-\begin{lstlisting}
+\vspace{5pt}
+\hrule
+\begin{lstlisting}[caption=Libgcrypt lines 635-658]
 count_leading_zeros (c0, e);
 e = (e << c0);
 c -= c0;
@@ -1165,83 +1192,449 @@ else
       }
   }
 \end{lstlisting}
-\end{algorithm}
+\hrule
+\vspace{5pt}
 
 At the end of each loop iteration, a non-constant time for-loop runs. The
 for-loop varies with the number of leading zeros for the exponent. The value of
-$j$ depends on the $c0$, a value derived from the limb of the exponent. This
-makes $j$ a high-risk variable, and the for loop branch iterates $j > 0$ meaning
+$j$ depends on the \codevar{c0}, a value derived from the limb of the exponent. This
+makes \codevar{j} a high-risk variable, and the for loop branch iterates $j > 0$ meaning
 that the number of iterations of the loop is not constant time. In this section
 of the source, there are precautions taken to target some timing channels such
-as indexing inot the precomp array. The conditional set makes it such that for
-each value of k, the array value is stored. Similarly, to mask the size of the
-answer stored in \textit{base\_u}, the \textit{base\_u\_size} is computed and set each time, but only
+as indexing into the precomp array. The conditional set makes it such that for
+each value of \codevar{k}, the array value is stored. Similarly, to mask the size of the
+answer stored in \codevar{base\_u}, the \codevar{base\_u\_size} is computed and set each time, but only
 the bit mask allows only the true size to be set.
 
-\begin{algorithm}
-  \caption{Libgcrypt - Pre-computed table indexing}
-  \label{alg:libgcrypt_precomp}
-  \begin{lstlisting}
-          for (j += W - c0; j >= 0; j--)
-            {
+\vspace{5pt}
+\hrule
+\begin{lstlisting}{caption=Libgcrypt lines 667- 695}
+  for (j += W - c0; j >= 0; j--)
+    {
 
-              /*
-               *  base_u <= precomp[e0]
-               *  base_u_size <= precomp_size[e0]
-               */
-              base_u_size = 0;
-              for (k = 0; k < (1<< (W - 1)); k++)
-                {
-                  w.alloced = w.nlimbs = precomp_size[k];
-                  u.alloced = u.nlimbs = precomp_size[k];
-                  u.d = precomp[k];
+      /*
+        *  base_u <= precomp[e0]
+        *  base_u_size <= precomp_size[e0]
+        */
+      base_u_size = 0;
+      for (k = 0; k < (1<< (W - 1)); k++)
+        {
+          w.alloced = w.nlimbs = precomp_size[k];
+          u.alloced = u.nlimbs = precomp_size[k];
+          u.d = precomp[k];
 
-                  mpi_set_cond (&w, &u, k == e0);
-                  base_u_size |= ( precomp_size[k] & (0UL - (k == e0)) );
-                }
-
-              w.alloced = w.nlimbs = rsize;
-              u.alloced = u.nlimbs = rsize;
-              u.d = rp;
-              mpi_set_cond (&w, &u, j != 0);
-              base_u_size ^= ((base_u_size ^ rsize)  & (0UL - (j != 0)));
-
-              mul_mod (xp, &xsize, rp, rsize, base_u, base_u_size,
-                       mp, msize, &karactx);
-              tp = rp; rp = xp; xp = tp;
-              rsize = xsize;
-            }
-
-          j = c0;
-          if ( i < 0 )
-            break;
+          mpi_set_cond (&w, &u, k == e0);
+          base_u_size |= ( precomp_size[k] & (0UL - (k == e0)) );
         }
-  \end{lstlisting}
-\end{algorithm}
 
-This loop is done after the main processing loop. The value of \textit{j} is
+      w.alloced = w.nlimbs = rsize;
+      u.alloced = u.nlimbs = rsize;
+      u.d = rp;
+      mpi_set_cond (&w, &u, j != 0);
+      base_u_size ^= ((base_u_size ^ rsize)  & (0UL - (j != 0)));
+
+      mul_mod (xp, &xsize, rp, rsize, base_u, base_u_size,
+                mp, msize, &karactx);
+      tp = rp; rp = xp; xp = tp;
+      rsize = xsize;
+    }
+\end{lstlisting}
+\hrule
+\vspace{5pt}
+
+The while loop shown in fragment \ref{code:libgcrypt_whilej} is done after the main processing loop. The value of \codevar{j} is
 related to the number of non-set bits in the last processed limb making it a
 high-risk variable. The branch is the condition for a loop, so this is a looped
 high-risk result. 
-\begin{algorithm}
-\begin{lstlisting}
-    while (j--)
-      {
-        mul_mod (xp, &xsize, rp, rsize, rp, rsize, mp, msize, &karactx);
-        tp = rp; rp = xp; xp = tp;
-        rsize = xsize;
-      }
+\vspace{5pt}
+\hrule
+\begin{lstlisting}[caption=Libgcrypt lines 702-707, label=code:libgcrypt_whilej]
+while (j--)
+  {
+    mul_mod (xp, &xsize, rp, rsize, rp, rsize,
+                          mp, msize, &karactx);
+    tp = rp; rp = xp; xp = tp;
+    rsize = xsize;
+  }
 \end{lstlisting}
-\end{algorithm}
+\hrule
+\vspace{5pt}
 
 
 There are two more high-risk results after the main processing is over,
 involving the result data on lines 740 and 756. This data has flow from the
-modulus and exponent and so it is considered sensitive. The rsize values are
+modulus and exponent and so it is considered sensitive. The \codevar{rsize} values are
 also considered sensitive due to the flow between parameters in the
-\textit{mul\_mod} calls. Both of the branches from the \textit{MPN\_NORMALIZE}
+\codefn{mul\_mod} calls. Both of the branches from the \codefn{MPN\_NORMALIZE}
 macro are reported and are considered both high-risk looped results.
 
+\subsubsection{mbedTLS 2.9.0}
+
+The mbedtls library had no change in the number of positives when including the
+offset. In the modular exponentiation code, there is a reduction of the base \codevar{a}
+if it is greater than the modulus \codevar{n}. The modulus \codevar{n} is marked to be tainted
+and \codevar{a} is the multi-precision integer that represents the base. The base is the
+user input, and is untrusted. This branch on line 1673 of the source file (\codefile{bignum.c})
+directly compares the value of \codevar{a} to the value of \codevar{n}.
+
+\ruleabove
+\begin{lstlisting}[caption=mbed TLS 2.9.0 - bignum.c lines 1673-1676]
+if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 )
+    MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &W[1], A, N ) );
+else
+    MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[1], A ) );
+\end{lstlisting}
+\rulebelow
+
+The 3 looped results reside in the loop which inspects the bits of the exponent.
+The data for the limbs containing the exponent is located at \codevar{E->p}. Each
+iteration through the loop looks at one bit of the exponent directly, making
+\codevar{ei} a high-risk variable in this loop. The first branch on \codevar{ei} on line 1736 is
+a high-risk looped branch to skip leading zeros, so that each window starts on a
+set bit. The second branch on line 1739 runs after a full window has been
+processed and the subsequent bits are zero.
+
+\ruleabove
+\begin{lstlisting}[caption=mbed TLS 2.9.0 - bignum.c lines 1717-1773]
+while( 1 )
+{
+    if( bufsize == 0 )
+    {
+        if( nblimbs == 0 )
+            break;
+
+        nblimbs--;
+
+        bufsize = sizeof( mbedtls_mpi_uint ) << 3;
+    }
+
+    bufsize--;
+
+    ei = (E->p[nblimbs] >> bufsize) & 1;
+
+    /*
+      * skip leading 0s
+      */
+    if( ei == 0 && state == 0 )
+        continue;
+
+    if( ei == 0 && state == 1 )
+    {
+        /*
+          * out of window, square X
+          */
+        MBEDTLS_MPI_CHK( mpi_montmul( X, X, N, mm, &T ) );
+        continue;
+    }
+
+    /*
+      * add ei to current window
+      */
+    state = 2;
+
+    nbits++;
+    wbits |= ( ei << ( wsize - nbits ) );
+
+    if( nbits == wsize )
+    {
+        /*
+          * X = X^wsize R^-1 mod N
+          */
+        for( i = 0; i < wsize; i++ )
+            MBEDTLS_MPI_CHK( mpi_montmul( X, X, N, mm, &T ) );
+
+        /*
+          * X = X * W[wbits] R^-1 mod N
+          */
+        MBEDTLS_MPI_CHK( mpi_montmul( X, &W[wbits], N, mm, &T ) );
+
+        state--;
+        nbits = 0;
+        wbits = 0;
+    }
+}
+\end{lstlisting}
+\rulebelow
+
+\subsubsection{BearSSL 0.5}
+  BearSSL had no positives when setting the exponent and modulus within the
+  modular exponentiation code to be the tainted values. The library claims to be
+  constant-time implementations. The library is small and modular, so the
+  32 bit big integer source codes were all linked. There were 10 positives from
+  the analysis, all of which are elimnated by the whitelist.
+  
+  In this library, no structure represents the big integers, instead an array
+  serves the purpose. The first element in the array is used to compute the size
+  and all subsequent elements in the array are the data. The low number of
+  results here is not due to the field sensitivity, but the ability to set the
+  tainted variables by context. The only variables set to be tainted in the
+  analysis are \codevar{e} and \codevar{m} within the \codefn{br\_i32\_modpow} function.
+
+  From the modular exponentiation source alone, there are no positives. All of
+  the positives which were eliminated using the whitelist were based on the
+  length from the first element in the arrays.
+
+\subsubsection{OpenSSL1.1.0g}
+
+\noindent
+\textbf{Reciprocal Method}
+
+   The reciprocal method has two looped high-risk positives both leaking data
+   from the exponent used in the modular exponentiation. The variables are the
+   exponent \codevar{p} and the modulus \codevar{m}. Both of these structures have the data
+   elements are located as the first element in the structure. The tainted
+   variables for this function are \codevar{p} 0 and \codevar{m} 0. The main processing loop
+   traverses the bits of \codevar{p} and looks for the first set bit, resulting in the
+   first looped positive. The function \codefn{BN\_is\_bit\_set} is from  \codefile{bn\_lib.c} and is
+   linked with \codefile{bn\_exp.c} for the source definition. This means that since \codevar{p} 0
+   is tainted, the \codefn{BN\_is\_bit\_set} function result is derived from \codevar{p} 0. From
+   the function definition, the data array from the bignum structure is indexed
+   using some transformation of the input parameter \codevar{n} and then masks all but
+   one bit. This function leaks 1 bit of \codevar{p} at a time, but is used within a
+   loop, where the input parameter is \codevar{wstart} and changes with the loop
+   iteration causing more bits of \codevar{p} to be leaked as the loop executes.
+   
+   This result is still reported if the \codefile{bn\_lib} source file is not linked with
+   the \codefile{bn\_exp.c} file. When the function definition is unreachable, all reachable
+   sources from the arguments flow to the return values and other mutable
+   values. In this case this means that since \codevar{p} 0 is tainted, the return value
+   from the \codefn{BN\_is\_bit\_set} function is also tainted.
+
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 250 - 259]
+for (;;) {
+    if (BN_is_bit_set(p, wstart) == 0) {
+        if (!start)
+            if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+                goto err;
+        if (wstart == 0)
+            break;
+        wstart--;
+        continue;
+    }
+   ...
+}
+\end{lstlisting}
+\rulebelow
+
+
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_lib.c lines 741 - 753]
+int BN_is_bit_set(const BIGNUM *a, int n)
+{
+    int i, j;
+
+    bn_check_top(a);
+    if (n < 0)
+        return 0;
+    i = n / BN_BITS2;
+    j = n % BN_BITS2;
+    if (a->top <= i)
+        return 0;
+    return (int)(((a->d[i]) >> j) & ((BN_ULONG)1));
+}
+\end{lstlisting}
+\rulebelow
+
+Within the same processing loop, the second high-risk looped result can be
+found. The analysis reports this result for the same reason as the previous
+result. The analysis results are only tracking explicit flow, but an important
+implicit flow result can be followed from this positive. Since the loop variable
+\codevar{i} flows to the window end variable \codevar{wend} when this branch condition is true,
+there is implicit flow between the data in \codevar{p} and the \codevar{wend} variable.  The
+subsequent for loop then ranges from 0 to \codevar{j} a value computed simply from \codevar{wend}.
+The number of iterations for the loop from 0 to \codevar{j} is then a function of the
+value of \codevar{p}.
+
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 250-297]
+for(;;){
+  ...
+        for (i = 1; i < window; i++) {
+            if (wstart - i < 0)
+                break;
+            if (BN_is_bit_set(p, wstart - i)) {
+                wvalue <<= (i - wend);
+                wvalue |= 1;
+                wend = i;
+            }
+        }
+
+        /* wend is the size of the current window */
+        j = wend + 1;
+        /* add the 'bytes above' */
+        if (!start)
+            for (i = 0; i < j; i++) {
+                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+                    goto err;
+            }
+   ...
+}
+\end{lstlisting}
+\rulebelow
+
+\noindent
+\textbf{Montgomery Method}
+
+   In the high-risk classifications, there is the category of controllable
+   branches. These are when there is a branch which the outcome is dependent
+   both on user-input as well as secret data. As with the reciprocal method, the
+   exponent and modulus, \codevar{p} 0 and \codevar{m} 0 respectively, are tainted. The
+   untrusted user specified data is \codevar{a} 0 which is another bignum structure.
+   
+   This positive is controllable, because there is a comparison operation done
+   between the plaintext and modulus. Assuming \codevar{a} 0 is controllable, then it
+   could be possible to change \codevar{a} 0 enough to discover \codevar{m} 0. This branch is
+   done to satisfy the assumption that $aa < m$ for the rest of the processing.
+
+
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 363-368]
+if (a->neg || BN_ucmp(a, m) >= 0) {
+    if (!BN_nnmod(val[0], a, m, ctx))
+        goto err;
+    aa = val[0];
+} else
+    aa = a;
+
+... 
+if (!BN_to_montgomery(val[0], aa, mont, ctx))
+    goto err;               /* 1 */
+\end{lstlisting}
+\rulebelow
+
+  Line 2 of this code fragment calls a function that is not linked with the
+  analyzed source. One of the results reported from the analysis is line 374 of
+  \codefile{bn\_exp.c}. This line is reported due to flow from \codevar{m} to \codevar{val[0]} from the
+  undefined function \codefn{BN\_nnmod}. Depending on the branch taken the value of \codevar{aa}
+  is equivalent to \codevar{val[0]} and thus the branch on the \codefn{BN\_to\_montgomery} call is
+  tainted due to the result of that branch being dependent on tainted data.
+  
+  The two high-risk looped results are from code identical to the reciprocal
+  method branching on set bits in p within the main porcessing loop. These lines
+  for the montgomery method are located at 416 and 437 respectively in \codefile{bn\_exp.c}.
+
+\noindent
+\textbf{Constant-Time Montgomery Method}
+
+There is one controllable positive for the constant-time montgomery method.
+This branch is similar to the one found in the montgomery method, but instead
+of calling \codefn{bn\_nnmod} the normal \codefn{bn\_mod} is called. 
+
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 752-758]
+if (a->neg || BN_ucmp(a, m) >= 0) {
+    if (!BN_mod(&am, a, m, ctx))
+        goto err;
+    if (!BN_to_montgomery(&am, &am, mont, ctx))
+        goto err;
+} else if (!BN_to_montgomery(&am, a, mont, ctx))
+    goto err;
+\end{lstlisting}
+\rulebelow
+
+There are still function calls to \codefn{BN\_is\_bit\_set}, but not as branch
+conditions. Instead the set bits of the window are extracted, and passed as a
+parameter to select the correct value from the pre-computed table of powers.
+
+  
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 852-854]
+for (wvalue = 0, i = bits % 5; i >= 0; i--, bits--)
+    wvalue = (wvalue << 1) + BN_is_bit_set(p, bits);
+bn_gather5_t4(tmp.d, top, powerbuf, wvalue);
+\end{lstlisting}
+\rulebelow
+
+  It is possible that there are true positives within the source code which
+  defines the \codefn{bn\_gather5\_t4} function, but that source was not analyzed. The only
+  analyzed source files were \codefile{bn\_exp.c} and \codefile{bn\_lib.c}.
+
+\noindent
+\textbf{Mongomery Word Method}
+
+
+   Within the montgomery word method, there are 3 controllable branches (2 of
+   which are looped), and 1 high-risk looped branch. The high-risk looped branch
+   is the same branch from the other methods involving the BN\_is\_bit\_set
+   function on the exponent \codevar{p}.
+
+   The main procesing loop is shown, \codevar{a} is the untrusted plain text,
+   and \codevar{p} 0 and \codevar{m} 0 are the tainted values. Within this loop,
+   there are function calls to \codefn{BN\_TO\_MONTGOMERY\_WORD} and
+   \codefn{BN\_MOD\_MUL\_WORD} which are macros that call functions that are not
+   linked with the analyzed source. Again, the analysis assumes flow between
+   mutable parameters if the function defintion is not provided. This results in
+   there being an assumed flow between \codevar{w} and \codevar{a} and \codevar{m}.
+   Branches on lines 1182 and 1202 are controllable since \codevar{a} is an
+   untrusted input and \codevar{m} is tainted data.
+
+   The final controllable but not looped result does one final check on =w=.
+   This result is high-risk due to the flow from =m= and =a= to =w=.
+
+\ruleabove
+\begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 1178-1227]
+  w = a;                      /* bit 'bits-1' of 'p' is always set */
+  for (b = bits - 2; b >= 0; b--) {
+      /* First, square r*w. */
+      next_w = w * w;
+      if ((next_w / w) != w) { /* overflow */
+          if (r_is_one) {
+              if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+                  goto err;
+              r_is_one = 0;
+          } else {
+              if (!BN_MOD_MUL_WORD(r, w, m))
+                  goto err;
+          }
+          next_w = 1;
+      }
+      w = next_w;
+      if (!r_is_one) {
+          if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+              goto err;
+      }
+
+      /* Second, multiply r*w by 'a' if exponent bit is set. */
+      if (BN_is_bit_set(p, b)) {
+          next_w = w * a;
+          if ((next_w / a) != w) { /* overflow */
+              if (r_is_one) {
+                  if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+                      goto err;
+                  r_is_one = 0;
+              } else {
+                  if (!BN_MOD_MUL_WORD(r, w, m))
+                      goto err;
+              }
+              next_w = a;
+          }
+          w = next_w;
+      }
+  }
+
+    /* Finally, set r:=r*w. */
+    if (w != 1) {
+        if (r_is_one) {
+            if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+                goto err;
+            r_is_one = 0;
+        } else {
+            if (!BN_MOD_MUL_WORD(r, w, m))
+                goto err;
+        }
+    }
+\end{lstlisting}
+\rulebelow
+
+\noindent
+\textbf{Simple Method}
+
+   The positives for the \codefn{BN\_mod\_exp\_simple} algorithm are the same as the ones
+   reported in the reciprocal and montgomery methods. In the main procesing loop
+   there are two branches that depend on the function \codefn{BN\_is\_bit\_set}. The input
+   to the function is the exponent \codevar{p} which is a tainted value. These positives
+   can be found on lines 1312 and 1332 of \codefile{bn\_exp.c}.
 \section{Related Works}
 
 \section{Conclusion}

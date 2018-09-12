@@ -17,11 +17,18 @@ const Function* findEnclosingFunc(const Value* V) {
 
 bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
   bool linkExists = false;
-  if (loc->getSize() > 0)
+  if (loc != NULL && loc->getSize() > 0)
     linkExists = loc->hasLink(0);
 
-  if(linkExists)
-    linkExists = loc->getLink(0).getNode()->getSize() > 0;
+  if(linkExists){
+    AbstractLoc* link = loc->getLink(0).getNode();
+
+
+    if(link != NULL)
+      linkExists = link->getSize() > 0;
+    else
+      linkExists = false;
+  }
 
   return linkExists;
 }

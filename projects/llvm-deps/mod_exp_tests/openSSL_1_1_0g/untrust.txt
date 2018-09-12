@@ -1,2 +1,4 @@
-p 0
-m 0
+p 0 BN_mod_exp_mont_word
+p 0 BN_mod_exp_mont_word
+m 0 BN_mod_exp_simple
+m 0 BN_mod_exp_simple

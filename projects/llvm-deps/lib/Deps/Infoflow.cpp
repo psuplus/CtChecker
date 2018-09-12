@@ -2242,9 +2242,6 @@ Infoflow::parseTaintString(std::string line) {
   line.erase(new_end, line.end());
 
   // Delete Trailing White space
-  while (line[line.length() - 1]  == ' ') {
-    line.pop_back();
-  }
 
   // Split up line
   std::vector<std::string> splits;
@@ -2318,11 +2315,14 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
             const DSNodeHandle nh = curElem->first->getLink(0);
             const AbstractLoc * node = nh.getNode();
             errs() << "Linked Node";
-            node->dump();
-            DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = locConstraintMap.find(node);
+            if (node != NULL){
 
-            // Instead look at this set of constraint elements
-            elemMap = childElem->second;
+              node->dump();
+              DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = locConstraintMap.find(node);
+
+              // Instead look at this set of constraint elements
+              elemMap = childElem->second;
+            }
           }
 
           // Remove the relevant constraint

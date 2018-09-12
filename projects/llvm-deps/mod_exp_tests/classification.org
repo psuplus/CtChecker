@@ -60,7 +60,7 @@ V      bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
        bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
        bn_exp.c line  743 - for (i = 1; i < top; i++)
        bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
-       bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+TODO   bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
        bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
        bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
        bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))

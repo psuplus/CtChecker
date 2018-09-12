@@ -10,7 +10,11 @@
 
 \lstdefinestyle{codestyle}{
   basicstyle=\fontsize{9}{11}\selectfont\ttfamily,
-  numberstyle=\small,
+  numberstyle=\tiny,
+  numbers=left,
+  xleftmargin=2em,
+  framexleftmargin=1.5em,
+  frame=lines,
   breaklines=false,
   tabsize=2,
   captionpos=b,
@@ -24,8 +28,8 @@
 \newcommand{\codevar}[1]{\textit{#1}}
 \newcommand{\codefn}[1]{\textit{#1}}
 \newcommand{\codefile}[1]{\textit{#1}}
-\newcommand{\ruleabove}{\vspace{5pt}\hrule}
-\newcommand{\rulebelow}{\hrule\vspace{5pt}}
+\newcommand{\ruleabove}{}
+\newcommand{\rulebelow}{}
 
 
 \title{}
@@ -963,7 +967,7 @@ show the results that corresponded to that implementation.
     Simple & 22 & 2    & 6    & 12    & 2   \\
     \hline
   \end{tabular}}
-  \caption{Stage 1 Classification - Field Insensitive}
+  \caption{Stage 1 Classification - Field Insensitive (Baseline) Analysis: TP - True Positive, FP - False Positive, V - Validation, LR - Low-Risk, HR - High-Risk}
   \label{tbl:first-stage-no-offset}
 \end{table}
 
@@ -980,7 +984,9 @@ external to the modular exponentiation code, meaning that there is little to no
 manipulation of the data directly in the source analyzed.
 
 \begin{table}
-  \begin{tabular}{|p{2.5cm} | p{1.5cm}| p{1.5cm} | p{1.7cm}| p{1.5cm}| p{1.5cm}|}
+  \centering
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{|p{2cm} | p{2cm}| p{2cm} | p{2cm}| p{2cm}| p{2cm}|}
     \hline
     \textbf{Library} &\textbf{TP}&\textbf{FP}&\textbf{V}&\textbf{LR}&\textbf{HR}\\
     \hline
@@ -988,14 +994,14 @@ manipulation of the data directly in the source analyzed.
     \textbf{mbedTLS 2.9.0} & 25   & 8  & 0 & 13 & 4 \\
     \textbf{BearSSL 0.5}& 10 & 9 & 1 & 0 & 0 \\
     \textbf{OpenSSL 1.1.0g}& & & & & \\
-    \textit{Reciprocal} & 13 & 4  & 6 & 1 & 2 \\
-    \textit{Montgomery} & 25 & 4   & 11   & 6  &  4  \\
-    \textit{Montgomery Const. Time} & 21 & 0   & 12    &  7   &  2  \\
-    \textit{Montgomery Word} & 20 & 3   & 11    & 2    & 4   \\
-    \textit{Simple} & 11 & 2    & 6    & 1    & 2   \\
+    Reciprocal & 13 & 4  & 6 & 1 & 2 \\
+    Montgomery & 25 & 4   & 11   & 6  &  4  \\
+    Montgomery Const. Time & 21 & 0   & 12    &  7   &  2  \\
+    Montgomery Word & 20 & 3   & 11    & 2    & 4   \\
+    Simple & 11 & 2    & 6    & 1    & 2   \\
     \hline
-  \end{tabular}
-  \caption{Stage 1 Classification - Field Sensitive}
+  \end{tabular}}
+  \caption{Stage 1 Classification - Field Sensitive (Improved) Analysis: TP - True Positive, FP - False Positive, V - Validation, LR - Low-Risk, HR - High-Risk}
   \label{tbl:first-stage-with-offset}
 \end{table}
 
@@ -1021,9 +1027,9 @@ not being field-sensitive.
 
 \subsubsection{Libgcrypt High-risk results}
 
-Libgcrypt 14 high-risk results are broken down further as given in table
+Libgcrypt 14 high-risk results are broken down further as given in Table \ref{tbl:libgcrypt_high}.
 
-\begin{table}
+\begin{table}[h!]
   \centering
   \begin{tabular}{l r}
     \textbf{Single} & 4 \\
@@ -1208,7 +1214,7 @@ the bit mask allows only the true size to be set.
 
 \vspace{5pt}
 \hrule
-\begin{lstlisting}{caption=Libgcrypt lines 667- 695}
+\begin{lstlisting}[caption=Libgcrypt lines 667- 695]
   for (j += W - c0; j >= 0; j--)
     {
 
@@ -1569,8 +1575,8 @@ bn_gather5_t4(tmp.d, top, powerbuf, wvalue);
    Branches on lines 1182 and 1202 are controllable since \codevar{a} is an
    untrusted input and \codevar{m} is tainted data.
 
-   The final controllable but not looped result does one final check on =w=.
-   This result is high-risk due to the flow from =m= and =a= to =w=.
+   The final controllable but not looped result does one final check on \codevar{w}.
+   This result is high-risk due to the flow from \codevar{m} and \codevar{a} to \codevar{w}.
 
 \ruleabove
 \begin{lstlisting}[caption=OpenSSL 1.1.0g - bn\_exp.c lines 1178-1227]

@@ -1,0 +1,391 @@
+src/bn_shift.c line   21 - if (r != a) {
+src/bn_shift.c line   23 - if (bn_wexpand(r, a->top + 1) == NULL)
+src/bn_shift.c line   27 - if (bn_wexpand(r, a->top + 1) == NULL)
+src/bn_shift.c line   33 - for (i = 0; i < a->top; i++) {
+src/bn_shift.c line   38 - if (c) {
+src/bn_shift.c line   54 - if (BN_is_zero(a)) {
+src/bn_shift.c line   61 - if (a != r) {
+src/bn_shift.c line   62 - if (bn_wexpand(r, j) == NULL)
+src/bn_shift.c line   69 - if (t >>= 1)
+src/bn_shift.c line   71 - while (i > 0) {
+src/bn_shift.c line   77 - if (!r->top)
+src/bn_shift.c line   92 - if (n < 0) {
+src/bn_shift.c line   98 - if (bn_wexpand(r, a->top + nw + 1) == NULL)
+src/bn_shift.c line  106 - if (lb == 0)
+src/bn_shift.c line  107 - for (i = a->top - 1; i >= 0; i--)
+src/bn_shift.c line  110 - for (i = a->top - 1; i >= 0; i--) {
+src/bn_shift.c line  131 - if (n < 0) {
+src/bn_shift.c line  139 - if (nw >= a->top || a->top == 0) {
+src/bn_shift.c line  139 - if (nw >= a->top || a->top == 0) {
+src/bn_shift.c line  144 - if (r != a) {
+src/bn_shift.c line  145 - if (bn_wexpand(r, i) == NULL)
+src/bn_shift.c line  149 - if (n == 0)
+src/bn_shift.c line  158 - if (rb == 0) {
+src/bn_shift.c line  159 - for (i = j; i != 0; i--)
+src/bn_shift.c line  163 - for (i = j - 1; i != 0; i--) {
+src/bn_shift.c line  168 - if ((l = (l >> rb) & BN_MASK2))
+src/bn_shift.c line  171 - if (!r->top)
+src/bn_add.c line   27 - if (a_neg ^ b->neg) {
+src/bn_add.c line   29 - if (a_neg) {
+src/bn_add.c line   39 - if (BN_ucmp(a, b) < 0) {
+src/bn_add.c line   67 - if (a->top < b->top) {
+src/bn_add.c line   78 - if (bn_wexpand(r, max + 1) == NULL)
+src/bn_add.c line   91 - while (dif) {
+src/bn_add.c line  120 - if (dif < 0) {              /* hmm... should not be happening */
+src/bn_add.c line  125 - if (bn_wexpand(r, max) == NULL)
+src/bn_add.c line  136 - while (dif) {
+src/bn_add.c line  164 - if (a->neg) {
+src/bn_add.c line  165 - if (b->neg) {
+src/bn_add.c line  176 - if (b->neg) {
+src/bn_add.c line  191 - max = (a->top > b->top) ? a->top : b->top;
+src/bn_add.c line  192 - if (bn_wexpand(r, max) == NULL)
+src/bn_add.c line  194 - if (BN_ucmp(a, b) < 0) {
+src/bn_gcd.c line  146 - if ((BN_get_flags(a, BN_FLG_CONSTTIME) != 0)
+src/bn_gcd.c line  147 - || (BN_get_flags(n, BN_FLG_CONSTTIME) != 0)) {
+src/bn_gcd.c line  162 - if (T == NULL)
+src/bn_gcd.c line  165 - if (in == NULL)
+src/bn_gcd.c line  169 - if (R == NULL)
+src/bn_gcd.c line  174 - if (BN_copy(B, a) == NULL)
+src/bn_gcd.c line  176 - if (BN_copy(A, n) == NULL)
+src/bn_gcd.c line  179 - if (B->neg || (BN_ucmp(B, A) >= 0)) {
+src/bn_gcd.c line  179 - if (B->neg || (BN_ucmp(B, A) >= 0)) {
+src/bn_gcd.c line  180 - if (!BN_nnmod(B, B, A, ctx))
+src/bn_gcd.c line  192 - if (BN_is_odd(n) && (BN_num_bits(n) <= 2048)) {
+src/bn_gcd.c line  192 - if (BN_is_odd(n) && (BN_num_bits(n) <= 2048)) {
+src/bn_gcd.c line  201 - while (!BN_is_zero(B)) {
+src/bn_gcd.c line  215 - while (!BN_is_bit_set(B, shift)) { /* note that 0 < B */
+src/bn_gcd.c line  218 - if (BN_is_odd(X)) {
+src/bn_gcd.c line  237 - while (!BN_is_bit_set(A, shift)) { /* note that 0 < A */
+src/bn_gcd.c line  240 - if (BN_is_odd(Y)) {
+src/bn_gcd.c line  265 - if (BN_ucmp(B, A) >= 0) {
+src/bn_gcd.c line  289 - while (!BN_is_zero(B)) {
+src/bn_gcd.c line  299 - if (BN_num_bits(A) == BN_num_bits(B)) {
+src/bn_gcd.c line  304 - } else if (BN_num_bits(A) == BN_num_bits(B) + 1) {
+src/bn_gcd.c line  308 - if (BN_ucmp(A, T) < 0) {
+src/bn_gcd.c line  320 - if (BN_ucmp(A, D) < 0) {
+src/bn_gcd.c line  380 - if (BN_is_one(D)) {
+src/bn_gcd.c line  384 - if (BN_is_word(D, 2)) {
+src/bn_gcd.c line  387 - } else if (BN_is_word(D, 4)) {
+src/bn_gcd.c line  390 - } else if (D->top == 1) {
+src/bn_gcd.c line  391 - if (!BN_copy(tmp, X))
+src/bn_gcd.c line  424 - if (BN_is_one(A)) {
+src/bn_gcd.c line  426 - if (!Y->neg && BN_ucmp(Y, n) < 0) {
+src/bn_gcd.c line  426 - if (!Y->neg && BN_ucmp(Y, n) < 0) {
+src/bn_gcd.c line  427 - if (!BN_copy(R, Y))
+src/bn_gcd.c line  430 - if (!BN_nnmod(R, Y, n, ctx))
+src/bn_gcd.c line  440 - if ((ret == NULL) && (in == NULL))
+src/bn_gcd.c line  440 - if ((ret == NULL) && (in == NULL))
+src/bn_gcd.c line  470 - if (T == NULL)
+src/bn_gcd.c line  473 - if (in == NULL)
+src/bn_gcd.c line  477 - if (R == NULL)
+src/bn_gcd.c line  482 - if (BN_copy(B, a) == NULL)
+src/bn_gcd.c line  484 - if (BN_copy(A, n) == NULL)
+src/bn_gcd.c line  488 - if (B->neg || (BN_ucmp(B, A) >= 0)) {
+src/bn_gcd.c line  488 - if (B->neg || (BN_ucmp(B, A) >= 0)) {
+src/bn_gcd.c line  497 - if (!BN_nnmod(B, &local_B, A, ctx))
+src/bn_gcd.c line  511 - while (!BN_is_zero(B)) {
+src/bn_gcd.c line  596 - if (BN_is_one(A)) {
+src/bn_gcd.c line  598 - if (!Y->neg && BN_ucmp(Y, n) < 0) {
+src/bn_gcd.c line  598 - if (!Y->neg && BN_ucmp(Y, n) < 0) {
+src/bn_gcd.c line  599 - if (!BN_copy(R, Y))
+src/bn_gcd.c line  602 - if (!BN_nnmod(R, Y, n, ctx))
+src/bn_gcd.c line  611 - if ((ret == NULL) && (in == NULL))
+src/bn_gcd.c line  611 - if ((ret == NULL) && (in == NULL))
+src/bn_exp.c line  522 - if (top > b->top)
+src/bn_exp.c line  525 - for (i = 0, j = idx; i < top; i++, j += width) {
+src/bn_exp.c line  548 - if (bn_wexpand(b, top) == NULL)
+src/bn_exp.c line  551 - if (window <= 3) {
+src/bn_exp.c line  552 - for (i = 0; i < top; i++, table += width) {
+src/bn_exp.c line  555 - for (j = 0; j < width; j++) {
+src/bn_exp.c line  574 - for (i = 0; i < top; i++, table += width) {
+src/bn_exp.c line  577 - for (j = 0; j < xstride; j++) {
+
+src/bn_exp.c line  629 - if (!BN_is_odd(m)) {
+src/bn_exp.c line  637 - if (bits == 0) {
+src/bn_exp.c line  639 - if (BN_is_one(m)) {
+src/bn_exp.c line  657 - if ((mont = BN_MONT_CTX_new()) == NULL)
+src/bn_exp.c line  693 - window = BN_window_bits_for_ctime_exponent_size(bits);
+src/bn_exp.c line  693 - window = BN_window_bits_for_ctime_exponent_size(bits);
+src/bn_exp.c line  693 - window = BN_window_bits_for_ctime_exponent_size(bits);
+src/bn_exp.c line  717 - ((2 * top) >
+src/bn_exp.c line  720 - if (powerbufLen < 3072)
+src/bn_exp.c line  725 - if ((powerbufFree =
+src/bn_exp.c line  734 - if (powerbufLen < 3072)
+src/bn_exp.c line  748 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+src/bn_exp.c line  751 - for (i = 1; i < top; i++)
+src/bn_exp.c line  760 - if (a->neg || BN_ucmp(a, m) >= 0) {
+src/bn_exp.c line 1031 - if (window > 1) {
+src/bn_exp.c line 1037 - for (i = 3; i < numPowers; i++) {
+src/bn_exp.c line 1048 - for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
+src/bn_exp.c line 1058 - while (bits >= 0) {
+src/bn_exp.c line 1062 - for (i = 0; i < window; i++, bits--) {
+src/bn_exp.c line 1097 - if (powerbuf != NULL) {
+
+include/bn_lcl.h line  679 - if (((bits+BN_BITS2-1)/BN_BITS2) <= (a)->dmax)
+src/bn_sqr.c line   33 - rr = (a != r) ? r : BN_CTX_get(ctx);
+src/bn_sqr.c line   35 - if (!rr || !tmp)
+src/bn_sqr.c line   35 - if (!rr || !tmp)
+src/bn_sqr.c line   39 - if (bn_wexpand(rr, max) == NULL)
+src/bn_sqr.c line   67 - if (al == j) {
+src/bn_sqr.c line   68 - if (bn_wexpand(tmp, k * 2) == NULL)
+src/bn_sqr.c line   72 - if (bn_wexpand(tmp, max) == NULL)
+src/bn_sqr.c line   93 - if (r != rr && BN_copy(r, rr) == NULL)
+src/bn_sqr.c line   93 - if (r != rr && BN_copy(r, rr) == NULL)
+src/bn_sqr.c line  180 - if (c1 > 0)
+src/bn_sqr.c line  182 - else if (c1 < 0)
+src/bn_sqr.c line  215 - if (c1) {
+src/bn_sqr.c line  225 - if (ln < (BN_ULONG)c1) {
+src/bn_sqr.c line  231 - } while (ln == 0);
+src/bn_div.c line  155 - if ((num->top > 0 && num->d[num->top - 1] == 0) ||
+src/bn_div.c line  155 - if ((num->top > 0 && num->d[num->top - 1] == 0) ||
+src/bn_div.c line  155 - if ((num->top > 0 && num->d[num->top - 1] == 0) ||
+src/bn_div.c line  156 - (divisor->top > 0 && divisor->d[divisor->top - 1] == 0)) {
+src/bn_div.c line  164 - if ((BN_get_flags(num, BN_FLG_CONSTTIME) != 0)
+src/bn_div.c line  165 - || (BN_get_flags(divisor, BN_FLG_CONSTTIME) != 0)) {
+src/bn_div.c line  178 - if (BN_is_zero(divisor)) {
+src/bn_div.c line  183 - if (!no_branch && BN_ucmp(num, divisor) < 0) {
+src/bn_div.c line  184 - if (rm != NULL) {
+src/bn_div.c line  185 - if (BN_copy(rm, num) == NULL)
+src/bn_div.c line  188 - if (dv != NULL)
+src/bn_div.c line  197 - if (dv == NULL)
+src/bn_div.c line  201 - if (sdiv == NULL || res == NULL || tmp == NULL || snum == NULL)
+src/bn_div.c line  201 - if (sdiv == NULL || res == NULL || tmp == NULL || snum == NULL)
+src/bn_div.c line  201 - if (sdiv == NULL || res == NULL || tmp == NULL || snum == NULL)
+src/bn_div.c line  201 - if (sdiv == NULL || res == NULL || tmp == NULL || snum == NULL)
+src/bn_div.c line  219 - if (snum->top <= sdiv->top + 1) {
+src/bn_div.c line  220 - if (bn_wexpand(snum, sdiv->top + 2) == NULL)
+src/bn_div.c line  222 - for (i = snum->top; i < sdiv->top + 2; i++)
+src/bn_div.c line  226 - if (bn_wexpand(snum, snum->top + 1) == NULL)
+src/bn_div.c line  251 - d1 = (div_n == 1) ? 0 : sdiv->d[div_n - 2];
+src/bn_div.c line  257 - if (!bn_wexpand(res, (loop + 1)))
+src/bn_div.c line  264 - if (!bn_wexpand(tmp, (div_n + 1)))
+src/bn_div.c line  268 - if (BN_ucmp(&wnum, sdiv) >= 0) {
+src/bn_div.c line  288 - if (res->top == 0)
+src/bn_div.c line  293 - for (i = 0; i < loop - 1; i++, wnump--) {
+src/bn_div.c line  307 - if (n0 == d0)
+src/bn_div.c line  363 - if ((t2h < rem) || ((t2h == rem) && (t2l <= wnump[-2])))
+src/bn_div.c line  363 - if ((t2h < rem) || ((t2h == rem) && (t2l <= wnump[-2])))
+src/bn_div.c line  363 - if ((t2h < rem) || ((t2h == rem) && (t2l <= wnump[-2])))
+src/bn_div.c line  367 - if (rem < d0)
+src/bn_div.c line  369 - if (t2l < d1)
+src/bn_div.c line  384 - if (bn_sub_words(wnum.d, wnum.d, tmp->d, div_n + 1)) {
+src/bn_div.c line  391 - if (bn_add_words(wnum.d, wnum.d, sdiv->d, div_n))
+src/bn_div.c line  403 - if (rm != NULL) {
+src/bn_div.c line  410 - if (!BN_is_zero(rm))
+src/bn_mod.c line   22 - if (!r->neg)
+src/bn_asm.c line   22 - assert(num >= 0);
+src/bn_asm.c line   23 - if (num <= 0)
+src/bn_asm.c line   27 - while (num & ~3) {
+src/bn_asm.c line   37 - while (num) {
+src/bn_asm.c line   51 - assert(num >= 0);
+src/bn_asm.c line   52 - if (num <= 0)
+src/bn_asm.c line   56 - while (num & ~3) {
+src/bn_asm.c line   66 - while (num) {
+src/bn_asm.c line  318 - assert(n >= 0);
+src/bn_asm.c line  319 - if (n <= 0)
+src/bn_asm.c line  324 - while (n & ~3) {
+src/bn_asm.c line  355 - while (n) {
+src/bn_asm.c line  377 - assert(n >= 0);
+src/bn_asm.c line  378 - if (n <= 0)
+src/bn_asm.c line  382 - while (n & ~3) {
+src/bn_asm.c line  386 - if (t1 != t2)
+src/bn_asm.c line  391 - if (t1 != t2)
+src/bn_asm.c line  396 - if (t1 != t2)
+src/bn_asm.c line  401 - if (t1 != t2)
+src/bn_asm.c line  409 - while (n) {
+src/bn_asm.c line  413 - if (t1 != t2)
+src/bn_ctx.c line  219 - if ((ret = BN_POOL_get(&ctx->pool, ctx->flags)) == NULL) {
+src/bn_ctx.c line  259 - if (newitems == NULL)
+src/bn_ctx.c line  310 - if (item == NULL)
+src/bn_word.c line  107 - if (!w)
+src/bn_word.c line  110 - if (BN_is_zero(a))
+src/bn_word.c line  113 - if (a->neg) {
+src/bn_word.c line  116 - if (!BN_is_zero(a))
+src/bn_word.c line  120 - for (i = 0; w != 0 && i < a->top; i++) {
+src/bn_word.c line  120 - for (i = 0; w != 0 && i < a->top; i++) {
+src/bn_word.c line  124 - if (w && i == a->top) {
+src/bn_word.c line  124 - if (w && i == a->top) {
+src/bn_word.c line  125 - if (bn_wexpand(a, a->top + 1) == NULL)
+src/bn_word.c line  142 - if (!w)
+src/bn_word.c line  145 - if (BN_is_zero(a)) {
+src/bn_word.c line  152 - if (a->neg) {
+src/bn_word.c line  159 - if ((a->top == 1) && (a->d[0] < w)) {
+src/bn_word.c line  159 - if ((a->top == 1) && (a->d[0] < w)) {
+src/bn_word.c line  166 - if (a->d[i] >= w) {
+src/bn_word.c line  175 - if ((a->d[i] == 0) && (i == (a->top - 1)))
+src/bn_word.c line  175 - if ((a->d[i] == 0) && (i == (a->top - 1)))
+src/bn_word.c line  187 - if (a->top) {
+src/bn_word.c line  188 - if (w == 0)
+src/bn_word.c line  192 - if (ll) {
+src/bn_word.c line  193 - if (bn_wexpand(a, a->top + 1) == NULL)
+src/bn_mont.c line   48 - if (tmp == NULL)
+src/bn_mont.c line   52 - if (a == b) {
+src/bn_mont.c line   83 - if (nl == 0) {
+src/bn_mont.c line   89 - if (bn_wexpand(r, max) == NULL)
+src/bn_mont.c line   98 - if (i)
+src/bn_mont.c line  104 - for (carry = 0, i = 0; i < nl; i++, rp++) {
+src/bn_mont.c line  112 - if (bn_wexpand(ret, nl) == NULL)
+src/bn_mont.c line  135 - for (i = 0, nl -= 4; i < nl; i += 4) {
+src/bn_mont.c line  151 - for (nl += 4; i < nl; i++)
+src/bn_mont.c line  174 - if ((t = BN_CTX_get(ctx)) && BN_copy(t, a))
+src/bn_mont.c line  174 - if ((t = BN_CTX_get(ctx)) && BN_copy(t, a))
+src/bn_mont.c line  217 - if ((ret = OPENSSL_malloc(sizeof(*ret))) == NULL)
+src/bn_mont.c line  237 - if (mont == NULL)
+src/bn_mont.c line  243 - if (mont->flags & BN_FLG_MALLOCED)
+src/bn_mont.c line  252 - if (BN_is_zero(mod))
+src/bn_mont.c line  256 - if ((Ri = BN_CTX_get(ctx)) == NULL)
+src/bn_mont.c line  259 - if (!BN_copy(&(mont->N), mod))
+src/bn_mont.c line  273 - if (BN_get_flags(mod, BN_FLG_CONSTTIME) != 0)
+src/bn_mont.c line  329 - if ((BN_mod_inverse(Ri, R, &tmod, ctx)) == NULL)
+src/bn_mont.c line  333 - if (!BN_is_zero(Ri)) {
+src/bn_mont.c line  346 - mont->n0[0] = (Ri->top > 0) ? Ri->d[0] : 0;
+src/bn_lib.c line  111 - if (l & 0xffffffff00000000L) {
+src/bn_lib.c line  112 - if (l & 0xffff000000000000L) {
+src/bn_lib.c line  113 - if (l & 0xff00000000000000L) {
+src/bn_lib.c line  118 - if (l & 0x0000ff0000000000L) {
+src/bn_lib.c line  143 - if (l & 0xffff0000L) {
+src/bn_lib.c line  144 - if (l & 0xff000000L)
+src/bn_lib.c line  152 - if (l & 0xff00L)
+src/bn_lib.c line  166 - if (BN_is_zero(a))
+src/bn_lib.c line  173 - if (BN_get_flags(a, BN_FLG_SECURE))
+src/bn_lib.c line  184 - if (a == NULL)
+src/bn_lib.c line  187 - if (a->d != NULL) {
+src/bn_lib.c line  189 - if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+src/bn_lib.c line  194 - if (i)
+src/bn_lib.c line  200 - if (a == NULL)
+src/bn_lib.c line  203 - if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
+src/bn_lib.c line  205 - if (a->flags & BN_FLG_MALLOCED)
+src/bn_lib.c line  227 - if ((ret = OPENSSL_zalloc(sizeof(*ret))) == NULL) {
+src/bn_lib.c line  254 - if (words > (INT_MAX / (4 * BN_BITS2))) {
+src/bn_lib.c line  258 - if (BN_get_flags(b, BN_FLG_STATIC_DATA)) {
+src/bn_lib.c line  262 - if (BN_get_flags(b, BN_FLG_SECURE))
+src/bn_lib.c line  266 - if (A == NULL) {
+src/bn_lib.c line  274 - if (B != NULL) {
+src/bn_lib.c line  275 - for (i = b->top >> 2; i > 0; i--, A += 4, B += 4) {
+src/bn_lib.c line  330 - if (words > b->dmax) {
+src/bn_lib.c line  332 - if (!a)
+src/bn_lib.c line  334 - if (b->d) {
+src/bn_lib.c line  373 - if (a == b)
+src/bn_lib.c line  375 - if (bn_wexpand(a, b->top) == NULL)
+src/bn_lib.c line  381 - for (i = b->top >> 2; i > 0; i--, A += 4, B += 4) {
+src/bn_lib.c line  409 - if (BN_get_flags(b, BN_FLG_CONSTTIME) != 0)
+src/bn_lib.c line  475 - if (bn_expand(a, (int)sizeof(BN_ULONG) * 8) == NULL)
+src/bn_lib.c line  641 - if (i != 0)
+src/bn_lib.c line  645 - for (i = a->top - 1; i >= 0; i--) {
+src/bn_lib.c line  648 - if (t1 != t2)
+src/bn_lib.c line  705 - if (n < 0)
+src/bn_lib.c line  710 - if (a->top <= i) {
+src/bn_lib.c line  711 - if (bn_wexpand(a, i + 1) == NULL)
+src/bn_lib.c line  713 - for (k = a->top; k < i + 1; k++)
+src/bn_lib.c line  746 - if (n < 0)
+src/bn_lib.c line  750 - if (a->top <= i)
+src/bn_lib.c line  779 - if (b && !BN_is_zero(a))
+src/bn_lib.c line  792 - if (aa != bb)
+src/bn_lib.c line  794 - for (i = n - 2; i >= 0; i--) {
+src/bn_lib.c line  797 - if (aa != bb)
+src/bn_lib.c line  817 - if (dl < 0) {
+src/bn_lib.c line  818 - for (i = dl; i < 0; i++) {
+src/bn_lib.c line  819 - if (b[n - i] != 0)
+src/bn_lib.c line  823 - if (dl > 0) {
+src/bn_lib.c line  824 - for (i = dl; i > 0; i--) {
+src/bn_lib.c line  825 - if (a[n + i] != 0)
+src/bn_lib.c line  926 - return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+src/bn_lib.c line  926 - return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
+src/bn_lib.c line  936 - return BN_abs_is_word(a, 1) && !a->neg;
+src/bn_lib.c line  941 - return BN_abs_is_word(a, w) && (!w || !a->neg);
+src/bn_lib.c line  946 - return (a->top > 0) && (a->d[0] & 1);
+src/bn_lib.c line 1027 - return (words <= a->dmax) ? a : bn_expand2(a, words);
+src/bn_lib.c line 1035 - if (tmp_top > 0) {
+src/bn_lib.c line 1036 - for (ftl = &(a->d[tmp_top]); tmp_top > 0; tmp_top--) {
+src/bn_lib.c line 1038 - if (*ftl != 0)
+src/bn_lib.c line 1043 - if (a->top == 0)
+src/bn_mul.c line   33 - assert(cl >= 0);
+src/bn_mul.c line   36 - if (dl == 0)
+src/bn_mul.c line   43 - if (dl < 0) {
+src/bn_mul.c line   47 - if (t != 0)
+src/bn_mul.c line   49 - if (++dl >= 0)
+src/bn_mul.c line   54 - if (t != 0)
+src/bn_mul.c line   56 - if (++dl >= 0)
+src/bn_mul.c line   61 - if (t != 0)
+src/bn_mul.c line   63 - if (++dl >= 0)
+src/bn_mul.c line   68 - if (t != 0)
+src/bn_mul.c line   70 - if (++dl >= 0)
+src/bn_mul.c line   78 - while (c) {
+src/bn_mul.c line   81 - if (t != 0)
+src/bn_mul.c line   83 - if (--dl <= 0)
+src/bn_mul.c line   88 - if (t != 0)
+src/bn_mul.c line   90 - if (--dl <= 0)
+src/bn_mul.c line   95 - if (t != 0)
+src/bn_mul.c line   97 - if (--dl <= 0)
+src/bn_mul.c line  102 - if (t != 0)
+src/bn_mul.c line  104 - if (--dl <= 0)
+src/bn_mul.c line  111 - if (dl > 0) {
+src/bn_mul.c line  112 - if (save_dl > dl) {
+src/bn_mul.c line  116 - if (--dl <= 0)
+src/bn_mul.c line  121 - if (--dl <= 0)
+src/bn_mul.c line  126 - if (--dl <= 0)
+src/bn_mul.c line  133 - if (dl > 0) {
+src/bn_mul.c line  136 - if (--dl <= 0)
+src/bn_mul.c line  139 - if (--dl <= 0)
+src/bn_mul.c line  142 - if (--dl <= 0)
+src/bn_mul.c line  145 - if (--dl <= 0)
+src/bn_mul.c line  358 - if (n2 == 8 && dna == 0 && dnb == 0) {
+src/bn_mul.c line  358 - if (n2 == 8 && dna == 0 && dnb == 0) {
+src/bn_mul.c line  358 - if (n2 == 8 && dna == 0 && dnb == 0) {
+src/bn_mul.c line  364 - if (n2 < BN_MUL_RECURSIVE_SIZE_NORMAL) {
+src/bn_mul.c line  366 - if ((dna + dnb) < 0)
+src/bn_mul.c line  408 - if (n == 4 && dna == 0 && dnb == 0) { /* XXX: bn_mul_comba4 could take
+src/bn_mul.c line  408 - if (n == 4 && dna == 0 && dnb == 0) { /* XXX: bn_mul_comba4 could take
+src/bn_mul.c line  408 - if (n == 4 && dna == 0 && dnb == 0) { /* XXX: bn_mul_comba4 could take
+src/bn_mul.c line  417 - } else if (n == 8 && dna == 0 && dnb == 0) { /* XXX: bn_mul_comba8 could
+src/bn_mul.c line  417 - } else if (n == 8 && dna == 0 && dnb == 0) { /* XXX: bn_mul_comba8 could
+src/bn_mul.c line  417 - } else if (n == 8 && dna == 0 && dnb == 0) { /* XXX: bn_mul_comba8 could
+src/bn_mul.c line  461 - if (c1) {
+src/bn_mul.c line  471 - if (ln < (BN_ULONG)c1) {
+src/bn_mul.c line  477 - } while (ln == 0);
+src/bn_mul.c line  493 - if (n < 8) {
+src/bn_mul.c line  542 - if (n == 8) {
+src/bn_mul.c line  555 - if (tna > tnb)
+src/bn_mul.c line  559 - if (j == 0) {
+src/bn_mul.c line  563 - } else if (j > 0) {     /* eg, n == 16, i == 8 and tn == 11 */
+src/bn_mul.c line  571 - if (tna < BN_MUL_RECURSIVE_SIZE_NORMAL
+src/bn_mul.c line  572 - && tnb < BN_MUL_RECURSIVE_SIZE_NORMAL) {
+src/bn_mul.c line  581 - if (i < tna || i < tnb) {
+src/bn_mul.c line  581 - if (i < tna || i < tnb) {
+src/bn_mul.c line  586 - } else if (i == tna || i == tnb) {
+src/bn_mul.c line  586 - } else if (i == tna || i == tnb) {
+src/bn_mul.c line  619 - if (c1) {
+src/bn_mul.c line  629 - if (ln < (BN_ULONG)c1) {
+src/bn_mul.c line  635 - } while (ln == 0);
+src/bn_mul.c line  854 - if ((al == 0) || (bl == 0)) {
+src/bn_mul.c line  854 - if ((al == 0) || (bl == 0)) {
+src/bn_mul.c line  861 - if ((r == a) || (r == b)) {
+src/bn_mul.c line  861 - if ((r == a) || (r == b)) {
+src/bn_mul.c line  862 - if ((rr = BN_CTX_get(ctx)) == NULL)
+src/bn_mul.c line  871 - if (i == 0) {
+src/bn_mul.c line  881 - if (al == 8) {
+src/bn_mul.c line  882 - if (bn_wexpand(rr, 16) == NULL)
+src/bn_mul.c line  891 - if ((al >= BN_MULL_SIZE_NORMAL) && (bl >= BN_MULL_SIZE_NORMAL)) {
+src/bn_mul.c line  891 - if ((al >= BN_MULL_SIZE_NORMAL) && (bl >= BN_MULL_SIZE_NORMAL)) {
+src/bn_mul.c line  892 - if (i >= -1 && i <= 1) {
+src/bn_mul.c line  892 - if (i >= -1 && i <= 1) {
+src/bn_mul.c line  897 - if (i >= 0) {
+src/bn_mul.c line  900 - if (i == -1) {
+src/bn_mul.c line  904 - assert(j <= al || j <= bl);
+src/bn_mul.c line  904 - assert(j <= al || j <= bl);
+src/bn_mul.c line  907 - if (t == NULL)
+src/bn_mul.c line  909 - if (al > j || bl > j) {
+src/bn_mul.c line  909 - if (al > j || bl > j) {
+src/bn_mul.c line  910 - if (bn_wexpand(t, k * 4) == NULL)
+src/bn_mul.c line  912 - if (bn_wexpand(rr, k * 4) == NULL)
+src/bn_mul.c line  918 - if (bn_wexpand(t, k * 2) == NULL)
+src/bn_mul.c line  920 - if (bn_wexpand(rr, k * 2) == NULL)
+src/bn_mul.c line  929 - if (bn_wexpand(rr, top) == NULL)
+src/bn_mul.c line  939 - if (r != rr && BN_copy(r, rr) == NULL)
+src/bn_mul.c line  939 - if (r != rr && BN_copy(r, rr) == NULL)
+src/bn_mul.c line  953 - if (na < nb) {
+src/bn_mul.c line  966 - if (nb <= 0) {
+src/bn_mul.c line  973 - if (--nb <= 0)
+src/bn_mul.c line  976 - if (--nb <= 0)
+src/bn_mul.c line  979 - if (--nb <= 0)
+src/bn_mul.c line  982 - if (--nb <= 0)

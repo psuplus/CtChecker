@@ -6,6 +6,7 @@
 \usepackage{algorithmicx}
 \usepackage{listings}
 \usepackage{graphicx}
+\usepackage{fixltx2e}
 \usepackage{float}
 
 \lstdefinestyle{codestyle}{
@@ -798,13 +799,13 @@ elements for that type.
 Building the type information always instead of on-demand is necessary when
 there are external function calls where the source is not linked. If a pointer
 which holds sensitive data is a parameter for that function, then it is possible
-that sensitive data may flow to other arugments or the return value. When the
-field-sensitivity was implemeted, some of the higher-risk results had been
+that sensitive data may flow to other arguments or the return value. When the
+field-sensitivity was implemented, some of the higher-risk results had been
 removed. This happened because the pointer to sensitive data was no longer
 considered sensitive as it was when offset was unused. Before, it was enough to
-see if any of the arguments were sensitive, and create flows from the senitive
+see if any of the arguments were sensitive, and create flows from the sensitive
 data to all sinks from that function. After the field sensitivity change, the
-pointer and its data are constrained seperately, so when external calls happen,
+pointer and its data are constrained separately, so when external calls happen,
 the analysis creates constraints from each of the fields which are reachable
 from that pointer in addition to the normal flows which are provided by the
 function call.
@@ -913,7 +914,7 @@ low-risk results.
 
  \subsubsection{Classification Stage 2}
 
- The second stage of classsifcation was done after adding a small set of
+ The second stage of classification was done after adding a small set of
  variables to the whitelist. This stage breaks down the high-risk category from the
  previous stage based on the surrounding context. The first criterion is whether
  or not the branch is within a loop. The second criterion is if the branch is
@@ -926,7 +927,7 @@ low-risk results.
  a branch would be controllable if there was a comparison between the untrusted
  data and tainted data such as the power or modulus.
 
- Single branches are branches are not within a loop and are not controllabe.
+ Single branches are branches are not within a loop and are not controllable.
  Controllable branches are not within a loop. Repeated branches are within a
  loop and are not controllable. Loop-controllable branches are branches which
  are within a loop and are controllable.
@@ -942,7 +943,7 @@ In order for the improved analysis to in fact be an improvement over the
 baseline system, the analysis will have to reduce the number of results.
 Reducing the results should not be at the cost of high-risk results either.
 After the first stage the classification results without the improvement are
-shown in Table \ref{tbl:first-stage-no-offset} and with the improvment the
+shown in Table \ref{tbl:first-stage-no-offset} and with the improvement the
 results are shown in Table \ref{tbl:first-stage-with-offset}. For some
 libraries, the number of false positives is high, such as in Libgcrypt. Many of
 these false positives are due to lack of field sensitivity. OpenSSL has multiple
@@ -956,14 +957,14 @@ show the results that corresponded to that implementation.
     \hline
     \textbf{Library }& \textbf{TP} & \textbf{FP} & \textbf{V} & \textbf{LR} & \textbf{HR} \\
     \hline
-    \textbf{Libgcrypt 1.8.2} & 68 & 36 & 1 & 17 & 14\\
+    \textbf{Libgcrypt 1.8.2} & 68 & 36 & 1 & 21 & 10\\
     \textbf{mbedTLS 2.9.0} & 25 & 8 & 0 & 13 & 4 \\
     \textbf{BearSSL 0.5} & 10 & 9 & 1 & 0 & 0 \\
     \textbf{OpenSSL 1.1.0g} & & & & &  \\
     Reciprocal & 24 & 4  & 6 & 12 & 2 \\
     Montgomery & 34 & 4   & 11   & 15  &  4  \\
     Montgomery Const. Time & 30 & 0   & 12    &  16   &  2  \\
-    Montgomery Word & 22 & 3   & 11    & 3    & 4   \\
+    Montgomery Word & 22 & 3   & 11    & 4    & 3   \\
     Simple & 22 & 2    & 6    & 12    & 2   \\
     \hline
   \end{tabular}}
@@ -986,22 +987,23 @@ manipulation of the data directly in the source analyzed.
 \begin{table}
   \centering
   \resizebox{\textwidth}{!}{%
-  \begin{tabular}{|p{2cm} | p{2cm}| p{2cm} | p{2cm}| p{2cm}| p{2cm}|}
+  \begin{tabular}{|p{2cm} | p{2cm}| p{2cm} |p{2cm}| p{2cm}| p{2cm}| p{2cm}|}
     \hline
-    \textbf{Library} &\textbf{TP}&\textbf{FP}&\textbf{V}&\textbf{LR}&\textbf{HR}\\
+    \textbf{Library} &\textbf{TP}&\textbf{TP\textsubscript{WL}} & \textbf{FP}&\textbf{V}&\textbf{LR}&\textbf{HR}\\
     \hline
-    \textbf{Libgcrypt 1.8.2} & 34 &  2 & 1 & 17 & 14\\
-    \textbf{mbedTLS 2.9.0} & 25   & 8  & 0 & 13 & 4 \\
-    \textbf{BearSSL 0.5}& 10 & 9 & 1 & 0 & 0 \\
+    \textbf{Libgcrypt 1.8.2} & 34 & 18 &  3 & 1 & 5 & 8\\
+    \textbf{mbedTLS 2.9.0} & 25  & 22 & 8  & 0 & 10 & 4 \\
+    \textbf{BearSSL 0.5}& 10 & 3& 3 & 0 & 0 & 0 \\
     \textbf{OpenSSL 1.1.0g}& & & & & \\
-    Reciprocal & 13 & 4  & 6 & 1 & 2 \\
-    Montgomery & 25 & 4   & 11   & 6  &  4  \\
-    Montgomery Const. Time & 21 & 0   & 12    &  7   &  2  \\
-    Montgomery Word & 20 & 3   & 11    & 2    & 4   \\
-    Simple & 11 & 2    & 6    & 1    & 2   \\
+    Reciprocal &24 & 13 & 4  & 6 & 1 & 2 \\
+    Montgomery &34 & 25 & 4   & 11   & 6  &  4  \\
+    Montgomery Const. Time & 30 & 21 & 0   & 12    &  7   &  2  \\
+    Montgomery Word &22 & 20 & 3   & 11    & 2    & 4   \\
+    Simple & 22 & 11 & 2    & 6    & 1    & 2   \\
     \hline
   \end{tabular}}
-  \caption{Stage 1 Classification - Field Sensitive (Improved) Analysis: TP - True Positive, FP - False Positive, V - Validation, LR - Low-Risk, HR - High-Risk}
+  \caption{Stage 1 Classification - Field Sensitive (Improved) Analysis: TP -
+    Total Positives, TP\textsubscript{WL} - Total Positives with Whitelist, FP - False Positive, V - Validation, LR - Low-Risk, HR - High-Risk}
   \label{tbl:first-stage-with-offset}
 \end{table}
 
@@ -1063,7 +1065,7 @@ to find the size through the normalization code given in the code fragment
 \hrule
 \vspace{5pt}
 
-This code is listed within the macro \texttt{MPN\_NORMALZE} and the input
+This code is listed within the macro \texttt{MPN\_NORMALIZE} and the input
 parameters are a pointer $d$ and a size $n$. The exponent data pointer is passed
 as $d$ and its corresponding size $n$. The if branch is then dependent on the
 sensitive data stored at the pointer. This result is interesting because it is
@@ -1095,17 +1097,15 @@ else
 \vspace{5pt}
 
 The next pre-processing step compares the base and the modulus sizes. The sizes
-themselves are not tainted. The tainted variabl here is mp, a pointer to the
+themselves are not tainted. The tainted variable here is mp, a pointer to the
 modulus data. In the analysis, the \textit{divrem} function is not included
-source code, so the mutable parameters, in this case \textit{bp} is tainted as a
+source code, so the mutable parameters, in this case \codevar{bp} is tainted as a
 result. The normalize code is the same seen earlier, with a while loop which
 branches on the size of the data, and a if which branches based on the data
-located at the pointer. In this case the pointer is \textit{bp} considered a
+located at the pointer. In this case the pointer is \codevar{bp} considered a
 high-risk variable due to having flow from the modulus data. The
-\textit{MPN\_NORMALIZE} line is classified as high-risk.
+\codefn{MPN\_NORMALIZE} line is classified as high-risk.
 
-\vspace{5pt}
-\hrule
 \begin{lstlisting}[caption=Libgcrypt 1.8.2 - mpi-pow.c lines 491-507]
   if (bsize > msize)
     {
@@ -1117,8 +1117,6 @@ high-risk variable due to having flow from the modulus data. The
       MPN_NORMALIZE( bp, bsize );
     }
 \end{lstlisting}
-\hrule
-\vspace{5pt}
 
 The next two results are within the main processing loop portion of the modular
 exponentiation code. The main loop of the has a precomputed set of powers and
@@ -1126,25 +1124,23 @@ the correct member of that set is selected based on the set bit of the exponent.
 The first high-risk result from this comparison is shown in line 2 of the
 abbreviated main loop code shown in Code Fragment \ref{code:libgcrypt_mainloop}.
 
-The multi-precision integer structure represent large numbers by paritioning
+The multi-precision integer structure represent large numbers by partitioning
 each number into multiple \textit{limbs}. Each of these limbs is
 processed individually in this loop. For each iteration of the loop $e$ is set
 to the current limb being processed. The \textit{count\_leading\_zeros}
 is called to ensure the first bit in the limb is a set bit. Along with the $e$
-there is a variable $c$ which tracks how many bits are to be processed in the
-limb. The value of $c$ changes between each iteration and is dependent on the
-value of the exponent. Since, $e$ is the data of one limb of the exponent
-directly, and $c$ is computed directly from the limbs data, these are high-risk
+there is a variable \codevar{c} which tracks how many bits are to be processed in the
+limb. The value of \codevar{c} changes between each iteration and is dependent on the
+value of the exponent. Since, \codevar{e} is the data of one limb of the exponent
+directly, and \codevar{c} is computed directly from the limbs data, these are high-risk
 variables.
 
-Within the main porcessing loop, the first branch is on $e$ checking if there
+Within the main processing loop, the first branch is on $e$ checking if there
 are no set bits in the limb $e$. If this is the case, the process just moves on to the
 next limb. If there are set bits, in $e$ the rest of the limb is scanned in
 order to compute the result. If the outcome of this branch is determined, then
 the value of the entire limb is known and this is a high-risk result.
 
-\vspace{5pt}
-\hrule
 \begin{lstlisting}[caption=Libgcrypt lines 609-626, label=code:libgcrypt_mainloop]
 e = ep[i];
 e = (e << c) << 1;
@@ -1517,14 +1513,14 @@ if (!BN_to_montgomery(val[0], aa, mont, ctx))
   tainted due to the result of that branch being dependent on tainted data.
   
   The two high-risk looped results are from code identical to the reciprocal
-  method branching on set bits in p within the main porcessing loop. These lines
-  for the montgomery method are located at 416 and 437 respectively in \codefile{bn\_exp.c}.
+  method branching on set bits in p within the main processing loop. These lines
+  for the Montgomery method are located at 416 and 437 respectively in \codefile{bn\_exp.c}.
 
 \noindent
 \textbf{Constant-Time Montgomery Method}
 
-There is one controllable positive for the constant-time montgomery method.
-This branch is similar to the one found in the montgomery method, but instead
+There is one controllable positive for the constant-time Montgomery method.
+This branch is similar to the one found in the Montgomery method, but instead
 of calling \codefn{bn\_nnmod} the normal \codefn{bn\_mod} is called. 
 
 \ruleabove
@@ -1557,20 +1553,20 @@ bn_gather5_t4(tmp.d, top, powerbuf, wvalue);
   analyzed source files were \codefile{bn\_exp.c} and \codefile{bn\_lib.c}.
 
 \noindent
-\textbf{Mongomery Word Method}
+\textbf{Montgomery Word Method}
 
 
-   Within the montgomery word method, there are 3 controllable branches (2 of
+   Within the Montgomery word method, there are 3 controllable branches (2 of
    which are looped), and 1 high-risk looped branch. The high-risk looped branch
    is the same branch from the other methods involving the BN\_is\_bit\_set
    function on the exponent \codevar{p}.
 
-   The main procesing loop is shown, \codevar{a} is the untrusted plain text,
+   The main processing loop is shown, \codevar{a} is the untrusted plain text,
    and \codevar{p} 0 and \codevar{m} 0 are the tainted values. Within this loop,
    there are function calls to \codefn{BN\_TO\_MONTGOMERY\_WORD} and
    \codefn{BN\_MOD\_MUL\_WORD} which are macros that call functions that are not
    linked with the analyzed source. Again, the analysis assumes flow between
-   mutable parameters if the function defintion is not provided. This results in
+   mutable parameters if the function definition is not provided. This results in
    there being an assumed flow between \codevar{w} and \codevar{a} and \codevar{m}.
    Branches on lines 1182 and 1202 are controllable since \codevar{a} is an
    untrusted input and \codevar{m} is tainted data.
@@ -1637,7 +1633,7 @@ bn_gather5_t4(tmp.d, top, powerbuf, wvalue);
 \textbf{Simple Method}
 
    The positives for the \codefn{BN\_mod\_exp\_simple} algorithm are the same as the ones
-   reported in the reciprocal and montgomery methods. In the main procesing loop
+   reported in the reciprocal and Montgomery methods. In the main processing loop
    there are two branches that depend on the function \codefn{BN\_is\_bit\_set}. The input
    to the function is the exponent \codevar{p} which is a tainted value. These positives
    can be found on lines 1312 and 1332 of \codefile{bn\_exp.c}.

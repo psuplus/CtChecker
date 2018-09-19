@@ -17,7 +17,7 @@ const Function* findEnclosingFunc(const Value* V) {
 
 bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
   bool linkExists = false;
-  if (loc != NULL && loc->getSize() > 0)
+  if (loc != NULL)
     linkExists = loc->hasLink(0);
 
   if(linkExists){
@@ -33,19 +33,33 @@ bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
   return linkExists;
 }
 
-std::map<unsigned, const ConsElem *>
-TaintAnalysisBase::getPointerTarget(const AbstractLoc * loc) {
-    // If the value is a pointer, use pointsto analysis to resolve the target
-    const DSNodeHandle nh = loc->getLink(0);
-    const AbstractLoc * node = nh.getNode();
-    errs() << "Linked Node";
-    if ( node == NULL || node->getSize () == 0)
-      return std::map<unsigned, const ConsElem *>();
+const AbstractLoc *
+TaintAnalysisBase::getPointerTarget(const AbstractLoc* loc){
+  // If the value is a pointer, use pointsto analysis to resolve the target
+  const AbstractLoc* bottomElement = loc;
+  DSNodeHandle bottomHandle;
+  while(hasPointerTarget(bottomElement)){
+    bottomHandle = bottomElement->getLink(0);
+    bottomElement = bottomHandle.getNode();
+  }
 
-    node->dump();
-    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
-    // Instead look at this set of constraint elements
-    return childElem->second;
+  errs() << "Linked Node";
+  if ( bottomElement == NULL || bottomElement->getSize () == 0)
+    return loc;
+  bottomElement->dump();
+
+  return bottomElement;
+}
+
+std::map<unsigned, const ConsElem *>
+TaintAnalysisBase::getConstraintMap(const AbstractLoc * loc) {
+
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(loc);
+    if(childElem != ifa->locConstraintMap.end())
+      return childElem->second;
+
+    // If this was reached the node was not found in the map
+    return std::map<unsigned, const ConsElem *>();
 }
 
 void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name) {
@@ -101,14 +115,24 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
     return relevant;
 
   elemMap = curElem->second;
-  if(hasPointerTarget(node)){
-    elemMap = getPointerTarget(node);
-  }
 
-  if(numElements == elemMap.size()) {
+  //if(hasPointerTarget(node)){
+  //const AbstractLoc * child = getPointerTarget(node);
+  //elemMap = getConstraintMap(child);
+  //}
+
+  if(elemMap.count(offset) != 0){
+    errs() << "\n";
+    for(auto & v : elemMap){
+      errs() << "Key: " << v.first << " Value: ";
+      v.second->dump(errs());
+      errs() << "\n";
+    }
+    relevant.insert(elemMap[offset]);
+  } else if(numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
   } else {
-    errs() << "Map size does not match number of elements\n";
+    errs() << "Map size does not match number of elements: [" << numElements << "/" << elemMap.size() << "]\n";
     node->dump();
   }
 

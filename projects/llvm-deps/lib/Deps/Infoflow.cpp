@@ -303,6 +303,8 @@ void
 Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
+    // errs() << "addDirectValuesToSource: ";
+    // (*it)->dump();
     if(isa<GetElementPtrInst>(*it) && offset_used){
       processGetElementPtrInstSource(*it, elems, locs);
     } else {
@@ -371,6 +373,8 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
   bool implicit = record.isImplicit();
   for (FlowRecord::value_iterator sink = record.sink_directptr_begin(), end = record.sink_directptr_end();
        sink != end; ++sink) {
+    errs() << " constrainDirectSinkLocs: ";
+    (*sink)->dump();
     const std::set<const AbstractLoc *> & locs = locsForValue(**sink);
     if(isa<GetElementPtrInst>(*sink) && offset_used){
       if (regFlow)
@@ -475,10 +479,10 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 
   // If operands are constant taint only that element
   unsigned offset = GEPInstCalculateOffset(gep,locs);
-  //errs() << "\nSourceOffset: " << offset << "\n";
+  errs() << "\nSourceOffset: " << offset << "\n";
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
-    //(*I)->dump();
+    (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
@@ -1235,6 +1239,7 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
 
     return locConstraintMap[&loc];
   } else {
+    errs() << "JUST RETURNING  the list \n";
     return (curElem->second);
   }
 }

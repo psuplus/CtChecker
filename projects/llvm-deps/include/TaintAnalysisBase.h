@@ -16,8 +16,9 @@ protected:
   void taintStr(std::string, std::tuple<std::string,int,std::string>);
 
   bool hasPointerTarget(const AbstractLoc *loc);
+  const AbstractLoc * getPointerTarget(const AbstractLoc * loc);
 
-  std::map<unsigned, const ConsElem *> getPointerTarget(const AbstractLoc * loc);
+  std::map<unsigned, const ConsElem *> getConstraintMap(const AbstractLoc * loc);
 
   void constrainValue(std::string kind, const Value &, int, std::string);
 

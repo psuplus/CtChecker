@@ -1210,157 +1210,160 @@ L   bn_exp.c line 1356 - if (wstart < 0)
 ** TaintReachable - Bn_exp.c only
    p 0, m 0
 #+BEGIN_SRC cpp
-bn_exp.c line   47 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0) {
-bn_exp.c line   54 - if ((r == a) || (r == p))
-bn_exp.c line   66 - if (BN_is_odd(p)) {
-bn_exp.c line   74 - for (i = 1; i < bits; i++) {
-bn_exp.c line   77 - if (BN_is_bit_set(p, i)) {
-bn_exp.c line  144 - if (BN_is_odd(m)) {
-bn_exp.c line  146 - if (a->top == 1 && !a->neg
-bn_exp.c line  146 - if (a->top == 1 && !a->neg
-bn_exp.c line  147 - && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)
-bn_exp.c line  148 - && (BN_get_flags(a, BN_FLG_CONSTTIME) == 0)
-bn_exp.c line  149 - && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
-bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-bn_exp.c line  190 - if (bits == 0) {
-bn_exp.c line  192 - if (BN_is_one(m)) {
-bn_exp.c line  208 - if (m->neg) {
-bn_exp.c line  210 - if (!BN_copy(aa, m))
-bn_exp.c line  213 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
-bn_exp.c line  216 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
-bn_exp.c line  220 - if (!BN_nnmod(val[0], a, m, ctx))
-bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line  229 - if (window > 1) {
-bn_exp.c line  230 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
-bn_exp.c line  233 - for (i = 1; i < j; i++) {
-bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-bn_exp.c line  251 - if (BN_is_bit_set(p, wstart) == 0) {
-bn_exp.c line  255 - if (wstart == 0)
-bn_exp.c line  268 - for (i = 1; i < window; i++) {
-bn_exp.c line  269 - if (wstart - i < 0)
-bn_exp.c line  271 - if (BN_is_bit_set(p, wstart - i)) {
-bn_exp.c line  282 - for (i = 0; i < j; i++) {
-bn_exp.c line  295 - if (wstart < 0)
-bn_exp.c line  317 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-bn_exp.c line  318 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-bn_exp.c line  319 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-bn_exp.c line  327 - if (!BN_is_odd(m)) {
-bn_exp.c line  332 - if (bits == 0) {
-bn_exp.c line  334 - if (BN_is_one(m)) {
-bn_exp.c line  359 - if (!BN_MONT_CTX_set(mont, m, ctx))
-bn_exp.c line  363 - if (a->neg || BN_ucmp(a, m) >= 0) {
-bn_exp.c line  363 - if (a->neg || BN_ucmp(a, m) >= 0) {
-bn_exp.c line  364 - if (!BN_nnmod(val[0], a, m, ctx))
-bn_exp.c line  369 - if (BN_is_zero(aa)) {
-bn_exp.c line  374 - if (!BN_to_montgomery(val[0], aa, mont, ctx))
-bn_exp.c line  377 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line  377 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line  377 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line  378 - if (window > 1) {
-bn_exp.c line  379 - if (!BN_mod_mul_montgomery(d, val[0], val[0], mont, ctx))
-bn_exp.c line  382 - for (i = 1; i < j; i++) {
-bn_exp.c line  383 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-bn_exp.c line  398 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
-bn_exp.c line  399 - if (bn_wexpand(r, j) == NULL)
-bn_exp.c line  403 - for (i = 1; i < j; i++)
-bn_exp.c line  413 - if (!BN_to_montgomery(r, BN_value_one(), mont, ctx))
-bn_exp.c line  416 - if (BN_is_bit_set(p, wstart) == 0) {
-bn_exp.c line  418 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
-bn_exp.c line  421 - if (wstart == 0)
-bn_exp.c line  434 - for (i = 1; i < window; i++) {
-bn_exp.c line  435 - if (wstart - i < 0)
-bn_exp.c line  437 - if (BN_is_bit_set(p, wstart - i)) {
-bn_exp.c line  448 - for (i = 0; i < j; i++) {
-bn_exp.c line  449 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
-bn_exp.c line  454 - if (!BN_mod_mul_montgomery(r, r, val[wvalue >> 1], mont, ctx))
-bn_exp.c line  461 - if (wstart < 0)
-bn_exp.c line  475 - if (!BN_from_montgomery(rr, r, mont, ctx))
-bn_exp.c line  522 - if (top > b->top)
-bn_exp.c line  525 - for (i = 0, j = idx; i < top; i++, j += width) {
-bn_exp.c line  540 - if (bn_wexpand(b, top) == NULL)
-bn_exp.c line  543 - if (window <= 3) {
-bn_exp.c line  544 - for (i = 0; i < top; i++, table += width) {
-bn_exp.c line  547 - for (j = 0; j < width; j++) {
-bn_exp.c line  566 - for (i = 0; i < top; i++, table += width) {
-bn_exp.c line  569 - for (j = 0; j < xstride; j++) {
-bn_exp.c line  621 - if (!BN_is_odd(m)) {
-bn_exp.c line  629 - if (bits == 0) {
-bn_exp.c line  631 - if (BN_is_one(m)) {
-bn_exp.c line  651 - if (!BN_MONT_CTX_set(mont, m, ctx))
-bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
-bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
-bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
-bn_exp.c line  709 - ((2 * top) >
-bn_exp.c line  712 - if (powerbufLen < 3072)
-bn_exp.c line  717 - if ((powerbufFree =
-bn_exp.c line  726 - if (powerbufLen < 3072)
-bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
-bn_exp.c line  743 - for (i = 1; i < top; i++)
-bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
-bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
-bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
-bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
-bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
-bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))
-bn_exp.c line 1023 - if (window > 1) {
-bn_exp.c line 1024 - if (!BN_mod_mul_montgomery(&tmp, &am, &am, mont, ctx))
-bn_exp.c line 1029 - for (i = 3; i < numPowers; i++) {
-bn_exp.c line 1031 - if (!BN_mod_mul_montgomery(&tmp, &am, &tmp, mont, ctx))
-bn_exp.c line 1040 - for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
-bn_exp.c line 1050 - while (bits >= 0) {
-bn_exp.c line 1054 - for (i = 0; i < window; i++, bits--) {
-bn_exp.c line 1055 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &tmp, mont, ctx))
-bn_exp.c line 1068 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &am, mont, ctx))
-bn_exp.c line 1083 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))
-bn_exp.c line 1089 - if (powerbuf != NULL) {
-bn_exp.c line 1123 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-bn_exp.c line 1124 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-bn_exp.c line 1133 - if (!BN_is_odd(m)) {
-bn_exp.c line 1137 - if (m->top == 1)
-bn_exp.c line 1141 - if (bits == 0) {
-bn_exp.c line 1143 - if (BN_is_one(m)) {
-bn_exp.c line 1151 - if (a == 0) {
-bn_exp.c line 1169 - if (!BN_MONT_CTX_set(mont, m, ctx))
-bn_exp.c line 1179 - for (b = bits - 2; b >= 0; b--) {
-bn_exp.c line 1182 - if ((next_w / w) != w) { /* overflow */
-bn_exp.c line 1184 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
-bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
-bn_exp.c line 1200 - if (BN_is_bit_set(p, b)) {
-bn_exp.c line 1202 - if ((next_w / a) != w) { /* overflow */
-bn_exp.c line 1204 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
-bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
-bn_exp.c line 1218 - if (w != 1) {
-bn_exp.c line 1220 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
-bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
-bn_exp.c line 1255 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-bn_exp.c line 1256 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-bn_exp.c line 1264 - if (bits == 0) {
-bn_exp.c line 1266 - if (BN_is_one(m)) {
-bn_exp.c line 1281 - if (!BN_nnmod(val[0], a, m, ctx))
-bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
-bn_exp.c line 1290 - if (window > 1) {
-bn_exp.c line 1291 - if (!BN_mod_mul(d, val[0], val[0], m, ctx))
-bn_exp.c line 1294 - for (i = 1; i < j; i++) {
-bn_exp.c line 1295 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-bn_exp.c line 1312 - if (BN_is_bit_set(p, wstart) == 0) {
-bn_exp.c line 1314 - if (!BN_mod_mul(r, r, r, m, ctx))
-bn_exp.c line 1316 - if (wstart == 0)
-bn_exp.c line 1329 - for (i = 1; i < window; i++) {
-bn_exp.c line 1330 - if (wstart - i < 0)
-bn_exp.c line 1332 - if (BN_is_bit_set(p, wstart - i)) {
-bn_exp.c line 1343 - for (i = 0; i < j; i++) {
-bn_exp.c line 1344 - if (!BN_mod_mul(r, r, r, m, ctx))
-bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
-bn_exp.c line 1356 - if (wstart < 0)
+  bn_exp.c line   47 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0) {
+  bn_exp.c line   54 - if ((r == a) || (r == p))
+  bn_exp.c line   66 - if (BN_is_odd(p)) {
+  bn_exp.c line   74 - for (i = 1; i < bits; i++) {
+  bn_exp.c line   77 - if (BN_is_bit_set(p, i)) {
+  bn_exp.c line  144 - if (BN_is_odd(m)) {
+  bn_exp.c line  146 - if (a->top == 1 && !a->neg
+  bn_exp.c line  146 - if (a->top == 1 && !a->neg
+  bn_exp.c line  147 - && (BN_get_flags(p, BN_FLG_CONSTTIME) == 0)
+  bn_exp.c line  148 - && (BN_get_flags(a, BN_FLG_CONSTTIME) == 0)
+  bn_exp.c line  149 - && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
+  bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+  bn_exp.c line  190 - if (bits == 0) {
+  bn_exp.c line  192 - if (BN_is_one(m)) {
+  bn_exp.c line  208 - if (m->neg) {
+  bn_exp.c line  210 - if (!BN_copy(aa, m))
+  bn_exp.c line  213 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
+  bn_exp.c line  216 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
+  bn_exp.c line  220 - if (!BN_nnmod(val[0], a, m, ctx))
+  bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line  229 - if (window > 1) {
+  bn_exp.c line  230 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
+  bn_exp.c line  233 - for (i = 1; i < j; i++) {
+  bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+  bn_exp.c line  251 - if (BN_is_bit_set(p, wstart) == 0) {
+  bn_exp.c line  255 - if (wstart == 0)
+  bn_exp.c line  268 - for (i = 1; i < window; i++) {
+  bn_exp.c line  269 - if (wstart - i < 0)
+  bn_exp.c line  271 - if (BN_is_bit_set(p, wstart - i)) {
+  bn_exp.c line  282 - for (i = 0; i < j; i++) {
+  bn_exp.c line  295 - if (wstart < 0)
+  bn_exp.c line  317 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line  318 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line  319 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+  bn_exp.c line  327 - if (!BN_is_odd(m)) {
+  bn_exp.c line  332 - if (bits == 0) {
+  bn_exp.c line  334 - if (BN_is_one(m)) {
+  bn_exp.c line  359 - if (!BN_MONT_CTX_set(mont, m, ctx))
+  bn_exp.c line  363 - if (a->neg || BN_ucmp(a, m) >= 0) {
+  bn_exp.c line  363 - if (a->neg || BN_ucmp(a, m) >= 0) {
+  bn_exp.c line  364 - if (!BN_nnmod(val[0], a, m, ctx))
+  bn_exp.c line  369 - if (BN_is_zero(aa)) {
+  bn_exp.c line  374 - if (!BN_to_montgomery(val[0], aa, mont, ctx))
+  bn_exp.c line  377 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line  377 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line  377 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line  378 - if (window > 1) {
+  bn_exp.c line  379 - if (!BN_mod_mul_montgomery(d, val[0], val[0], mont, ctx))
+  bn_exp.c line  382 - for (i = 1; i < j; i++) {
+  bn_exp.c line  383 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+  bn_exp.c line  398 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+  bn_exp.c line  399 - if (bn_wexpand(r, j) == NULL)
+  bn_exp.c line  403 - for (i = 1; i < j; i++)
+  bn_exp.c line  413 - if (!BN_to_montgomery(r, BN_value_one(), mont, ctx))
+  bn_exp.c line  416 - if (BN_is_bit_set(p, wstart) == 0) {
+  bn_exp.c line  418 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+  bn_exp.c line  421 - if (wstart == 0)
+  bn_exp.c line  434 - for (i = 1; i < window; i++) {
+  bn_exp.c line  435 - if (wstart - i < 0)
+  bn_exp.c line  437 - if (BN_is_bit_set(p, wstart - i)) {
+  bn_exp.c line  448 - for (i = 0; i < j; i++) {
+  bn_exp.c line  449 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+  bn_exp.c line  454 - if (!BN_mod_mul_montgomery(r, r, val[wvalue >> 1], mont, ctx))
+  bn_exp.c line  461 - if (wstart < 0)
+  bn_exp.c line  475 - if (!BN_from_montgomery(rr, r, mont, ctx))
+  bn_exp.c line  522 - if (top > b->top)
+  bn_exp.c line  525 - for (i = 0, j = idx; i < top; i++, j += width) {
+  bn_exp.c line  540 - if (bn_wexpand(b, top) == NULL)
+  bn_exp.c line  543 - if (window <= 3) {
+  bn_exp.c line  544 - for (i = 0; i < top; i++, table += width) {
+  bn_exp.c line  547 - for (j = 0; j < width; j++) {
+  bn_exp.c line  566 - for (i = 0; i < top; i++, table += width) {
+  bn_exp.c line  569 - for (j = 0; j < xstride; j++) {
+  
+  bn_exp.c line  621 - if (!BN_is_odd(m)) {
+  bn_exp.c line  629 - if (bits == 0) {
+  bn_exp.c line  631 - if (BN_is_one(m)) {
+  bn_exp.c line  651 - if (!BN_MONT_CTX_set(mont, m, ctx))
+  bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
+  bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
+  bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
+  bn_exp.c line  709 - ((2 * top) >
+  bn_exp.c line  712 - if (powerbufLen < 3072)
+  bn_exp.c line  717 - if ((powerbufFree =
+  bn_exp.c line  726 - if (powerbufLen < 3072)
+  bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+  bn_exp.c line  743 - for (i = 1; i < top; i++)
+  bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
+  bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+  bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+  bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
+  bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
+  bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))
+  bn_exp.c line 1023 - if (window > 1) {
+  bn_exp.c line 1024 - if (!BN_mod_mul_montgomery(&tmp, &am, &am, mont, ctx))
+  bn_exp.c line 1029 - for (i = 3; i < numPowers; i++) {
+  bn_exp.c line 1031 - if (!BN_mod_mul_montgomery(&tmp, &am, &tmp, mont, ctx))
+  bn_exp.c line 1040 - for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
+  bn_exp.c line 1050 - while (bits >= 0) {
+  bn_exp.c line 1054 - for (i = 0; i < window; i++, bits--) {
+  bn_exp.c line 1055 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &tmp, mont, ctx))
+  bn_exp.c line 1068 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &am, mont, ctx))
+  bn_exp.c line 1083 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))
+  bn_exp.c line 1089 - if (powerbuf != NULL) {
+
+  bn_exp.c line 1123 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line 1124 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+  bn_exp.c line 1133 - if (!BN_is_odd(m)) {
+  bn_exp.c line 1137 - if (m->top == 1)
+  bn_exp.c line 1141 - if (bits == 0) {
+  bn_exp.c line 1143 - if (BN_is_one(m)) {
+  bn_exp.c line 1151 - if (a == 0) {
+  bn_exp.c line 1169 - if (!BN_MONT_CTX_set(mont, m, ctx))
+  bn_exp.c line 1179 - for (b = bits - 2; b >= 0; b--) {
+  bn_exp.c line 1182 - if ((next_w / w) != w) { /* overflow */
+  bn_exp.c line 1184 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+  bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
+  bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
+  bn_exp.c line 1200 - if (BN_is_bit_set(p, b)) {
+  bn_exp.c line 1202 - if ((next_w / a) != w) { /* overflow */
+  bn_exp.c line 1204 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+  bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
+  bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
+  bn_exp.c line 1218 - if (w != 1) {
+  bn_exp.c line 1220 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+  bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
+  bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
+
+  bn_exp.c line 1255 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line 1256 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+  bn_exp.c line 1264 - if (bits == 0) {
+  bn_exp.c line 1266 - if (BN_is_one(m)) {
+  bn_exp.c line 1281 - if (!BN_nnmod(val[0], a, m, ctx))
+  bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
+  bn_exp.c line 1290 - if (window > 1) {
+  bn_exp.c line 1291 - if (!BN_mod_mul(d, val[0], val[0], m, ctx))
+  bn_exp.c line 1294 - for (i = 1; i < j; i++) {
+  bn_exp.c line 1295 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+  bn_exp.c line 1312 - if (BN_is_bit_set(p, wstart) == 0) {
+  bn_exp.c line 1314 - if (!BN_mod_mul(r, r, r, m, ctx))
+  bn_exp.c line 1316 - if (wstart == 0)
+  bn_exp.c line 1329 - for (i = 1; i < window; i++) {
+  bn_exp.c line 1330 - if (wstart - i < 0)
+  bn_exp.c line 1332 - if (BN_is_bit_set(p, wstart - i)) {
+  bn_exp.c line 1343 - for (i = 0; i < j; i++) {
+  bn_exp.c line 1344 - if (!BN_mod_mul(r, r, r, m, ctx))
+  bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
+  bn_exp.c line 1356 - if (wstart < 0)
 #+END_SRC
 
 ** ArgsToRet - Offset Enabled linked with bn_lib.c

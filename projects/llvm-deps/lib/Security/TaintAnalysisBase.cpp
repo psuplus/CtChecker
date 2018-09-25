@@ -17,9 +17,18 @@ const Function* findEnclosingFunc(const Value* V) {
 
 bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
   bool linkExists = false;
-  if (loc != NULL)
+  if (loc != NULL && loc->getSize() > 0)
     linkExists = loc->hasLink(0);
 
+  unsigned size = 0;
+
+  for(auto it  = loc->edge_begin();
+      it != loc->edge_end(); ++it){
+    size++;
+  }
+
+  loc->dump();
+  errs() << "The size of the locs: " << size << "\n";
   if(linkExists){
     AbstractLoc* link = loc->getLink(0).getNode();
 
@@ -93,6 +102,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     std::set<const ConsElem *> elementsToConstrain;
     if (t_offset >= 0 ) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
+      errs() << "Found that the offset should be: " << offset << "\n";
       hasOffset = true;
     }
 
@@ -100,6 +110,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
       elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
 
     errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
+    for(auto &el : elementsToConstrain){
+      el->dump(errs()); errs() << "\n";
+    }
     ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 
   }
@@ -111,16 +124,25 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(node);
   std::map<unsigned, const ConsElem *> elemMap;
   std::set<const ConsElem *> relevant;
-  if(curElem == ifa->locConstraintMap.end())
-    return relevant;
+  if(curElem == ifa->locConstraintMap.end()){
+    errs() << "LOC NOT FOUND\n";
+    if(hasPointerTarget(node)){
+      const AbstractLoc * child = getPointerTarget(node);
+      elemMap = getConstraintMap(child);
+    } else {
+      return relevant;
+    }
+  } else {
 
-  elemMap = curElem->second;
+    elemMap = curElem->second;
+    errs() << " Before map size: " << elemMap.size() << "\n";
 
-  //if(hasPointerTarget(node)){
-  //const AbstractLoc * child = getPointerTarget(node);
-  //elemMap = getConstraintMap(child);
-  //}
-
+  
+    if(hasPointerTarget(node)){
+      const AbstractLoc * child = getPointerTarget(node);
+      elemMap = getConstraintMap(child);
+    }
+  }
   if(elemMap.count(offset) != 0){
     errs() << "\n";
     for(auto & v : elemMap){
@@ -134,6 +156,9 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
   } else {
     errs() << "Map size does not match number of elements: [" << numElements << "/" << elemMap.size() << "]\n";
     node->dump();
+    for(auto & el: elemMap){
+      el.second->dump(errs()); errs() << "\n";
+    }
   }
 
   return relevant;

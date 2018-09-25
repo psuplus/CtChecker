@@ -326,6 +326,16 @@ Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & e
               errs() << "Value of r->isNodeCompletelyFolded: " << r->isNodeCompletelyFolded() << "\n";
             errs() << "Element Doesn't Exist ? " << (locConstraintMap.find(r) == locConstraintMap.end()) << "\n";
           }
+
+
+          if (r && locConstraintMap.find(r) != locConstraintMap.end()){
+            auto elemMap = locConstraintMap.find(r)->second;
+            errs() << "ELEMap has size: " << elemMap.size() << "\n";
+            for (auto m : locConstraintMap.find(r)->second){
+              elems.insert(m.second);
+              inserted = true;
+            }
+          }
         }
       }
 
@@ -374,6 +384,12 @@ Infoflow::addReachValuesToSources(FlowRecord::value_set values, ConsElemSet &ele
             locConstraintMap[r] = createConsElemFromStruct(*r, st);
             inserted = true;
           }
+          if (r && locConstraintMap.find(r) != locConstraintMap.end()){
+            for (auto m : locConstraintMap.find(r)->second){
+              elems.insert(m.second);
+              inserted = true;
+            }
+          }
         }
       }
 
@@ -416,8 +432,6 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
         processGetElementPtrInstSink(*sink, implicit, false, source, locs);
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
-    } else if (isa<CallInst>(*sink)){
-      errs() << "IGNORING CALLINST\n";
     }else {
       SinkLocs.insert(locs.begin(), locs.end());
     }
@@ -548,6 +562,7 @@ std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node
     }
   } else if (elemMap.find(offset) != elemMap.end()){
     // Add the element which matches the offset
+    errs() << "FOUND ELEMENT: "; elemMap[offset]->dump(errs()); errs() << "\n";
     elements.insert(elemMap[offset]);
   } else {
     // Do a search to find the element which spans the range of the offset requested
@@ -1286,6 +1301,7 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
 
 std::map<unsigned, const ConsElem *>
 Infoflow::createConsElemFromStruct(const AbstractLoc& loc , StructType * s) {
+  errs() << " CREATED ELEMEMENT MAP FOR " << &loc << "\n";
   std::map<unsigned, const ConsElem *> elemMap;
   const DataLayout &TD = loc.getParentGraph()->getDataLayout();
   const StructLayout *SL = TD.getStructLayout(s);
@@ -1319,22 +1335,28 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       }
 
       if(locConstraintMap.find(node) == locConstraintMap.end()){
-      DSNode::TyMapTy types{loc.type_begin(), loc.type_end()};
-      errs() <<" Dumping types\n";
-      for(auto & t : types){
-        for(auto td = t.second->begin(); td != t.second->end(); ++td){
-          (*td)->dump();
-          if ((*td)->isPointerTy()){
-            Type* nested = *(*td)->subtype_begin();
-            if(StructType* st = dyn_cast<StructType>(nested)){
-              locConstraintMap[node] = createConsElemFromStruct(*node, st);
-              for(auto & s : locConstraintMap[node]){
-                s.second->dump(errs());
+        DSNode::TyMapTy types{loc.type_begin(), loc.type_end()};
+        errs() <<" Dumping types\n";
+        if(node != &loc){
+          for(auto & t : types){
+            for(auto td = t.second->begin(); td != t.second->end(); ++td){
+              (*td)->dump();
+              if ((*td)->isPointerTy()){
+                Type* nested = *(*td)->subtype_begin();
+                if(StructType* st = dyn_cast<StructType>(nested)){
+                  errs() << "Got struct type!\n";
+                  locConstraintMap[node] = createConsElemFromStruct(*node, st);
+                  for(auto & s : locConstraintMap[node]){
+                    s.second->dump(errs());
+                  }
+                }
               }
             }
           }
+        } else {
+          errs() << "Creating node for unknown typeptr\n";
         }
-      }
+        return locConstraintMap[node];
       } else {
         return locConstraintMap[node];
       }
@@ -1357,6 +1379,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub) {
+  errs() << "Constraining elements related to: "; lub.dump(errs()); errs() << "\n";
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){

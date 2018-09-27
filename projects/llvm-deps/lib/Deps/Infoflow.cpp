@@ -147,7 +147,7 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-#if 0
+#if 1
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
@@ -1280,6 +1280,7 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
+    errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << "\n";
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
   }
 }

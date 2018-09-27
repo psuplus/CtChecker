@@ -45,7 +45,10 @@ TaintAnalysisBase::getPointerTarget(const AbstractLoc * loc) {
     node->dump();
     DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
     // Instead look at this set of constraint elements
-    return childElem->second;
+    if(childElem != ifa->locConstraintMap.end())
+      return childElem->second;
+    else
+      return std::map<unsigned, const ConsElem*>();
 }
 
 void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name) {

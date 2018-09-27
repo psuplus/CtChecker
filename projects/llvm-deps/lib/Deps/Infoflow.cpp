@@ -1258,6 +1258,7 @@ Infoflow::createConsElemFromStruct(const AbstractLoc& loc , StructType * s) {
 
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
+  errs() << "Creating ConsElem Map for :"; loc.dump();
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
@@ -1280,7 +1281,7 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
-    errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << "\n";
+    //errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << "\n";
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
   }
 }

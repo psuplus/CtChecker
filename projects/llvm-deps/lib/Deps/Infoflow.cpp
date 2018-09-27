@@ -228,8 +228,8 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
   // For values and varargs, just do this directly
   for (FlowRecord::value_iterator sink = record.sink_value_begin(), end = record.sink_value_end();
       sink != end; ++sink) {
-    errs() << "<!"; 
-    (*sink)->dump(); errs() << "!>\n";
+    //errs() << "<!"; 
+    //(*sink)->dump(); errs() << "!>\n";
     if (regFlow)
       putOrConstrainConsElem(implicit, false, record.sinkContext(), **sink, *sourceElem);
     if (sinkFlow)
@@ -427,7 +427,7 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
   bool implicit = record.isImplicit();
   for (FlowRecord::value_iterator sink = record.sink_directptr_begin(), end = record.sink_directptr_end();
        sink != end; ++sink) {
-    errs() << " constrainDirectSinkLocs: ";
+    errs() << "\nconstrainDirectSinkLocs: ";
     (*sink)->dump();
     const std::set<const AbstractLoc *> & locs = locsForValue(**sink);
     if(isa<GetElementPtrInst>(*sink) && offset_used){
@@ -436,29 +436,6 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
     }else {
-      errs() << "SOURCEFOR SINK: "; source.dump(errs()); errs() << "\n";
-      bool inserted = false;
-      for(auto & l: locs){
-        if(l->getSize() > 0 && l->hasLink(0)){
-          errs() << "SINK BOTTOM NODE: ";
-          const DSNode * r = l->getLink(0).getNode();
-          if(r){
-            r->dump();
-            if (regFlow)
-              putOrConstrainConsElem(implicit, false, *r, source);
-
-            if (sinkFlow)
-              putOrConstrainConsElem(implicit, true, *l, sinkSource);
-            //r->getParentGraph()->viewGraph();
-            inserted = true;
-          }else{
-            l->dump();
-            //l->getParentGraph()->viewGraph();
-          }
-        }
-      }
-
-      if(!inserted)
         SinkLocs.insert(locs.begin(), locs.end());
     }
   }
@@ -1390,7 +1367,17 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
       if (tmp != NULL){
         node = tmp;
-        errs() << "LinkedNODE: "; node->dump();
+        errs() << "LinkedNODE in " << node->getParentGraph()->getFunctionNames()<< ":" ; node->dump(); 
+        //DSGraph * G = node->getParentGraph();
+        //std::string fc = G->getFunctionNames();
+        //if (fc == "main"){
+        //for(auto & calls : G->getFunctionCalls()){
+        //const Function * fn = calls.getCalleeFunc();
+        //const Function & fn2 = calls.getCaller();
+        //errs () << "THERE ARE CALLS TO : " << fn->getName()  << " called by " << fn2.getName() << "\n";
+        //}
+        //}
+        //errs() << "THIS NODE LIVES IN " << node->getParentGraph()->getFunctionNames();
       }
 
       if(locConstraintMap.find(node) == locConstraintMap.end() || locConstraintMap.find(node)->second.size() == 0){
@@ -1417,6 +1404,14 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       }
       return locConstraintMap[node];
 
+    } else {
+      DSNode::TyMapTy tyMap{loc.type_begin(), loc.type_end()};
+      for(auto tys: tyMap){
+        for(auto ty =  tys.second->begin(); ty != tys.second->end(); ++ty){
+          const ConsElem & elem = kit->newVar(name+ "element " + std::to_string(tys.first));
+          locConstraintMap[&loc].insert(std::make_pair(tys.first, &elem));
+        }
+      }
     }
 
     return locConstraintMap[&loc];
@@ -1427,7 +1422,8 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
 void
 Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &loc, const ConsElem &lub) {
-  errs() << "Constraining elements related to: "; lub.dump(errs()); errs() << "\n";
+  //errs() << "Constraining elements related to: "; lub.dump(errs()); errs() << "\n";
+  //errs() << " with "; loc.dump();
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){

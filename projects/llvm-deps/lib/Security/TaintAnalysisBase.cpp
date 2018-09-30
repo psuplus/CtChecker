@@ -63,19 +63,21 @@ TaintAnalysisBase::getPointerTarget(const AbstractLoc* loc){
 std::map<unsigned, const ConsElem *>
 TaintAnalysisBase::getConstraintMap(const AbstractLoc * loc) {
 
-  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(loc);
+    node->dump();
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
+    // Instead look at this set of constraint elements
     if(childElem != ifa->locConstraintMap.end())
       return childElem->second;
-
-    // If this was reached the node was not found in the map
-    return std::map<unsigned, const ConsElem *>();
+    else
+      return std::map<unsigned, const ConsElem*>();
 }
 
 void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name) {
 
   std::string s = value.getName();
   const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
-  if(locs.size() == 0) {
+  const std::set<const AbstractLoc *> & rlocs = ifa->reachableLocsForValue(value);
+  if(locs.size() == 0 && rlocs.size() == 0) {
     ifa->setTainted(kind,value);
   }
 
@@ -97,9 +99,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   std::set<const AbstractLoc *>::const_iterator end = locs.end();
 
 
+  std::set<const ConsElem *> elementsToConstrain;
   for(;loc != end; ++loc){
-
-    std::set<const ConsElem *> elementsToConstrain;
+    (*loc)->dump();
     if (t_offset >= 0 ) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
       errs() << "Found that the offset should be: " << offset << "\n";
@@ -109,13 +111,28 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     if(hasOffset)
       elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
 
-    errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
-    for(auto &el : elementsToConstrain){
-      el->dump(errs()); errs() << "\n";
-    }
-    ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 
   }
+
+  errs() << "RL:\n";
+  for(auto &rl : rlocs){
+    std::set<const ConsElem *> reachableElements;
+    rl->dump();
+
+    if(hasOffset)
+      reachableElements = gatherRelevantConsElems(rl, offset, numElements);
+
+    for(auto &el : elementsToConstrainAdditional){
+      el->dump(errs()); errs() << "\n";
+    }
+    elementsToConstrain.insert(reachableElements.begin(), reachableElements.end());
+
+  }
+  errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
+  for(auto & el : elementsToConstrain){
+    el->dump(errs()); errs() <<"\n";
+  }
+  ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 }
 
 
@@ -154,7 +171,11 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
   } else if(numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
   } else {
+<<<<<<< HEAD
     errs() << "Map size does not match number of elements: [" << numElements << "/" << elemMap.size() << "]\n";
+=======
+    errs() << "Map size does not match number of elements " << elemMap.size() << "\n";
+>>>>>>> fullbn_library_test_base
     node->dump();
     for(auto & el: elemMap){
       el.second->dump(errs()); errs() << "\n";

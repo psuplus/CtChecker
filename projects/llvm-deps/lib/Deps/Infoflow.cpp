@@ -147,7 +147,7 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-#if 0
+#if 1
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
@@ -305,46 +305,20 @@ Infoflow::addDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sour
 void
 Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
+    errs() << "-->";(*it)->dump();
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
     errs() << "addDirectValuesToSource: ";
     (*it)->dump();
     if(isa<GetElementPtrInst>(*it) && offset_used){
       processGetElementPtrInstSource(*it, elems, locs);
     } else {
-      bool inserted = false;
-      for(auto & l : locs){
+      errs() << "NORMAL LOCS:\n";
+      for(auto &l: locs){
         l->dump();
-        errs() << "l->getSize() = " << l->getSize() << "\n";
-        if( l->getSize() > 0 && l->hasLink(0)){
-          const DSNode* r = l->getLink(0).getNode();
-          //r->dumpParentGraph();
-          StructType * st = convertValueToStructType(*it);
-          if(st != NULL && r && !r->isNodeCompletelyFolded() && locConstraintMap.find(r) == locConstraintMap.end()){
-            locConstraintMap[r] = createConsElemFromStruct(*r, st);
-            inserted = true;
-          } else {
-            errs() << "Value of st: " << st << "\n";
-            errs() << "Value of r: " << r << "\n";
-            if (r)
-              errs() << "Value of r->isNodeCompletelyFolded: " << r->isNodeCompletelyFolded() << "\n";
-            errs() << "Element Doesn't Exist ? " << (locConstraintMap.find(r) == locConstraintMap.end()) << "\n";
-          }
-
-
-          if (r && locConstraintMap.find(r) != locConstraintMap.end()){
-            auto elemMap = locConstraintMap.find(r)->second;
-            errs() << "ELEMap has size: " << elemMap.size() << "\n";
-            for (auto m : locConstraintMap.find(r)->second){
-              //elems.insert(m.second);
-              inserted = true;
-            }
-          }
-        }
       }
-
-      if(!inserted)
-        locations.insert(locs.begin(), locs.end());
+      locations.insert(locs.begin(), locs.end());
     }
+    errs() << "----<\n";
   }
 }
 
@@ -378,26 +352,10 @@ Infoflow::addReachValuesToSources(FlowRecord::value_set values, ConsElemSet &ele
     if(isa<GetElementPtrInst>(*it) && offset_used){
       processGetElementPtrInstSource(*it, elems, locs);
     } else {
-      bool inserted = false;
-      for(auto & l : locs){
-        if(l->getSize() > 0 && l->hasLink(0)){
-          const DSNode* r = l->getLink(0).getNode();
-          StructType * st = convertValueToStructType(*it);
-          if(st != NULL && r && !r->isNodeCompletelyFolded() && locConstraintMap.find(r) == locConstraintMap.end()){
-            locConstraintMap[r] = createConsElemFromStruct(*r, st);
-            inserted = true;
-          }
-          if (r && locConstraintMap.find(r) != locConstraintMap.end()){
-            for (auto m : locConstraintMap.find(r)->second){
-              //elems.insert(m.second);
-              inserted = true;
-            }
-          }
-        }
+      for(auto &l: locs){
+        l->dump();
       }
-
-      if(!inserted)
-        locations.insert(locs.begin(), locs.end());
+      locations.insert(locs.begin(), locs.end());
     }
   }
 }
@@ -564,13 +522,6 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   for(std::set<const AbstractLoc *>::const_iterator I = constrainLocs.begin(), E = constrainLocs.end();
       I != E; ++I){
     (*I)->dump();
-
-    const AbstractLoc * node = *I;
-
-    if(node->getSize() > 0 && node->hasLink(0)){
-      if(node->getLink(0).getNode() != NULL)
-        node = node->getLink(0).getNode();
-    }
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(*node, numElements, source);
 
@@ -580,8 +531,10 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
     std::set<const ConsElem*> sourceElems = findRelevantConsElem(*I, elemMap, offset);
-    for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i)
+    for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i){
+      errs() << "CONSTRAINING: "; (*i)->dump(errs()); errs() << "\n";
       sourceSet.insert(*i);
+    }
   }
 }
 
@@ -1303,7 +1256,7 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements, const Value* v) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
-  if (curElem == locConstraintMap.end()) {
+  if (curElem == locConstraintMap.end() || (curElem != locConstraintMap.end() && curElem->second.size() == 1)) {
     std::string name = getCaption(&loc, NULL);
 
     if (v != NULL && !loc.isNodeCompletelyFolded()) {
@@ -1356,62 +1309,15 @@ Infoflow::createConsElemFromStruct(const AbstractLoc& loc , StructType * s) {
 
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
+  errs() << "Creating ConsElem Map for :"; loc.dump();
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
-    const AbstractLoc * node = &loc;
-    errs() << "GETORCREATECONSELEM LOC\n";
-    loc.dump();
-    if(loc.getSize() > 0  && loc.hasLink(0)){
-      const AbstractLoc * tmp = node->getLink(0).getNode();
-
-      if (tmp != NULL){
-        node = tmp;
-        errs() << "LinkedNODE in " << node->getParentGraph()->getFunctionNames()<< ":" ; node->dump(); 
-        //DSGraph * G = node->getParentGraph();
-        //std::string fc = G->getFunctionNames();
-        //if (fc == "main"){
-        //for(auto & calls : G->getFunctionCalls()){
-        //const Function * fn = calls.getCalleeFunc();
-        //const Function & fn2 = calls.getCaller();
-        //errs () << "THERE ARE CALLS TO : " << fn->getName()  << " called by " << fn2.getName() << "\n";
-        //}
-        //}
-        //errs() << "THIS NODE LIVES IN " << node->getParentGraph()->getFunctionNames();
-      }
-
-      if(locConstraintMap.find(node) == locConstraintMap.end() || locConstraintMap.find(node)->second.size() == 0){
-        DSNode::TyMapTy types{loc.type_begin(), loc.type_end()};
-        errs() <<" Dumping types\n";
-        if(node != &loc){
-          for(auto & t : types){
-            for(auto td = t.second->begin(); td != t.second->end(); ++td){
-              (*td)->dump();
-              if ((*td)->isPointerTy()){
-                Type* nested = *(*td)->subtype_begin();
-                if(StructType* st = dyn_cast<StructType>(nested)){
-                  errs() << "Got struct type!\n";
-                  locConstraintMap[node] = createConsElemFromStruct(*node, st);
-                  for(auto & s : locConstraintMap[node]){
-                    s.second->dump(errs());
-                    errs() <<"\n";
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      return locConstraintMap[node];
-
-    } else {
-      DSNode::TyMapTy tyMap{loc.type_begin(), loc.type_end()};
-      for(auto tys: tyMap){
-        for(auto ty =  tys.second->begin(); ty != tys.second->end(); ++ty){
-          const ConsElem & elem = kit->newVar(name+ "element " + std::to_string(tys.first));
-          locConstraintMap[&loc].insert(std::make_pair(tys.first, &elem));
-        }
-      }
+    unsigned size =  1;
+    //errs() << "Created " << size << " constraint variable(s)...\n";
+    for(unsigned offset = 0; offset < size; offset++ ){
+      const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + ":default:");
+      locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
     }
 
     return locConstraintMap[&loc];
@@ -1427,6 +1333,7 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
+    //errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << "\n";
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
   }
 }

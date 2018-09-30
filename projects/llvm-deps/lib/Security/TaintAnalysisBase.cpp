@@ -55,7 +55,8 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
 
   std::string s = value.getName();
   const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
-  if(locs.size() == 0) {
+  const std::set<const AbstractLoc *> & rlocs = ifa->reachableLocsForValue(value);
+  if(locs.size() == 0 && rlocs.size() == 0) {
     ifa->setTainted(kind,value);
   }
 
@@ -77,9 +78,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   std::set<const AbstractLoc *>::const_iterator end = locs.end();
 
 
+  std::set<const ConsElem *> elementsToConstrain;
   for(;loc != end; ++loc){
     (*loc)->dump();
-    std::set<const ConsElem *> elementsToConstrain;
     if (t_offset >= 0 ) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
       hasOffset = true;
@@ -88,13 +89,28 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     if(hasOffset)
       elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
 
-    errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
-    for(auto & el : elementsToConstrain){
-      el->dump(errs()); errs() <<"\n";
-    }
-    ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 
   }
+
+  errs() << "RL:\n";
+  for(auto &rl : rlocs){
+    std::set<const ConsElem *> reachableElements;
+    rl->dump();
+
+    if(hasOffset)
+      reachableElements = gatherRelevantConsElems(rl, offset, numElements);
+
+    for(auto &el : elementsToConstrainAdditional){
+      el->dump(errs()); errs() << "\n";
+    }
+    elementsToConstrain.insert(reachableElements.begin(), reachableElements.end());
+
+  }
+  errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
+  for(auto & el : elementsToConstrain){
+    el->dump(errs()); errs() <<"\n";
+  }
+  ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 }
 
 
@@ -114,7 +130,7 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
   if(numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
   } else {
-    errs() << "Map size does not match number of elements\n";
+    errs() << "Map size does not match number of elements " << elemMap.size() << "\n";
     node->dump();
   }
 

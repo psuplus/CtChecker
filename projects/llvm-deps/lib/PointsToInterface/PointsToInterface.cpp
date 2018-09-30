@@ -289,4 +289,47 @@ PointsToInterface::findReachableAbstractLocSetForNode(AbstractLocSet &Set,
     ;
 }
 
+//
+// Calculates if the number of links from the node is greater than 0
+// by copying the map from exposed iterators.
+bool
+PointsToInterface::nodeHasLinks(const DSNode *node){
+  if (node == NULL)
+    return false;
+
+  DSNode::LinkMapTy links{node->edge_begin(), node->edge_end()};
+  if(links.size() > 0)
+    return true;
+
+  return false;
+}
+
+
+//
+// Returns the edge map in a way that can be used in range-based for-loops
+DSNode::LinkMapTy
+PointsToInterface::getLinks(const DSNode* node){
+  if (node == NULL){
+    return DSNode::LinkMapTy();
+  }
+  DSNode::LinkMapTy links{node->edge_begin(), node->edge_end()};
+  return links;
+}
+
+
+Type *
+PointsToInterface::findWidestType(const DSNode & node, SuperSet<Type*>::setPtr types){
+  const DataLayout &TD = node.getParentGraph()->getDataLayout();
+  Type * n = NULL;
+  unsigned maxWidth = 0;
+  for(auto it = types->begin(); it != types->end(); ++it){
+    unsigned size = TD.getTypeStoreSize(*it);
+    if (size > maxWidth){
+      n = *it;
+      maxWidth = size;
+    }
+  }
+  return n;
+}
+
 }

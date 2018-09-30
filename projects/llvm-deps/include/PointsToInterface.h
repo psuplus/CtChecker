@@ -91,6 +91,24 @@ public:
   const AbstractLocSet *getReachableAbstractLocSetForValue(const Value *V);
   const AbstractHandleSet *getReachableAbstractHandleSetForValue(const Value *V);
 
+  //
+  // For a given node, see if there are links to other nodes
+  // Returns true if there are other nodes which the argument node links to
+  // False if the node is of size 0 or does not link to a node.
+  //
+  bool nodeHasLinks(const DSNode * node);
+
+  //
+  // Returns the Link Map from the exposed edge_iterators from DSNode
+  //
+  DSNode::LinkMapTy getLinks(const DSNode* node);
+
+  //
+  // Traverses type map returning the type which represents the widest data type
+  // within the set
+  //
+  Type * findWidestType(const DSNode & node, SuperSet<Type*>::setPtr start);
+
 };
 
 }

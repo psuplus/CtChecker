@@ -62,9 +62,7 @@ TaintAnalysisBase::getPointerTarget(const AbstractLoc* loc){
 
 std::map<unsigned, const ConsElem *>
 TaintAnalysisBase::getConstraintMap(const AbstractLoc * loc) {
-
-    node->dump();
-    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
+    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(loc);
     // Instead look at this set of constraint elements
     if(childElem != ifa->locConstraintMap.end())
       return childElem->second;
@@ -122,7 +120,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     if(hasOffset)
       reachableElements = gatherRelevantConsElems(rl, offset, numElements);
 
-    for(auto &el : elementsToConstrainAdditional){
+    for(auto &el : reachableElements){
       el->dump(errs()); errs() << "\n";
     }
     elementsToConstrain.insert(reachableElements.begin(), reachableElements.end());
@@ -171,11 +169,7 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
   } else if(numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
   } else {
-<<<<<<< HEAD
     errs() << "Map size does not match number of elements: [" << numElements << "/" << elemMap.size() << "]\n";
-=======
-    errs() << "Map size does not match number of elements " << elemMap.size() << "\n";
->>>>>>> fullbn_library_test_base
     node->dump();
     for(auto & el: elemMap){
       el.second->dump(errs()); errs() << "\n";

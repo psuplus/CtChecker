@@ -523,7 +523,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
       I != E; ++I){
     (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
-    elemMap = getOrCreateConsElemTyped(*node, numElements, source);
+    elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time

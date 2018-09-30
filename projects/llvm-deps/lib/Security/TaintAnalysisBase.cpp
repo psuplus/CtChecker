@@ -100,7 +100,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     if(hasOffset)
       reachableElements = gatherRelevantConsElems(rl, offset, numElements);
 
-    for(auto &el : elementsToConstrainAdditional){
+    for(auto &el : reachableElements){
       el->dump(errs()); errs() << "\n";
     }
     elementsToConstrain.insert(reachableElements.begin(), reachableElements.end());

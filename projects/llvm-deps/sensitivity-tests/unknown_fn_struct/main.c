@@ -9,8 +9,10 @@ typedef struct {
 
 int undefined_function(BIGNUM * a, int n);
 
+#if 0
 int defined_function (BIGNUM * k) {
-
+  if (k->d[3] == 0)  // Tainted
+    ;
   if (k->top < 4) // Not tainted only k 0 tainted
     ;
   if (k->dmax) // Not tainted only k 0 tainted
@@ -23,6 +25,8 @@ int defined_function (BIGNUM * k) {
   //if (undefined_function(k, 3))
   //;
 }
+#endif
+
 
 int defined_function_2(BIGNUM * k) {
   if (k->top < 4) // Tainted due to passing through undefined signature
@@ -38,7 +42,9 @@ int defined_function_2(BIGNUM * k) {
     ;
 }
 
+#if 0
 int defined_function_3(BIGNUM * k) {
   if (undefined_function(k, 2)) // Tainted, k 0 is tainted so the result should be tainted
     ;
 }
+#endif

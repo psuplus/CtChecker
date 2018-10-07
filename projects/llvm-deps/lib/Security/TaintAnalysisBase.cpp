@@ -89,7 +89,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     if(hasOffset)
       elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
 
-
+    errs() << "FOUND " << elementsToConstrain.size() << " elements from the locsForValue\n";
   }
 
   errs() << "RL:\n";
@@ -108,7 +108,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   }
   errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
   for(auto & el : elementsToConstrain){
-    el->dump(errs()); errs() <<"\n";
+    el->dump(errs()); errs() <<" : addr " << el << "\n";
   }
   ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 }

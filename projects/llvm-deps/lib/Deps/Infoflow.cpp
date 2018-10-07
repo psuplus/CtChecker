@@ -1222,13 +1222,27 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements, const Value* v) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
-  if (curElem == locConstraintMap.end() || (curElem != locConstraintMap.end() && curElem->second.size() == 1)) {
+  if (curElem == locConstraintMap.end() ||  curElem->second.size() == 1) {
     std::string name = getCaption(&loc, NULL);
+
+    const ConsElem * oldElement = NULL;
+    if(curElem != locConstraintMap.end()){
+      errs() << "OLD ELEMENT FOUND: ";
+      oldElement =  curElem->second.begin()->second;
+      oldElement->dump(errs()); errs() << " : addr  "<<oldElement << "\n";
+      loc.dump();
+    }
 
     if (v != NULL && !loc.isNodeCompletelyFolded()) {
       const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
       if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
         locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
+        if (oldElement){
+          for(auto & kv : locConstraintMap[&loc]){
+            kit->addConstraint(kindFromImplicitSink(false, false),  *(kv.second),*oldElement);
+            // add constraint from old element -> new elements for all new elements
+          }
+        }
         return locConstraintMap[&loc];
       } else if (numElements == 0) {
         numElements = 1;

@@ -92,6 +92,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     errs() << "FOUND " << elementsToConstrain.size() << " elements from the locsForValue\n";
   }
 
+#ifdef INCLUDE_REACHABLE_IN_TAINT
   errs() << "RL:\n";
   for(auto &rl : rlocs){
     std::set<const ConsElem *> reachableElements;
@@ -106,6 +107,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     elementsToConstrain.insert(reachableElements.begin(), reachableElements.end());
 
   }
+#endif
   errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
   for(auto & el : elementsToConstrain){
     el->dump(errs()); errs() <<" : addr " << el << "\n";

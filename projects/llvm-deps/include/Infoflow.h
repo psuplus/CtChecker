@@ -375,9 +375,13 @@ class Infoflow :
     void constrainCallee(const ContextID calleeContext, const Function & callee, const ImmutableCallSite & cs, Flows &);
     void constrainIntrinsic(const IntrinsicInst &, Flows &);
 
+    void copyElementMapsToOtherLocs(AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems);
+    AbstractLocSet getPointedToAbstractLocs(const Value * v);
+    void replaceDefaultConsElemWithOffsetElems(const ConsElem* old, std::map<unsigned, const ConsElem*> elems);
 };
 
   StructType* convertValueToStructType(const Value * v);
+  const Value * getAllocationValue(const GetElementPtrInst * gep);
   std::string getCaption(const AbstractHandle *N, const DSGraph *G);
   std::string getCaption(const AbstractLoc *N, const DSGraph *G);
   const ConsElem * findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap, unsigned offset);

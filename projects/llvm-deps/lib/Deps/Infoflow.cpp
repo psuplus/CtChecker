@@ -302,18 +302,14 @@ Infoflow::addDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sour
 void
 Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
-    errs() << "-->";(*it)->dump();
+    //errs() << "-->";(*it)->dump();
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
       processGetElementPtrInstSource(*it, elems, locs);
     } else {
-      errs() << "NORMAL LOCS:\n";
-      for(auto &l: locs){
-        l->dump();
-      }
       locations.insert(locs.begin(), locs.end());
     }
-    errs() << "----<\n";
+    //errs() << "----<\n";
   }
 }
 
@@ -323,6 +319,7 @@ Infoflow::addReachSourceLocations(const FlowRecord & record, ConsElemSet & Sourc
   FlowRecord::value_set reachSink;
     for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
          source != end; ++source) {
+      errs() << "REACHABLE SOURCE: ";(*source)->dump();
       if (!DepsDropAtSink || !sourceSinkAnalysis->reachPtrIsSink(**source)) {
         reachSource.insert(*source);
       } else {
@@ -486,11 +483,21 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   // If operands are constant taint only that element
   unsigned offset = GEPInstCalculateOffset(gep,locs);
   //errs() << "\nSourceOffset: " << offset << "\n";
+
+
+  // Link allocation value to memory nodes
+  const Value * allocation = getAllocationValue(gep);
+
+  AbstractLocSet structptrLocs = getPointedToAbstractLocs(allocation);
+
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
     (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
+
+    // COPY element map to reduced locs if they dont have maps already
+    copyElementMapsToOtherLocs(structptrLocs, elemMap);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -505,6 +512,14 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   }
 }
 
+void
+Infoflow::replaceDefaultConsElemWithOffsetElems(const ConsElem* old, std::map<unsigned, const ConsElem*> elems){
+  ConsElemSet newElems;
+  for(auto & kv: elems){
+    newElems.insert(kv.second);
+  }
+  kit->replaceDefaultConsElems("default", old, newElems);
+}
 
 // Returns a set of the correct constraint elements to be handled
 std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node, std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
@@ -1222,7 +1237,7 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements, const Value* v) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
-  if (curElem == locConstraintMap.end() ||  curElem->second.size() == 1) {
+  if (curElem == locConstraintMap.end() || locConstraintMap[&loc].size() == 1) {
     std::string name = getCaption(&loc, NULL);
 
     const ConsElem * oldElement = NULL;
@@ -1238,10 +1253,13 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
       if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
         locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
         if (oldElement){
+          replaceDefaultConsElemWithOffsetElems(oldElement, locConstraintMap[&loc]);
+          /*
           for(auto & kv : locConstraintMap[&loc]){
-            kit->addConstraint(kindFromImplicitSink(false, false),  *(kv.second),*oldElement);
+            kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
             // add constraint from old element -> new elements for all new elements
           }
+          */
         }
         return locConstraintMap[&loc];
       } else if (numElements == 0) {
@@ -1284,7 +1302,7 @@ Infoflow::createConsElemFromStruct(const AbstractLoc& loc , StructType * s) {
 
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
-  errs() << "Creating ConsElem Map for :"; loc.dump();
+  //errs() << "Creating ConsElem Map for :"; loc.dump();
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     std::string name = getCaption(&loc, NULL);
@@ -2419,6 +2437,80 @@ StructType* convertValueToStructType(const Value * v) {
     }
   }
   return st;
+}
+
+// Either find the stack allocation for this gep, or return NULL
+// Returns NULL if this gep is loaded from anything other than a loadinstruction
+const Value * getAllocationValue(const GetElementPtrInst * gep){
+  const Value * v = gep->getPointerOperand();
+
+  while(v != NULL && !isa<AllocaInst>(v)){
+    if(const LoadInst *li = dyn_cast<LoadInst>(v)){
+      v = li->getPointerOperand();
+    }else {
+      v = NULL;
+    }
+  }
+  return v;
+}
+
+
+AbstractLocSet
+Infoflow::getPointedToAbstractLocs(const Value * v){
+  AbstractLocSet locs;
+  if (v == NULL)
+    return locs;
+
+  // Get Locations for stack alloc
+  AbstractLocSet alloclocs = locsForValue(*v);
+
+  // Check to see if the locs are pointers
+  for(auto & l: alloclocs){
+    for(auto it = l->type_begin(), end = l->type_end(); it != end; ++it){
+      unsigned link_offset = 0;
+      for(auto j = it->second->begin(), setend = it->second->end(); j != setend; ++j){
+        Type *t = *j;
+        Type *target = t;
+        if(t->isPointerTy()){
+          if(t->subtypes().size() == 1){
+            target = t->subtypes()[0];
+          }
+        }
+
+        if(target != t){
+          if(isa<StructType>(target) && l->getSize() > link_offset && l->hasLink(link_offset))
+            locs.insert(l->getLink(link_offset).getNode());
+        }
+      }
+    }
+  }
+  return locs;
+}
+
+// Add constraint elements to other related nodes if no map information exists
+// if elements are created for this node, and it is just a default element
+// replace with the map passed in, and create constraints to link the old and new elements
+void
+Infoflow::copyElementMapsToOtherLocs(AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
+  for(auto & l : locs){
+
+    if(locConstraintMap.find(l) == locConstraintMap.end()){
+      locConstraintMap[l] = elems;
+    } else if (locConstraintMap[l].size() == 1) {
+      const ConsElem * oldElement = locConstraintMap[l].begin()->second;
+      errs() << "    FOUND a map of size: " << locConstraintMap[l].size() << " replacing with " << elems.size() << "elems\n";
+      /*
+      for(auto & kv: elems){
+        kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
+      }
+      */
+      replaceDefaultConsElemWithOffsetElems(oldElement, elems);
+      auto keyToReplace = locConstraintMap.find(l);
+      locConstraintMap.erase(keyToReplace);
+      errs() << "The count is: " << locConstraintMap.count(l) << "\n";
+      locConstraintMap[l] = elems;
+    }
+  }
 }
 
 void Infoflow::constrainOffsetFromIndex(std::string kind, const AbstractLoc* loc, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {

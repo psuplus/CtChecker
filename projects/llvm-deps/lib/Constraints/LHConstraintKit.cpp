@@ -158,6 +158,23 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
   delete ss2;
 }
 
+void LHConstraintKit::replaceDefaultConsElems(const std::string kind, const ConsElem* old, std::set<const ConsElem*> elems){
+  std::vector<LHConstraint> &set = getOrCreateConstraintSet("default");
+  std::vector<LHConstraint>::iterator vIt = set.begin();
+  std::vector<LHConstraint>::iterator vEnd = set.end();
+  while(vIt != vEnd){
+    if(&(vIt->lhs()) == old){
+      const ConsElem & rhs = vIt->rhs();
+      vIt = set.erase(vIt);
+      for(auto & el : elems){
+        addConstraint(kind, *el, rhs);
+      }
+    }else {
+      ++vIt;
+    }
+  }
+}
+
 ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end(); kind != end; ++kind) {

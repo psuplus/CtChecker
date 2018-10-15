@@ -437,12 +437,19 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
   bool structTy = false;
   const StructType* s = dyn_cast<StructType>(gep->getSourceElementType());
   if (s != NULL){
+    errs() << "::IS STRUCT TY::";
     structTy = true;
   }
+  const Value * allocValue = getAllocationValue(gep);
+  AbstractLocSet structPtrLocs = getPointedToAbstractLocs(allocValue);
 
-  for(std::set<const AbstractLoc *>::iterator loc = locs.begin(), end = locs.end();
+  AbstractLocSet toConstrain{locs.begin(), locs.end()};
+  toConstrain.insert(structPtrLocs.begin(), structPtrLocs.end());
+  for(std::set<const AbstractLoc *>::iterator loc = toConstrain.begin(), end = toConstrain.end();
       loc != end; ++loc){
     errs() << "Tainting at offset: " << offset << "\n";
+
+    // Put additional Copy elements here and reverse the order of the copy
     if(structTy)
       putOrConstrainConsElemStruct(implicit, sink, **loc, lub, offset, value);
 
@@ -497,7 +504,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
     // COPY element map to reduced locs if they dont have maps already
-    copyElementMapsToOtherLocs(structptrLocs, elemMap);
+    copyElementMapsToOtherLocs(false, structptrLocs, elemMap);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -513,12 +520,12 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
 }
 
 void
-Infoflow::replaceDefaultConsElemWithOffsetElems(const ConsElem* old, std::map<unsigned, const ConsElem*> elems){
+Infoflow::replaceDefaultConsElemWithOffsetElems(bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems){
   ConsElemSet newElems;
   for(auto & kv: elems){
     newElems.insert(kv.second);
   }
-  kit->replaceDefaultConsElems("default", old, newElems);
+  kit->replaceDefaultConsElems(kindFromImplicitSink(false,sink), sink, old, newElems);
 }
 
 // Returns a set of the correct constraint elements to be handled
@@ -1253,7 +1260,7 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
       if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
         locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
         if (oldElement){
-          replaceDefaultConsElemWithOffsetElems(oldElement, locConstraintMap[&loc]);
+          replaceDefaultConsElemWithOffsetElems(false, oldElement, locConstraintMap[&loc]);
           /*
           for(auto & kv : locConstraintMap[&loc]){
             kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
@@ -2227,18 +2234,18 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   }
   if (unsigned NodeType = N->getNodeFlags()) {
     OS << ": ";
-    if (NodeType & DSNode::AllocaNode       ) OS << "S";
-    if (NodeType & DSNode::HeapNode         ) OS << "H";
-    if (NodeType & DSNode::GlobalNode       ) OS << "G";
-    if (NodeType & DSNode::UnknownNode      ) OS << "U";
-    if (NodeType & DSNode::IncompleteNode   ) OS << "I";
-    if (NodeType & DSNode::ModifiedNode     ) OS << "M";
-    if (NodeType & DSNode::ReadNode         ) OS << "R";
-    if (NodeType & DSNode::ExternalNode     ) OS << "E";
-    if (NodeType & DSNode::ExternFuncNode   ) OS << "X";
-    if (NodeType & DSNode::IntToPtrNode     ) OS << "P";
-    if (NodeType & DSNode::PtrToIntNode     ) OS << "2";
-    if (NodeType & DSNode::VAStartNode      ) OS << "V";
+    if (N->isAllocaNode()) OS << "S";
+    if (N->isHeapNode()) OS << "H";
+    if (N->isGlobalNode()) OS << "G";
+    if (N->isUnknownNode()) OS << "U";
+    if (N->isIncompleteNode()) OS << "I";
+    if (N->isCompleteNode()) OS << "C";
+    if (N->isModifiedNode()) OS << "M";
+    if (N->isReadNode()) OS << "R";
+    if (N->isExternalNode()) OS << "E";
+    if (N->isIntToPtrNode()) OS << "P";
+    if (N->isPtrToIntNode()) OS << "2";
+    if (N->isVAStartNode()) OS << "V";
 
 #ifndef NDEBUG
     if (NodeType & DSNode::DeadNode       ) OS << "<dead>";
@@ -2491,7 +2498,7 @@ Infoflow::getPointedToAbstractLocs(const Value * v){
 // if elements are created for this node, and it is just a default element
 // replace with the map passed in, and create constraints to link the old and new elements
 void
-Infoflow::copyElementMapsToOtherLocs(AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
+Infoflow::copyElementMapsToOtherLocs(bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
   for(auto & l : locs){
 
     if(locConstraintMap.find(l) == locConstraintMap.end()){
@@ -2504,7 +2511,7 @@ Infoflow::copyElementMapsToOtherLocs(AbstractLocSet locs, std::map<unsigned, con
         kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
       }
       */
-      replaceDefaultConsElemWithOffsetElems(oldElement, elems);
+      replaceDefaultConsElemWithOffsetElems(sink, oldElement, elems);
       auto keyToReplace = locConstraintMap.find(l);
       locConstraintMap.erase(keyToReplace);
       errs() << "The count is: " << locConstraintMap.count(l) << "\n";

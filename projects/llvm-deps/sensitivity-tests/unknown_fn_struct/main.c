@@ -1,5 +1,5 @@
 typedef struct {
-  unsigned long * d;
+  unsigned long* d;
   int top;                    /* Index of last used d +1. */
   /* The next are internal book keeping for bn_expand. */
   int dmax;                   /* Size of the d array. */
@@ -9,9 +9,9 @@ typedef struct {
 
 int undefined_function(BIGNUM * a, int n);
 
-#if 0
+#if 1
 int defined_function (BIGNUM * k) {
-  if (k->d[3] == 0)  // Tainted
+  if (k->d[0] == 0)  // Tainted
     ;
   if (k->top < 4) // Not tainted only k 0 tainted
     ;
@@ -38,7 +38,7 @@ int defined_function_2(BIGNUM * k) {
   if (k->flags) // Tainted due to passing through undefined signature
     ;
 
-  if (undefined_function(k, 3)) // Undefined signature taints all elements in k
+  if (undefined_function(k, 2)) // Undefined signature taints all elements in k
     ;
 }
 

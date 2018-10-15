@@ -158,8 +158,8 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
   delete ss2;
 }
 
-void LHConstraintKit::replaceDefaultConsElems(const std::string kind, const ConsElem* old, std::set<const ConsElem*> elems){
-  std::vector<LHConstraint> &set = getOrCreateConstraintSet("default");
+  void LHConstraintKit::replaceDefaultConsElems(const std::string kind, bool sink, const ConsElem* old, std::set<const ConsElem*> elems){
+  std::vector<LHConstraint> &set = getOrCreateConstraintSet(kind);
   std::vector<LHConstraint>::iterator vIt = set.begin();
   std::vector<LHConstraint>::iterator vEnd = set.end();
   while(vIt != vEnd){
@@ -167,7 +167,10 @@ void LHConstraintKit::replaceDefaultConsElems(const std::string kind, const Cons
       const ConsElem & rhs = vIt->rhs();
       vIt = set.erase(vIt);
       for(auto & el : elems){
-        addConstraint(kind, *el, rhs);
+        if(!sink)
+          addConstraint(kind, *el, rhs);
+        else
+          addConstraint(kind, rhs, *el);
       }
     }else {
       ++vIt;

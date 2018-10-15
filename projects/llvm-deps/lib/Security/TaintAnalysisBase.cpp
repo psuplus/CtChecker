@@ -125,7 +125,7 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
     return relevant;
 
   elemMap = curElem->second;
-  if(hasPointerTarget(node)){
+  if((node->isHeapNode() || node->isAllocaNode())   && hasPointerTarget(node)){
     elemMap = getPointerTarget(node);
   }
 

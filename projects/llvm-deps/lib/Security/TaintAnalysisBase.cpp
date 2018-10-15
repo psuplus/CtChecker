@@ -88,6 +88,15 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
 
     if(hasOffset)
       elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
+    else{
+      auto locConstraintsMap = ifa->locConstraintMap.find(*loc);
+      if (locConstraintsMap != ifa->locConstraintMap.end()){
+        for (auto & kv : locConstraintsMap->second){
+          elementsToConstrain.insert(kv.second);
+        }
+      }
+    }
+
 
     errs() << "FOUND " << elementsToConstrain.size() << " elements from the locsForValue\n";
   }

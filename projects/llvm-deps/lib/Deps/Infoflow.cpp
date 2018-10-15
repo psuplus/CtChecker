@@ -280,6 +280,7 @@ Infoflow::addDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sour
   
   FlowRecord::value_set directSource;
   FlowRecord::value_set directSink;
+  bool implicit = record.isImplicit();
     for (FlowRecord::value_iterator source = record.source_directptr_begin(), end = record.source_directptr_end();
          source != end; ++source) {
       if (!DepsDropAtSink || !sourceSinkAnalysis->directPtrIsSink(**source)) {
@@ -295,17 +296,17 @@ Infoflow::addDirectSourceLocations(const FlowRecord & record, ConsElemSet & Sour
     // TO DISABLE OFFSET:
     // addDirectValuesToSources(directSource, Sources, SourceLocs, false);
     // addDirectValuesToSources(directSink, sinkSources, sinkSourceLocs, false);
-    addDirectValuesToSources(directSource, Sources, SourceLocs);
-    addDirectValuesToSources(directSink, sinkSources, sinkSourceLocs);
+    addDirectValuesToSources(directSource, Sources, SourceLocs, implicit);
+    addDirectValuesToSources(directSink, sinkSources, sinkSourceLocs, implicit);
 }
 
 void
-Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations) {
+Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & elems, AbsLocSet & locations, bool implicit) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     //errs() << "-->";(*it)->dump();
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
-      processGetElementPtrInstSource(*it, elems, locs);
+      processGetElementPtrInstSource(*it, elems, locs, implicit);
     } else {
       locations.insert(locs.begin(), locs.end());
     }
@@ -317,6 +318,7 @@ void
 Infoflow::addReachSourceLocations(const FlowRecord & record, ConsElemSet & Sources, ConsElemSet & sinkSources, AbsLocSet & SourceLocs, AbsLocSet & sinkSourceLocs){
   FlowRecord::value_set reachSource;
   FlowRecord::value_set reachSink;
+  bool implicit = record.isImplicit();
     for (FlowRecord::value_iterator source = record.source_reachptr_begin(), end = record.source_reachptr_end();
          source != end; ++source) {
       errs() << "REACHABLE SOURCE: ";(*source)->dump();
@@ -333,16 +335,16 @@ Infoflow::addReachSourceLocations(const FlowRecord & record, ConsElemSet & Sourc
     // TO DISABLE OFFSET:
     // addReachValuesToSources(reachSource, Sources, SourceLocs, false);
     // addReachValuesToSources(reachSink, sinkSources, sinkSourceLocs, false);
-    addReachValuesToSources(reachSource, Sources, SourceLocs);
-    addReachValuesToSources(reachSink, sinkSources, sinkSourceLocs);
+    addReachValuesToSources(reachSource, Sources, SourceLocs, implicit);
+    addReachValuesToSources(reachSink, sinkSources, sinkSourceLocs, implicit);
 }
 
 void
-Infoflow::addReachValuesToSources(FlowRecord::value_set values, ConsElemSet &elems, AbsLocSet &locations) {
+Infoflow::addReachValuesToSources(FlowRecord::value_set values, ConsElemSet &elems, AbsLocSet &locations, bool implicit) {
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
-      processGetElementPtrInstSource(*it, elems, locs);
+      processGetElementPtrInstSource(*it, elems, locs, implicit);
     } else {
       for(auto &l: locs){
         l->dump();
@@ -462,7 +464,7 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
 /// the instruction is dealing with. That offset is used to find the correct
 /// ConsElem related to the value and add that to the corresponding source set.
 ///
-void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<const ConsElem *>& sourceSet, std::set<const AbstractLoc *> locs) {
+void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<const ConsElem *>& sourceSet, std::set<const AbstractLoc *> locs, bool implicit) {
   //get ConsElem from Value
   errs() << "[Source:] " << stringFromValue(*source) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
@@ -503,8 +505,11 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
 
+    if (elemMap.size() == 1 && !(*I)->isNodeCompletelyFolded()){
+      elemMap = getOrCreateConsElemTyped(**I, numElements, source, true);
+    }
     // COPY element map to reduced locs if they dont have maps already
-    copyElementMapsToOtherLocs(false, structptrLocs, elemMap);
+    copyElementMapsToOtherLocs(implicit, false, structptrLocs, elemMap);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -513,19 +518,19 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // Collapsed nodes contain no type info, so also taint all elems
     std::set<const ConsElem*> sourceElems = findRelevantConsElem(*I, elemMap, offset);
     for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i){
-      errs() << "CONSTRAINING: "; (*i)->dump(errs()); errs() << "\n";
+      errs() << "CONSTRAINING: "; (*i)->dump(errs()); errs() << *i << "\n";
       sourceSet.insert(*i);
     }
   }
 }
 
 void
-Infoflow::replaceDefaultConsElemWithOffsetElems(bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems){
+Infoflow::replaceDefaultConsElemWithOffsetElems(bool implicit, bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems){
   ConsElemSet newElems;
   for(auto & kv: elems){
     newElems.insert(kv.second);
   }
-  kit->replaceDefaultConsElems(kindFromImplicitSink(false,sink), sink, old, newElems);
+  kit->replaceDefaultConsElems(kindFromImplicitSink(implicit,sink), sink, old, newElems);
 }
 
 // Returns a set of the correct constraint elements to be handled
@@ -1242,32 +1247,15 @@ Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink, const Function &v
 }
 
 std::map<unsigned, const ConsElem *>
-Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements, const Value* v) {
+Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements, const Value* v, bool force) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
-  if (curElem == locConstraintMap.end() || locConstraintMap[&loc].size() == 1) {
+  if (curElem == locConstraintMap.end() || force) {
     std::string name = getCaption(&loc, NULL);
-
-    const ConsElem * oldElement = NULL;
-    if(curElem != locConstraintMap.end()){
-      errs() << "OLD ELEMENT FOUND: ";
-      oldElement =  curElem->second.begin()->second;
-      oldElement->dump(errs()); errs() << " : addr  "<<oldElement << "\n";
-      loc.dump();
-    }
 
     if (v != NULL && !loc.isNodeCompletelyFolded()) {
       const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
       if (StructType* s = dyn_cast<StructType>(gep->getSourceElementType())){
         locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
-        if (oldElement){
-          replaceDefaultConsElemWithOffsetElems(false, oldElement, locConstraintMap[&loc]);
-          /*
-          for(auto & kv : locConstraintMap[&loc]){
-            kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
-            // add constraint from old element -> new elements for all new elements
-          }
-          */
-        }
         return locConstraintMap[&loc];
       } else if (numElements == 0) {
         numElements = 1;
@@ -1842,8 +1830,8 @@ Infoflow::constrainLoadInst(const LoadInst & inst, Flows & flows)
   // pc
   imp.addSourceValue(*inst.getParent());
   // ptr
-  //imp.addSourceValue(*inst.getPointerOperand());
-  exp.addSourceValue(*inst.getPointerOperand());
+  imp.addSourceValue(*inst.getPointerOperand());
+  //exp.addSourceValue(*inst.getPointerOperand());
   // from memory
   exp.addSourceDirectPtr(*inst.getPointerOperand());
   // to value
@@ -2498,12 +2486,12 @@ Infoflow::getPointedToAbstractLocs(const Value * v){
 // if elements are created for this node, and it is just a default element
 // replace with the map passed in, and create constraints to link the old and new elements
 void
-Infoflow::copyElementMapsToOtherLocs(bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
+Infoflow::copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
   for(auto & l : locs){
 
     if(locConstraintMap.find(l) == locConstraintMap.end()){
       locConstraintMap[l] = elems;
-    } else if (locConstraintMap[l].size() == 1) {
+    } else if (!l->isNodeCompletelyFolded() && locConstraintMap[l].size() == 1) {
       const ConsElem * oldElement = locConstraintMap[l].begin()->second;
       errs() << "    FOUND a map of size: " << locConstraintMap[l].size() << " replacing with " << elems.size() << "elems\n";
       /*
@@ -2511,7 +2499,7 @@ Infoflow::copyElementMapsToOtherLocs(bool sink, AbstractLocSet locs, std::map<un
         kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
       }
       */
-      replaceDefaultConsElemWithOffsetElems(sink, oldElement, elems);
+      replaceDefaultConsElemWithOffsetElems(implicit, sink, oldElement, elems);
       auto keyToReplace = locConstraintMap.find(l);
       locConstraintMap.erase(keyToReplace);
       errs() << "The count is: " << locConstraintMap.count(l) << "\n";

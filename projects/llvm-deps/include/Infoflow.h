@@ -272,9 +272,9 @@ class Infoflow :
 
     void addMemorySourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &);
     void addDirectSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
-    void addDirectValuesToSources(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
+    void addDirectValuesToSources(FlowRecord::value_set , ConsElemSet & , AbsLocSet &, bool);
     void addReachSourceLocations(const FlowRecord &, ConsElemSet &, ConsElemSet &, AbsLocSet &, AbsLocSet &);
-    void addReachValuesToSources(FlowRecord::value_set , ConsElemSet & , AbsLocSet &);
+    void addReachValuesToSources(FlowRecord::value_set , ConsElemSet & , AbsLocSet &, bool);
 
     void constrainSinkMemoryLocations(const FlowRecord &, const ConsElem &, const ConsElem &, bool, bool);
     void constrainDirectSinkLocations(const FlowRecord &, AbsLocSet &, const ConsElem &, const ConsElem&, bool, bool);
@@ -289,7 +289,7 @@ class Infoflow :
     unsigned findOffsetFromFieldIndex(StructType *, unsigned, const AbstractLoc*);
     bool checkGEPOperandsConstant(const GetElementPtrInst*);
     void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem&, std::set<const AbstractLoc*>);
-    void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>);
+    void processGetElementPtrInstSource(const Value *, std::set<const ConsElem *>&, std::set<const AbstractLoc*>, bool);
     std::set<const ConsElem *> findRelevantConsElem(const AbstractLoc*, std::map<unsigned, const ConsElem *>, unsigned);
 
     const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
@@ -300,7 +300,7 @@ class Infoflow :
     void putOrConstrainConsElemSummarySink(std::string, const Value &, const ConsElem &);
     const ConsElem &getOrCreateConsElem(const Value &);
     std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
-    std::map<unsigned, const ConsElem *> getOrCreateConsElemTyped(const AbstractLoc &, unsigned, const Value* v=NULL);
+  std::map<unsigned, const ConsElem *> getOrCreateConsElemTyped(const AbstractLoc &, unsigned, const Value* v=NULL, bool force = false);
     std::map<unsigned, const ConsElem *> createConsElemFromStruct(const AbstractLoc &, StructType*);
 
     std::map<unsigned, const ConsElem *> getOrCreateConsElemCollapsedStruct(const AbstractLoc &, const StructType*);
@@ -375,9 +375,9 @@ class Infoflow :
     void constrainCallee(const ContextID calleeContext, const Function & callee, const ImmutableCallSite & cs, Flows &);
     void constrainIntrinsic(const IntrinsicInst &, Flows &);
 
-    void copyElementMapsToOtherLocs(bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems);
+    void copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems);
     AbstractLocSet getPointedToAbstractLocs(const Value * v);
-    void replaceDefaultConsElemWithOffsetElems(bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems);
+    void replaceDefaultConsElemWithOffsetElems(bool implicit, bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems);
 };
 
   StructType* convertValueToStructType(const Value * v);

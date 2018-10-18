@@ -557,6 +557,10 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
           if(parentElemMap[offset] != NULL){
             sourceSet.insert(parentElemMap[offset]);
           }
+        } else if (parentLoc->isHeapNode()){
+            for(auto & kv : parentElemMap){
+              sourceSet.insert(kv.second);
+            }
         }
       }
     }

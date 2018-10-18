@@ -15,11 +15,11 @@ void do_stuff (pk_t *ctx){
 
   if(ctx->pk_info == NULL) // Vulnerable Branch reported
     ;
-  if(ctx->pk_b == NULL) // Vulnerable Branch reported
-    ;
   if(ctx->pk_b[1] == 3) // Vulnerable Branch reported
     ;
-  if(ctx != NULL) // vulnerable branch
+  if(ctx->pk_info->info == 0) // vulnerable branch
+    ;
+  if(ctx != NULL) // address not tainted
     ;
 }
 

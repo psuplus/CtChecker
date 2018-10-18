@@ -14,7 +14,7 @@ int testfunc(const BIGNUM * a)
   if (a->top == 2) // tainted - loads from c
     ;
 
-  if (a->d[0] & 1 == 1) // tainted - loads from c
+  if ((a->d[0] & 1) == 1) // tainted - loads from c
     ;
 
   return a->top;

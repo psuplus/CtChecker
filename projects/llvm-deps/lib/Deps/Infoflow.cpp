@@ -147,7 +147,7 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-#if 1
+#if 0
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
@@ -161,9 +161,9 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
     //       /// value paired to both ConElems.
 
     // print lhs
-    (*constraint).lhs().dump(errs());
+    (*constraint).lhs().dump(errs()); errs() << "["<< &(*constraint).lhs() << "]";
     errs() << "-->";
-    (*constraint).rhs().dump(errs());
+    (*constraint).rhs().dump(errs()); errs() << "["<< &(*constraint).rhs() << "]";
     errs()  << "\n";
   }
 #endif
@@ -184,6 +184,8 @@ Infoflow::constrainFlowRecord(const FlowRecord &record) {
     // For variables and vargs elements, add all of these directly to 'Sources'
     for (FlowRecord::value_iterator source = record.source_value_begin(), end = record.source_value_end();
         source != end; ++source) {
+      //errs() << "Value: " << stringFromValue(**source);
+      //errs() << "\n--$ "; (*source)->dump();
       const ConsElem * elem  = &getOrCreateConsElem(record.sourceContext(), **source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->valueIsSink(**source)) {
 	       Sources.insert(elem);
@@ -306,6 +308,7 @@ Infoflow::addDirectValuesToSources(FlowRecord::value_set values, ConsElemSet & e
     //errs() << "-->";(*it)->dump();
     const std::set<const AbstractLoc *> & locs = locsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
+      errs () << "DSOURCEGEP INSTRUCTION " << stringFromValue(**it) << "\n";
       processGetElementPtrInstSource(*it, elems, locs, implicit);
     } else {
       locations.insert(locs.begin(), locs.end());
@@ -344,6 +347,7 @@ Infoflow::addReachValuesToSources(FlowRecord::value_set values, ConsElemSet &ele
   for (FlowRecord::value_iterator it = values.begin(); it != values.end(); ++it) {
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**it);
     if(isa<GetElementPtrInst>(*it) && offset_used){
+      errs () << "RSOURCEGEP INSTRUCTION " << stringFromValue(**it) << "\n";
       processGetElementPtrInstSource(*it, elems, locs, implicit);
     } else {
       for(auto &l: locs){
@@ -381,6 +385,7 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
        sink != end; ++sink) {
     const std::set<const AbstractLoc *> & locs = locsForValue(**sink);
     if(isa<GetElementPtrInst>(*sink) && offset_used){
+      errs () << "DSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
       if (regFlow)
         processGetElementPtrInstSink(*sink, implicit, false, source, locs);
       if (sinkFlow)
@@ -400,6 +405,7 @@ Infoflow::constrainReachSinkLocations(const FlowRecord & record, AbsLocSet & Sin
        sink != end; ++sink) {
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**sink);
     if(isa<GetElementPtrInst>(*sink) && offset_used) {
+      errs () << "RSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
       if (regFlow)
         processGetElementPtrInstSink(*sink,implicit, false, source, locs);
       if (sinkFlow)
@@ -497,19 +503,40 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   // Link allocation value to memory nodes
   const Value * allocation = getAllocationValue(gep);
 
+  if(allocation != NULL){
+    errs() << "Allocation value:"; allocation->dump();
+  }
   AbstractLocSet structptrLocs = getPointedToAbstractLocs(allocation);
+  if(locConstraintMap.find(*(structptrLocs.begin())) != locConstraintMap.end()){
+    errs() << "parent elements has map of size : " << locConstraintMap[*(structptrLocs.begin())].size() << "\n";
+    if(structptrLocs.size() > 1)
+      errs() << " STRUCT PTR LOCS SIZE: " << structptrLocs.size() << "\n";
+  }
 
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
     (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
+    unsigned mapsize = elemMap.size();
 
-    if (elemMap.size() == 1 && !(*I)->isNodeCompletelyFolded()){
+    bool saveBeforeRewrite = false;
+    if(structptrLocs.count(*I) != 0)
+      saveBeforeRewrite = true;
+
+    if (elemMap.size() == 1 && !(*I)->isArrayNode() && !(*I)->isNodeCompletelyFolded()){
+      const ConsElem* oldElem = NULL;
+      if(saveBeforeRewrite){
+        oldElem = (elemMap.begin())->second;
+      }
       elemMap = getOrCreateConsElemTyped(**I, numElements, source, true);
+      if (oldElem){
+        replaceDefaultConsElemWithOffsetElems(implicit, false, oldElem, elemMap);
+      }
     }
     // COPY element map to reduced locs if they dont have maps already
-    copyElementMapsToOtherLocs(implicit, false, structptrLocs, elemMap);
+    if(elemMap.size() > mapsize)
+      copyElementMapsToOtherLocs(implicit, false, structptrLocs, elemMap);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -520,6 +547,20 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i){
       errs() << "CONSTRAINING: "; (*i)->dump(errs()); errs() << *i << "\n";
       sourceSet.insert(*i);
+      for(auto & parentLoc: structptrLocs){
+        std::map<unsigned, const ConsElem*> parentElemMap = getOrCreateConsElem(*parentLoc);
+        if(isa<GetElementPtrInst>(allocation)){
+          for(auto & kv : parentElemMap){
+            errs() << "Adding " ; kv.second->dump(errs()); errs() << kv.second <<"\n";
+            sourceSet.insert(kv.second);
+          }
+        } else if (elemMap.size() == parentElemMap.size()){
+          if(parentElemMap[offset] != NULL){
+            errs() << "ADDING : "; parentElemMap[offset]->dump(errs()); errs() << parentElemMap[offset] << "\n";
+            sourceSet.insert(parentElemMap[offset]);
+          }
+        }
+      }
     }
   }
 }
@@ -2439,13 +2480,30 @@ StructType* convertValueToStructType(const Value * v) {
 const Value * getAllocationValue(const GetElementPtrInst * gep){
   const Value * v = gep->getPointerOperand();
 
+  const Value * lastValue = v;
   while(v != NULL && !isa<AllocaInst>(v)){
     if(const LoadInst *li = dyn_cast<LoadInst>(v)){
+      errs() << " allocation intermediate: "; v->dump();
       v = li->getPointerOperand();
+      errs() << "=>";
+      v->dump();
+    }else if(const GetElementPtrInst * g = dyn_cast<GetElementPtrInst>(v)){
+      errs() << " allocation intermediate: "; v->dump();
+      v = g->getPointerOperand();
+      errs() << "=>";
+      v->dump();
     }else {
+      lastValue = v;
       v = NULL;
     }
   }
+  if (v == NULL)
+    v = lastValue;
+  else{
+    errs() << "FINAL: "; v->dump();
+  }
+
+
   return v;
 }
 
@@ -2461,20 +2519,25 @@ Infoflow::getPointedToAbstractLocs(const Value * v){
 
   // Check to see if the locs are pointers
   for(auto & l: alloclocs){
-    for(auto it = l->type_begin(), end = l->type_end(); it != end; ++it){
-      unsigned link_offset = 0;
-      for(auto j = it->second->begin(), setend = it->second->end(); j != setend; ++j){
-        Type *t = *j;
-        Type *target = t;
-        if(t->isPointerTy()){
-          if(t->subtypes().size() == 1){
-            target = t->subtypes()[0];
+    if(l->isNodeCompletelyFolded()){
+      locs.insert(l);
+    }else {
+      for(auto it = l->type_begin(), end = l->type_end(); it != end; ++it){
+        unsigned link_offset = 0;
+        for(auto j = it->second->begin(), setend = it->second->end(); j != setend; ++j){
+          Type *t = *j;
+          Type *target = t;
+          if(t->isPointerTy()){
+            if(t->subtypes().size() == 1){
+              target = t->subtypes()[0];
+            }
           }
-        }
 
-        if(target != t){
-          if(isa<StructType>(target) && l->getSize() > link_offset && l->hasLink(link_offset))
-            locs.insert(l->getLink(link_offset).getNode());
+          if(target != t){
+            if(l->getSize() > link_offset && l->hasLink(link_offset)){
+              locs.insert(l->getLink(link_offset).getNode());
+            }
+          }
         }
       }
     }
@@ -2490,8 +2553,9 @@ Infoflow::copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet lo
   for(auto & l : locs){
 
     if(locConstraintMap.find(l) == locConstraintMap.end()){
+      errs() << " map was not found, inserting map\n";
       locConstraintMap[l] = elems;
-    } else if (!l->isNodeCompletelyFolded() && locConstraintMap[l].size() == 1) {
+    } else if (!l->isNodeCompletelyFolded() && locConstraintMap[l].size() != elems.size() && !l->isArrayNode()) {
       const ConsElem * oldElement = locConstraintMap[l].begin()->second;
       errs() << "    FOUND a map of size: " << locConstraintMap[l].size() << " replacing with " << elems.size() << "elems\n";
       /*
@@ -2504,6 +2568,8 @@ Infoflow::copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet lo
       locConstraintMap.erase(keyToReplace);
       errs() << "The count is: " << locConstraintMap.count(l) << "\n";
       locConstraintMap[l] = elems;
+    } else {
+      errs() << "NOTHINGDONE: " << locConstraintMap[l].size()<< "/" << elems.size() << "\n";
     }
   }
 }

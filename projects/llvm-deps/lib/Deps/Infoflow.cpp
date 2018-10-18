@@ -391,7 +391,6 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
     } else {
-      errs() << "Inserting locs for "; (*sink)->dump(); errs() << "\n";
       SinkLocs.insert(locs.begin(), locs.end());
     }
   }
@@ -507,10 +506,12 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     errs() << "Allocation value:"; allocation->dump();
   }
   AbstractLocSet structptrLocs = getPointedToAbstractLocs(allocation);
-  if(locConstraintMap.find(*(structptrLocs.begin())) != locConstraintMap.end()){
-    errs() << "parent elements has map of size : " << locConstraintMap[*(structptrLocs.begin())].size() << "\n";
+  const AbstractLoc * node = *(structptrLocs.begin());
+  if(locConstraintMap.find(node) != locConstraintMap.end()){
+    errs() << "parent elements has map of size : " << locConstraintMap[node].size() << "\n";
     if(structptrLocs.size() > 1)
       errs() << " STRUCT PTR LOCS SIZE: " << structptrLocs.size() << "\n";
+    node->dump();
   }
 
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();

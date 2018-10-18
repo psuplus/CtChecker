@@ -551,12 +551,10 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
         std::map<unsigned, const ConsElem*> parentElemMap = getOrCreateConsElem(*parentLoc);
         if(isa<GetElementPtrInst>(allocation)){
           for(auto & kv : parentElemMap){
-            errs() << "Adding " ; kv.second->dump(errs()); errs() << kv.second <<"\n";
             sourceSet.insert(kv.second);
           }
         } else if (elemMap.size() == parentElemMap.size()){
           if(parentElemMap[offset] != NULL){
-            errs() << "ADDING : "; parentElemMap[offset]->dump(errs()); errs() << parentElemMap[offset] << "\n";
             sourceSet.insert(parentElemMap[offset]);
           }
         }

@@ -25,7 +25,7 @@ protected:
 
   unsigned fieldIndexToByteOffset(int index, const Value *, const AbstractLoc *);
 
-  std::set<const ConsElem *>gatherRelevantConsElems(const AbstractLoc *, unsigned, unsigned);
+  std::set<const ConsElem *>gatherRelevantConsElems(const AbstractLoc *, unsigned, unsigned, const Value&);
 
 public:
   void setInfoflow(Infoflow * flow){

@@ -86,9 +86,10 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
       hasOffset = true;
     }
 
-    if(hasOffset)
-      elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements);
-    else{
+    if(hasOffset){
+      elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements, value);
+
+    }else{
       auto locConstraintsMap = ifa->locConstraintMap.find(*loc);
       if (locConstraintsMap != ifa->locConstraintMap.end()){
         for (auto & kv : locConstraintsMap->second){
@@ -101,22 +102,6 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     errs() << "FOUND " << elementsToConstrain.size() << " elements from the locsForValue\n";
   }
 
-#ifdef INCLUDE_REACHABLE_IN_TAINT
-  errs() << "RL:\n";
-  for(auto &rl : rlocs){
-    std::set<const ConsElem *> reachableElements;
-    rl->dump();
-
-    if(hasOffset)
-      reachableElements = gatherRelevantConsElems(rl, offset, numElements);
-
-    for(auto &el : reachableElements){
-      el->dump(errs()); errs() << "\n";
-    }
-    elementsToConstrain.insert(reachableElements.begin(), reachableElements.end());
-
-  }
-#endif
   errs() << "Number of elements to constrain: " << elementsToConstrain.size() << "\n";
   for(auto & el : elementsToConstrain){
     el->dump(errs()); errs() <<" : addr " << el << "\n";
@@ -126,7 +111,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
 
 
 std::set<const ConsElem *>
-TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned offset, unsigned numElements) {
+TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned offset, unsigned numElements, const Value &val) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *> >::iterator curElem = ifa->locConstraintMap.find(node);
   std::map<unsigned, const ConsElem *> elemMap;
   std::set<const ConsElem *> relevant;
@@ -134,15 +119,50 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
     return relevant;
 
   elemMap = curElem->second;
-  if((node->isHeapNode() || node->isAllocaNode())   && hasPointerTarget(node)){
-    elemMap = getPointerTarget(node);
-  }
 
   if(numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
   } else {
     errs() << "Map size does not match number of elements " << elemMap.size() << "\n";
     node->dump();
+  }
+
+  if(hasPointerTarget(node)){
+    // Check that type matches
+    std::set<const AbstractLoc*> childLocs;
+    Type * t = val.getType();
+    if(isa<AllocaInst>(&val)){
+      t = t->getContainedType(0);
+    }
+    std::string tyname;
+    raw_string_ostream tstr{tyname};
+    tstr << *t;
+    tstr.str();
+    errs() << "Matching Type:" << tyname << "\n";
+    if(t->isPointerTy()){
+      DSNode::TyMapTy nodetypes{node->type_begin(), node->type_end()};
+      for(auto & kv : nodetypes){
+        for(svset<Type*>::const_iterator ni = kv.second->begin(), ne = kv.second->end();
+            ni != ne; ++ni){
+          std::string tyname2;
+          raw_string_ostream nstr{tyname2};
+          nstr << **ni;
+          nstr.str();
+          if(tyname == tyname2){
+            errs() << "FOUND MATCHING CHILD NODE:";
+            const AbstractLoc* child = node->getLink(kv.first).getNode();
+            childLocs.insert(child);
+          } else {
+            errs() << "tyname2: " << tyname2 << " doesn't match\n";
+          }
+        }
+      }
+    }
+
+    for(auto & l : childLocs){
+      std::set<const ConsElem *> childElems = gatherRelevantConsElems(l, offset, numElements, val);
+      relevant.insert(childElems.begin(), childElems.end());
+    }
   }
 
   return relevant;

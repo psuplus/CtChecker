@@ -1875,7 +1875,7 @@ Infoflow::constrainLoadInst(const LoadInst & inst, Flows & flows)
   imp.addSourceValue(*inst.getParent());
   // ptr
   imp.addSourceValue(*inst.getPointerOperand());
-  //exp.addSourceValue(*inst.getPointerOperand());
+  exp.addSourceValue(*inst.getPointerOperand());
   // from memory
   exp.addSourceDirectPtr(*inst.getPointerOperand());
   // to value

@@ -375,9 +375,7 @@ class Infoflow :
     void constrainCallee(const ContextID calleeContext, const Function & callee, const ImmutableCallSite & cs, Flows &);
     void constrainIntrinsic(const IntrinsicInst &, Flows &);
 
-    void copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems);
     AbstractLocSet getPointedToAbstractLocs(const Value * v);
-    void replaceDefaultConsElemWithOffsetElems(bool implicit, bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems);
 };
 
   StructType* convertValueToStructType(const Value * v);

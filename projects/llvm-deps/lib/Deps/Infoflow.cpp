@@ -493,6 +493,9 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   unsigned numElements = 0;
   if(isa<ArrayType>(T))
     numElements = GEPInstCalculateNumberElements(gep);
+  if(StructType * st = dyn_cast<StructType>(T)){
+    numElements = st->getNumElements();
+  }
 
   // If operands are not constant taint all consElems
   if(!checkGEPOperandsConstant(gep)){
@@ -515,45 +518,28 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
   //errs() << "\nSourceOffset: " << offset << "\n";
 
 
-  // Link allocation value to memory nodes
+  // Link Allocation memory location as well incase that is tainted
   const Value * allocation = getAllocationValue(gep);
-
-  if(allocation != NULL){
-    errs() << "Allocation value:"; allocation->dump();
-  }
   AbstractLocSet structptrLocs = getPointedToAbstractLocs(allocation);
   const AbstractLoc * node = *(structptrLocs.begin());
+  ConsElemSet parentElems;
   if(locConstraintMap.find(node) != locConstraintMap.end()){
-    errs() << "parent elements has map of size : " << locConstraintMap[node].size() << "\n";
-    if(structptrLocs.size() > 1)
-      errs() << " STRUCT PTR LOCS SIZE: " << structptrLocs.size() << "\n";
-    node->dump();
+    ConsElemSet pElems = findRelevantConsElem(node, locConstraintMap[node], offset);
+    parentElems.insert(pElems.begin(), pElems.end());
   }
+
 
   for(std::set<const AbstractLoc *>::const_iterator I = locs.begin(), E = locs.end();
       I != E; ++I){
     (*I)->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(**I, numElements, source);
-    unsigned mapsize = elemMap.size();
-
-    bool saveBeforeRewrite = false;
-    if(structptrLocs.count(*I) != 0)
-      saveBeforeRewrite = true;
 
     if (elemMap.size() == 1 && !(*I)->isArrayNode() && !(*I)->isNodeCompletelyFolded()){
-      const ConsElem* oldElem = NULL;
-      if(saveBeforeRewrite){
-        oldElem = (elemMap.begin())->second;
-      }
-      //elemMap = getOrCreateConsElemTyped(**I, numElements, source, true);
-      if (oldElem){
-        replaceDefaultConsElemWithOffsetElems(implicit, false, oldElem, elemMap);
+      if((*I)->isHeapNode()){
+        elemMap = getOrCreateConsElemTyped(**I, numElements, source, true);
       }
     }
-    // COPY element map to reduced locs if they dont have maps already
-    if(elemMap.size() > mapsize)
-      copyElementMapsToOtherLocs(implicit, false, structptrLocs, elemMap);
 
     // ElemMap should match the number of elements unless
     // the number is not known at compile time
@@ -561,42 +547,14 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
     std::set<const ConsElem*> sourceElems = findRelevantConsElem(*I, elemMap, offset);
+    sourceElems.insert(parentElems.begin(), parentElems.end());
     for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i){
       errs() << "CONSTRAINING: "; (*i)->dump(errs()); errs() << *i << "\n";
       sourceSet.insert(*i);
-      /*
-      for(auto & parentLoc: structptrLocs){
-        std::map<unsigned, const ConsElem*> parentElemMap = getOrCreateConsElem(*parentLoc);
-        if(isa<GetElementPtrInst>(allocation)){
-          for(auto & kv : parentElemMap){
-            sourceSet.insert(kv.second);
-          }
-        } else if (elemMap.size() == parentElemMap.size()){
-          if(parentElemMap[offset] != NULL){
-            sourceSet.insert(parentElemMap[offset]);
-          }
-        } else if (parentLoc->isHeapNode()){
-            for(auto & kv : parentElemMap){
-              sourceSet.insert(kv.second);
-            }
-        }
-      }
-      */
     }
   }
 }
 
-void
-Infoflow::replaceDefaultConsElemWithOffsetElems(bool implicit, bool sink, const ConsElem* old, std::map<unsigned, const ConsElem*> elems){
-  ConsElemSet newElems;
-  for(auto & kv: elems){
-    newElems.insert(kv.second);
-  }
-  errs() << "REPLACING " << old << "\n";
-  if(const LHJoin * le = dyn_cast<LHJoin>(old))
-    errs() << "OLD IS A JOIN\n";
-  //kit->replaceDefaultConsElems(kindFromImplicitSink(implicit,sink), sink, old, newElems);
-}
 
 // Returns a set of the correct constraint elements to be handled
 std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node, std::map<unsigned, const ConsElem *> elemMap, unsigned offset){
@@ -2591,38 +2549,6 @@ Infoflow::getPointedToAbstractLocs(const Value * v){
     }
   }
   return locs;
-}
-
-// Add constraint elements to other related nodes if no map information exists
-// if elements are created for this node, and it is just a default element
-// replace with the map passed in, and create constraints to link the old and new elements
-void
-Infoflow::copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
-  return;
-  for(auto & l : locs){
-
-    if(locConstraintMap.find(l) == locConstraintMap.end()){
-      errs() << " map was not found, inserting map\n";
-      locConstraintMap[l] = elems;
-    } else if (!l->isNodeCompletelyFolded() && locConstraintMap[l].size() != elems.size() && !l->isArrayNode()) {
-      const ConsElem * oldElement = locConstraintMap[l].begin()->second;
-      errs() << "    FOUND a map of size: " << locConstraintMap[l].size() << " replacing with " << elems.size() << "elems\n";
-      /*
-      for(auto & kv: elems){
-        kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
-      }
-      */
-      /*
-      replaceDefaultConsElemWithOffsetElems(implicit, sink, oldElement, elems);
-      auto keyToReplace = locConstraintMap.find(l);
-      locConstraintMap.erase(keyToReplace);
-      errs() << "The count is: " << locConstraintMap.count(l) << "\n";
-      locConstraintMap[l] = elems;
-      */
-    } else {
-      errs() << "NOTHINGDONE: " << locConstraintMap[l].size()<< "/" << elems.size() << "\n";
-    }
-  }
 }
 
 void Infoflow::constrainOffsetFromIndex(std::string kind, const AbstractLoc* loc, const Value * v, std::map<unsigned, const ConsElem*> elemMap, int fieldIdx) {

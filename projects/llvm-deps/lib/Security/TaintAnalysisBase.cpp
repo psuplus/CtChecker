@@ -60,6 +60,13 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
     ifa->setTainted(kind,value);
   }
 
+  // Heap nodes not returned from locs For value
+  AbstractLocSet relevantLocs{locs.begin(), locs.end()};
+  for(auto & rl: rlocs){
+    if(rl->isHeapNode()){
+      relevantLocs.insert(rl);
+    }
+  }
   unsigned offset = 0;
   //errs() << "Trying to get offset.. for  "<< s << "\n";
   bool hasOffset = ifa->offsetForValue(value, &offset);
@@ -74,8 +81,8 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   }
 
 
-  std::set<const AbstractLoc *>::const_iterator loc = locs.begin();
-  std::set<const AbstractLoc *>::const_iterator end = locs.end();
+  std::set<const AbstractLoc *>::const_iterator loc = relevantLocs.begin();
+  std::set<const AbstractLoc *>::const_iterator end = relevantLocs.end();
 
 
   std::set<const ConsElem *> elementsToConstrain;
@@ -151,6 +158,7 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
           if(tyname == tyname2){
             errs() << "FOUND MATCHING CHILD NODE:";
             const AbstractLoc* child = node->getLink(kv.first).getNode();
+            child->dump();
             childLocs.insert(child);
           }
         }

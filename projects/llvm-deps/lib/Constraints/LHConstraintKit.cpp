@@ -13,6 +13,7 @@
 
 #define DEBUG_TYPE "deps"
 
+#include <iostream>
 #include "Constraints/LHConstraintKit.h"
 #include "Constraints/LHConstraints.h"
 #include "Constraints/LHConsSoln.h"
@@ -158,19 +159,39 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
   delete ss2;
 }
 
-  void LHConstraintKit::replaceDefaultConsElems(const std::string kind, bool sink, const ConsElem* old, std::set<const ConsElem*> elems){
+void LHConstraintKit::replaceDefaultConsElems(const std::string kind, bool sink, const ConsElem* old, std::set<const ConsElem*> elems){
   std::vector<LHConstraint> &set = getOrCreateConstraintSet(kind);
   std::vector<LHConstraint>::iterator vIt = set.begin();
   std::vector<LHConstraint>::iterator vEnd = set.end();
+  //std::cerr << "REPLACING CONSTRAINTS"; old->dump(llvm::errs()); llvm::errs() << "\n";
+  /*
+  if (const LHJoin *left = llvm::dyn_cast<LHJoin>(&lhs)) {
+    std::set<const ConsElem *> elems = left->elements();
+    for (std::set<const ConsElem *>::iterator elem = elems.begin(),
+           end = elems.end(); elem != end; ++elem) {
+      const LHConstraint c(**elem, rhs);
+      set.push_back(c);
+    }
+  */
   while(vIt != vEnd){
+
     if(&(vIt->lhs()) == old){
       const ConsElem & rhs = vIt->rhs();
       vIt = set.erase(vIt);
       for(auto & el : elems){
         if(!sink)
-          addConstraint(kind, *el, rhs);
-        else
           addConstraint(kind, rhs, *el);
+        else
+          addConstraint(kind, *el, rhs);
+      }
+    } else if (&(vIt->rhs()) == old){
+      const ConsElem & lhs = vIt->lhs();
+      vIt = set.erase(vIt);
+      for(auto & el : elems){
+        if(!sink)
+          addConstraint(kind, lhs, *el);
+        else
+          addConstraint(kind, *el, lhs);
       }
     }else {
       ++vIt;

@@ -147,7 +147,7 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-#if 0
+#if 1
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
@@ -396,21 +396,37 @@ Infoflow::constrainDirectSinkLocations(const FlowRecord & record, AbsLocSet & Si
   }
 }
 
+  /* Currently the only insertion into reachable sink is from the TaintReachable class
+     within the signaturelibrary.cpp used for processing functions without source code.
+
+     Any location that is passed through here, all DSnodes are addeed to the set including the child nodes.
+  */
 void
 Infoflow::constrainReachSinkLocations(const FlowRecord & record, AbsLocSet & SinkLocs, const ConsElem &source, const ConsElem& sinkSource, bool regFlow, bool sinkFlow){
   bool implicit = record.isImplicit();
 
   for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(), end = record.sink_reachptr_end();
        sink != end; ++sink) {
+    errs () << "RSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
     const std::set<const AbstractLoc *> & locs = reachableLocsForValue(**sink);
     if(isa<GetElementPtrInst>(*sink) && offset_used) {
-      errs () << "RSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
       if (regFlow)
         processGetElementPtrInstSink(*sink,implicit, false, source, locs);
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
     }
     SinkLocs.insert(locs.begin(), locs.end());
+    /*
+    for(auto & l: locs){
+      DSNode::LinkMapTy childNodeHandles{l->edge_begin(), l->edge_end()};
+      for(auto & handlekv : childNodeHandles){
+        const AbstractLoc* child = handlekv.second.getNode();
+        if(child != NULL){
+          SinkLocs.insert(child);
+        }
+      }
+    }
+    */
   }
 }
 
@@ -530,7 +546,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
       if(saveBeforeRewrite){
         oldElem = (elemMap.begin())->second;
       }
-      elemMap = getOrCreateConsElemTyped(**I, numElements, source, true);
+      //elemMap = getOrCreateConsElemTyped(**I, numElements, source, true);
       if (oldElem){
         replaceDefaultConsElemWithOffsetElems(implicit, false, oldElem, elemMap);
       }
@@ -548,6 +564,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
     for(std::set<const ConsElem *>::iterator i = sourceElems.begin(); i != sourceElems.end(); ++i){
       errs() << "CONSTRAINING: "; (*i)->dump(errs()); errs() << *i << "\n";
       sourceSet.insert(*i);
+      /*
       for(auto & parentLoc: structptrLocs){
         std::map<unsigned, const ConsElem*> parentElemMap = getOrCreateConsElem(*parentLoc);
         if(isa<GetElementPtrInst>(allocation)){
@@ -564,6 +581,7 @@ void Infoflow::processGetElementPtrInstSource(const Value *source, std::set<cons
             }
         }
       }
+      */
     }
   }
 }
@@ -574,7 +592,10 @@ Infoflow::replaceDefaultConsElemWithOffsetElems(bool implicit, bool sink, const 
   for(auto & kv: elems){
     newElems.insert(kv.second);
   }
-  kit->replaceDefaultConsElems(kindFromImplicitSink(implicit,sink), sink, old, newElems);
+  errs() << "REPLACING " << old << "\n";
+  if(const LHJoin * le = dyn_cast<LHJoin>(old))
+    errs() << "OLD IS A JOIN\n";
+  //kit->replaceDefaultConsElems(kindFromImplicitSink(implicit,sink), sink, old, newElems);
 }
 
 // Returns a set of the correct constraint elements to be handled
@@ -1341,9 +1362,9 @@ Infoflow::createConsElemFromStruct(const AbstractLoc& loc , StructType * s) {
 
 std::map<unsigned, const ConsElem *>
 Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
-  //errs() << "Creating ConsElem Map for :"; loc.dump();
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
+    errs() << "Creating ConsElem Map for :"; loc.dump();
     std::string name = getCaption(&loc, NULL);
     unsigned size =  1;
     //errs() << "Created " << size << " constraint variable(s)...\n";
@@ -1352,6 +1373,30 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
     }
 
+    DSNode::TyMapTy child_loc_types{loc.type_begin(), loc.type_end()};
+    DSNode::LinkMapTy links{loc.edge_begin(), loc.edge_end()};
+
+    for(auto l = loc.edge_begin(), end = loc.edge_end();
+        l != end; ++l){
+      const AbstractLoc* node = l->second.getNode();
+      if(node != NULL) {
+        unsigned type_set_size = child_loc_types[l->first]->size();
+        errs() << "EDGE: "; errs() << "[" << l->first << ": tymap-size " << type_set_size << "]:";
+        if(type_set_size == 1){
+          Type * sub_type = *child_loc_types[l->first]->begin();
+          if(sub_type->isPointerTy()){
+            Type * sub = sub_type->subtypes()[0]; // If the types are overlapping, uh don't
+            sub->dump();
+            if(StructType * st = dyn_cast<StructType>(sub)){
+              if(locConstraintMap.find(node) == locConstraintMap.end()){
+                locConstraintMap[node] = createConsElemFromStruct(*node, st);
+              }
+            }
+          }
+        }
+        l->second.getNode()->dump();
+      }
+    }
     return locConstraintMap[&loc];
   } else {
     return (curElem->second);
@@ -1363,7 +1408,7 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
-    //errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << "\n";
+    errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << it->second<< "\n";
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
   }
 }
@@ -2553,6 +2598,7 @@ Infoflow::getPointedToAbstractLocs(const Value * v){
 // replace with the map passed in, and create constraints to link the old and new elements
 void
 Infoflow::copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet locs, std::map<unsigned, const ConsElem*> elems){
+  return;
   for(auto & l : locs){
 
     if(locConstraintMap.find(l) == locConstraintMap.end()){
@@ -2566,11 +2612,13 @@ Infoflow::copyElementMapsToOtherLocs(bool implicit, bool sink, AbstractLocSet lo
         kit->addConstraint(kindFromImplicitSink(false, false), *oldElement, *(kv.second));
       }
       */
+      /*
       replaceDefaultConsElemWithOffsetElems(implicit, sink, oldElement, elems);
       auto keyToReplace = locConstraintMap.find(l);
       locConstraintMap.erase(keyToReplace);
       errs() << "The count is: " << locConstraintMap.count(l) << "\n";
       locConstraintMap[l] = elems;
+      */
     } else {
       errs() << "NOTHINGDONE: " << locConstraintMap[l].size()<< "/" << elems.size() << "\n";
     }

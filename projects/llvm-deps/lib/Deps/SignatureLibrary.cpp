@@ -48,11 +48,11 @@ TaintReachable::process(const ContextID ctxt, const ImmutableCallSite cs) const 
       // if the argument is a pointer, everything it reaches is a source
       // and everything it reaches is a sink
       if ((*arg)->getType()->isPointerTy()) {
-	exp.addSourceReachablePtr(**arg);
-	imp.addSourceValue(**arg);
-
-	exp.addSinkReachablePtr(**arg);
-	imp.addSinkReachablePtr(**arg);
+        exp.addSourceReachablePtr(**arg);
+        imp.addSourceValue(**arg);
+        
+        exp.addSinkReachablePtr(**arg);
+        imp.addSinkReachablePtr(**arg);
       }
   }
 

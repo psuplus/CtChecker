@@ -56,7 +56,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   std::string s = value.getName();
   const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
   const std::set<const AbstractLoc *> & rlocs = ifa->reachableLocsForValue(value);
-  if(locs.size() == 0 && rlocs.size() == 0) {
+  if(t_offset < 0  || (locs.size() == 0 && rlocs.size() == 0)) {
     ifa->setTainted(kind,value);
   }
 
@@ -127,8 +127,8 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
     node->dump();
   }
 
+  // Go to other nodes if the type matches & retrieve their elements if exists
   if(hasPointerTarget(node)){
-    // Check that type matches
     std::set<const AbstractLoc*> childLocs;
     Type * t = val.getType();
     if(isa<AllocaInst>(&val)){
@@ -152,8 +152,6 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
             errs() << "FOUND MATCHING CHILD NODE:";
             const AbstractLoc* child = node->getLink(kv.first).getNode();
             childLocs.insert(child);
-          } else {
-            errs() << "tyname2: " << tyname2 << " doesn't match\n";
           }
         }
       }

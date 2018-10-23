@@ -2,9 +2,9 @@ typedef struct {
   unsigned long* d;
   int top;                    /* Index of last used d +1. */
   /* The next are internal book keeping for bn_expand. */
-  int dmax;                   /* Size of the d array. */
   int neg;                    /* one if the number is negative */
   int flags;
+  int dmax;                   /* Size of the d array. */
 } BIGNUM;
 
 int undefined_function(BIGNUM * a, int n);
@@ -13,9 +13,9 @@ int undefined_function(BIGNUM * a, int n);
 int defined_function (BIGNUM * k) {
   if (k->d[0] == 0)  // Tainted
     ;
-  if (k->top < 4) // Not tainted only k 0 tainted
-    ;
   if (k->dmax) // Not tainted only k 0 tainted
+    ;
+  if (k->top < 4) // Not tainted only k 0 tainted
     ;
   if (k->neg) // Not tainted only k 0 tainted
     ;
@@ -28,6 +28,7 @@ int defined_function (BIGNUM * k) {
 #endif
 
 
+#if 1 
 int defined_function_2(BIGNUM * k) {
   if (k->top < 4) // Tainted due to passing through undefined signature
     ;
@@ -41,8 +42,9 @@ int defined_function_2(BIGNUM * k) {
   if (undefined_function(k, 2)) // Undefined signature taints all elements in k
     ;
 }
+#endif
 
-#if 0
+#if 1
 int defined_function_3(BIGNUM * k) {
   if (undefined_function(k, 2)) // Tainted, k 0 is tainted so the result should be tainted
     ;

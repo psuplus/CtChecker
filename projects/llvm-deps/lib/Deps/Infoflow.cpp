@@ -147,7 +147,7 @@ Infoflow::runOnContext(const Infoflow::AUnitType unit, const Unit input) {
   //      }
   //}
 
-#if 1
+#if 0
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
@@ -1346,7 +1346,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
             Type * sub = sub_type->subtypes()[0]; // If the types are overlapping, uh don't
             sub->dump();
             if(StructType * st = dyn_cast<StructType>(sub)){
-              if(locConstraintMap.find(node) == locConstraintMap.end()){
+              if(locConstraintMap.find(node) == locConstraintMap.end() && !st->isOpaque()){
                 locConstraintMap[node] = createConsElemFromStruct(*node, st);
               }
             }

@@ -75,31 +75,35 @@ VulnerableBranch::runOnModule(Module &M) {
   // Variables to gather branch statistics
   unsigned long number_branches = 0;
   unsigned long tainted_branches = 0;
+  unsigned long number_conditional = 0;
   // iterating over all branches
   errs() << "#--------------Results------------------\n";
   for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
     for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E; ++I)
       if (const BranchInst* bi = dyn_cast<BranchInst>(&*I)) {
-         const MDLocation* loc = bi->getDebugLoc();
-         number_branches++;
-         if (bi->isConditional() && loc) {
-           const Value* v = bi->getCondition();
-           if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end()){
-             tainted_branches++;
-             errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << "\n";
-             //errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << ":";
-             //v->dump(); errs() << "\n";
-           }
-         }
+        const MDLocation* loc = bi->getDebugLoc();
+        number_branches++;
+        if(bi->isConditional())
+          number_conditional++;
+        if (bi->isConditional() && loc) {
+          const Value* v = bi->getCondition();
+          if (tainted.find(v) != tainted.end() && untrusted.find(v) != untrusted.end()){
+            tainted_branches++;
+            errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << "\n";
+            //errs() << loc->getFilename() << " line " << std::to_string(loc->getLine()) << ":";
+            //v->dump(); errs() << "\n";
+          }
+        }
       }
   }
 
   // Dump statistics
+  errs() << "#--------------Statistics----------------\n";
+  errs() << ":: Tainted Branches: " << tainted_branches << "\n";
+  errs() << ":: Branch Instructions: " << number_branches << "\n";
+  errs() << ":: Conditional Branches: " << number_conditional << "\n";
   if(number_branches > 0){
-    errs() << "#--------------Statistics----------------\n";
     double tainted_percentage = tainted_branches*1.0/number_branches * 100.0;
-    errs() << ":: Tainted Branches: " << tainted_branches << "\n";
-    errs() << ":: Branch Instructions: " << number_branches << "\n";
     errs() << ":: Vulnerable Branches: " << format("%2.2f%% [%d/%d]\n", tainted_branches, number_branches, tainted_percentage);
   }
 

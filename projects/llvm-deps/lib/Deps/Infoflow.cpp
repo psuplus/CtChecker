@@ -416,17 +416,16 @@ Infoflow::constrainReachSinkLocations(const FlowRecord & record, AbsLocSet & Sin
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
     }
     SinkLocs.insert(locs.begin(), locs.end());
-    /*
     for(auto & l: locs){
       DSNode::LinkMapTy childNodeHandles{l->edge_begin(), l->edge_end()};
       for(auto & handlekv : childNodeHandles){
         const AbstractLoc* child = handlekv.second.getNode();
         if(child != NULL){
           SinkLocs.insert(child);
+          errs() << "Added child elem: "; child->dump();
         }
       }
     }
-    */
   }
 }
 
@@ -470,6 +469,9 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
   toConstrain.insert(structPtrLocs.begin(), structPtrLocs.end());
   for(std::set<const AbstractLoc *>::iterator loc = toConstrain.begin(), end = toConstrain.end();
       loc != end; ++loc){
+    if(*loc == NULL){
+      ++loc;
+    }
     errs() << "Tainting at offset: " << offset << "\n";
 
     // Put additional Copy elements here and reverse the order of the copy
@@ -1366,7 +1368,7 @@ Infoflow::putOrConstrainConsElem(bool implicit, bool sink, const AbstractLoc &lo
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
       it != itEnd; ++it){
-    errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << it->second<< "\n";
+    //errs() << "Creating memlink: "; lub.dump(errs()); errs() << ":<->:"; it->second->dump(errs()); errs() << it->second<< "\n";
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(*it).second);
   }
 }
@@ -1382,7 +1384,9 @@ Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink, const AbstractL
     const  ConsElem* elem = elemMap[offset];
     kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *elem);
   } else {
-    errs() << "StructConstraint - elem not found\n";
+    for(auto & kv : elemMap){
+      kit->addConstraint(kindFromImplicitSink(implicit,sink), lub, *(kv.second));
+    }
   }
 }
 void

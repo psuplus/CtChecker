@@ -54,9 +54,12 @@ TaintAnalysisBase::getPointerTarget(const AbstractLoc * loc) {
 void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name) {
 
   std::string s = value.getName();
+  errs() << "Trying to constrain " << match_name << " at " << t_offset << " for value : " << s << "\n";
+  value.dump();
   const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
   const std::set<const AbstractLoc *> & rlocs = ifa->reachableLocsForValue(value);
   if(t_offset < 0  || (locs.size() == 0 && rlocs.size() == 0)) {
+    errs() << "SETTING " << s  << " TO BE TAINTED\n";
     ifa->setTainted(kind,value);
   }
 
@@ -88,7 +91,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   std::set<const ConsElem *> elementsToConstrain;
   for(;loc != end; ++loc){
     (*loc)->dump();
-    if (t_offset >= 0 ) {
+    if((*loc)->isNodeCompletelyFolded() || (*loc)->type_begin() == (*loc)->type_end()){
+      hasOffset = false;
+    } else if (t_offset >= 0 ) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
       hasOffset = true;
     }
@@ -97,6 +102,20 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
       elementsToConstrain = gatherRelevantConsElems(*loc, offset, numElements, value);
 
     }else{
+      for(auto & locs : relevantLocs){
+        DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
+        for(auto & edge: edges){
+          const DSNode* n = edge.second.getNode();
+          if(n != NULL){
+            auto locConstraintsMap = ifa->locConstraintMap.find(n);
+            if (locConstraintsMap != ifa->locConstraintMap.end()){
+              for (auto & kv : locConstraintsMap->second){
+                elementsToConstrain.insert(kv.second);
+              }
+            }
+          }
+        }
+      }
       auto locConstraintsMap = ifa->locConstraintMap.find(*loc);
       if (locConstraintsMap != ifa->locConstraintMap.end()){
         for (auto & kv : locConstraintsMap->second){
@@ -136,6 +155,7 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
 
   // Go to other nodes if the type matches & retrieve their elements if exists
   if(hasPointerTarget(node)){
+    bool all_children = true;
     std::set<const AbstractLoc*> childLocs;
     Type * t = val.getType();
     if(isa<AllocaInst>(&val)){
@@ -147,19 +167,26 @@ TaintAnalysisBase::gatherRelevantConsElems(const AbstractLoc * node, unsigned of
     tstr.str();
     errs() << "Matching Type:" << tyname << "\n";
     if(t->isPointerTy()){
+
       DSNode::TyMapTy nodetypes{node->type_begin(), node->type_end()};
       for(auto & kv : nodetypes){
-        for(svset<Type*>::const_iterator ni = kv.second->begin(), ne = kv.second->end();
-            ni != ne; ++ni){
-          std::string tyname2;
-          raw_string_ostream nstr{tyname2};
-          nstr << **ni;
-          nstr.str();
-          if(tyname == tyname2){
-            errs() << "FOUND MATCHING CHILD NODE:";
-            const AbstractLoc* child = node->getLink(kv.first).getNode();
-            child->dump();
+        if(node->getSize() > 0 && node->hasLink(kv.first)){
+          const AbstractLoc* child = node->getLink(kv.first).getNode();
+          if(all_children){
             childLocs.insert(child);
+          }else{
+            for(svset<Type*>::const_iterator ni = kv.second->begin(), ne = kv.second->end();
+                ni != ne; ++ni){
+              std::string tyname2;
+              raw_string_ostream nstr{tyname2};
+              nstr << **ni;
+              nstr.str();
+              if(tyname == tyname2){
+                errs() << "FOUND MATCHING CHILD NODE:";
+                child->dump();
+                childLocs.insert(child);
+              }
+            }
           }
         }
       }

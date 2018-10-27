@@ -65,12 +65,12 @@ VulnerableBranch::runOnModule(Module &M) {
   std::set<const Value*> untrusted = soln->getAllTaintValues();
 
   /**
-  std::set<const Value*> vul;
-  std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
-  for(std::set<const Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
-    soln->getOriginalLocation(*it);
-    errs() << "\n";
-  }*/
+     std::set<const Value*> vul;
+     std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
+     for(std::set<const Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
+     soln->getOriginalLocation(*it);
+     errs() << "\n";
+     }*/
 
   // Variables to gather branch statistics
   unsigned long number_branches = 0;

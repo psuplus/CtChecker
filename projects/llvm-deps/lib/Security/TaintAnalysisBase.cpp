@@ -35,20 +35,20 @@ bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc * loc) {
 
 std::map<unsigned, const ConsElem *>
 TaintAnalysisBase::getPointerTarget(const AbstractLoc * loc) {
-    // If the value is a pointer, use pointsto analysis to resolve the target
-    const DSNodeHandle nh = loc->getLink(0);
-    const AbstractLoc * node = nh.getNode();
-    errs() << "Linked Node";
-    if ( node == NULL || node->getSize () == 0)
-      return std::map<unsigned, const ConsElem *>();
+  // If the value is a pointer, use pointsto analysis to resolve the target
+  const DSNodeHandle nh = loc->getLink(0);
+  const AbstractLoc * node = nh.getNode();
+  errs() << "Linked Node";
+  if ( node == NULL || node->getSize () == 0)
+    return std::map<unsigned, const ConsElem *>();
 
-    node->dump();
-    DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
-    // Instead look at this set of constraint elements
-    if(childElem != ifa->locConstraintMap.end())
-      return childElem->second;
-    else
-      return std::map<unsigned, const ConsElem*>();
+  node->dump();
+  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = ifa->locConstraintMap.find(node);
+  // Instead look at this set of constraint elements
+  if(childElem != ifa->locConstraintMap.end())
+    return childElem->second;
+  else
+    return std::map<unsigned, const ConsElem*>();
 }
 
 void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, int t_offset, std::string match_name) {

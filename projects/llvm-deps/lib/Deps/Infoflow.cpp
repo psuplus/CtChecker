@@ -1339,7 +1339,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
     for(auto l = loc.edge_begin(), end = loc.edge_end();
         l != end; ++l){
       const AbstractLoc* node = l->second.getNode();
-      if(node != NULL) {
+      if(node != NULL&& child_loc_types.size() > 0) {
         unsigned type_set_size = child_loc_types[l->first]->size();
         errs() << "EDGE: "; errs() << "[" << l->first << ": tymap-size " << type_set_size << "]:";
         if(type_set_size == 1){

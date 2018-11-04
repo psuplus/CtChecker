@@ -58,7 +58,7 @@ Infoflow::Infoflow () :
     // The parameters to the template are an input and output type for the user's analysis and a non-negative integer k.
     CallSensitiveAnalysisPass<Unit,Unit,1,CallerContext>(ID, DepsCollapseExtContext, DepsCollapseIndContext),
     kit(new LHConstraintKit()) {
-  offset_used = true;
+  offset_used = false;
 }
 
 void

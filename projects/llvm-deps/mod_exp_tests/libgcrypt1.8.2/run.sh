@@ -17,6 +17,11 @@ LEVEL="../../../.."
 #LLVMLIBS=`llvm-config --libs`
 #LDFLAGS=`llvm-config --ldflags`
 
+CUR=$(pwd)
+cd ../../../;
+make
+cd $CUR
+
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 $LEVEL/Debug+Asserts/bin/clang -isystem include -I include -O0 -g -emit-llvm -o mpi-pow.bc -c mpi/mpi-pow.c

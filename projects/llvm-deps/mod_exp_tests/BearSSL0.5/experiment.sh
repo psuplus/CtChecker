@@ -1,6 +1,10 @@
 #!/bin/bash
 
 
+CUR=$(pwd)
+cd ../../../;
+make
+cd $CUR
 TESTS="test1 test2 testall"
 
 mkdir -p tests

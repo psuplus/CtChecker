@@ -10,7 +10,7 @@ fi
 CPPFLAGS=
 LLVMLIBS=
 LDFLAGS=
-LEVEL="../../.."
+LEVEL="../../../.."
 
 # if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
 #CPPFLAGS=`llvm-config --cppflags`
@@ -30,8 +30,8 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
   -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
 
-#export PATH="$PATH:../processing_tools" # tmp change to path to have post-processing tools
-#post_analysis.py tmp.dat > $2
+export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
+post_analysis.py tmp.dat > results_with_source.txt
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc
 

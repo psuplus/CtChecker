@@ -18,5 +18,5 @@ testall.bc : i32_add.bc i32_bitlen.bc i32_decmod.bc i32_decode.bc i32_decred.bc 
 
 .PHONY: testall
 testall: testall.bc
-	./run.sh $<
+	./run.sh $< results_with_source.txt
 

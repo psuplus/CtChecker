@@ -15,6 +15,10 @@ Baseline experiments:
 Once the experiments complete, the results are located in `mod_exp_tests/results` folder.
 
 
-## Papers
-* Thesis: paper/thesis/mohammed_thesis.pdf
-* Conference: paper/conference/ccs.pdf
+## Folders 
+* Paper/thesis: Thesis for adding field-senstivity to the analysis - mohammed_thesis.pdf
+* Paper/conference: Conference paper version of thesis - ccs.pdf
+* sensitivity-tests: This folder has a variety of unit-tests with expected behavior.
+* mod\_exp\_tests: Modular exponentiation code used to test field-sensitivity.
+* processing_tools: Scripts to help parse the raw data produced by the analysis.
+

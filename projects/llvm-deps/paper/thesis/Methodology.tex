@@ -1,0 +1,411 @@
+\chapter{Methodology}
+In this work, improvements were made to improve the precision of a baseline
+taint analysis. The baseline line analysis was proposed by Moore et al
+\cite{moore2011static}.The features which improved precision were adding
+field-sensitivity and adding a whitelist. Adding field-sensitivity aided in more
+accurately representing flow within structures and arrays. The baseline could
+not track flow to members of a structure, just flow to the structure itself. The
+field-sensitive analysis is the major change to the baseline system. This
+section will outline the three sections which make up the analysis. The
+information flow capture, parses the IR code to identify the values from which
+information flows. The constraint generation is done by interpreting the
+captured flows and creating constraints. Lastly to identify secret-dependent
+branches the least solution is found and branch conditions are checked to see if
+sensitive information was used to compute the condition.
+
+\section{Generating Information Flows from IR Code}
+
+   Given a program in the LLVM IR representation, flow of information is tracked
+   by identifying the operands. Each operand can be considered as a source or a
+   sink, though this alone is not enough information when considering the
+   effects of pointers. Since pointers can point to different data and the data
+   to which they point can be changed, the points-to analysis is used. The
+   points-to analysis is used to keep track of which memory locations are
+   associated with the LLVM IR values identified as sources and sinks.
+
+   For each LLVM value, there are 3 elements which can be constrained. There are
+   3 transformation functions which returns the element to be constrained for
+   that value. For any operations, zero or more of the three functions (V, D, R)
+   may be used in generating a constraint for the instruction. Forming a
+   constraint requires a source constraint element and a sink constraint
+   element. The flows identified from the instructions create a constraint by
+   adding a rule which states the source constraint element flows to the sink
+   constraint element.
+
+   \begin{itemize}
+   \item $V(x)$ is the constraint element associated with the IR value $x$.
+   \item $D(x, offset, size)$ is the constraint element with the appropriate
+     type $size$ associated with the memory represented by IR value $x$ and the
+     $offset$.
+   \item $R(x, size)$ is the set of all reachable memory locations that are
+     represented by IR value $x$.
+   \end{itemize}
+
+   The baseline analysis, also used these same transformations, but the addition
+   of field sensitivity changed the behavior of the functions $D$ and $R$. The
+   memory nodes of these were only able to be constrained as a single entity.
+   Since a whole data structure was referred to as a single element, tracking
+   the flow to individual fields was not available. The \textit{DSA} analysis
+   provides a type map, which can be used to identify the field type and offset
+   within the data structure. Using this information, the $D$ and $R$ functions
+   consumed an extra operand to return the element to be constrained for a
+   particular field.
+
+   The $R$ transformation is similar to the $D$ transformation in that it
+   returns the constraint element relevant to the memory addressed, but the $R$
+   transformation is used in the case of external functions or source. The $R$
+   transformation is the more conservative transformation returning all possible
+   constraint elements tied to a pointer, so the offset and size are not
+   required as is for the $D$ transformation. In the baseline, the $D$
+   transformation did not exist, thus this transformation was added to achieve
+   filed-sensitivity.
+   
+   For most IR instructions, the explicit flow is constrained by adding the
+   constraint $V(source) \rightarrow V(sink)$. There are a subset of LLVM IR
+   memory operations that require interaction with \textit{DSA}. The
+   store, load and GetElementPtr (GEP) instructions are the most important for
+   addressing the issue of field sensitivity. The rules for how these are
+   constrained are given in figure \ref{fig:llvm-mem-ir}.
+
+\begin{figure}[h!]
+  \hrulefill
+  \begin{lstlisting}[style=nolinenumberstyle]
+<result> = alloca <type> [, <ty> <NumElements>] [, align <alignment>]    
+  \end{lstlisting}
+  \explicitflow{ $\rightarrow V(\result)$}
+
+  \implicitflow{$V(PC) \rightarrow V(\result)$}
+
+  \begin{lstlisting}[style=nolinenumberstyle]
+<pointer> = getelementptr inbounds <ty>, <ty>* <ptrval>{, [inrange] <ty> <idx>}*
+  \end{lstlisting}
+  \explicitflow{ $V(\ptrval) \rightarrow V(\pointer)$}
+
+  \implicitflow{ $V(PC) \cup V(\ptrval) \rightarrow V(\pointer)$}
+
+  \begin{lstlisting}[style=nolinenumberstyle]
+store <ty> <value>, <ty>* <pointer>[, align <alignment>]
+  \end{lstlisting}
+  \explicitflow{$V(\myvalue) \rightarrow D(\pointer, \offset)$}
+
+  \implicitflow{$V(PC) \cup V(\pointer) \rightarrow D(\pointer, \offset)$}
+
+  \begin{lstlisting}[style=nolinenumberstyle]
+<result> = load <ty>, <ty>* <pointer>[, align <alignment>]
+  \end{lstlisting}
+  \explicitflow{ $V(\pointer) \cup D(\pointer,\offset) \rightarrow V(\result)$}
+
+  \implicitflow{ $V(PC) \cup V(\pointer) \cup D(\pointer,\offset) \rightarrow V(\result)$}
+  \hrulefill
+  \caption{LLVM Memory IR Flow Rules}
+  \label{fig:llvm-mem-ir}
+\end{figure}
+
+The load and the store instructions are the instructions which changed the most
+from the baseline. In the baseline, these rules were the same, but the offset
+was not considered in the $D$ transformation. The store and load instructions do
+not have an offset as a operand in their instructions. The offset is found  by
+examining the IR instruction which yielded the operand. If the pointer being
+operand is computed from a structure or an array, then the pointer will have
+been calculated using the GEP instruction. By including the GEP instruction in
+the sources for the load (and the sink for the store), the instruction can be
+analyzed and the index can be accessed. 
+
+
+\subsection{Constraint Generation}
+
+For operations which do not modify memory, the constraints are generated such
+that $V(inputs) \rightarrow V(outputs)$. Loads and store instructions require
+additional steps to include the points-to analysis. The points-to analysis
+represents memory as nodes in a graph. Structures and arrays are represented as
+a single node with as many types and offsets as necessary. Figure
+\ref{fig:storeconstraint} shows how a store would be constrained using
+additional information from the pointer operand and the type information from
+the points-to analysis.
+
+
+\begin{figure}[h!]
+\begin{lstlisting}
+typedef struct {
+  int rd_key;
+  int rounds;
+} AES_KEY;
+
+AES_KEY pk;
+pk.rounds = 3;
+\end{lstlisting}
+
+\begin{lstlisting}
+  %pk = alloca %struct.AES_KEY, align 4
+  %rounds = getelementptr inbounds %struct.AES_KEY, %struct.AES_KEY* %pk, i32 0, i32 1
+  store i32 3, i32* %rounds, align 4
+\end{lstlisting}
+  \caption{Store Constraint Example}
+  \label{fig:storeconstraint}
+\end{figure}
+
+The $D$ transformation utilizes the points-to analysis to retrieve the correct
+memory node. The memory node stores type information for any types accessed from
+that node in the IR code. For stack arrays and structures, the type information
+from the points-to analysis is used to create individual elements for each of
+the members accessible from that structure/array. Thus the offset must be passed
+to $D$ along with the pointer to select the correct element. For structures, the
+instructions only give an index, so the byte offset is computed using the data
+layout information that the points-to analysis uses to create its type information.
+
+In figure \ref{fig:storeconstraint} The \codevar{AES\_KEY} structure has two
+fields. The GEP instruction is used to calculate the address of the fields when
+operating on the structure. The inputs are the base pointer and zero or more
+offsets. The store instruction is constrained using the pointer and the offset
+operands, which are provided by the GEP instruction that flows into the store
+instruction. In this example, the offset to be used is the last operand. The
+last operand is not a byte offset from the base pointer, its an index. Using the
+points-to analysis, the index is converted into a byte offset. Bytes are used
+instead of the index to account for a types width. The type width matters in the
+cases where types are overlapping.
+
+ The rest of this section shows how the analysis handles when the necessary
+ information is not available to create a proper field sensitive constraint.
+
+\subsection{Factors Affecting Field-sensitivity}
+\subsubsection{Collapsed Memory Nodes}
+
+   The points-to analysis is type-safe, marking nodes as collapsed when the type
+   information is inconsistent. If a node is collapsed, only one constraint
+   element is created for that node. Multiple constraint elements for a single
+   memory node are only created when the points-to analysis has type information
+   available for the node.
+
+\subsubsection{Incomplete Type Information}
+ 
+   The points-to analysis used only provides type information for the values used
+   in the analyzed source. The field-sensitive analysis should also be
+   conservative when analyzing unknown source. For this, the analysis relies on
+   the data layout of structures which is the same information the points-to
+   analysis uses to build its type information. The layout information helps in
+   the case where a tainted field is not used within the provided source but its
+   data structure is passed as an argument to an unknown function. This provided
+   the possibility for the tainted field to leak information.
+
+\subsubsection{Calls to Unknown Functions}
+
+For functions which the source code is not provided, the constraint rules define
+how to treat values and their flow. The rules used, allow for flow between all
+pointer types, and also flow of information within the pointer itself. That is,
+a structure may only have a single tainted field, but after passing through an
+unknown source, all fields are tainted due to possible flow between fields.
+Likewise, flow from one pointer to another ensures that any tainted value
+propagates in the constraints to other parameters.
+
+\[V_{args} = \bigcup_{i=0}^N V(arg_i)\]
+\[R_{args} = \bigcup_{i=0}^{N}\{R(arg_i) : type(arg_i) = pointer\}\]
+
+\noindent
+\textbf{Explicit:} $V_{args} \cup R_{args} \rightarrow V(retval) \cup R_{args}$
+
+\noindent
+\textbf{Implicit:}$V(PC) \cup V(functionptr) \cup V_{args} \cup R_{args} \rightarrow V(retval) \cup R_{args}$
+
+\section{Solving Information Flow Constraints}
+Given the set of constraints for the program being analyzed, the least solution
+where all the sinks are greater than or equal their sources is found, otherwise
+known as a least solution. Given a set of initial sensitive values, any sink
+which has a value greater than or equal to that value, is considered sensitive.
+In the case of cryptosystems, it can be helpful to find all the values which
+may have been computed from confidential data. These values are possible
+locations for leakage of confidential information, presenting a possible
+vulnerability.
+
+
+Consider figure \ref{alg:simpleflow} for example of how the analysis functions.
+First the flow of information must be identified. For simplicity, this example
+will just consider the source code, not the instructions. In figure
+\ref{alg:simpleflow}, $k$ is just a constant set to some confidential value, no
+information flows there. Next, $d.x$ is calculated by adding 1 to the value of
+$k$, so there is flow from $k$ to $d.x$. With $d.y$ and $a$, in lines 3 and 4
+respectively, they are set with constants, so no flow happens there. Then, a
+branch is encountered where the value of $a$ is modified based on the values of
+$d.y$ and $k$. Let the branch condition be $b$, there will be flow from $d.y$
+and $k$ to $b$. Lastly due to the branch, there is an implicit flow from $d.y$
+to $a$ and $k$ to $a$.
+
+For explicit flow the set of constraints is as follows.
+\[
+  k \leq d.x
+\]
+\[
+  d.y \leq b
+\]
+\[
+  k \leq b
+\]
+In this case it is easy to see that $d.x$ should be at least as confidential as $k$
+since it is directly computed from $k$. Similarly, the branch condition $b$ is
+confidential since it must be at least as confidential as $k$. The value $d.y$
+is not confidential, but is irrelevant because confidential information is used
+to determine the outcome of the branch. 
+
+If implicit constraints are to be considered then the set is as follows.
+\[
+  k \leq d.x
+\]
+\[
+  d.y \leq b
+\]
+\[
+  k \leq b
+\]
+\[
+  b \leq a
+\]
+
+In this case the all the constraints are the same apart from the addition of the
+last constraint. There is another constraint between the branch condition and a,
+because after the branch, the value of a is dependent on the outcome of the
+branch. If an attacker had a method of inspecting the value of $a$, they would
+learn information about $b$ which is derived from $k$.
+
+The baseline analysis generates a set of constraints similar to the examples
+above, but with some imprecision. During the stage of generating constraints
+from the information flow, the points-to analysis is leveraged to figure out
+what is being pointed to by the variable $d$ to subsequently find the correct
+instance of $x$. The points-to analysis will represent the data structure
+pointed to by $d$ with one node in the graph, and the constraint generated
+refers only to that node, instead of to the specific field in the node. The
+effect on the constraints is as follows for explicit flow.
+
+\[
+  k \leq d
+\]
+\[
+  d \leq b
+\]
+\[
+  k \leq b
+\]
+
+The result is that $d.x$ and $d.y$ are indistinguishable from each other and the
+results will report both $d.x$ and $d.y$ as confidential even though manual
+scanning of the source shows that $d.y$ is never calculated from confidential
+data. This is a common problem when analyzing sources. Take this implementation
+of AES, where the data structure used is comprised of both confidential and
+public data. The \codevar{AES\_KEY} struct has the confidential \codevar{rd\_key} and a second field
+rounds that is considered to be public. Figure \ref{alg:aesstruct} shows
+where the inaccuracy can be found in actual source code.
+
+So with the improved analysis, the constraints are generated such that compound
+data structures with multiple nodes are able to be constrained separately. Once
+the set of constraints for a programs source code is created, the least solution
+is found and the results show the line number where the branch occurs. This list
+of results shows the branches which are tainted and untrusted. 
+
+\begin{figure}[h!]
+\begin{lstlisting}
+struct AES_KEY_t {
+  unsigned * rd_key;
+  int rounds;
+};
+
+typedef AES_KEY_t AES_KEY;
+
+void AES_enc(char * in, char * out, AES_KEY) {
+  unsigned * rk = key->rd_key;
+  if (key->rounds > 10) {
+    ...;
+  }
+}
+\end{lstlisting}
+\caption{Public and private data in structure}
+\label{alg:aesstruct}
+\end{figure}
+
+\section{Result Classification}
+
+The analysis provides a list of source code lines which are vulnerable. Based on
+the contents of the input files, a branch is flagged as vulnerable if the
+condition depends on data which has been marked as tainted or untrusted. The
+reported lines can then be reviewed and sorted to rank them in order of
+severity. Classification of the vulnerable branches consists of three stages,
+the first removes error-handling results, the second sorts the remaining results
+into either a high-risk or low-leakage sets, and the final sorts the high-risk results
+depending on the surrounding source context.
+
+Stage 1 is a filter which removes the error handling and input validation
+results. For normal operation of a program, these branches check sensitive data
+but allow an early exit if the branch condition evaluates to true. In figure
+\ref{alg:stage0src}, the variable \texttt{N} is tainted, so the branch is
+vulnerable due to the condition depending on \texttt{N} and the data held within
+\texttt{N}. The result of this branch is not helpful in the case of an attacker
+attempting to learn the value of \texttt{N}. As long as the input is valid, the
+condition of this branch will always evaluate to false. If the branch leads to
+exit code, it is a candidate for removal in this stage. To conclude stage 1, if
+there are results which are reported that leak non-sensitive data, they may be
+whitelisted. The whitelist allows results to be ignored, and not propagate taint
+as a result in the later stages.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+if( mbedtls_mpi_cmp_int( N, 0 ) <= 0 || ( N->p[0] & 1 ) == 0 )
+    return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
+\end{lstlisting}
+\caption{Error-handling Source Code}
+\label{alg:stage0src}
+\end{figure}
+
+Stage 2 operates on the remaining results to sort them into high and low-risk
+categories. A high-risk branch will be due to one of the operands being either
+directly related to the sensitive data or derived from more than 1 bit of
+sensitive data. Low-risk branches, are branches which the operand is based on 1
+bit of the key or the same operand could derived from some set of sensitive data
+values.
+
+\begin{figure}
+\begin{lstlisting}
+#define MPN_NORMALIZE(d, n) \
+do {                        \
+  while( (n) > 0 ) {        \
+    if( (d)[(n)-1] )        \
+      break;                \
+    (n)--;                  \
+  }                         \
+} while(0)
+
+MPN_NORMALIZE(ep, esize);
+if (esize * BITS_PER_MPI_LIMB > 512)
+  W = 5;
+\end{lstlisting}
+\caption{High-Risk and Low-Risk Branches}
+\label{alg:branchriskexample}
+\end{figure}
+
+
+Figure \ref{alg:branchriskexample} is a snippet of some of the modular
+exponentiation code from Libgcrypt 1.8.2. For instance, say the values pointed
+to by \texttt{ep} are marked as tainted at the start of the analysis, and the
+analysis reports that lines 10 and 11 are vulnerable. Line 10 is the macro
+defined in the lines 1-8. Line 10 is reported due to the macro having the
+\texttt{if} branch directly dependent on the data pointed to by \texttt{ep}.
+Since the branch is directly dependent on the tainted data that branch is
+considered high-risk. Line 11 however is a branch based on \texttt{esize}, the
+value begin modified within the \texttt{MPN\_NORMALIZE} macro. The value of
+\texttt{esize} is not unique to the tainted data, meaning there exists a set of
+tainted values which may yield the same \texttt{esize}. If a value is derived
+from tainted data, as \texttt{esize} is, but the result is not unique to that
+instance of tainted data, it is considered low-risk.
+
+If for any reason, the classification is unclear, such as a mutable type being
+passed to source code that is not analyzed, the data is treated as high risk.
+This is done in order to be conservative. Further categorization can be
+performed on the high-risk set of results in Stage 3. Additionally, if there are
+a large number of low-risk result, Stage 2 can be repeated, by appending the
+low-risk variables to the whitelist.
+
+Stage 3 specifically looks a the context of the high-risk results from Stage 2.
+Each of the results will be classified as one of the following: a single branch, repeated
+branch, controllable branch or both (e.g. both controllable and repeated).
+Single branches are branches which are not within a loop. Repeated branches are
+branches that are part of a loop definition or within the body of a loop.
+Controllable branches are that which the branch result is both untrusted and
+tainted. The purpose of sorting results this way is to be able to prioritize
+which vulnerable branches to examine first when attempting to make the
+application secure.

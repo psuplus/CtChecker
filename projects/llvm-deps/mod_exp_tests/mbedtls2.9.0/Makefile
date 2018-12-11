@@ -1,6 +1,6 @@
-CC=../../../Debug+Asserts/bin/clang
-LD=../../../Debug+Asserts/bin/llvm-link
-NM=../../../Debug+Asserts/bin/llvm-nm
+CC=../../../../Debug+Asserts/bin/clang
+LD=../../../../Debug+Asserts/bin/llvm-link
+NM=../../../../Debug+Asserts/bin/llvm-nm
 
 CFLAGS= -isystem include -O0 -emit-llvm -g
 LDFLAGS=

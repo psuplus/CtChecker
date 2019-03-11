@@ -775,13 +775,13 @@ while( 1 )
     /*
      * process the remaining bits
      */
-    <@\textcolor{red}{for( i = 0; i < nbits; i++ )}@>
+    for( i = 0; i < nbits; i++ )
     {
         MBEDTLS_MPI_CHK( mpi_montmul( X, X, N, mm, &T ) );
 
         wbits <<= 1;
 
-        if( ( wbits & ( one << wsize ) ) != 0 )
+        <@\textcolor{red}{if( ( wbits \& ( one << wsize ) ) != 0 )}@>
             MBEDTLS_MPI_CHK( mpi_montmul( X, &W[1], N, mm, &T ) );
     }
   \end{lstlisting}

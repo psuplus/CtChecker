@@ -17,7 +17,8 @@ fi
 if [ "$(uname)" == "Darwin" ]; then
 	export READLINK="greadlink"
 	export EXT="dylib"
-	export CPPFLAGS="-g -stdlib=libstdc++"
+	# export CPPFLAGS="-g -stdlib=libstdc++" # Mac 10.14 removed libstdc++
+        export CPPFLAGS="-g -I/Library/Developer/CommandLineTools/usr/include/c++/v1"
 	export LDFLAGS="-stdlib=libstdc++"
 else
 	export READLINK="readlink"

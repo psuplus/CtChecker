@@ -47,7 +47,7 @@
 \newcommand{\ruleabove}{}
 \newcommand{\rulebelow}{}
 
-%Tables 
+%Tables
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \newcommand{\explicitflow}[1]{\vspace{-0.25cm}{\footnotesize\hspace{0.25cm}\textbf{Explicit:} #1 \par}}
 \newcommand{\implicitflow}[1]{{\footnotesize\hspace{0.25cm}\textbf{Implicit:} #1 \par}}
@@ -99,7 +99,7 @@
 \begin{document}
 % Title portion
 \title{Detecting Non-constant time code in cryptography libraries using a static
-  information analysis} 
+  information analysis}
 
 \author{Adam Mohammed}
 \affiliation{%
@@ -133,7 +133,7 @@ and unequally weighted in the threat that may be posed. A static
 information-flow analysis can be used and the precision adjusted to improve
 the precision of the analysis.
 
-Improving the precision, means decreasing the overall number of positives while
+Improving the precision means decreasing the overall number of positives while
 maintaining all of the higher-risk positives. In this work, an
 information flow analysis and a points-to analysis is used in conjunction to
 detect secret-dependent branches. Adding field-sensitivity in some cases

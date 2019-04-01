@@ -303,10 +303,10 @@ low-risk results.
 
 \subsubsection{Potential Sources of Unsoundness}
 For these experiments, the results given may not be all the results possible
-from the source analyze due to underlying assumptions. Since the full source
+from the source analyzed due to underlying assumptions. Since the full source
 code was not analyzed, there are function calls which are defined in files which
 are not compiled and linked. One assumption made for unknown functions is that
-the flow only exists between the parameters. There is possiblity for this
+the flow only exists between the parameters. There is a possibility for this
 assumption to break down if, for example, pointers are modified to point to
 something which is not a value provided in the parameter. Another potential
 cause of missing results is due to only considering explicit flows. The analysis

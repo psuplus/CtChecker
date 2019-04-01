@@ -337,9 +337,9 @@ explicit flows.
 
 The performance running times of the baseline is compared with the best
 performing improved analysis in Table \ref{tbl:runtimes}. For each library, the
-test was done with just the modular exponentiation code called the minimal
-source and the full big number library called the full source. The tests show
-how difference in size of the program affects the running time. The comparison
+test was done with both the full source (including the full big number library)
+and the minimal source (only the modular exponentiation code). The
+tests show how difference in size of the program affects the running time. The comparison
 also shows that the increase in processing time in the improved analysis is
 small even for the larger libraries such as libgcrypt and OpenSSL.
 
@@ -454,8 +454,7 @@ least positives out of all the benchmarks for that library.
 Libgcrypt had many false-positives removed between the improved and the baseline
 analysis. The false positives here were due to the multi-precision integer
 structures having multiple fields containing public data. Many of the branches
-flagged as vulnerable were falsely reported due to the baseline analysis being
-not being field-sensitive.
+flagged as vulnerable were falsely reported due to the baseline analysis not being field-sensitive.
 
  In the mbed TLS library had no changes when the offset was used, so the results
  here were not due to field-sensitivity issues. BearSSL does not use a structure,

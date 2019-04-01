@@ -119,7 +119,7 @@ be converted to a byte offset.
 If the GEP instruction is in reference to an array access, then the offset is
 just calculated using the size of the element type and the index. If no type
 information exists for the node, only a single constraint element would exist
-for the node, so that is the constraint which is selected to be constrained. 
+for the node, so that is the constraint which is selected to be constrained.
 
 \subsubsection{Missing Type Information}
 
@@ -172,13 +172,13 @@ field-sensitivity changes. Additionally, adding sources for functions which are
 not defined in the file being analyzed allows for a better understanding of
 information flow.
 
-The baseline benchmark, evaluated the modular exponentiation code for each
+The baseline benchmark evaluated the modular exponentiation code for each
 library. This benchmark was run without white-list or field sensitivity. The
 source provided was that only which was necessary to compile the modular
 exponentiation code. All multi-precision integer (mpi) arithmetic library components
 were omitted.
 
-The field-sensitive (FS) test, is the same as the baseline benchmark but with
+The field-sensitive (FS) test is the same as the baseline benchmark but with
 field-sensitivity enabled. The results from this test differ depending on the
 library. For example, OpenSSL did not see any benefit from FS alone. This is due
 to openSSL doing much of the math in external functions, and each external
@@ -188,13 +188,13 @@ see benefit in this test. The reasoning is the same for the result in mbedTLS.
 Libgcrypt however does manipulate the tainted data within the source analyzed so
 it did benefit from FS over the baseline benchmark.
 
-The white-list (WL) test, is the same as the baseline benchmark but only using a
-white-list to remove results which are clearly false- or low-risk positives from
+The white-list (WL) test is the same as the baseline benchmark but only using a
+white-list to remove results which are clearly false or low-risk positives from
 the baselines results. The white-list allowed the libraries which did not
 benefit from field-sensitivity to see a reduction in positives. Libgcrypt saw an
 improvement as well but not nearly as much as the field-sensitive change.
 
-The full source (SRC) test, is the same as the baseline but with additional
+The full source (SRC) test is the same as the baseline but with additional
 source files provided. The additional sources provided were the remainder of the
 multi-precision integer or big number(bn) libraries. This meant that all mpi or bn math
 library calls were known functions. The important fact here is that the flows
@@ -231,7 +231,7 @@ benchmark. This causes an inferior result to the WL/FS test.
     \textbf{Libgcrypt 1.8.2} & 64 & 32 & 38 & 64 & 18 & 24 & 62.5\%\\
     \textbf{mbedTLS 2.9.0} & 40 &40 & 35 & 25 & 35 & 22 & 45.0\% \\
     \textbf{BearSSL 0.5} & 1 & 1 & 1 & 1 & 1 & 1  & 0\%\\
-    \textbf{OpenSSL 1.1.0g}\\ 
+    \textbf{OpenSSL 1.1.0g}\\
     \hspace{0.25cm}Reciprocal             & 32 & 32  & 20    & 24   & 20 & 13  & 59.4\%\\
     \hspace{0.25cm}Mont.            & 38 & 38  & 28    & 30   & 28 & 21  & 44.7\%\\
     \hspace{0.25cm}Mont Const. Time & 30 & 30  & 27    & 16   & 27 & 14  & 60.0\% \\
@@ -364,7 +364,7 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
  due to the fact that a structure or an array is treated as one entity. Fields
  within that structure or array which have not been computed from sensitive data
  are reported falsely.
- 
+
  Error-handling results are branches which lead to exit or error handling code.
  Error-handling branches will not execute for valid inputs. For any valid input
  then, the result of this branch will be the same. The branch may check
@@ -380,8 +380,8 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
  values in the branch condition can be the same across a set of sensitive
  values. For example, many number libraries have a branch based on the length of
  a sensitive value, but that value is going to be the same for a range of
- values. 
- 
+ values.
+
  If the analysis reports a large number of results, it can be helpful to utilize
  the classifications done to remove entries from the list. The white-list can be
  compiled by identifying the variables which propagate sensitive data but is
@@ -423,7 +423,7 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
   \begin{tabular}{@{}lrr|crrrcrr@{}}
     \toprule
     &  &  &&  & \multicolumn{2}{c}{Low-Risk} && \multicolumn{2}{c}{High-Risk}\\
-    \cmidrule{6-7} \cmidrule{9-10} 
+    \cmidrule{6-7} \cmidrule{9-10}
     Library& Base & Improved&& FP& Error-Handling & Low Leakage && Looped & Controllable \\
     \midrule
     \textbf{Libgcrypt 1.8.2}& 64 & 24 &&8 & 10 & 1 && 5 & 0\\
@@ -431,7 +431,7 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
     \textbf{BearSSL 0.5}    & 1 & 1   &&0 & 1 & 0  && 0  & 0\\
     \textbf{OpenSSL 1.1.0g}\\
     \hspace{0.25cm}Reciprocal              & 32 & 13 && 3    & 2   & 6 && 2 & 0\\
-    \hspace{0.25cm}Montgomery              & 34 & 21 &&  3   &  5  & 9 && 2  & 2\\ 
+    \hspace{0.25cm}Montgomery              & 34 & 21 &&  3   &  5  & 9 && 2  & 2\\
     \hspace{0.25cm}Montgomery Const. Time  & 30 & 12 &&  0   &  7  & 3 && 0   & 2\\
     \hspace{0.25cm}Montgomery Word         & 22 & 14 &&  2   & 6   & 5 && 1   & 0\\
     \bottomrule
@@ -468,7 +468,7 @@ not being field-sensitive.
  the high-risk results. The number of false positives did not change, but the
  number of low-risk results were removed by adding field-sensitivity. OpenSSL
  does not modify the multi-precision integers in the files analyzed so many
- calculations and the flow between them are uncertain. 
+ calculations and the flow between them are uncertain.
 
 \subsubsection{Libgcrypt High-risk results}
 
@@ -480,7 +480,7 @@ not being field-sensitive.
      inputs instead of the return value of external functions. This is evident
      by the fact that adding field-sensitivity alone reduced the number of
      positives from the baseline. The best result for this library was when
-     white-listing and field-sensitivity were used together. 
+     white-listing and field-sensitivity were used together.
 
      The first high-risk results comes from the MPN\_NORMALIZE call, which is a
      macro, which scans the exponent pointer and sets the size accordingly. This
@@ -507,8 +507,8 @@ This code is listed within the macro \texttt{MPN\_NORMALIZE} and the input
 parameters are a pointer $d$ and a size $n$. The exponent data pointer is passed
 as $d$ and its corresponding size $n$. The if branch is then dependent on the
 sensitive data stored at the pointer. This result is interesting because it is
-not a constant-time implementation. 
-    
+not a constant-time implementation.
+
 The next four results are within the main processing loop portion of the modular
 exponentiation code. The main loop of the has a precomputed set of powers and
 the correct member of that set is selected based on the set bit of the exponent.
@@ -817,7 +817,7 @@ br_i32_to_monty(uint32_t *x, const uint32_t *m)
   \caption{BearSSL 0.5 - br\_i32\_tmont.c}
   \label{code:bear-tmont}
 \end{figure}
-  
+
 In this library, no structure represents the big integers, instead an array
 serves the purpose. The first element in the array is used to compute the size
 and all subsequent elements in the array are the data. The low number of results
@@ -860,12 +860,12 @@ conditional copy to avoid the problem.
      treated as the same memory location. The nodes were separate at the
      beginning of the analysis, but the points-to analysis deemed these nodes as
      equivalent, and merged them together in the memory graph.
-     
+
      There are 5 methods for carrying out the modular exponentiation defined in
      the OpenSSL. There is the reciprocal method, and 3 variations of the
      Montgomery method, and then a simple sliding-window method. The last method
      is unreachable from the \codefn{BN\_mod\_exp} function, so no results are included for
-     that method. 
+     that method.
 
 
 \noindent
@@ -888,12 +888,12 @@ The reciprocal method has two looped high-risk positives both leaking data
   within a loop, where the input parameter is \codevar{wstart} and changes with
   the loop iteration causing more bits of \codevar{p} to be leaked as the loop
   executes.
-   
+
   This result is still reported if the \codefile{bn\_lib} source file is not linked with
   the \codefile{bn\_exp.c} file. When the function definition is unreachable, all reachable
   sources from the arguments flow to the return values and other mutable
   values. In this case this means that since \codevar{p} 0 is tainted, the return value
-  from the \codefn{BN\_is\_bit\_set} function is also tainted. 
+  from the \codefn{BN\_is\_bit\_set} function is also tainted.
 
 \begin{figure}[h!]
 \ruleabove
@@ -1003,7 +1003,7 @@ for(;;){
    both on user-input as well as secret data. As with the reciprocal method, the
    exponent and modulus, \codevar{p} 0 and \codevar{m} 0 respectively, are tainted. The
    untrusted user specified data is \codevar{a} 0 which is another bignum structure.
-   
+
    Line 1 in figure \ref{code:mont-nonconst-compare} is controllable, because
    there is a comparison operation done between the plain-text and modulus.
    Assuming \codevar{a} 0 is controllable, then it could be possible to change
@@ -1021,7 +1021,7 @@ for(;;){
 } else
     aa = a;
 
-... 
+...
 if (!BN_to_montgomery(val[0], aa, mont, ctx))
     goto err;               /* 1 */
 \end{lstlisting}
@@ -1037,7 +1037,7 @@ is line 374 of \codefile{bn\_exp.c}. This line is reported due to flow from
 Depending on the branch taken the value of \codevar{aa} is equivalent to
 \codevar{val[0]} and thus the branch on the \codefn{BN\_to\_montgomery} call is
 tainted due to the result of that branch being dependent on tainted data.
-  
+
 The two high-risk looped results are from code identical to the reciprocal
 method branching on set bits in p within the main processing loop. These lines
 for the Montgomery method are located at 416 and 437 respectively in
@@ -1073,7 +1073,7 @@ There are still function calls to \codefn{BN\_is\_bit\_set}, but not as branch
 conditions. Instead the set bits of the window are extracted, and passed as a
 parameter to select the correct value from the pre-computed table of powers.
 
-  
+
 \begin{figure}[h!]
 \ruleabove
 \begin{lstlisting}

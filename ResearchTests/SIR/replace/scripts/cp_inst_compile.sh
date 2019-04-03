@@ -49,7 +49,7 @@ echo 0 > /tmp/llvm0
 opt -load ../../../../Debug+Asserts/lib/Research.$EXT $option $prog.bc -o $prog.gbc &> ../nodes
 
 echo "#define __SOURCE__ \"$prog.c\"" > printLine.cpp
-cat ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp >> printLine.cpp
+cat ../../../instrumentation/BBInfo/printLine.cpp >> printLine.cpp
 clang $CPPFLAGS -O0 -emit-llvm -c printLine.cpp
 
 llvm-link $prog.gbc printLine.bc -o $prog.linked.bc

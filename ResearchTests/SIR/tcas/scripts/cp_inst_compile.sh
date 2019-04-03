@@ -46,7 +46,7 @@ echo 0 > /tmp/llvm0
 opt -load ../../../../Debug+Asserts/lib/Research.$EXT $option tcas.bc -o tcas.c.bc &> ../nodes
 
 echo "#define __SOURCE__ \"$source\"" > printLine.cpp
-cat ../../../../ResearchTests/instrumentation/BBInfo/printLine.cpp >> printLine.cpp
+cat ../../../instrumentation/BBInfo/printLine.cpp >> printLine.cpp
 clang $CPPFLAGS -O0 -emit-llvm -c printLine.cpp
 
 llvm-link tcas.c.bc printLine.bc -o tcas.linked.bc

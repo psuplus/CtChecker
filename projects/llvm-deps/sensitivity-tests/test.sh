@@ -34,11 +34,11 @@ function execute_test() {
 
     # Run the pass
     $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
-                                  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
-                                  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
-                                  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
-                                  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
-                                  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
+                                  -load ../../Debug+Asserts/lib/Constraints.$EXT  \
+                                  -load ../../Debug+Asserts/lib/sourcesinkanalysis.$EXT \
+                                  -load ../../Debug+Asserts/lib/pointstointerface.$EXT \
+                                  -load ../../Debug+Asserts/lib/Deps.$EXT  \
+                                  -load ../../Debug+Asserts/lib/Security.$EXT  \
                                   -vulnerablebranch  -debug < test.bc 2>$2  > /dev/null
 
     exit_code="$?"

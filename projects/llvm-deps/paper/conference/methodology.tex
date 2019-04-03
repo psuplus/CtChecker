@@ -1,4 +1,4 @@
-\chapter{Methodology}
+\section{Methodology}
 In this work, improvements were made to improve the precision of a baseline
 taint analysis. The baseline line analysis was proposed by Moore et al
 \cite{moore2011static}.The features which improved precision were adding
@@ -59,7 +59,7 @@ sensitive information was used to compute the condition.
    required as is for the $D$ transformation. In the baseline, the $D$
    transformation did not exist, thus this transformation was added to achieve
    filed-sensitivity.
-   
+
    For most IR instructions, the explicit flow is constrained by adding the
    constraint $V(source) \rightarrow V(sink)$. There are a subset of LLVM IR
    memory operations that require interaction with \textit{DSA}. The
@@ -70,7 +70,7 @@ sensitive information was used to compute the condition.
 \begin{figure}[h!]
   \hrulefill
   \begin{lstlisting}[style=nolinenumberstyle]
-<result> = alloca <type> [, <ty> <NumElements>] [, align <alignment>]    
+<result> = alloca <type> [, <ty> <NumElements>] [, align <alignment>]
   \end{lstlisting}
   \explicitflow{ $\rightarrow V(\result)$}
 
@@ -109,7 +109,7 @@ examining the IR instruction which yielded the operand. If the pointer being
 operand is computed from a structure or an array, then the pointer will have
 been calculated using the GEP instruction. By including the GEP instruction in
 the sources for the load (and the sink for the store), the instruction can be
-analyzed and the index can be accessed. 
+analyzed and the index can be accessed.
 
 
 \subsubsection{Constraint Generation}
@@ -178,7 +178,7 @@ cases where types are overlapping.
    available for the node.
 
 \item{Incomplete Type Information}
- 
+
    The points-to analysis used only provides type information for the values used
    in the analyzed source. The field-sensitive analysis should also be
    conservative when analyzing unknown source. For this, the analysis relies on
@@ -206,7 +206,7 @@ propagates in the constraints to other parameters.
 
 \noindent
 \textbf{Implicit:}$V(PC) \cup V(functionptr) \cup V_{args} \cup R_{args} \rightarrow V(retval) \cup R_{args}$
-\end{itemize}  
+\end{itemize}
 
 \subsection{Solving Information Flow Constraints}
 Given the set of constraints for the program being analyzed, the least solution
@@ -245,7 +245,7 @@ In this case it is easy to see that $d.x$ should be at least as confidential as 
 since it is directly computed from $k$. Similarly, the branch condition $b$ is
 confidential since it must be at least as confidential as $k$. The value $d.y$
 is not confidential, but is irrelevant because confidential information is used
-to determine the outcome of the branch. 
+to determine the outcome of the branch.
 
 If implicit constraints are to be considered then the set is as follows.
 \[
@@ -299,7 +299,7 @@ So with the improved analysis, the constraints are generated such that compound
 data structures with multiple nodes are able to be constrained separately. Once
 the set of constraints for a programs source code is created, the least solution
 is found and the results show the line number where the branch occurs. This list
-of results shows the branches which are tainted and untrusted. 
+of results shows the branches which are tainted and untrusted.
 
 \begin{figure}[h!]
 \begin{lstlisting}

@@ -8,6 +8,13 @@ channels to compromise the assumptions of these safe communication methods.
 Timing channels exist in many forms and are often the result of implementation
 details which are not available in theoretical proposals of a protocol.
 
+In cryptosystems, an effective countermeasure against timing attacks is the
+constant-time programming discipline.  While a strict enforcement of this
+discipline will likely rule out timing attacks, doing so is also infeasible for
+a couple of reasons: (1) identifying non-constant time code  is often an
+error-prone and manual process, (2) real-world code typically contains
+intentional non-constant fragments that does not leak crucial information.
+
 Many methods have emerged as a response to attempt to automate the process of
 identifying timing channels. Currently as vulnerabilities are
 identified, the measures taken to mitigate these vulnerabilities are highly

@@ -94,7 +94,7 @@
 % Paper history
 \received{February 2019}
 
-\newcommand{\sysname}{CTChecker}
+\newcommand{\sysname}{CtChecker}
 
 % Document starts
 \begin{document}
@@ -127,16 +127,15 @@ Timing channel attacks are emerging as real-world threats to computer security.
 While cryptosystems have been the major targets of timing attacks, recent
 attacks such as Spectre and Meltdown show that non-constant time code, when
 combined with other attack vectors such as speculative execution, can reveal
-arbitrary memory from the victim's process.
-
-In cryptosystems, an effective countermeasure against timing attacks is the
-constant-time programming discipline. However, strictly enforcing the
-discipline manually is both time consuming and error prone. Recent efforts on
-identifying non-constant code fragments verify a 2-property, meaning that with
-identical public inputs, two runs of a program will produce identical control
-flows, memory accesses, etc. However, at least implicitly, such tools considers
-2 copies of the program, resulting in either poor performance or key
-information (e.g., loop invariants) being lost.
+arbitrary memory from the victim's process.  In cryptosystems, an effective
+countermeasure against timing attacks is the constant-time programming
+discipline. However, strictly enforcing the discipline manually is both time
+consuming and error prone. Recent efforts on identifying non-constant code
+fragments verify a 2-property, meaning that with identical public inputs, two
+runs of a program will produce identical control flows, memory accesses, etc.
+However, at least implicitly, such tools consider 2 runs of the program,
+resulting in either poor performance or key information (e.g., loop invariants)
+across 2 runs being lost.
 
 In this paper, we build \sysname, a static sound analysis for identifying
 non-constant code. Under the hood, \sysname{} verifies a 1-property, namely

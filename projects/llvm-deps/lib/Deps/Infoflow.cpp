@@ -462,8 +462,8 @@ Infoflow::processGetElementPtrInstSink(const Value *value, bool implicit, bool s
     errs() << "::IS STRUCT TY::";
     structTy = true;
   }
-  const Value * allocValue = getAllocationValue(gep);
-  AbstractLocSet structPtrLocs = getPointedToAbstractLocs(allocValue);
+  //const Value * allocValue = getAllocationValue(gep);
+  AbstractLocSet structPtrLocs = getPointedToAbstractLocs(gep);
 
   AbstractLocSet toConstrain{locs.begin(), locs.end()};
   toConstrain.insert(structPtrLocs.begin(), structPtrLocs.end());
@@ -564,12 +564,13 @@ std::set<const ConsElem*> Infoflow::findRelevantConsElem(const AbstractLoc* node
   std::set<const ConsElem*> elements;
   errs() << "Trying to find element at offset "  << offset << "\n";
 
-  if (node->isNodeCompletelyFolded()){
-    // All elements are relevant
-    for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(); it!= elemMap.end(); ++it){
-      elements.insert(it->second);
-    }
-  } else if (elemMap.find(offset) != elemMap.end()){
+  //if (node->isNodeCompletelyFolded()){
+  //  // All elements are relevant
+  //  for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(); it!= elemMap.end(); ++it){
+  //    elements.insert(it->second);
+  //  }
+  //} else 
+  if (elemMap.find(offset) != elemMap.end()){
     // Add the element which matches the offset
     elements.insert(elemMap[offset]);
   } else {
@@ -617,7 +618,7 @@ unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst* gep, std::set
   unsigned offset = 0;
   if(isa<ArrayType>(T) && gep->getNumIndices() == 2) {
     errs() << "ArrayType:";
-    offset = GEPInstCalculateArrayOffset(gep);
+    offset = GEPInstCalculateArrayOffset(gep, locs);
   } else if (gep->getNumIndices() == 2) {
     errs() << "StructType:";
     offset = GEPInstCalculateStructOffset(gep, locs);
@@ -636,16 +637,20 @@ unsigned Infoflow::GEPInstCalculateNumberElements(const GetElementPtrInst *gep) 
   return numElements;
 }
 
-unsigned Infoflow::GEPInstCalculateArrayOffset(const GetElementPtrInst* gep) {
+unsigned Infoflow::GEPInstCalculateArrayOffset(const GetElementPtrInst* gep, std::set<const AbstractLoc*> locs) {
   unsigned numElements = GEPInstCalculateNumberElements(gep);
 
   // *(ptr + i) = 4; ptr is operand 1 and i is operand 2
+  Value *value = dyn_cast<Value>(gep->getOperand(0));
+  uint64_t base = 0;
+  if (isa<GetElementPtrInst>(value))
+     base = GEPInstCalculateOffset(dyn_cast<GetElementPtrInst>(value), locs); 
   ConstantInt *ptr = dyn_cast<ConstantInt>(gep->getOperand(1));
   ConstantInt *ptrOffset = dyn_cast<ConstantInt>(gep->getOperand(2));
   uint64_t ptrIdx = ptr->getZExtValue();
   uint64_t ptrOff = ptrOffset->getZExtValue();
   unsigned offset = ptrIdx * numElements + ptrOff;
-  return offset;
+  return base+offset;
 }
 
 unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, std::set<const AbstractLoc*> locs) {
@@ -655,8 +660,13 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   unsigned offset = ptrOff;
   StructType* structType = dyn_cast<StructType>(gep->getSourceElementType());
 
+  Value *value = dyn_cast<Value>(gep->getOperand(0));
+  uint64_t base = 0;
+  if (isa<GetElementPtrInst>(value))
+     base = GEPInstCalculateOffset(dyn_cast<GetElementPtrInst>(value), locs); 
+
   if (locs.size() > 1){   // if multiple DSNodes just return the offset
-    return offset;
+    return base+offset;
   }
 
 
@@ -665,8 +675,7 @@ unsigned Infoflow::GEPInstCalculateStructOffset(const GetElementPtrInst* gep, st
   // Treat offset received from previous line as the index of the actual type in a structure
 
   offset = findOffsetFromFieldIndex(structType, offset, *(locs.begin()));
-
-  return offset;
+  return base+offset;
 }
 
 // findOffsetFromFieldIndex is called from the GEPInstCalculateStructOffset function

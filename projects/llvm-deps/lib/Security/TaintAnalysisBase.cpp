@@ -91,9 +91,10 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
   std::set<const ConsElem *> elementsToConstrain;
   for(;loc != end; ++loc){
     (*loc)->dump();
-    if((*loc)->isNodeCompletelyFolded() || (*loc)->type_begin() == (*loc)->type_end()){
-      hasOffset = false;
-    } else if (t_offset >= 0 ) {
+    //if((*loc)->isNodeCompletelyFolded() || (*loc)->type_begin() == (*loc)->type_end()){
+    //  hasOffset = false;
+    //} else 
+    if (t_offset >= 0 ) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
       hasOffset = true;
     }

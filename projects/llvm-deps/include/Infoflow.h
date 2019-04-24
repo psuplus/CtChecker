@@ -283,7 +283,7 @@ private:
 
   const std::string stringFromValue(const Value &);
   unsigned GEPInstCalculateNumberElements(const GetElementPtrInst*);
-  unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst*);
+  unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
   unsigned GEPInstCalculateStructOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
   unsigned GEPInstCalculateOffset(const GetElementPtrInst*, std::set<const AbstractLoc*>);
   unsigned findOffsetFromFieldIndex(StructType *, unsigned, const AbstractLoc*);

@@ -22,7 +22,10 @@ specific to the problem. It is important to be able to analyze software to
 identify possible timing channels, and mitigate them as necessary. The problem
 becomes identifying the vulnerabilities. Static analyses exist to be able to
 identify these vulnerabilities.
-  
+
+Static label-based information Flow Control (IFC) provides strong security
+guarantees for untrusted code, but are often believed to provide a
+non-negligible rate of false alarms for real-world software.
   Static analyses can struggle with the number of false positives being fairly
   high. The precision is often sacrificed to decrease the runtime of an
   analysis. Practical applications of a static analysis would optimally have the

@@ -32,9 +32,9 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
 
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
 post_analysis.py tmp.dat > results_with_source.txt
-SPLITPY="../utils/split.py"
-$SPLITPY > split.txt
-mv split.txt results_with_source.txt
+#SPLITPY="../utils/split.py"
+#$SPLITPY > split.txt
+#mv split.txt results_with_source.txt
 
 
 ## link instrumentation module

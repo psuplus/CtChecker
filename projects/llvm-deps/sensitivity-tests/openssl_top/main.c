@@ -14,6 +14,6 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
     if (p->top == 0) // should not be a positive
         ;  
 
-//    BN_is_bit_set(p, bits);
+    BN_is_bit_set(p, bits);
     return 1;
 }

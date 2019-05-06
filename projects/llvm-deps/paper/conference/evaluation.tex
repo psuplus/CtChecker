@@ -1,7 +1,7 @@
 \section{Evaluation}
 \subsection{Implementation}
 
-Achieving the improved precision of the analysis, is done primarily through
+Achieving the improved precision of the analysis is done primarily through
 handling LLVM's pointer instruction differently than other instructions. The
 pointer instruction in the IR is the GetElementPtr instruction. This instruction
 is used when computing an address from a base pointer. For arrays, for example
@@ -18,7 +18,7 @@ the GEP instruction and data type information.
 
 \subsubsection{Constraint Element Generation}
 When a pointer value is encountered for the first time, a node is created for it
-in the points-to graph, and a set of constraint elements are created for that
+in the points-to graph and a set of constraint elements are created for that
 data structure. The points-to analysis was left unmodified, so the focus will be
 on the semantics of how constraint elements were changed. In the baseline, only
 one constraint element represented any target of a pointer. In the improved
@@ -1170,3 +1170,197 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
        \caption{OpenSSL 1.1.0g - bn\_exp.c lines 1326 - 1350}
        \label{openssl:simple}
      \end{figure}
+
+\subsection{Verifying a 2-safety Property}
+
+\begin{table*}[!t]
+  \centering
+    \ra{1.2}
+  \begin{tabular}{@{}lcrrrrcrrrr@{}}
+    \toprule
+     & & \multicolumn{4}{c}{Ct-verif} & &  \multicolumn{4}{c}{CTChecker} \\
+    \cmidrule{3-6} \cmidrule{8-11}
+    Library&& Baseline(v2) & No Loops(v3) & Removed(v4) & Diff && Baseline(v2) & No Loops(v3) & Removed(v4) & Diff\\
+    \midrule
+    Libgcrypt 1.8.2                 &&  49 & 29 & 0 & 20 && 25 & 25 & 1 & 0 \\
+    BearSSL 0.5                     &&  14 & 10 & 0 &  4 && 10 & 10 & 0 & 0 \\
+    mbedTLS 2.9.0                   && 100 & 80 & 0 & 20 && 80 & 80 & 2 & 0 \\
+    OpenSSL 1.1.0g                                                                                 \\
+    \hspace{0.25cm}Reciprocal       &&  23 & 19 & 0 &  4 && 19 & 19 & 0 & 0 \\
+    \hspace{0.25cm}Mont.            &&  30 & 24 & 0 &  6 && 24 & 24 & 1 & 0 \\
+    \hspace{0.25cm}Mont Const. Time &&  39 & 29 & 0 & 10 && 25 & 25 & 3 & 0 \\
+    \hspace{0.25cm}Mont. Word       &&  18 & 17 & 0 &  1 && 15 & 15 & 0 & 0 \\
+    \bottomrule
+  \end{tabular}
+\caption{Number of Positives in Ct-verif and CTChecker}
+\label{tbl:runtimes}
+\end{table*}
+
+The paper of Almeida et al. uses an approach based on a reduction of the security of a program P to the
+assertion-safety of a program Q \cite{almeida2016verifying}.  The reduction is inspired by prior work on
+self-composition and product programs.  A product program Q verifies the security
+of P by simulating two executions in lockstep.   It asserts the equality of each
+public input with its renamed copy at each branching instruction.  public outputs
+are not taken into consideration, and the technique constructs an output-insensitive
+product program.  Theoretically, the approach is sound and complete in that all
+safe programs have a correct security verdict, and all unsafe programs have a
+correct insecurity verdict.
+
+Ct-verif verifies optimized LLVM implementations by implementing their reduction
+technique.  The SMACK verification tool is used as a front-end to compile the
+annotated C-code via Clang and the resulting compiled and optimized LLVM code
+is translated to Boogie code.  The reduction is performed on the Boogie code and
+then applied to the Boogie verifier, which uses an SMT logic solver.  Ct-verif
+provides an annotation interface for public inputs.
+
+
+\subsubsection{Limitations}
+Although the approach is theoretically sound and complete, the results of a
+practical interpretation must be analyzed carefully.  To perform a direct
+comparison, we avoid key limitations not present in CtChecker by revising the
+analyzed source to accommodate ct-verif's technical flaws.  For instance,
+for-loops and non-static length arrays are not supported.
+
+Loop invariants are automatically computed to verify program loops.  When
+counters are used to index arrays, a proof of security would require ct-verif
+to infer that the memory accesses are in the range of public values.  Although
+there are options to avoid this difficulty, such as enforcing a loop limit or
+unrolling a loop, the [actually, why doesn't this work?].  To avoid this
+limitation, loops were replaced with a branch statement that depended on the
+values that affected the loop bounds.
+
+Constant sized arrays are supported by adding an extra annotation, but variable
+sized arrays are not. To ensure memory accesses are not in the range of secret
+values, array indexing needs to be fixed.  We dictated that any array access
+was fixed in between these annotated bounds.  False positives caused by loops
+or variable array accesses were included in a separate result for ct-verif. The
+revisions made to avoid a for-loop and variable array access in \codefn{MPN\_NORMALIZE}
+are shown in figure 30.
+
+We did not include the full source for the libraries (except for BearSSL).
+Undefined values, such as those that are assigned to the return value of a function
+excluded from the analysis, were replaced with new variables.  CtChecker handles
+excluded source code by conservatively tainting the return value of a function
+whose parameter is tainted.  In constrast, ct-verif taints the return value
+regardless of the state of the parameters.  In this direct comparison, we replaced
+the excluded function's return value with some new variable.  If the return value
+was part of a branch condition, and the function was called with tainted
+parameters, this line was counted as a positive for both tools.
+In figure 28, \codefn{gcrympih\_lshift} is not linked in the analysis, so its
+return value is unknown.  Thus, \codevar{carry\_limb} is undefined before the
+branch, and the verifier throws an error.  The revision occurs on line 2 wherein
+\codevar{carry\_limb} is given a reserved public input.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+carry_limb = _gcry_mpih_lshift( res->d, rp, rsize, mod_shift_cnt);
+carry_limb = PUBLIC_VALUE;
+rp = res->d;
+if ( carry_limb )
+{
+    rp[rsize] = carry_limb;
+    rsize++;
+}
+\end{lstlisting}
+\caption{Libgcrypt 1.8.2 - mpi-pow.c lines 717-723}
+\label{code:libgcrypt_normalize}
+\end{figure}
+
+
+\sout{Although some examples in Almeida’s work contain thousands of lines of code,
+they are relatively simple and not limited in any of the ways discussed (e.g.
+figure 12 in their paper requires a manual loop invariant).  Code refactoring
+to accommodate these limitations is an arduous task in advanced libraries.
+Consider the complex function decomposition in mul\_mod from Libgcrypt, which
+is called five times in \_gcry\_mpi\_powm.  When the entire source is not linked,
+values computed from function calls outside of the source are undefined and
+result in an unsafe execution of Q.  To eliminate this limitation requires
+revision when an undefined value decides a branch.  Nevertheless, we managed
+to verify [our] results.}
+
+To avoid the previously described limitations when comparing our results, we constructed three new
+subsets of the source to analyze different versions of the same code.  We saw
+consistent results when applying the following
+revisions. First, a baseline version was created to exclude source from separate
+files. Assignment statements with
+excluded source were rewritten to assign the variable to an public or private
+input depending on the source. The second version was constructed from the first;
+loops were removed and replaced by an \codevar{if (e) then}
+structure where \codevar{e} contains the
+loop bounds.  For each array, array indices were fixed within the bounds of the array since
+only static sized arrays are supported. A third version was created from the second to remove erroneous lines reported by
+ct-verif. After refactoring the source to accommodate the limitations, ct-verif exhibited
+consistent behavior.
+
+\sout{By annotating all input values, we can create a trivial
+case for it to verify.  This ensures that the limitations described have been
+avoided, and that the results are meaningful when analyzing buggy code.}
+
+The implementation did not provide results for the entire source analyzed since
+the system stopped execution during its product program verification.  Constant time
+violations that occurred first in sequence were reported, but identification of
+violations that occurred afterwards was not guaranteed.   The product
+construction in Almeida’s work dictates that an execution will reach subsequent
+state if and only if the two executions leak the same observation sequence.
+In other words, execution will stop once a violation is found.  An implementation that records a history of errors could
+point to all violations.
+
+The line that caused the error can be discovered in the Boogie program verifier
+execution trace, and the Boogie code identifies the line in the source.
+Extracting this line in the source can be automated by pruning certain lines
+from the execution trace, and pruning certain lines in the boogie program file.
+
+Ct-verif correctly reported all high-risk errors from the cryptography
+libraries.  To compare the precision of the two tools against one another, they
+were run on several versions of the cryptography algorithm.  There are three
+versions, each of which was developed from the last.  The first file is the
+original file modified to accomodate excluded source code.  The second removed
+loops and other limitations such as array indexing.  The third and final version
+removed all positives reported by ct-verif.
+
+
+\begin{figure}[h!]
+\begin{lstlisting}
+tmp.d[0] = (0 - m->d[0]) & BN_MASK2;
+<@\textcolor{red}{for (i = 1; i < top; i++)}@>
+    tmp.d[i] = (~m->d[i]) & BN_MASK2;
+tmp.top = top;
+\end{lstlisting}
+\caption{OpenSSL 1.1.0g - bn\_exp.c lines 741-744}
+\label{code:libgcrypt_normalize}
+\end{figure}
+
+\subsubsection{Conclusion}
+A direct comparison of precision would focus on two results: the number of
+positives reported while disregarding limitations, and the number of positives
+reported due to \sout{analysis design choices}. The number of positives in
+\sout{version 2} and \sout{version 1} for ct-verif and ctchecker, respectively, are
+interpreted as the tools' best attempt at a taint analysis.  Positives
+reported by ctchecker in version 3 are false positives caused by one of two
+things: a flow insensitive analysis or the tainting procedure.
+Ct-verif is a flow sensitive analysis and taints a range of values in the array,
+leaving its pointer untainted. It correctly verifies line 742 in figure \sout{30},
+a false positive reported by CtChecker.
+
+The simple heuristic used for-loop invariant generation is a significant source of
+imprecision.  The number of false positives
+caused by loops compounded with those caused by other sources of incompleteness
+is significant.
+
+
+
+
+\begin{figure}[h!]
+\begin{lstlisting}
+#define MPN_NORMALIZE(d, n)    \
+    do {		                   \
+      if((n) > 0) /*while( (n) > 0 )*/ { \
+        if((d)[0]) /*if( (d)[(n)-1] )*/ \
+            dummy++; //break;	 \
+        (n)--;	               \
+      }		                     \
+} while(0)
+\end{lstlisting}
+\caption{Libgcrypt 1.8.2 - mpi-internal.h lines 113-120}
+\label{code:libgcrypt_normalize}
+\end{figure}

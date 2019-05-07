@@ -78,9 +78,9 @@
    attacks\cite{kochertiming}. The modular exponentiation functions were
    implemented using a sliding window method in early versions of the libraries.
 
-   Libgcrypt was used as an example, which showed that due to the ability to
-   distinguish the transition from a sequence of squares to a multiply
-   execution, a majority of the secret key could be leaked
+   It has been shown, using Libgcrypt as an example, that the ability to
+   distinguish a transition from a sequence of squares to a multiply
+   execution can leak a majority of the secret key.
    \cite{bernstein2017sliding}. This attack exploited the Montgomery reduction
    algorithm and followed each multiplication to mount an amplification
    attack. Though the attack is a cache-based attack, the length of the for-loop
@@ -111,26 +111,26 @@
 
 \section{Conclusion}
    In this work, the addition of several features to a baseline information-flow
-   analysis were tested. Field-sensitivity alone, is usually not enough to
-   reduce the number of results. Adding additional source code, since
+   analysis was tested. On its own, field-sensitivity is usually not adequate to
+   reduce the number of results. Adding additional source code improved the precision of the analysis since
    field-sensitivity is heavily reliant on the points-to analysis for type
-   information and tracking, improved the precision of the analysis. The
-   addition of a whitelist to eliminate the results which were deemed safe by
-   examination helps to also reduce the list to only positives which are
+   information and tracking. The
+   addition of a whitelist to eliminate the results deemed safe by
+   examination also helps reduce the list to only positives which are
    not expected.
 
-   The tests run and the effectiveness of field-sensitivity in reducing the
-   number of positives, depends on a number of factors. The field-sensitive
+   Tests show that and the effectiveness of field-sensitivity in reducing the
+   number of positives depends on a number of factors. The field-sensitive
    results worked best when adding additional source code. Due to the reliance
    on the points-to analysis to provide information for type and offset
    information, the best results were achieved when enough source was provided
    so that sensitive fields were accessed within the source code.
 
-   This analysis given just a list of sensitive data, produces a list of source
+   This analysis, given only a list of sensitive data, produces a list of source
    lines which have conditions based on sensitive data. The analysis produces
-   fewer results when compared to the baseline and many of the high-risk results
+   fewer results when compared to the baseline, and many of the high-risk results
    are confirmed from previously published attack papers. The libraries that did
-   see a reduction in results saw a 40-60\% reduction in results.Using the
+   see a reduction in results saw a 40-60\% reduction in results. Using the
    classification methods specified, the number of results can be sorted and
    prioritized to potentially identify non-constant time branches.
 

@@ -1178,7 +1178,7 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
     \ra{1.2}
   \begin{tabular}{@{}lcrrrrcrrrr@{}}
     \toprule
-     & & \multicolumn{4}{c}{Ct-verif} & &  \multicolumn{4}{c}{CTChecker} \\
+     & & \multicolumn{4}{c}{Ct-verif} & &  \multicolumn{4}{c}{CtChecker} \\
     \cmidrule{3-6} \cmidrule{8-11}
     Library&& Baseline(v2) & No Loops(v3) & Removed(v4) & Diff && Baseline(v2) & No Loops(v3) & Removed(v4) & Diff\\
     \midrule
@@ -1192,14 +1192,15 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
     \hspace{0.25cm}Mont. Word       &&  18 & 17 & 0 &  1 && 15 & 15 & 0 & 0 \\
     \bottomrule
   \end{tabular}
-\caption{Number of Positives in Ct-verif and CTChecker}
+\caption{ The baseline file accommodated the excluded
+source.  Loop positives were removed from the baseline in a separate file. A new file removed the remaining positives.}
 \label{tbl:runtimes}
 \end{table*}
 
-The paper of Almeida et al. uses an approach based on a reduction of the security of a program P to the
-assertion-safety of a program Q \cite{almeida2016verifying}.  The reduction is inspired by prior work on
-self-composition and product programs.  A product program Q verifies the security
-of P by simulating two executions in lockstep.   It asserts the equality of each
+The paper of Almeida et al. uses an approach based on a reduction of the security of a program \textit{P} to the
+assertion-safety of a program \textit{Q} \cite{almeida2016verifying}. The reduction is inspired by prior work on
+self-composition and product programs.  A product program \textit{Q} verifies the security
+of \textit{P} by simulating two executions in lockstep.   It asserts the equality of each
 public input with its renamed copy at each branching instruction.  public outputs
 are not taken into consideration, and the technique constructs an output-insensitive
 product program.  Theoretically, the approach is sound and complete in that all
@@ -1213,16 +1214,25 @@ is translated to Boogie code.  The reduction is performed on the Boogie code and
 then applied to the Boogie verifier, which uses an SMT logic solver.  Ct-verif
 provides an annotation interface for public inputs.
 
+There are three main ways we wanted to compare the precision and accuracy of
+Ct-verif and CtChecker. We verified the accuracy of CtChecker on the crypto libraries
+by checking that all true positives reported by Ct-verif
+were also reported by CtChecker.  Next, we compared the precision of the two tools;
+we looked at positives reported by only one of the two tools.  We avoided certain
+engineering limitations in Ct-verif, such as loop invariants.
+
+Ct-verif is flow sensitive; the order of statements in a program may affect the
+analysis.  CtChecker's flow insensitive  is one cause of false
 
 \subsubsection{Limitations}
 Although the approach is theoretically sound and complete, the results of a
 practical interpretation must be analyzed carefully.  To perform a direct
 comparison, we avoid key limitations not present in CtChecker by revising the
-analyzed source to accommodate ct-verif's technical flaws.  For instance,
+analyzed source to accommodate Ct-verif's technical flaws.  For instance,
 for-loops and non-static length arrays are not supported.
 
 Loop invariants are automatically computed to verify program loops.  When
-counters are used to index arrays, a proof of security would require ct-verif
+counters are used to index arrays, a proof of security would require Ct-verif
 to infer that the memory accesses are in the range of public values.  Although
 there are options to avoid this difficulty, such as enforcing a loop limit or
 unrolling a loop, the [actually, why doesn't this work?].  To avoid this
@@ -1233,15 +1243,16 @@ Constant sized arrays are supported by adding an extra annotation, but variable
 sized arrays are not. To ensure memory accesses are not in the range of secret
 values, array indexing needs to be fixed.  We dictated that any array access
 was fixed in between these annotated bounds.  False positives caused by loops
-or variable array accesses were included in a separate result for ct-verif. The
+or variable array accesses were included in a separate result for Ct-verif. The
 revisions made to avoid a for-loop and variable array access in \codefn{MPN\_NORMALIZE}
 are shown in figure 30.
 
-We did not include the full source for the libraries (except for BearSSL).
+We did not include the full source in all of the libraries, except for in BearSSL,
+which has a small amount of reachable code from the modular exponentiation function.
 Undefined values, such as those that are assigned to the return value of a function
 excluded from the analysis, were replaced with new variables.  CtChecker handles
 excluded source code by conservatively tainting the return value of a function
-whose parameter is tainted.  In constrast, ct-verif taints the return value
+whose parameter is tainted.  In contrast, Ct-verif taints the return value
 regardless of the state of the parameters.  In this direct comparison, we replaced
 the excluded function's return value with some new variable.  If the return value
 was part of a branch condition, and the function was called with tainted
@@ -1289,7 +1300,7 @@ loops were removed and replaced by an \codevar{if (e) then}
 structure where \codevar{e} contains the
 loop bounds.  For each array, array indices were fixed within the bounds of the array since
 only static sized arrays are supported. A third version was created from the second to remove erroneous lines reported by
-ct-verif. After refactoring the source to accommodate the limitations, ct-verif exhibited
+Ct-verif. After refactoring the source to accommodate the limitations, Ct-verif exhibited
 consistent behavior.
 
 \sout{By annotating all input values, we can create a trivial
@@ -1316,7 +1327,7 @@ were run on several versions of the cryptography algorithm.  There are three
 versions, each of which was developed from the last.  The first file is the
 original file modified to accomodate excluded source code.  The second removed
 loops and other limitations such as array indexing.  The third and final version
-removed all positives reported by ct-verif.
+removed all positives reported by Ct-verif.
 
 
 \begin{figure}[h!]
@@ -1334,9 +1345,9 @@ tmp.top = top;
 A direct comparison of precision would focus on two results: the number of
 positives reported while disregarding limitations, and the number of positives
 reported due to \sout{analysis design choices}. The number of positives in
-\sout{version 2} and \sout{version 1} for ct-verif and ctchecker, respectively, are
+\sout{version 2} and \sout{version 1} for Ct-verif and CtChecker, respectively, are
 interpreted as the tools' best attempt at a taint analysis.  Positives
-reported by ctchecker in version 3 are false positives caused by one of two
+reported by CtChecker in version 3 are false positives caused by one of two
 things: a flow insensitive analysis or the tainting procedure.
 Ct-verif is a flow sensitive analysis and taints a range of values in the array,
 leaving its pointer untainted. It correctly verifies line 742 in figure \sout{30},
@@ -1362,5 +1373,22 @@ is significant.
 } while(0)
 \end{lstlisting}
 \caption{Libgcrypt 1.8.2 - mpi-internal.h lines 113-120}
+\label{code:libgcrypt_normalize}
+\end{figure}
+
+
+\begin{figure}[h!]
+\begin{lstlisting}
+<@\textcolor{red}{for( i = 0; i < nbits; i++ )}@>
+{
+    MBEDTLS_MPI_CHK( mpi_montmul( X, X, N, mm, &T ) );
+
+    wbits <<= 1;
+
+    if( (wbits & ( one << wsize )) != 0 )
+        MBEDTLS_MPI_CHK( mpi_montmul( X, &W[1], N, mm, &T ) );
+}
+\end{lstlisting}
+\caption{mbedTLS 2.9.0 - bignum.c lines 1778-1786}
 \label{code:libgcrypt_normalize}
 \end{figure}

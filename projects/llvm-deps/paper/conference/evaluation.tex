@@ -1126,9 +1126,9 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
   \textbf{Simple Method}
 
   The sliding window attacks from the other libraries were also able to be used
-  in earlier version of OpenSSL. The function \codefn{bn\_mod\_exp\_simple} is
-  no longer reachable but the code is specified as an entry point the results
-  confirm other findings. Line 7 in figure \ref{openssl:simple} is reported
+  in earlier version of OpenSSL. The code for the function \codefn{bn\_mod\_exp\_simple} is
+  specified as an entry point, although it is not reachable from the
+  main entry point of the algorithm. Line 7 in figure \ref{openssl:simple} is reported
   because the branch is dependent on the current bits value of the exponent
   \codevar{p}. This result is directly computed from the exponent and within a
   loop so the amount of leakage is high if the branch outcome is known. The

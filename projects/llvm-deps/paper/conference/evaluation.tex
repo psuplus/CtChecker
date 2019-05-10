@@ -1222,7 +1222,12 @@ we looked at positives reported by only one of the two tools.  We avoided certai
 engineering limitations in Ct-verif, such as loop invariants.
 
 Ct-verif is flow sensitive; the order of statements in a program may affect the
-analysis.  CtChecker's flow insensitive  is one cause of false
+analysis.  CtChecker's flow insensitivity is one cause of false positives in the
+results.
+
+We perform a reasonable comparison between the two tools to better understand
+the distinct advantages of each method. We aim to avoid the drawbacks of the tools
+caused by engineering issues; we assume the best setting for each tool.
 
 \subsubsection{Limitations}
 Although the approach is theoretically sound and complete, the results of a
@@ -1233,9 +1238,9 @@ for-loops and non-static length arrays are not supported.
 
 Loop invariants are automatically computed to verify program loops.  When
 counters are used to index arrays, a proof of security would require Ct-verif
-to infer that the memory accesses are in the range of public values.  Although
+to infer that the memory accesses are in the range of public values.  \sout{Although
 there are options to avoid this difficulty, such as enforcing a loop limit or
-unrolling a loop, the [actually, why doesn't this work?].  To avoid this
+unrolling a loop, the [actually, why doesn't this work?].}  To avoid this
 limitation, loops were replaced with a branch statement that depended on the
 values that affected the loop bounds.
 

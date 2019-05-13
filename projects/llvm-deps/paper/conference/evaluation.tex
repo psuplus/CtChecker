@@ -1292,14 +1292,15 @@ if ( carry_limb )
 \label{code:libgcrypt_normalize}
 \end{figure}
 
-First, a baseline version was created to accommodate minor limitations or
-differences between the tools, such as the way in which they operate with
-some undefined values. … Assignment statements with excluded source were
-rewritten to assign the variable to a public or private input, depending on
-the function return value. If any of the function’s parameters were tainted,
-we conservatively tainted its return value. Thus, a function call inside of
-a branch condition was counted as a positive when any of its parameters
-were tainted.
+First, a baseline version was created to accommodate minor limitations
+or differences between the tools, such as the way in which they operate
+with some undefined values. … Assignment statements with excluded
+source were rewritten to assign the variable to a public or private
+input, depending on the function return value. If any of the function’s
+parameters were tainted, we conservatively tainted its return value.
+Thus, a function call inside of a branch condition was counted as a
+positive when any of its parameters were tainted. These positives were
+counted the same for each tool, and were only introduced in OpenSSL.
 
 The second version was constructed from the first, and it allowed us to
 examine the number of positives introduced from computing loop invariants.
@@ -1311,6 +1312,12 @@ for a static number of values to be marked as public.  Variable length
 arrays are not supported, so variable array element accesses needed to
 be removed. Every array index was fixed within the bounds of the array.
 
+The difference in the number of positives reported by Ct-verif in the
+baseline and no loops versions is the number of positives caused by
+computing loop invariants only.  The number is a significant portion
+of the total positives reported on each version. No positives were
+introduced from loops in CtChecker, as expected.
+
 The third version was created from the second to remove each erroneous line
 reported by Ct-verif, resulting in a subset of the original file that was
 free of any constant time violation. This final version allowed us to
@@ -1319,7 +1326,7 @@ on this version was exclusive to CtChecker, and expected to be a false one.
 
 To clarify, we see 0 positives reported in version 4 by Ct-verif since we
 replaced them with some constant time code.  Thus, any positives on this
-version were reported exclusively by CtChecker. Thus, any positives on this 
+version were reported exclusively by CtChecker. Thus, any positives on this
 version were reported exclusively by CtChecker. The positives reported in
 the final version by CtChecker were the result of two design choices:
 making CtChecker a flow insensitive analysis, and taint pointers rather

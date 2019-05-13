@@ -1125,7 +1125,7 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
   \noindent
   \textbf{Simple Method}
 
-  The sliding window attacks from the other libraries were also able to be used
+  The sliding window attacks from the other libraries were also exploitable
   in earlier version of OpenSSL. The code for the function \codefn{bn\_mod\_exp\_simple} is
   specified as an entry point, although it is not reachable from the
   main entry point of the algorithm. Line 7 in figure \ref{openssl:simple} is reported
@@ -1192,20 +1192,30 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
     \hspace{0.25cm}Mont. Word       &&  18 & 17 & 0 &  1 && 15 & 15 & 0 & 0 \\
     \bottomrule
   \end{tabular}
-\caption{ The baseline file accommodated the excluded
-source.  Loop positives were removed from the baseline in a separate file. A new file removed the remaining positives.}
+\caption{ The baseline file accommodated the excluded source.  Loop positives were removed from the baseline in a separate file. A new file removed the remaining positives.}
 \label{tbl:runtimes}
 \end{table*}
 
-The paper of Almeida et al. uses an approach based on a reduction of the security of a program \textit{P} to the
-assertion-safety of a program \textit{Q} \cite{almeida2016verifying}. The reduction is inspired by prior work on
-self-composition and product programs.  A product program \textit{Q} verifies the security
-of \textit{P} by simulating two executions in lockstep.   It asserts the equality of each
-public input with its renamed copy at each branching instruction.  public outputs
-are not taken into consideration, and the technique constructs an output-insensitive
-product program.  Theoretically, the approach is sound and complete in that all
-safe programs have a correct security verdict, and all unsafe programs have a
-correct insecurity verdict.
+In this section, we discuss another approach to verify constant time code, and
+compare the precision and accuracy between it and CtChecker.  Our goal is to
+perform a reasonable comparison that focuses on the advantages of each method,
+and not the engineering details associated with implementing them. We consider
+a recent effort that verifies a 2-property, expressing the security of a
+program as set of logical statements or conditions, and verifying them
+automatically using a theorem solver.
+
+\subsubsection{Background}
+The paper of Almeida et al. uses an approach based on a reduction of the
+security of a program \textit{P} to the assertion-safety of a program
+\textit{Q}, and implements it in a prototype, Ct-verif.
+\cite{almeida2016verifying}. The reduction is inspired by prior work
+on self-composition and product programs.  A product program \textit{Q}
+verifies the security of \textit{P} by simulating two executions in lockstep.
+It asserts the equality of each public input with its renamed copy at each
+branching instruction.  public outputs are not taken into consideration, and
+the technique constructs an output-insensitive product program.  Theoretically,
+the approach is sound and complete in that all safe programs have a correct
+security verdict, and all unsafe programs have a correct insecurity verdict.
 
 Ct-verif verifies optimized LLVM implementations by implementing their reduction
 technique.  The SMACK verification tool is used as a front-end to compile the
@@ -1215,10 +1225,10 @@ then applied to the Boogie verifier, which uses an SMT logic solver.  Ct-verif
 provides an annotation interface for public inputs.
 
 There are three main ways we wanted to compare the precision and accuracy of
-Ct-verif and CtChecker. We verified the accuracy of CtChecker on the crypto libraries
-by checking that all true positives reported by Ct-verif
-were also reported by CtChecker.  Next, we compared the precision of the two tools;
-we looked at positives reported by only one of the two tools.  We avoided certain
+Ct-verif and CtChecker. We verified the accuracy of CtChecker on the crypto
+libraries by checking that all true positives reported by Ct-verif were also
+reported by CtChecker.  Next, we compared the precision of the two tools; we
+looked at positives reported by only one of the two tools.  We avoided certain
 engineering limitations in Ct-verif, such as loop invariants.
 
 Ct-verif is flow sensitive; the order of statements in a program may affect the
@@ -1229,12 +1239,12 @@ We perform a reasonable comparison between the two tools to better understand
 the distinct advantages of each method. We aim to avoid the drawbacks of the tools
 caused by engineering issues; we assume the best setting for each tool.
 
-\subsubsection{Limitations}
-Although the approach is theoretically sound and complete, the results of a
-practical interpretation must be analyzed carefully.  To perform a direct
-comparison, we avoid key limitations not present in CtChecker by revising the
-analyzed source to accommodate Ct-verif's technical flaws.  For instance,
-for-loops and non-static length arrays are not supported.
+\subsubsection{Limitations of Ct-verif}
+Although the approach is theoretically sound and complete, the results of
+Ct-verif, its practical interpretation, must be analyzed carefully.  To perform
+a reasonable comparison, we avoid key limitations not present in CtChecker by
+revising the analyzed source to accommodate Ct-verif's technical flaws.  For
+instance, loops and non-static length arrays are not supported.
 
 Loop invariants are automatically computed to verify program loops.  When
 counters are used to index arrays, a proof of security would require Ct-verif
@@ -1283,49 +1293,15 @@ if ( carry_limb )
 \end{figure}
 
 
-\sout{Although some examples in Almeida’s work contain thousands of lines of code,
-they are relatively simple and not limited in any of the ways discussed (e.g.
-figure 12 in their paper requires a manual loop invariant).  Code refactoring
-to accommodate these limitations is an arduous task in advanced libraries.
-Consider the complex function decomposition in mul\_mod from Libgcrypt, which
-is called five times in \_gcry\_mpi\_powm.  When the entire source is not linked,
-values computed from function calls outside of the source are undefined and
-result in an unsafe execution of Q.  To eliminate this limitation requires
-revision when an undefined value decides a branch.  Nevertheless, we managed
-to verify [our] results.}
+The results of each version are helpful in evaluating the distinct advantages
+of each analysis.  Of course, engineering issues are not the focus of the
+comparison, so they were avoided in the following ways.
+A consistent procedure was used to construct subsets of the crypto libraries,
+wherein each subset is a modified version of the original file. Three versions
+are created, and each is a proper subset of the file before it.
 
-To avoid the previously described limitations when comparing our results, we constructed three new
-subsets of the source to analyze different versions of the same code.  We saw
-consistent results when applying the following
-revisions. First, a baseline version was created to exclude source from separate
-files. Assignment statements with
-excluded source were rewritten to assign the variable to an public or private
-input depending on the source. The second version was constructed from the first;
-loops were removed and replaced by an \codevar{if (e) then}
-structure where \codevar{e} contains the
-loop bounds.  For each array, array indices were fixed within the bounds of the array since
-only static sized arrays are supported. A third version was created from the second to remove erroneous lines reported by
-Ct-verif. After refactoring the source to accommodate the limitations, Ct-verif exhibited
-consistent behavior.
 
-\sout{By annotating all input values, we can create a trivial
-case for it to verify.  This ensures that the limitations described have been
-avoided, and that the results are meaningful when analyzing buggy code.}
-
-The implementation did not provide results for the entire source analyzed since
-the system stopped execution during its product program verification.  Constant time
-violations that occurred first in sequence were reported, but identification of
-violations that occurred afterwards was not guaranteed.   The product
-construction in Almeida’s work dictates that an execution will reach subsequent
-state if and only if the two executions leak the same observation sequence.
-In other words, execution will stop once a violation is found.  An implementation that records a history of errors could
-point to all violations.
-
-The line that caused the error can be discovered in the Boogie program verifier
-execution trace, and the Boogie code identifies the line in the source.
-Extracting this line in the source can be automated by pruning certain lines
-from the execution trace, and pruning certain lines in the boogie program file.
-
+\subsubsection{Results}
 Ct-verif correctly reported all high-risk errors from the cryptography
 libraries.  To compare the precision of the two tools against one another, they
 were run on several versions of the cryptography algorithm.  There are three
@@ -1363,7 +1339,19 @@ imprecision.  The number of false positives
 caused by loops compounded with those caused by other sources of incompleteness
 is significant.
 
+The implementation did not provide results for the entire source analyzed since
+the system stopped execution during its product program verification.  Constant
+time violations that occurred first in sequence were reported, but
+identification of violations that occurred afterwards was not guaranteed. The
+product construction in Almeida’s work dictates that an execution will reach
+subsequent state if and only if the two executions leak the same observation
+sequence. In other words, execution will stop once a violation is found.  An
+implementation that records a history of errors could point to all violations.
 
+The line that caused the error can be discovered in the Boogie program verifier
+execution trace, and the Boogie code identifies the line in the source.
+Extracting this line in the source can be automated by pruning certain lines
+from the execution trace, and pruning certain lines in the boogie program file.
 
 
 \begin{figure}[h!]

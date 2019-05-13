@@ -1292,6 +1292,30 @@ if ( carry_limb )
 \label{code:libgcrypt_normalize}
 \end{figure}
 
+First, a baseline version was created to accommodate minor limitations or
+differences between the tools, such as the way in which they operate with
+some undefined values. … Assignment statements with excluded source were
+rewritten to assign the variable to a public or private input, depending on
+the function return value. If any of the function’s parameters were tainted,
+we conservatively tainted its return value. Thus, a function call inside of
+a branch condition was counted as a positive when any of its parameters
+were tainted.
+
+The second version was constructed from the first, and it allowed us to
+examine the number of positives introduced from computing loop invariants.
+Each erroneous loop was replaced, and each variable array access was
+changed to a fixed one. Loops were replaced by a model that leaked the
+same information as the loop: a \codevar{if (e) then} structure where
+\codevar{e} contains the loop bounds. Ct-verif supports an annotation
+for a static number of values to be marked as public.  Variable length
+arrays are not supported, so variable array element accesses needed to
+be removed. Every array index was fixed within the bounds of the array.
+
+The third version was created from the second to remove each erroneous line
+reported by Ct-verif, resulting in a subset of the original file that was
+free of any constant time violation. This final version allowed us to
+evaluate the precision of CtChecker in another way; any positive reported
+on this version was exclusive to CtChecker, and expected to be a false one.
 
 The results of each version are helpful in evaluating the distinct advantages
 of each analysis.  Of course, engineering issues are not the focus of the

@@ -1,9 +1,9 @@
 \section{Evaluation}
 \subsection{Implementation}
 
-Achieving the improved precision of the analysis is done primarily through
+Achieving the improved precision of the analysis is done primarily by
 handling LLVM's pointer instruction differently than other instructions. The
-pointer instruction in the IR is the GetElementPtr instruction. This instruction
+pointer instruction in the IR is the GEP instruction. This instruction
 is used when computing an address from a base pointer. For arrays, for example
 it has the index of the element and the bounds of the array if they are known.
 For structures, the instruction contains the structure type which is being

@@ -1432,3 +1432,18 @@ from the execution trace, and pruning certain lines in the boogie program file.
 \caption{mbedTLS 2.9.0 - bignum.c lines 1778-1786}
 \label{code:libgcrypt_normalize}
 \end{figure}
+
+
+\begin{figure}[h!]
+\begin{lstlisting}
+<@\textcolor{red}{if ( rp == ep )}@>
+{
+    /* RES and EXPO are identical.  Allocate temp. space for EXPO.  */
+    ep_nlimbs = esec? esize:0;
+    ep = ep_marker = mpi_alloc_limb_space( esize, esec );
+    MPN_COPY(ep, rp, esize);
+}
+\end{lstlisting}
+\caption{mbedTLS 2.9.0 - bignum.c lines 1778-1786}
+\label{code:libgcrypt_normalize}
+\end{figure}

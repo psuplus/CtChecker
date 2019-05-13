@@ -1317,6 +1317,22 @@ free of any constant time violation. This final version allowed us to
 evaluate the precision of CtChecker in another way; any positive reported
 on this version was exclusive to CtChecker, and expected to be a false one.
 
+To clarify, we see 0 positives reported in version 4 by Ct-verif since we
+replaced them with some constant time code.  Thus, any positives on this
+version were reported exclusively by CtChecker. Thus, any positives on this 
+version were reported exclusively by CtChecker. The positives reported in
+the final version by CtChecker were the result of two design choices:
+making CtChecker a flow insensitive analysis, and taint pointers rather
+than a range of values. The number illustrates the tradeoff in the method
+to taint arrays, and is favorable for CtChecker. Overall, CtChecker showed
+equal or improved precision over Ct-verif when disregarding significant
+limitations, such as loop invariants. This result is apparent in the
+difference between the number of positives reported by each tool in version
+3. CtChecker showed improved precision over Ct-verif in version 2, a result
+apparent in the difference between the number of positives reported by each
+tool in version 2.
+
+
 The results of each version are helpful in evaluating the distinct advantages
 of each analysis.  Of course, engineering issues are not the focus of the
 comparison, so they were avoided in the following ways.

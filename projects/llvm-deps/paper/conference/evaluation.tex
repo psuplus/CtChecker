@@ -1199,7 +1199,7 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
 In this section, we discuss another approach to verify constant time code,
 and compare the precision and accuracy between it and CtChecker. We consider
 a recent effort that verifies a 2-property, expressing the security of a
-program as set of logical statements or conditions, and verifying them
+program as a set of logical statements or conditions, and verifying them
 automatically using a theorem solver. Our goal was to perform a reasonable
 comparison that focuses on the advantages of each method, and not the
 engineering details associated with implementing them.
@@ -1212,12 +1212,12 @@ security of a program \textit{P} to the assertion-safety of a program
 on self-composition and product programs.  A product program \textit{Q}
 verifies the security of \textit{P} by simulating two executions in lockstep.
 It asserts the equality of each public input with its renamed copy at each
-branching instruction.  public outputs are not taken into consideration, and
+branching instruction. Public outputs are not taken into consideration, and
 the technique constructs an output-insensitive product program.  Theoretically,
 the approach is sound and complete in that all safe programs have a correct
 security verdict, and all unsafe programs have a correct insecurity verdict.
 
-Ct-verif verifies optimized LLVM implementations by implementing their reduction
+Ct-verif verifies optimized LLVM by implementing their reduction
 technique.  The SMACK verification tool is used as a front-end to compile the
 annotated C-code via Clang and the resulting compiled and optimized LLVM code
 is translated to Boogie code.  The reduction is performed on the Boogie code and
@@ -1226,7 +1226,7 @@ provides an annotation interface for public inputs.
 
 The implementation does not provide results for the entire source. During its
 product program verification, if an error state is reached (a violation is
-found), no transition is enabled and the system will stop execution. Constant
+found), no transition is enabled and the system will stop its execution. Constant
 time violations that occurred first in sequence were reported, but
 identification of violations that occurred afterwards was not guaranteed.
 To identify all violations, we replaced each error with some constant time
@@ -1238,7 +1238,7 @@ caused by engineering issues; we assume the best setting for each tool.
 
 \subsubsection{Limitations of Ct-verif}
 Although the approach is theoretically sound and complete, the results of
-a practical interpretation, must be analyzed carefully.  To perform
+a practical interpretation, must be carefully analyzed.  To perform
 a reasonable comparison, we avoid key limitations not present in CtChecker by
 revising the analyzed source to accommodate Ct-verif's technical flaws.  For
 instance, loops and non-static length arrays are not supported.
@@ -1256,13 +1256,13 @@ sized arrays are not. To ensure memory accesses are not in the range of secret
 values, array indexing needs to be fixed.  We dictated that any array access
 was fixed in between these annotated bounds.  False positives caused by loops
 or variable array accesses were included in a separate result for Ct-verif. The
-revisions made to avoid a for-loop and variable array access in \codefn{MPN\_NORMALIZE}
+revisions made to replace a for-loop and a variable array access in \codefn{MPN\_NORMALIZE}
 are shown in figure 30.
 
 We did not include the full source in all of the libraries, except for in BearSSL,
 which has a small amount of reachable code from the modular exponentiation function.
 Undefined values, such as those that are assigned to the return value of a function
-excluded from the analysis, were replaced with new variables.  CtChecker handles
+and are excluded from the analysis, were replaced with new variables.  CtChecker handles
 excluded source code by conservatively tainting the return value of a function
 whose parameter is tainted.  In contrast, Ct-verif taints the return value
 regardless of the state of the parameters.  In this direct comparison, we replaced
@@ -1301,7 +1301,7 @@ number before it.
 
 First, a baseline version was created to accommodate minor limitations
 or differences between the tools, such as the way in which they operate
-with some undefined values. … Any assignment statement with excluded
+with some undefined values. Any assignment statement with excluded
 source was rewritten to assign the variable to a public or private
 input, depending on the function return value. If any of the function’s
 parameters were tainted, we conservatively tainted its return value.
@@ -1313,7 +1313,7 @@ The second version was constructed from the first, and it allowed us to
 examine the number of positives introduced from computing loop invariants.
 Each erroneous loop was replaced, and each variable array access was
 changed to a fixed one. Loops were replaced by a model that leaked the
-same information as the loop: a \codevar{if (e) then} structure where
+same information as the loop: a \codevar{if (e) then} statement where
 \codevar{e} contains the loop bounds. Figure 30 is an example of two
 revisions in Libgcrypt, one for a loop and one for an array access.
 Ct-verif supports an annotation for a static number of values to be
@@ -1324,8 +1324,8 @@ within the bounds of the array.
 The difference in the number of positives reported by Ct-verif in the
 baseline and no loops versions is the number of positives caused by
 computing loop invariants only.  The number is a significant portion
-of the total positives reported on each version. CtChecker reported the
-same number of positives after removing loops, as expected.
+of the total positives reported on each version. As expected, CtChecker reported the
+same number of positives after removing loops.
 
 The third version was created from the second to remove each erroneous
 line reported by Ct-verif, resulting in a subset of the original file
@@ -1357,7 +1357,6 @@ limitations, such as loop invariants. This result is apparent in the
 difference between the number of positives reported by each tool in
 version 3.
 
-
 \begin{figure}[h!]
 \begin{lstlisting}
 tmp.d[0] = (0 - m->d[0]) & BN_MASK2;
@@ -1376,13 +1375,6 @@ The simple heuristic used for-loop invariant generation is a significant source 
 imprecision.  The number of false positives
 caused by loops compounded with those caused by other sources of incompleteness
 is significant.
-
-The line that caused the error can be discovered in the Boogie program verifier
-execution trace, and the Boogie code identifies the line in the source.
-Extracting this line in the source can be automated by pruning certain lines
-from the execution trace, and pruning certain lines in the boogie program file.
-
-
 
 \begin{figure}[h!]
 \begin{lstlisting}

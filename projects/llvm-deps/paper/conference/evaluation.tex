@@ -1371,10 +1371,13 @@ for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
 \end{figure}
 
 \subsubsection{Conclusion}
-The simple heuristic used for-loop invariant generation is a significant source of
-imprecision.  The number of false positives
-caused by loops compounded with those caused by other sources of incompleteness
-is significant.
+Perhaps the simple heuristic used for-loop invariant generation is the
+primary reason the 2-property analysis saw a lesser precision.  Additionally,
+while deductive verification is sufficient for verifying non-trivial programs, like
+the ones in this paper, it remains difficult to use. As previously mentioned,
+there is no trivial method to interpret verification failures. CtChecker uses
+many fewer annotations to run its analysis, and provides a complete list of
+violations for each source line.
 
 \begin{figure}[h!]
 \begin{lstlisting}

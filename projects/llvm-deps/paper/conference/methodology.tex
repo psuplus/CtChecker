@@ -1,16 +1,16 @@
 \section{Methodology}
-In this work, improvements were made to improve the precision of a baseline
-taint analysis. The baseline line analysis was proposed by Moore et al
-\cite{moore2011static}.The features which improved precision were adding
-field-sensitivity and adding a whitelist. Adding field-sensitivity aided in more
+In this work, adjustments were made to improve the precision of a baseline
+taint analysis. The baseline analysis was proposed by Moore et al
+\cite{moore2011static}. Adding field-sensitivity and adding a whitelist both
+improved precision. Adding field-sensitivity aided in more
 accurately representing flow within structures and arrays. The baseline could
-not track flow to members of a structure, just flow to the structure itself. The
+not track flow to members of a structure, only flow to the structure itself. The
 field-sensitive analysis is the major change to the baseline system. This
 section will outline the three sections which make up the analysis. The
-information flow capture, parses the IR code to identify the values from which
+information flow capture parses the IR code to identify the values from which
 information flows. The constraint generation is done by interpreting the
-captured flows and creating constraints. Lastly to identify secret-dependent
-branches the least solution is found and branch conditions are checked to see if
+captured flows and creating constraints. Lastly, to identify secret-dependent
+branches, the least solution is found and branch conditions are checked to see if
 sensitive information was used to compute the condition.
 
 \subsection{Generating Information Flows from IR Code}
@@ -19,17 +19,17 @@ sensitive information was used to compute the condition.
    by identifying the operands. Each operand can be considered as a source or a
    sink, though this alone is not enough information when considering the
    effects of pointers. Since pointers can point to different data and the data
-   to which they point can be changed, the points-to analysis is used. The
+   to which they point can change, the points-to analysis is used. The
    points-to analysis is used to keep track of which memory locations are
-   associated with the LLVM IR values identified as sources and sinks.
+   associated with the LLVM IR values identified as sources or sinks.
 
    For each LLVM value, there are 3 elements which can be constrained. There are
-   3 transformation functions which returns the element to be constrained for
-   that value. For any operations, zero or more of the three functions (V, D, R)
+   3 transformation functions which return the element to be constrained for
+   that value. For any operation, zero or more of the three functions (V, D, R)
    may be used in generating a constraint for the instruction. Forming a
    constraint requires a source constraint element and a sink constraint
    element. The flows identified from the instructions create a constraint by
-   adding a rule which states the source constraint element flows to the sink
+   adding a rule, which states that the source constraint element flows to the sink
    constraint element.
 
    \begin{itemize}
@@ -41,9 +41,9 @@ sensitive information was used to compute the condition.
      represented by IR value $x$.
    \end{itemize}
 
-   The baseline analysis, also used these same transformations, but the addition
-   of field sensitivity changed the behavior of the functions $D$ and $R$. The
-   memory nodes of these were only able to be constrained as a single entity.
+   The baseline analysis used these same transformations, but the addition
+   of field sensitivity changed the behavior of the functions $D$ and $R$, and the
+   memory nodes were only able to be constrained as a single entity.
    Since a whole data structure was referred to as a single element, tracking
    the flow to individual fields was not available. The \textit{DSA} analysis
    provides a type map, which can be used to identify the field type and offset
@@ -54,13 +54,13 @@ sensitive information was used to compute the condition.
    The $R$ transformation is similar to the $D$ transformation in that it
    returns the constraint element relevant to the memory addressed, but the $R$
    transformation is used in the case of external functions or source. The $R$
-   transformation is the more conservative transformation returning all possible
+   transformation is the more conservative transformation, returning all possible
    constraint elements tied to a pointer, so the offset and size are not
-   required as is for the $D$ transformation. In the baseline, the $D$
+   required like they are for the $D$ transformation. In the baseline, the $D$
    transformation did not exist, thus this transformation was added to achieve
-   filed-sensitivity.
+   field-sensitivity.
 
-   For most IR instructions, the explicit flow is constrained by adding the
+   For most IR instructions, explicit flow is constrained by adding the
    constraint $V(source) \rightarrow V(sink)$. There are a subset of LLVM IR
    memory operations that require interaction with \textit{DSA}. The
    store, load and GetElementPtr (GEP) instructions are the most important for
@@ -105,8 +105,8 @@ The load and the store instructions are the instructions which changed the most
 from the baseline. In the baseline, these rules were the same, but the offset
 was not considered in the $D$ transformation. The store and load instructions do
 not have an offset as a operand in their instructions. The offset is found  by
-examining the IR instruction which yielded the operand. If the pointer being
-operand is computed from a structure or an array, then the pointer will have
+examining the IR instruction which yielded the operand. If the operand is a pointer
+computed from a structure or an array, then the pointer will have
 been calculated using the GEP instruction. By including the GEP instruction in
 the sources for the load (and the sink for the store), the instruction can be
 analyzed and the index can be accessed.

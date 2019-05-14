@@ -1229,8 +1229,8 @@ product program verification, if an error state is reached (a violation is
 found), no transition is enabled and the system will stop execution. Constant
 time violations that occurred first in sequence were reported, but
 identification of violations that occurred afterwards was not guaranteed.
-To analyze identify all violations, we replaced errors with some constant time
-code and re-ran the tool.
+To identify all violations, we replaced each error with some constant time
+code and re-ran the tool on the revised code.
 
 We perform a reasonable comparison between the two tools to better understand
 the distinct advantages of each method. We aim to avoid the drawbacks of the tools

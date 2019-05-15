@@ -418,8 +418,6 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
 
 \begin{table*}[!t]
   \centering
-  \resizebox{\textwidth}{!}{%
-    \ra{1.2}
   \begin{tabular}{@{}lrr|crrrcrr@{}}
     \toprule
     &  &  &&  & \multicolumn{2}{c}{Low-Risk} && \multicolumn{2}{c}{High-Risk}\\
@@ -435,7 +433,7 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
     \hspace{0.25cm}Montgomery Const. Time  & 30 & 12 &&  0   &  7  & 3 && 0   & 2\\
     \hspace{0.25cm}Montgomery Word         & 22 & 14 &&  2   & 6   & 5 && 1   & 0\\
     \bottomrule
-  \end{tabular}}
+  \end{tabular}
 \caption{Result Classifications: Base - Baseline Positives, Improved - WL/FS/SRC
 Positives}
   \label{tbl:allpositives}

@@ -1,9 +1,9 @@
 \section{Evaluation}
 \subsection{Implementation}
 
-Achieving the improved precision of the analysis, is done primarily through
+Achieving the improved precision of the analysis is done primarily by
 handling LLVM's pointer instruction differently than other instructions. The
-pointer instruction in the IR is the GetElementPtr instruction. This instruction
+pointer instruction in the IR is the GEP instruction. This instruction
 is used when computing an address from a base pointer. For arrays, for example
 it has the index of the element and the bounds of the array if they are known.
 For structures, the instruction contains the structure type which is being
@@ -18,7 +18,7 @@ the GEP instruction and data type information.
 
 \subsubsection{Constraint Element Generation}
 When a pointer value is encountered for the first time, a node is created for it
-in the points-to graph, and a set of constraint elements are created for that
+in the points-to graph and a set of constraint elements are created for that
 data structure. The points-to analysis was left unmodified, so the focus will be
 on the semantics of how constraint elements were changed. In the baseline, only
 one constraint element represented any target of a pointer. In the improved
@@ -418,8 +418,6 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
 
 \begin{table*}[!t]
   \centering
-  \resizebox{\textwidth}{!}{%
-    \ra{1.2}
   \begin{tabular}{@{}lrr|crrrcrr@{}}
     \toprule
     &  &  &&  & \multicolumn{2}{c}{Low-Risk} && \multicolumn{2}{c}{High-Risk}\\
@@ -435,7 +433,7 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
     \hspace{0.25cm}Montgomery Const. Time  & 30 & 12 &&  0   &  7  & 3 && 0   & 2\\
     \hspace{0.25cm}Montgomery Word         & 22 & 14 &&  2   & 6   & 5 && 1   & 0\\
     \bottomrule
-  \end{tabular}}
+  \end{tabular}
 \caption{Result Classifications: Base - Baseline Positives, Improved - WL/FS/SRC
 Positives}
   \label{tbl:allpositives}
@@ -1125,10 +1123,10 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
   \noindent
   \textbf{Simple Method}
 
-  The sliding window attacks from the other libraries were also able to be used
-  in earlier version of OpenSSL. The function \codefn{bn\_mod\_exp\_simple} is
-  no longer reachable but the code is specified as an entry point the results
-  confirm other findings. Line 7 in figure \ref{openssl:simple} is reported
+  The sliding window attacks from the other libraries were also exploitable
+  in earlier version of OpenSSL. The code for the function \codefn{bn\_mod\_exp\_simple} is
+  specified as an entry point, although it is not reachable from the
+  main entry point of the algorithm. Line 7 in figure \ref{openssl:simple} is reported
   because the branch is dependent on the current bits value of the exponent
   \codevar{p}. This result is directly computed from the exponent and within a
   loop so the amount of leakage is high if the branch outcome is known. The
@@ -1170,3 +1168,241 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
        \caption{OpenSSL 1.1.0g - bn\_exp.c lines 1326 - 1350}
        \label{openssl:simple}
      \end{figure}
+
+\subsection{Verifying a 2-safety Property}
+
+\begin{table*}[!t]
+  \centering
+    \ra{1.2}
+  \begin{tabular}{@{}lcrrrrcrrrr@{}}
+    \toprule
+     & & \multicolumn{4}{c}{Ct-verif} & &  \multicolumn{4}{c}{CtChecker} \\
+    \cmidrule{3-6} \cmidrule{8-11}
+    Library&& Baseline & No Loops & Removed & Diff && Baseline & No Loops & Removed & Diff\\
+    \midrule
+    Libgcrypt 1.8.2                 &&  49 & 29 & 0 & 20 && 25 & 25 & 1 & 0 \\
+    BearSSL 0.5                     &&  14 & 10 & 0 &  4 && 10 & 10 & 0 & 0 \\
+    mbedTLS 2.9.0                   && 100 & 80 & 0 & 20 && 80 & 80 & 2 & 0 \\
+    OpenSSL 1.1.0g                                                                                 \\
+    \hspace{0.25cm}Reciprocal       &&  23 & 19 & 0 &  4 && 19 & 19 & 0 & 0 \\
+    \hspace{0.25cm}Mont.            &&  30 & 24 & 0 &  6 && 24 & 24 & 1 & 0 \\
+    \hspace{0.25cm}Mont Const. Time &&  39 & 29 & 0 & 10 && 25 & 25 & 3 & 0 \\
+    \hspace{0.25cm}Mont. Word       &&  18 & 17 & 0 &  1 && 15 & 15 & 0 & 0 \\
+    \bottomrule
+  \end{tabular}
+\caption{ The baseline file (version 2) accommodated the excluded source.  Positives caused by loops were removed from the baseline in a separate file (version 3). A new file removed the remaining positives (version 4).}
+\label{tbl:runtimes}
+\end{table*}
+
+In this section, we discuss another approach to verify constant time code,
+and compare the precision and accuracy between it and CtChecker. We consider
+a recent effort that verifies a 2-property, expressing the security of a
+program as a set of logical statements or conditions, and verifying them
+automatically using a theorem solver. Our goal was to perform a reasonable
+comparison that focuses on the advantages of each method, and not the
+engineering details associated with implementing them.
+
+\subsubsection{Background}
+The paper of Almeida et al. uses an approach based on a reduction of the
+security of a program \textit{P} to the assertion-safety of a program
+\textit{Q}, and implements it in a prototype, Ct-verif.
+\cite{almeida2016verifying}. The reduction is inspired by prior work
+on self-composition and product programs.  A product program \textit{Q}
+verifies the security of \textit{P} by simulating two executions in lockstep.
+It asserts the equality of each public input with its renamed copy at each
+branching instruction. Public outputs are not taken into consideration, and
+the technique constructs an output-insensitive product program.  Theoretically,
+the approach is sound and complete in that all safe programs have a correct
+security verdict, and all unsafe programs have a correct insecurity verdict.
+
+Ct-verif verifies optimized LLVM by implementing their reduction
+technique.  The SMACK verification tool is used as a front-end to compile the
+annotated C-code via Clang and the resulting compiled and optimized LLVM code
+is translated to Boogie code.  The reduction is performed on the Boogie code and
+then applied to the Boogie verifier, which uses an SMT logic solver.  Ct-verif
+provides an annotation interface for public inputs.
+
+The implementation does not provide results for the entire source. During its
+product program verification, if an error state is reached (a violation is
+found), no transition is enabled and the system will stop its execution. Constant
+time violations that occurred first in sequence were reported, but
+identification of violations that occurred afterwards was not guaranteed.
+To identify all violations, we replaced each error with some constant time
+code and re-ran the tool on the revised code.
+
+We perform a reasonable comparison between the two tools to better understand
+the distinct advantages of each method. We aim to avoid the drawbacks of the tools
+caused by engineering issues; we assume the best setting for each tool.
+
+\subsubsection{Limitations of Ct-verif}
+Although the approach is theoretically sound and complete, the results of
+a practical interpretation, must be carefully analyzed.  To perform
+a reasonable comparison, we avoid key limitations not present in CtChecker by
+revising the analyzed source to accommodate Ct-verif's technical flaws.  For
+instance, loops and non-static length arrays are not supported.
+
+Loop invariants are automatically computed to verify program loops.  When
+counters are used to index arrays, a proof of security would require Ct-verif
+to infer that the memory accesses are in the range of public values.  \sout{Although
+there are options to avoid this difficulty, such as enforcing a loop limit or
+unrolling a loop, the [actually, why doesn't this work?].}  To avoid this
+limitation, loops were replaced with a branch statement that depended on the
+values that affected the loop bounds.
+
+Constant sized arrays are supported by adding an extra annotation, but variable
+sized arrays are not. To ensure memory accesses are not in the range of secret
+values, array indexing needs to be fixed.  We dictated that any array access
+was fixed in between these annotated bounds.  False positives caused by loops
+or variable array accesses were included in a separate result for Ct-verif. The
+revisions made to replace a for-loop and a variable array access in \codefn{MPN\_NORMALIZE}
+are shown in figure 30.
+
+We did not include the full source in all of the libraries, except for in BearSSL,
+which has a small amount of reachable code from the modular exponentiation function.
+Undefined values, such as those that are assigned to the return value of a function
+and are excluded from the analysis, were replaced with new variables.  CtChecker handles
+excluded source code by conservatively tainting the return value of a function
+whose parameter is tainted.  In contrast, Ct-verif taints the return value
+regardless of the state of the parameters.  In this direct comparison, we replaced
+the excluded function's return value with some new variable.  If the return value
+was part of a branch condition, and the function was called with tainted
+parameters, this line was counted as a positive for both tools.
+In figure 28, \codefn{gcrympih\_lshift} is not linked in the analysis, so its
+return value is unknown.  Thus, \codevar{carry\_limb} is undefined before the
+branch, and the verifier throws an error.  The revision occurs on line 2 wherein
+\codevar{carry\_limb} is given a reserved public input.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+carry_limb = _gcry_mpih_lshift( res->d, rp, rsize, mod_shift_cnt);
+carry_limb = PUBLIC_VALUE;
+rp = res->d;
+if ( carry_limb )
+{
+    rp[rsize] = carry_limb;
+    rsize++;
+}
+\end{lstlisting}
+\caption{Libgcrypt 1.8.2 - mpi-pow.c lines 717-723}
+\label{code:libgcrypt_normalize}
+\end{figure}
+
+\subsubsection{Results}
+We note that all true positives were reported among both tools, so we
+observed comparable accuracy.  Mainly, the results explain a couple of
+reasons for the significant difference between the precision observed.
+Several versions of the  cryptography algorithms were created before
+comparing the precision of the two tools against one another.  There
+are three versions (version 2, version 3 and version 4, where version
+1 is the original file), each of which was developed from the version
+number before it.
+
+First, a baseline version was created to accommodate minor limitations
+or differences between the tools, such as the way in which they operate
+with some undefined values. Any assignment statement with excluded
+source was rewritten to assign the variable to a public or private
+input, depending on the function return value. If any of the function’s
+parameters were tainted, we conservatively tainted its return value.
+Thus, a function call inside of a branch condition was counted as a
+positive when any of its parameters were tainted. These positives were
+counted the same for each tool, and were only observed in OpenSSL.
+
+The second version was constructed from the first, and it allowed us to
+examine the number of positives introduced from computing loop invariants.
+Each erroneous loop was replaced, and each variable array access was
+changed to a fixed one. Loops were replaced by a model that leaked the
+same information as the loop: a \codevar{if (e) then} statement where
+\codevar{e} contains the loop bounds. Figure 30 is an example of two
+revisions in Libgcrypt, one for a loop and one for an array access.
+Ct-verif supports an annotation for a static number of values to be
+marked as public.  Variable length arrays are not supported, so variable
+array element accesses needed to be removed. Every array index was fixed
+within the bounds of the array.
+
+The difference in the number of positives reported by Ct-verif in the
+baseline and no loops versions is the number of positives caused by
+computing loop invariants only.  The number is a significant portion
+of the total positives reported on each version. As expected, CtChecker reported the
+same number of positives after removing loops.
+
+The third version was created from the second to remove each erroneous
+line reported by Ct-verif, resulting in a subset of the original file
+that was free of any constant time violation. This final version allowed
+us to evaluate the precision of CtChecker in another way; any positive
+reported on this version was exclusive to CtChecker, and was expected
+to be a false one.
+
+Ct-verif is flow sensitive; the order of statements in a program may
+affect the analysis.  CtChecker's flow insensitivity is one cause of
+false positives in the results.
+
+Version 4 was constructed by replacing non-constant time code to
+intentionally observe 0 positives by Ct-verif. The positives reported
+by CtChecker in this final version was the result two design choices
+distinct from Ct-verif. First, CtChecker is a flow insensitive analysis
+(the order of statements in a program does not matter). In figure 29,
+variable \codevar{i} is not tainted until line 851, but flow
+insensitivity causes CtChecker to flag line 1041 since \codevar{i} is
+assigned to a tainted value, \codevar{bits}. Second, rather than
+tainting a range of values, CtChecker taints the variable pointing to
+them. In figure 32, \codevar{ep} is a pointer to sensitive data.
+
+Overall, CtChecker exhibited a large improvement precision over
+Ct-verif, a result apparent in the difference between the number of
+positives reported by each tool in version 2. CtChecker showed equal
+or improved precision over Ct-verif when disregarding significant
+limitations, such as loop invariants. This result is apparent in the
+difference between the number of positives reported by each tool in
+version 3.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+tmp.d[0] = (0 - m->d[0]) & BN_MASK2;
+<@\textcolor{red}{for (i = 1; i < top; i++)}@>
+    tmp.d[i] = (~m->d[i]) & BN_MASK2;
+tmp.top = top;
+...
+for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
+\end{lstlisting}
+\caption{OpenSSL 1.1.0g - bn\_exp.c lines 741-1041}
+\label{code:libgcrypt_normalize}
+\end{figure}
+
+\subsubsection{Conclusion}
+Perhaps the simple heuristic used for-loop invariant generation is the
+primary reason the 2-property analysis saw a lesser precision.  Additionally,
+while deductive verification is sufficient for verifying non-trivial programs, like
+the ones in this paper, it remains difficult to use. As previously mentioned,
+there is no trivial method to interpret verification failures. CtChecker uses
+many fewer annotations to run its analysis, and provides a complete list of
+violations for each source line.
+
+\begin{figure}[h!]
+\begin{lstlisting}
+#define MPN_NORMALIZE(d, n)    \
+    do {		                   \
+      if((n) > 0) /*while( (n) > 0 )*/ { \
+        if((d)[0]) /*if( (d)[(n)-1] )*/ \
+            dummy++; //break;	 \
+        (n)--;	               \
+      }		                     \
+} while(0)
+\end{lstlisting}
+\caption{Libgcrypt 1.8.2 - mpi-internal.h lines 113-120}
+\label{code:libgcrypt_normalize}
+\end{figure}
+
+
+\begin{figure}[h!]
+\begin{lstlisting}
+<@\textcolor{red}{if ( rp == ep )}@>
+{
+    /* RES and EXPO are identical.  Allocate temp. space for EXPO.  */
+    ep_nlimbs = esec? esize:0;
+    ep = ep_marker = mpi_alloc_limb_space( esize, esec );
+    MPN_COPY(ep, rp, esize);
+}
+\end{lstlisting}
+\caption{mbedTLS 2.9.0 - bignum.c lines 1778-1786}
+\label{code:libgcrypt_normalize}
+\end{figure}

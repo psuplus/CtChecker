@@ -4,10 +4,10 @@
    static and dynamic taint tracking. In addition to entirely software based
    approaches, hardware language approaches have been used to target leakage from
    low-level hardware features. Efforts have been made to eliminate the
-   need for these analysis by creating languages to restrict the amount of
+   need for these analyses by creating languages that restrict the amount of
    leakage through covert channels. There are also fuzzing methods which are
    able to detect non-constant time implementations\cite{Somorovsky}.
-   
+
    There are static analysis tools which will verify that a source is constant
    time given a set of security annotations, such as
    VirtualCert\cite{VirtualCert}. VirtualCert provides a static analysis which
@@ -15,122 +15,122 @@
    isolation for virtualization systems. Our analysis works in a similar way but
    avoids the need for additional annotations.
 
-   Almeida et al, provided a way to verify programs using deductive verification
+   Almeida et al. provided a way to verify programs using deductive verification
    \cite{almeida2016verifying}. These analyses accept or reject programs on the
    basis of being constant-time. In Almeida's work, they have a similar analysis
    which uses the same points-to analysis used in this work, to track memory
-   operations. Their work is based on self-composition which is considered both
+   operations. Their work is based on self-composition, which is considered both
    sound and complete, however the analysis is not as they specify sources
-   of incompleteness. Their analysis does not provide a a field-sensitive
+   of incompleteness. Their analysis does not provide a field-sensitive
    analysis without additional annotations as ours does.
-   
+
    Flow Tracker is another static analysis that looks for non-constant time
    implementations due to implicit flow\cite{FlowTracker}. FlowTracker is a
    flow-sensitive analysis that operates on LLVM IR code and requires additional
-   annotations. The analysis presented in this thesis does not require
-   additional annotations to achieve a filed-sensitive implicit flow analysis. 
-   
+   annotations. The analysis presented in this paper does not require
+   additional annotations to achieve a field-sensitive implicit flow analysis.
+
    CaSym is a static analysis which looks to find cache-based side channels by
-   processing LLVM IR\cite{brotzmancasym}. Brotzman et al propose different
+   processing LLVM IR\cite{brotzmancasym}. Brotzman et al. propose different
    cache models to achieve results which are architecture independent and
    explores all execution paths. Their analysis achieves their results by
    assuming a cache model and uses symbolic execution to determine the results.
-   Our analysis does not require a cache model, and instead of symbolic
-   execution uses information flow. Due to not assuming a cache model, our
-   analysis may miss some positives which require details of the cache to
+   Our analysis does not require a cache model and, instead of symbolic
+   execution, uses information flow. Since we do not assume a cache model, our
+   analysis may miss positives that require details of the cache to
    observe.
-   
+
    CacheD is a trace-based analysis which identifies cache-based timing-channels
    using taint tracking and symbolic execution\cite{wang2017cached}. The
    strength of CacheD is its ability to identify the location of the
-   vulnerability. CacheD does look for differences in the state of the cache
-   which are not accounted for in this work. The analysis in this thesis also
+   vulnerability. CacheD does look for differences in the state of the cache,
+   which are not accounted for in this work. The analysis in this paper also
    identifies the locations of vulnerabilities for timing channels, but does so
    statically.
 
    FaCT takes a whole different approach to trying to eliminate non-constant
    time methods\cite{cauligi2017fact}. FaCT is a programming language proposed
-   specifically to help developers generate timing-channel free assembly code.
+   specifically to help developers generate assembly code that is free of timing channels.
    They argue that using C does not help developers safely handle sensitive
-   data. This approach requires libraries to be rebuilt in this language. Seeing
-   as most libraries make use of C currently, analyses such as the proposed are
+   data. This approach requires libraries to be rebuilt in this language. Since
+   many libraries make use of C currently, this analysis and analyses previously mentioned are
    still necessary to identify possible timing channels in deployed software.
-   
-   Zhang et al propose software-hardware co-design to address the issue of
+
+   Zhang et al. propose software-hardware co-design to address the issue of
    cache-based side channels\cite{zhang2015hardware}. In their work, they show
    that it is possible with a small overhead to enforce control over information
    flow at a hardware level specified in software. Their solution involves
    masking time variations by having a consistent timing regardless of actual
    execution time. Our analysis is attempting to find the code which causes the
    timing variations.
-   
+
    Fuzzing methods target a somewhat different area than the analysis proposed
    in this paper. Fuzzing methods commonly look to exploit attacks using invalid
-   inputs or erroneous execution paths~\cite{sutton2007fuzzing}. Cryptosystem vulnerabilities often are
-   not a result of exception but from monitoring execution times and
+   inputs or erroneous execution paths~\cite{sutton2007fuzzing}. Cryptosystem vulnerabilities are often
+   not a consequence of exception but one from monitoring execution times and
    control-flow choices. Fuzzing methods may miss results found in other types
-   of analyses targeted at identifying timing-channels.
- 
-\subsection{Known Attack on Cryptosystems}
-   The high-risk results found confirmed attacks found in previous papers in
-   Libgcrypt and OpenSSL. Kocher showed initially that various cryptography
-   algorithms had a possibility to be compromised through timing
-   attacks\cite{kochertiming}. The modular exponentiation functions were
-   implemented us a sliding window method in early versions of the libraries. 
+   of analyses targeted at identifying timing channels.
 
-   Libgcrypt was used as an example which showed that due to the ability to
-   distinguish the transition from a sequence of squares to a multiply
-   execution, a majority of the secret key could be leaked
+\subsection{Known Attack on Cryptosystems}
+   The high-risk results identified confirm attacks found in previous papers in
+   Libgcrypt and OpenSSL. Kocher showed that various cryptography
+   algorithms could be compromised through timing
+   attacks\cite{kochertiming}. The modular exponentiation functions were
+   implemented using a sliding window method in early versions of the libraries.
+
+   It has been shown, using Libgcrypt as an example, that the ability to
+   distinguish a transition from a sequence of squares to a multiply
+   execution can leak a majority of the secret key.
    \cite{bernstein2017sliding}. This attack exploited the Montgomery reduction
-   algorithm which follows each multiplication, to mount an amplification
+   algorithm and followed each multiplication to mount an amplification
    attack. Though the attack is a cache-based attack, the length of the for-loop
-   is not constant-time and this result is reported among the high-risk findings
+   is not constant time and this result is reported among the high-risk findings
    in this paper.
-   
+
    OpenSSL has an attack very similar to the Libgcrypt square-and-multiply
-   attack as shown by Percival\cite{percival2005cache}. This showed that
-   cache-misses could be used to identify the multiplications in the
+   attack, as shown by Percival\cite{percival2005cache}. This showed that
+   cache misses could be used to identify the multiplications in the
    square-and-multiply sequences. This vulnerability is a result of non-constant
    amount of squares followed by a multiply, a result reported in our findings.
-   
+
    OpenSSL had a different attack paper by Brumley and
    Boneh\cite{brumley2005remote}. This paper also showed that timing attacks do
    not need to be mounted from the same machine. This is dangerous because these
    attacks were able to be mounted remotely. Another dangerous find is that even
    with virtual machines used for isolation, the secret key could be extracted
-   using methods they describe. This attack was based on the timing difference
-   based on the current value of the cipher text compared to one of the prime
-   numbers used to compute the modulus. The actual source for this timing-attack
+   using the methods they describe. This attack was based on the timing difference
+   between comparisons of the current value of the cipher text to one of the prime
+   numbers used to compute the modulus. The actual source for this timing attack
    was in a different file than the one analyzed for the results in our paper.
-   The same reduction timing attack was found in mbedTLS shown by Dugaurdin et
+   The same reduction timing attack was found in mbedTLS, shown by Dugaurdin et
    al \cite{mbedtlsreductions,kochertiming}.
 
-   Many of these vulnerabilities exist in at the source/IR code level, but the
-   attacks take more information to be successful. Hence, it is still valuable
-   to know what branches could potentially lead to an exposed attack surface.
+   Many of these vulnerabilities lie at the source/IR code level, but the
+   attacks need more information to be successful. Hence, it is still valuable
+   to know which branches could potentially lead to an exposed attack surface.
 
-\section{Conclusion} 
+\section{Conclusion}
    In this work, the addition of several features to a baseline information-flow
-   analysis were tested. Field-sensitivity alone, is usually not enough to
-   reduce the number of results. Adding additional source code, since
+   analysis was tested. On its own, field-sensitivity is usually not adequate to
+   reduce the number of results. Adding additional source code improved the precision of the analysis since
    field-sensitivity is heavily reliant on the points-to analysis for type
-   information and tracking, improved the precision of the analysis. The
-   addition of a whitelist to eliminate the results which were deemed safe by
-   examination helps to also reduce the list to only positives which are
+   information and tracking. The
+   addition of a whitelist to eliminate the results deemed safe by
+   examination also helps reduce the list to only positives which are
    not expected.
-   
-   The tests run and the effectiveness of field-sensitivity in reducing the
-   number of positives, depends on a number of factors. The field-sensitive
+
+   Tests show that and the effectiveness of field-sensitivity in reducing the
+   number of positives depends on a number of factors. The field-sensitive
    results worked best when adding additional source code. Due to the reliance
    on the points-to analysis to provide information for type and offset
    information, the best results were achieved when enough source was provided
-   so that sensitive fields were accessed within the source code. 
-   
-   This analysis given just a list of sensitive data, produces a list of source
+   so that sensitive fields were accessed within the source code.
+
+   This analysis, given only a list of sensitive data, produces a list of source
    lines which have conditions based on sensitive data. The analysis produces
-   fewer results when compared to the baseline and many of the high-risk results
+   fewer results when compared to the baseline, and many of the high-risk results
    are confirmed from previously published attack papers. The libraries that did
-   see a reduction in results saw a 40-60\% reduction in results.Using the
+   see a reduction in results saw a 40-60\% reduction in results. Using the
    classification methods specified, the number of results can be sorted and
    prioritized to potentially identify non-constant time branches.
 
@@ -140,13 +140,13 @@
 
    Currently, the classification of the results is done manually, but the
    criteria for the categories are simple. Ideally, an addition to the system
-   would to automatically classify the results into at least FP, validation, low
+   would automatically classify the results into at least FP, validation, low,
    and high-risk results. This way developers know which results to understand
-   first, and then decide whether the positive needs to be addressed or not.
+   first, and then decide whether a positive needs to be addressed or not.
 
    Additionally, field sensitivity is heavily dependent on the points-to
-   analysis used. An understanding of the point-to analysis limitations aids in
+   analysis used. An understanding of the points-to analysis limitations aids in
    interpreting results. For example, if the points-to analysis used in this
    paper found that type information across function contexts did not line up,
-   then the node would have no type-information meaning all field sensitivity is
+   then the node would have no type-information, meaning all field sensitivity is
    lost for that node.

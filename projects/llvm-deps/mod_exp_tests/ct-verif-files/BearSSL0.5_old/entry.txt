@@ -1,1 +1,0 @@
-br_i32_modpow_algorithm

@@ -1,2 +1,0 @@
-e br_i32_modpow_algorithm
-m br_i32_modpow_algorithm

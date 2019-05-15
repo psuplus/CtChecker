@@ -1,9 +1,0 @@
-v2_lib/i32_montmul.c line   38 - for (u = 0; u < len; u ++) {
-v2_lib/i32_montmul.c line   46 - for (v = 0; v < len; v ++) {
-v3_lib/i32_muladd.c line   42 - if (m_bitlen == 0) {
-v3_lib/i32_muladd.c line   45 - if (m_bitlen <= 32) {
-v3_lib/i32_muladd.c line  108 - u = 1; if(mlen)dummy++; /*for (u = 1; u <= mlen; u ++)*/ {
-v2_lib/i32_tmont.c line   33 - for (k = (m[0] + 31) >> 5; k > 0; k --) {
-v3_lib/ccopy.c line   36 - if (len -- > 0)dummy++; //while (len -- > 0) {
-v3_lib/i32_sub.c line   36 - u = 1; if(m)dummy++; /*for (u = 1; u < m; u ++)*/ {
-v3_lib/i32_add.c line   36 - u = 1; if(m)dummy++; /*for (u = 1; u < m; u ++)*/ {

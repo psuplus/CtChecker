@@ -1,0 +1,6 @@
+mont_word/v3_4_mont_word.c line 1141 - if (bits == 0) {
+mont_word/v3_4_mont_word.c line 1151 - if (a == 0) {
+mont_word/v3_4_mont_word.c line 1179 - b = bits - 2; if(b)dummy++; {/*loop*/ //for (b = bits - 2; b >= 0; b--) {
+mont_word/v3_4_mont_word.c line 1200 - if (BN_is_bit_set_0(p, b, pub_BRANCH10)) {
+mont_word/v3_4_mont_word.c line 1202 - if ((next_w / a) != w) { /* overflow */
+mont_word/v3_4_mont_word.c line 1218 - if (w != 1) {

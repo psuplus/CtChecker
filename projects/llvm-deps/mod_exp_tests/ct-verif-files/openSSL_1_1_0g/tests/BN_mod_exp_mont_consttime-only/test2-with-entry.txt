@@ -1,0 +1,37 @@
+BN_EXP:
+BN_MOD_EXP:
+BN_MOD_EXP_RECP:
+BN_MOD_EXP_MONT:
+BN_MOD_EXP_MONT_CONSTTIME:
+bn_exp.c line  621 - if (!BN_is_odd(m)) {
+bn_exp.c line  629 - if (bits == 0) {
+bn_exp.c line  631 - if (BN_is_one(m)) {
+bn_exp.c line  651 - if (!BN_MONT_CTX_set(mont, m, ctx))
+bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
+bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
+bn_exp.c line  685 - window = BN_window_bits_for_ctime_exponent_size(bits);
+bn_exp.c line  709 - ((2 * top) >
+bn_exp.c line  712 - if (powerbufLen < 3072)
+bn_exp.c line  717 - if ((powerbufFree =
+bn_exp.c line  726 - if (powerbufLen < 3072)
+bn_exp.c line  740 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+bn_exp.c line  743 - for (i = 1; i < top; i++)
+bn_exp.c line  748 - if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx))
+bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+bn_exp.c line  752 - if (a->neg || BN_ucmp(a, m) >= 0) {
+bn_exp.c line  753 - if (!BN_mod(&am, a, m, ctx))
+bn_exp.c line  755 - if (!BN_to_montgomery(&am, &am, mont, ctx))
+bn_exp.c line  757 - } else if (!BN_to_montgomery(&am, a, mont, ctx))
+bn_exp.c line 1023 - if (window > 1) {
+bn_exp.c line 1024 - if (!BN_mod_mul_montgomery(&tmp, &am, &am, mont, ctx))
+bn_exp.c line 1029 - for (i = 3; i < numPowers; i++) {
+bn_exp.c line 1031 - if (!BN_mod_mul_montgomery(&tmp, &am, &tmp, mont, ctx))
+bn_exp.c line 1040 - for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
+bn_exp.c line 1050 - while (bits >= 0) {
+bn_exp.c line 1054 - for (i = 0; i < window; i++, bits--) {
+bn_exp.c line 1055 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &tmp, mont, ctx))
+bn_exp.c line 1068 - if (!BN_mod_mul_montgomery(&tmp, &tmp, &am, mont, ctx))
+bn_exp.c line 1083 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))
+bn_exp.c line 1089 - if (powerbuf != NULL) {
+BN_MOD_EXP_MONT_WORD:
+BN_MOD_EXP_SIMPLE:

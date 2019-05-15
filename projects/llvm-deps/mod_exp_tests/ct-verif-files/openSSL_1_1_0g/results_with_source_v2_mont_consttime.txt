@@ -1,0 +1,20 @@
+mont_consttime/v2_4_mont_consttime.c line  522 - if (top > b->top)
+mont_consttime/v2_4_mont_consttime.c line  525 - for (i = 0, j = idx; i < top; i++, j += width) {
+mont_consttime/v2_4_mont_consttime.c line  628 - if (bits == 0) {
+mont_consttime/v2_4_mont_consttime.c line  684 - window = BN_window_bits_for_ctime_exponent_size(bits);
+mont_consttime/v2_4_mont_consttime.c line  684 - window = BN_window_bits_for_ctime_exponent_size(bits);
+mont_consttime/v2_4_mont_consttime.c line  684 - window = BN_window_bits_for_ctime_exponent_size(bits);
+mont_consttime/v2_4_mont_consttime.c line  708 - ((2 * top) >
+mont_consttime/v2_4_mont_consttime.c line  711 - if (powerbufLen < 3072)
+mont_consttime/v2_4_mont_consttime.c line  725 - if (powerbufLen < 3072)
+mont_consttime/v2_4_mont_consttime.c line  739 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+mont_consttime/v2_4_mont_consttime.c line  742 - for (i = 1; i < top; i++)
+mont_consttime/v2_4_mont_consttime.c line  751 - if (a->neg || BN_ucmp_0(a, m, pub_BRANCH9) >= 0) {
+mont_consttime/v2_4_mont_consttime.c line  751 - if (a->neg || BN_ucmp_0(a, m, pub_BRANCH9) >= 0) {
+mont_consttime/v2_4_mont_consttime.c line 1022 - if (window > 1) {
+mont_consttime/v2_4_mont_consttime.c line 1028 - for (i = 3; i < numPowers; i++) {
+mont_consttime/v2_4_mont_consttime.c line 1039 - for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
+mont_consttime/v2_4_mont_consttime.c line 1041 - if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&tmp, top, powerbuf, wvalue,
+mont_consttime/v2_4_mont_consttime.c line 1049 - while (bits >= 0) {
+mont_consttime/v2_4_mont_consttime.c line 1053 - for (i = 0; i < window; i++, bits--) {
+mont_consttime/v2_4_mont_consttime.c line 1062 - if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&am, top, powerbuf, wvalue,

@@ -1,0 +1,15 @@
+mont_recp/v3_4_mont_recp_lib/bn_lib.c line  746 - if (n < 0)
+mont_recp/v3_4_mont_recp_lib/bn_lib.c line  748 - i = n / BN_BITS2;
+mont_recp/v3_4_mont_recp_lib/bn_lib.c line  751 - return 0;
+mont_recp/v3_4_mont_recp.c line  190 - if (bits == 0) {
+mont_recp/v3_4_mont_recp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+mont_recp/v3_4_mont_recp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+mont_recp/v3_4_mont_recp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+mont_recp/v3_4_mont_recp.c line  229 - if (window > 1) {
+mont_recp/v3_4_mont_recp.c line  233 - i = 1; if(j)dummy++; {/*loop*/ //for (i = 1; i < j; i++) {
+mont_recp/v3_4_mont_recp.c line  251 - if (BN_is_bit_set_0(p, wstart, pub_BRANCH11) == 0) {
+mont_recp/v3_4_mont_recp.c line  255 - if (wstart == 0)
+mont_recp/v3_4_mont_recp.c line  268 - i = window-1; if(window)dummy++; {/*loop*/ //for (i = 1; i < window; i++) {
+mont_recp/v3_4_mont_recp.c line  271 - if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH11)) {
+mont_recp/v3_4_mont_recp.c line  282 - i = 0; if(j)dummy++; {/*loop*/ //for (i = 0; i < j; i++) {
+mont_recp/v3_4_mont_recp.c line  295 - if (wstart < 0)

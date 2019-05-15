@@ -1,0 +1,38 @@
+BN_EXP:
+BN_MOD_EXP:
+BN_MOD_EXP_RECP:
+bn_exp.c line  181 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+bn_exp.c line  182 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+bn_exp.c line  183 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+bn_exp.c line  190 - if (bits == 0) {
+bn_exp.c line  192 - if (BN_is_one(m)) {
+bn_exp.c line  204 - if (!aa || !val[0])
+bn_exp.c line  204 - if (!aa || !val[0])
+bn_exp.c line  208 - if (m->neg) {
+bn_exp.c line  210 - if (!BN_copy(aa, m))
+bn_exp.c line  213 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
+bn_exp.c line  216 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
+bn_exp.c line  220 - if (!BN_nnmod(val[0], a, m, ctx))
+bn_exp.c line  222 - if (BN_is_zero(val[0])) {
+bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+bn_exp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
+bn_exp.c line  229 - if (window > 1) {
+bn_exp.c line  230 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
+bn_exp.c line  233 - for (i = 1; i < j; i++) {
+bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+bn_exp.c line  234 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+bn_exp.c line  251 - if (BN_is_bit_set(p, wstart) == 0) {
+bn_exp.c line  253 - if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+bn_exp.c line  255 - if (wstart == 0)
+bn_exp.c line  268 - for (i = 1; i < window; i++) {
+bn_exp.c line  269 - if (wstart - i < 0)
+bn_exp.c line  271 - if (BN_is_bit_set(p, wstart - i)) {
+bn_exp.c line  282 - for (i = 0; i < j; i++) {
+bn_exp.c line  283 - if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+bn_exp.c line  288 - if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))
+bn_exp.c line  295 - if (wstart < 0)
+BN_MOD_EXP_MONT:
+BN_MOD_EXP_MONT_CONSTTIME:
+BN_MOD_EXP_MONT_WORD:
+BN_MOD_EXP_SIMPLE:

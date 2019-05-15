@@ -1,0 +1,17 @@
+v3_4_mont.c line  332 - if (bits == 0) {
+v3_4_mont.c line  363 - if (a->neg || BN_ucmp_0(a, m, pub_BRANCH5) >= 0) {
+v3_4_mont.c line  363 - if (a->neg || BN_ucmp_0(a, m, pub_BRANCH5) >= 0) {
+v3_4_mont.c line  377 - window = BN_window_bits_for_exponent_size(bits);
+v3_4_mont.c line  377 - window = BN_window_bits_for_exponent_size(bits);
+v3_4_mont.c line  377 - window = BN_window_bits_for_exponent_size(bits);
+v3_4_mont.c line  378 - if (window > 1) {
+v3_4_mont.c line  382 - i = 1; if(j)dummy++; {/*loop*/ //for (i = 1; i < j; i++) {
+v3_4_mont.c line  398 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+v3_4_mont.c line  403 - i = 1; if(j)dummy++; /*loop*/ //for (i = 1; i < j; i++)
+v3_4_mont.c line  416 - if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH26) == 0) {
+v3_4_mont.c line  421 - if (wstart == 0)
+v3_4_mont.c line  434 - i = window-1; if(window)dummy++; {/*loop*/ //for (i = 1; i < window; i++) {
+v3_4_mont.c line  435 - if (wstart - i < 0)
+v3_4_mont.c line  437 - if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH27)) {
+v3_4_mont.c line  448 - i = j - 1; if(j)dummy++; {/*loop*/ //for (i = 0; i < j; i++) {
+v3_4_mont.c line  461 - if (wstart < 0)

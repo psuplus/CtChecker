@@ -1,0 +1,25 @@
+v2_4.c line  377 - if( ssize < KARATSUBA_THRESHOLD )
+v2_4.c line  382 - if (rsize + ssize > msize)
+v2_4.c line  440 - MPN_NORMALIZE(ep, esize);
+v2_4.c line  467 - if (res->nlimbs)
+v2_4.c line  529 - if ( rp == ep )
+v2_4.c line  569 - if (xsize >= base_u_size)
+v2_4.c line  577 - if (max_u_size < base_u_size)
+v2_4.c line  579 - MPN_COPY (precomp[i], rp, rsize);
+v2_4.c line  582 - if (msize > max_u_size)
+v2_4.c line  585 - MPN_ZERO (base_u, max_u_size);
+v2_4.c line  605 - MPN_ZERO (rp, rsize);
+v2_4.c line  617 - if (e == 0)
+v2_4.c line  641 - if (c >= W)
+v2_4.c line  667 - for (j += W - c0; j >= 0; j--)
+v2_4.c line  702 - while (j--)
+v2_4.c line  727 - MPN_COPY (res->d, rp, rsize);
+v2_4.c line  731 - if ( rsize >= msize )
+v2_4.c line  738 - if ( mod_shift_cnt )
+v2_4.c line  740 - MPN_NORMALIZE (rp, rsize);
+v2_4.c line  740 - MPN_NORMALIZE (rp, rsize);
+v2_4.c line  749 - if ( negative_result && rsize )
+v2_4.c line  749 - if ( negative_result && rsize )
+v2_4.c line  751 - if ( mod_shift_cnt )
+v2_4.c line  756 - MPN_NORMALIZE(rp, rsize);
+v2_4.c line  756 - MPN_NORMALIZE(rp, rsize);

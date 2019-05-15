@@ -1,0 +1,552 @@
+Args: ../../../../..//Debug+Asserts/bin/opt -load ../../../../..//projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Constraints.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/pointstointerface.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Deps.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Security.dylib -vulnerablebranch -debug 
+
+Features:+64bit,+sse2
+CPU:generic
+
+Subtarget features: SSELevel 3, 3DNowLevel 0, 64bit 1
+Merged 13 call nodes.
+Merged 5 call nodes.
+Merged 6 call nodes.
+Merged 3 call nodes.
+Merged 6 call nodes.
+Merged 5 call nodes.
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_is_zero
+Removing llvm.dbg.declare from constant_time_msb
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.objectsize.i64.p0i8 from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_is_zero
+Removing llvm.dbg.declare from constant_time_msb
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_is_bit_set
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.declare from BN_ucmp_0
+Visiting single node SCC #: 1 fn: BN_ucmp_0
+  [BU] Calculating graph for: BN_ucmp_0
+  [BU] Done inlining: BN_ucmp_0 [14+0]
+Visiting single node SCC #: 2 fn: BN_is_bit_set
+  [BU] Calculating graph for: BN_is_bit_set
+  [BU] Done inlining: BN_is_bit_set [7+0]
+Visiting single node SCC #: 3 fn: BN_exp
+  [BU] Calculating graph for: BN_exp
+    Inlining graph for BN_is_bit_set[7+0] into 'BN_exp' [18+0]
+  [BU] Done inlining: BN_exp [19+0]
+Visiting single node SCC #: 5 fn: BN_mod_exp_mont
+  [BU] Calculating graph for: BN_mod_exp_mont
+    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_mont' [34+0]
+  [BU] Done inlining: BN_mod_exp_mont [35+0]
+Visiting single node SCC #: 6 fn: BN_mod_exp_mont_word
+  [BU] Calculating graph for: BN_mod_exp_mont_word
+    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_mont_word' [27+0]
+  [BU] Done inlining: BN_mod_exp_mont_word [28+0]
+Visiting single node SCC #: 7 fn: BN_mod_exp_recp
+  [BU] Calculating graph for: BN_mod_exp_recp
+    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_recp' [27+0]
+  [BU] Done inlining: BN_mod_exp_recp [28+0]
+Visiting single node SCC #: 4 fn: BN_mod_exp
+  [BU] Calculating graph for: BN_mod_exp
+    Inlining graph for BN_mod_exp_mont[35+0] into 'BN_mod_exp' [13+0]
+    Inlining graph for BN_mod_exp_mont_word[28+0] into 'BN_mod_exp' [16+0]
+    Inlining graph for BN_mod_exp_recp[28+0] into 'BN_mod_exp' [17+0]
+  [BU] Done inlining: BN_mod_exp [15+0]
+Visiting single node SCC #: 9 fn: MOD_EXP_CTIME_COPY_TO_PREBUF
+  [BU] Calculating graph for: MOD_EXP_CTIME_COPY_TO_PREBUF
+  [BU] Done inlining: MOD_EXP_CTIME_COPY_TO_PREBUF [12+0]
+Visiting single node SCC #: 14 fn: constant_time_msb
+  [BU] Calculating graph for: constant_time_msb
+  [BU] Done inlining: constant_time_msb [1+0]
+Visiting single node SCC #: 13 fn: constant_time_is_zero
+  [BU] Calculating graph for: constant_time_is_zero
+  [BU] Done inlining: constant_time_is_zero [1+0]
+Visiting single node SCC #: 12 fn: constant_time_eq
+  [BU] Calculating graph for: constant_time_eq
+  [BU] Done inlining: constant_time_eq [2+0]
+Visiting single node SCC #: 11 fn: constant_time_eq_int
+  [BU] Calculating graph for: constant_time_eq_int
+  [BU] Done inlining: constant_time_eq_int [2+0]
+Visiting single node SCC #: 10 fn: MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+  [BU] Calculating graph for: MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+  [BU] Done inlining: MOD_EXP_CTIME_COPY_FROM_PREBUF_0 [21+0]
+Visiting single node SCC #: 8 fn: BN_mod_exp_mont_consttime_algorithm
+  [BU] Calculating graph for: BN_mod_exp_mont_consttime_algorithm
+    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[12+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[12+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF_0[21+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF_0[21+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
+  [BU] Done inlining: BN_mod_exp_mont_consttime_algorithm [77+0]
+Visiting single node SCC #: 15 fn: BN_mod_exp_simple
+  [BU] Calculating graph for: BN_mod_exp_simple
+    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_simple' [25+0]
+  [BU] Done inlining: BN_mod_exp_simple [26+0]
+[TD] Inlining callers into 'BN_mod_exp_simple'
+[TD] Inlining callers into 'BN_mod_exp_mont_consttime_algorithm'
+[TD] Inlining callers into 'MOD_EXP_CTIME_COPY_FROM_PREBUF_0'
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_FROM_PREBUF_0' from Fn 'BN_mod_exp_mont_consttime_algorithm': 6 args
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_FROM_PREBUF_0' from Fn 'BN_mod_exp_mont_consttime_algorithm': 6 args
+[TD] Inlining callers into 'constant_time_eq_int'
+   [TD] Inlining graph into Fn 'constant_time_eq_int' from Fn 'MOD_EXP_CTIME_COPY_FROM_PREBUF_0': 2 args
+[TD] Inlining callers into 'constant_time_eq'
+   [TD] Inlining graph into Fn 'constant_time_eq' from Fn 'constant_time_eq_int': 2 args
+[TD] Inlining callers into 'constant_time_is_zero'
+   [TD] Inlining graph into Fn 'constant_time_is_zero' from Fn 'constant_time_eq': 1 args
+[TD] Inlining callers into 'constant_time_msb'
+   [TD] Inlining graph into Fn 'constant_time_msb' from Fn 'constant_time_is_zero': 1 args
+[TD] Inlining callers into 'MOD_EXP_CTIME_COPY_TO_PREBUF'
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_TO_PREBUF' from Fn 'BN_mod_exp_mont_consttime_algorithm': 5 args
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_TO_PREBUF' from Fn 'BN_mod_exp_mont_consttime_algorithm': 5 args
+[TD] Inlining callers into 'BN_mod_exp'
+[TD] Inlining callers into 'BN_mod_exp_recp'
+   [TD] Inlining graph into Fn 'BN_mod_exp_recp' from Fn 'BN_mod_exp': 5 args
+[TD] Inlining callers into 'BN_mod_exp_mont_word'
+   [TD] Inlining graph into Fn 'BN_mod_exp_mont_word' from Fn 'BN_mod_exp': 6 args
+[TD] Inlining callers into 'BN_mod_exp_mont'
+   [TD] Inlining graph into Fn 'BN_mod_exp_mont' from Fn 'BN_mod_exp': 6 args
+[TD] Inlining callers into 'BN_exp'
+[TD] Inlining callers into 'BN_is_bit_set'
+   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_simple': 2 args
+   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_recp': 2 args
+   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_mont_word': 2 args
+   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_mont': 2 args
+   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_exp': 2 args
+[TD] Inlining callers into 'BN_ucmp_0'
+Running on BN_get_flags in context []
+Running on ERR_put_error in context []
+Running on BN_CTX_start in context []
+Running on BN_mod_exp in context []
+Running on BN_CTX_get in context []
+Running on BN_copy in context []
+Running on BN_num_bits in context []
+Running on BN_ucmp_0 in context []
+Running on llvm.dbg.declare in context []
+Running on BN_is_bit_set in context []
+Running on BN_mod_exp_mont in context []
+Running on BN_exp in context []
+Running on BN_is_odd in context []
+Running on BN_set_word in context []
+Running on BN_sqr in context []
+Running on BN_mul in context []
+Running on BN_CTX_end in context []
+Running on BN_mod_mul_montgomery in context []
+Running on bn_wexpand in context []
+Running on bn_correct_top in context []
+Running on BN_mod_exp_mont_word in context []
+Running on BN_mod_exp_recp in context []
+Running on BN_is_one in context []
+Running on BN_RECP_CTX_init in context []
+Running on BN_RECP_CTX_set in context []
+Running on BN_nnmod in context []
+Running on BN_is_zero in context []
+Running on BN_mod_mul_reciprocal in context []
+Running on BN_RECP_CTX_free in context []
+Running on BN_mod_exp_mont_consttime in context []
+Running on BN_MONT_CTX_new in context []
+Running on BN_MONT_CTX_set in context []
+Running on BN_ucmp in context []
+Running on BN_to_montgomery in context []
+Running on BN_value_one in context []
+Running on BN_from_montgomery in context []
+Running on BN_MONT_CTX_free in context []
+Running on BN_mod_exp_mont_consttime_algorithm in context []
+Running on __memset_chk in context []
+Running on llvm.objectsize.i64.p0i8 in context []
+Running on BN_is_bit_set_0 in context []
+Running on OPENSSL_cleanse in context []
+Running on CRYPTO_free in context []
+Running on BN_mul_word in context []
+Running on BN_div in context []
+Running on BN_mod_exp_simple in context []
+Running on BN_mod_mul in context []
+Running on MOD_EXP_CTIME_COPY_TO_PREBUF in context []
+Running on MOD_EXP_CTIME_COPY_FROM_PREBUF_0 in context []
+Running on constant_time_eq_int in context []
+Running on constant_time_eq in context []
+Running on constant_time_is_zero in context []
+Running on constant_time_msb in context []
+DONE
+DONE
+DONE
+DONE
+#--------------Results------------------
+#--------------Statistics----------------
+:: Tainted Branches: 0
+:: Branch Instructions: 452
+:: Conditional Branches: 205
+:: Vulnerable Branches: 0.00% [0/452]

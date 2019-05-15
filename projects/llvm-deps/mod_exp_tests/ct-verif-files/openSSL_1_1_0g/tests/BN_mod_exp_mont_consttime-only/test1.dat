@@ -1,0 +1,1404 @@
+Args: ../../../..//Debug+Asserts/bin/opt -load ../../../..//projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.dylib -load ../../../..//projects/llvm-deps/Debug+Asserts/lib/Constraints.dylib -load ../../../..//projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.dylib -load ../../../..//projects/llvm-deps/Debug+Asserts/lib/pointstointerface.dylib -load ../../../..//projects/llvm-deps/Debug+Asserts/lib/Deps.dylib -load ../../../..//projects/llvm-deps/Debug+Asserts/lib/Security.dylib -vulnerablebranch -debug 
+
+Features:+64bit,+sse2
+CPU:generic
+
+Subtarget features: SSELevel 3, 3DNowLevel 0, 64bit 1
+Merged 13 call nodes.
+Merged 5 call nodes.
+Merged 6 call nodes.
+Merged 4 call nodes.
+Merged 6 call nodes.
+Merged 5 call nodes.
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_is_zero
+Removing llvm.dbg.declare from constant_time_msb
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.objectsize.i64.p0i8 from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq_int
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_eq
+Removing llvm.dbg.declare from constant_time_is_zero
+Removing llvm.dbg.declare from constant_time_msb
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_simple
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_mont_consttime
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_recp
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp_mont_word
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_mod_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Removing llvm.dbg.declare from BN_exp
+Visiting single node SCC #: 1 fn: BN_exp
+  [BU] Calculating graph for: BN_exp
+  [BU] Done inlining: BN_exp [18+0]
+Visiting single node SCC #: 3 fn: BN_mod_exp_mont_word
+  [BU] Calculating graph for: BN_mod_exp_mont_word
+  [BU] Done inlining: BN_mod_exp_mont_word [27+0]
+Visiting single node SCC #: 6 fn: MOD_EXP_CTIME_COPY_TO_PREBUF
+  [BU] Calculating graph for: MOD_EXP_CTIME_COPY_TO_PREBUF
+  [BU] Done inlining: MOD_EXP_CTIME_COPY_TO_PREBUF [12+0]
+Visiting single node SCC #: 11 fn: constant_time_msb
+  [BU] Calculating graph for: constant_time_msb
+  [BU] Done inlining: constant_time_msb [1+0]
+Visiting single node SCC #: 10 fn: constant_time_is_zero
+  [BU] Calculating graph for: constant_time_is_zero
+  [BU] Done inlining: constant_time_is_zero [1+0]
+Visiting single node SCC #: 9 fn: constant_time_eq
+  [BU] Calculating graph for: constant_time_eq
+  [BU] Done inlining: constant_time_eq [2+0]
+Visiting single node SCC #: 8 fn: constant_time_eq_int
+  [BU] Calculating graph for: constant_time_eq_int
+  [BU] Done inlining: constant_time_eq_int [2+0]
+Visiting single node SCC #: 7 fn: MOD_EXP_CTIME_COPY_FROM_PREBUF
+  [BU] Calculating graph for: MOD_EXP_CTIME_COPY_FROM_PREBUF
+  [BU] Done inlining: MOD_EXP_CTIME_COPY_FROM_PREBUF [21+0]
+Visiting single node SCC #: 5 fn: BN_mod_exp_mont_consttime
+  [BU] Calculating graph for: BN_mod_exp_mont_consttime
+    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[12+0] into 'BN_mod_exp_mont_consttime' [31+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[12+0] into 'BN_mod_exp_mont_consttime' [31+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF[21+0] into 'BN_mod_exp_mont_consttime' [31+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF[21+0] into 'BN_mod_exp_mont_consttime' [31+0]
+  [BU] Done inlining: BN_mod_exp_mont_consttime [31+0]
+Visiting single node SCC #: 4 fn: BN_mod_exp_mont
+  [BU] Calculating graph for: BN_mod_exp_mont
+    Inlining graph for BN_mod_exp_mont_consttime[31+0] into 'BN_mod_exp_mont' [34+0]
+  [BU] Done inlining: BN_mod_exp_mont [34+0]
+Visiting single node SCC #: 12 fn: BN_mod_exp_recp
+  [BU] Calculating graph for: BN_mod_exp_recp
+  [BU] Done inlining: BN_mod_exp_recp [27+0]
+Visiting single node SCC #: 2 fn: BN_mod_exp
+  [BU] Calculating graph for: BN_mod_exp
+    Inlining graph for BN_mod_exp_mont_word[27+0] into 'BN_mod_exp' [13+0]
+    Inlining graph for BN_mod_exp_mont[34+0] into 'BN_mod_exp' [15+0]
+    Inlining graph for BN_mod_exp_recp[27+0] into 'BN_mod_exp' [16+0]
+  [BU] Done inlining: BN_mod_exp [14+0]
+Visiting single node SCC #: 13 fn: BN_mod_exp_simple
+  [BU] Calculating graph for: BN_mod_exp_simple
+  [BU] Done inlining: BN_mod_exp_simple [25+0]
+[TD] Inlining callers into 'BN_mod_exp_simple'
+[TD] Inlining callers into 'BN_mod_exp'
+[TD] Inlining callers into 'BN_mod_exp_recp'
+   [TD] Inlining graph into Fn 'BN_mod_exp_recp' from Fn 'BN_mod_exp': 5 args
+[TD] Inlining callers into 'BN_mod_exp_mont'
+   [TD] Inlining graph into Fn 'BN_mod_exp_mont' from Fn 'BN_mod_exp': 6 args
+[TD] Inlining callers into 'BN_mod_exp_mont_consttime'
+   [TD] Inlining graph into Fn 'BN_mod_exp_mont_consttime' from Fn 'BN_mod_exp_mont': 6 args
+[TD] Inlining callers into 'MOD_EXP_CTIME_COPY_FROM_PREBUF'
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_FROM_PREBUF' from Fn 'BN_mod_exp_mont_consttime': 5 args
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_FROM_PREBUF' from Fn 'BN_mod_exp_mont_consttime': 5 args
+[TD] Inlining callers into 'constant_time_eq_int'
+   [TD] Inlining graph into Fn 'constant_time_eq_int' from Fn 'MOD_EXP_CTIME_COPY_FROM_PREBUF': 2 args
+[TD] Inlining callers into 'constant_time_eq'
+   [TD] Inlining graph into Fn 'constant_time_eq' from Fn 'constant_time_eq_int': 2 args
+[TD] Inlining callers into 'constant_time_is_zero'
+   [TD] Inlining graph into Fn 'constant_time_is_zero' from Fn 'constant_time_eq': 1 args
+[TD] Inlining callers into 'constant_time_msb'
+   [TD] Inlining graph into Fn 'constant_time_msb' from Fn 'constant_time_is_zero': 1 args
+[TD] Inlining callers into 'MOD_EXP_CTIME_COPY_TO_PREBUF'
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_TO_PREBUF' from Fn 'BN_mod_exp_mont_consttime': 5 args
+   [TD] Inlining graph into Fn 'MOD_EXP_CTIME_COPY_TO_PREBUF' from Fn 'BN_mod_exp_mont_consttime': 5 args
+[TD] Inlining callers into 'BN_mod_exp_mont_word'
+   [TD] Inlining graph into Fn 'BN_mod_exp_mont_word' from Fn 'BN_mod_exp': 6 args
+[TD] Inlining callers into 'BN_exp'
+Running on BN_exp in context []
+Running on llvm.dbg.declare in context []
+Running on BN_get_flags in context []
+Running on ERR_put_error in context []
+Running on BN_mod_exp_mont_word in context []
+Running on BN_CTX_start in context []
+Running on BN_CTX_get in context []
+Running on BN_copy in context []
+Running on BN_num_bits in context []
+Running on BN_mod_exp_mont in context []
+Running on BN_is_odd in context []
+Running on BN_set_word in context []
+Running on BN_sqr in context []
+Running on BN_is_bit_set in context []
+Running on BN_mul in context []
+Running on BN_CTX_end in context []
+Running on BN_mod_exp in context []
+Running on bn_correct_top in context []
+Running on BN_value_one in context []
+Running on BN_from_montgomery in context []
+Running on BN_mod_exp_recp in context []
+Running on BN_is_one in context []
+Running on BN_RECP_CTX_init in context []
+Running on BN_RECP_CTX_set in context []
+Running on BN_nnmod in context []
+Running on BN_is_zero in context []
+Running on BN_mod_mul_reciprocal in context []
+Running on BN_RECP_CTX_free in context []
+Running on BN_mod_exp_mont_consttime in context []
+Using taint reachable signature for:   %call = call i32 @BN_is_odd(%struct.bignum_st* %0), !dbg !124
+RSINKGEP INSTRUCTION   %0 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !122
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Creating ConsElem Map for :	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+EDGE: [0: tymap-size 1]:i64
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Creating ConsElem Map for :	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+REACHABLE SOURCE:   %0 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !122
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %0 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !122
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Using taint reachable signature for:   call void @ERR_put_error(i32 3, i32 124, i32 102, i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0), i32 622), !dbg !126
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+Creating ConsElem Map for :	Node0x7ff2d26231b0 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [9 x i8] c\"bn_exp.c\\00\", align 1\n|{<s0>0}}"];
+REACHABLE SOURCE: i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+	Node0x7ff2d26231b0 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [9 x i8] c\"bn_exp.c\\00\", align 1\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+Using taint reachable signature for:   %call3 = call i32 @BN_num_bits(%struct.bignum_st* %3), !dbg !133
+RSINKGEP INSTRUCTION   %3 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !132
+Creating ConsElem Map for :	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+REACHABLE SOURCE:   %3 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !132
+	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %3 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !132
+Using taint reachable signature for:   %call5 = call i32 @BN_is_one(%struct.bignum_st* %5), !dbg !142
+RSINKGEP INSTRUCTION   %5 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !139
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+REACHABLE SOURCE:   %5 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !139
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %5 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !139
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Using taint reachable signature for:   %call8 = call i32 @BN_set_word(%struct.bignum_st* %6, i64 0), !dbg !146
+RSINKGEP INSTRUCTION   %6 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !146
+Creating ConsElem Map for :	Node0x7ff2d26153a0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+REACHABLE SOURCE:   %6 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !146
+	Node0x7ff2d26153a0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %6 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !146
+Using taint reachable signature for:   %call9 = call i32 @BN_set_word(%struct.bignum_st* %7, i64 1), !dbg !148
+RSINKGEP INSTRUCTION   %7 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !148
+REACHABLE SOURCE:   %7 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !148
+	Node0x7ff2d26153a0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %7 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !148
+Using taint reachable signature for:   call void @BN_CTX_start(%struct.bignum_ctx* %9), !dbg !154
+RSINKGEP INSTRUCTION   %9 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !153
+Creating ConsElem Map for :	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+REACHABLE SOURCE:   %9 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !153
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %9 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !153
+Using taint reachable signature for:   %call15 = call %struct.bn_mont_ctx_st* @BN_MONT_CTX_new(), !dbg !162
+Using taint reachable signature for:   %call19 = call i32 @BN_MONT_CTX_set(%struct.bn_mont_ctx_st* %12, %struct.bignum_st* %13, %struct.bignum_ctx* %14), !dbg !173
+RSINKGEP INSTRUCTION   %14 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !172
+RSINKGEP INSTRUCTION   %13 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !171
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %12 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !169
+Creating ConsElem Map for :	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+REACHABLE SOURCE:   %14 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !172
+REACHABLE SOURCE:   %13 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !171
+REACHABLE SOURCE:   %12 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !169
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %14 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !172
+RSINKGEP INSTRUCTION   %13 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !171
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %12 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !169
+Using taint reachable signature for:   %call56 = call i8* @CRYPTO_malloc(i64 %conv55, i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0), i32 718), !dbg !203
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+REACHABLE SOURCE: i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+	Node0x7ff2d26231b0 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [9 x i8] c\"bn_exp.c\\00\", align 1\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+Unsupported intrinsic: llvm.objectsize
+Using taint reachable signature for:   %call63 = call i8* @__memset_chk(i8* %34, i32 0, i64 %conv62, i64 %37) #5, !dbg !211
+RSINKGEP INSTRUCTION   %34 = load i8*, i8** %powerbuf, align 8, !dbg !211
+Creating ConsElem Map for :	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %34 = load i8*, i8** %powerbuf, align 8, !dbg !211
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %34 = load i8*, i8** %powerbuf, align 8, !dbg !211
+Using taint reachable signature for:   %call102 = call %struct.bignum_st* @BN_value_one(), !dbg !285
+Using taint reachable signature for:   %call103 = call i32 @BN_to_montgomery(%struct.bignum_st* %tmp, %struct.bignum_st* %call102, %struct.bn_mont_ctx_st* %64, %struct.bignum_ctx* %65), !dbg !289
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %65 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !288
+RSINKGEP INSTRUCTION   %64 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !287
+RSINKGEP INSTRUCTION   %call102 = call %struct.bignum_st* @BN_value_one(), !dbg !285
+Creating ConsElem Map for :	Node0x7ff2d2616dd0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+EDGE: [0: tymap-size 1]:i64
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %tmp = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %65 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !288
+REACHABLE SOURCE:   %64 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !287
+REACHABLE SOURCE:   %call102 = call %struct.bignum_st* @BN_value_one(), !dbg !285
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2616dd0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %65 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !288
+RSINKGEP INSTRUCTION   %64 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !287
+RSINKGEP INSTRUCTION   %call102 = call %struct.bignum_st* @BN_value_one(), !dbg !285
+Using taint reachable signature for:   %call110 = call i32 @BN_ucmp(%struct.bignum_st* %68, %struct.bignum_st* %69), !dbg !298
+RSINKGEP INSTRUCTION   %68 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !296
+Added child elem: 	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %69 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !297
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Creating ConsElem Map for :	Node0x7ff2d26154c0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26154c0:s0 -> Node0x7ff2d2625750;
+EDGE: [0: tymap-size 1]:i64
+	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Creating ConsElem Map for :	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+REACHABLE SOURCE:   %68 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !296
+REACHABLE SOURCE:   %69 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !297
+	Node0x7ff2d26154c0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26154c0:s0 -> Node0x7ff2d2625750;
+	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %68 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !296
+Added child elem: 	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %69 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !297
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Using taint reachable signature for:   %call114 = call i32 @BN_div(%struct.bignum_st* null, %struct.bignum_st* %am, %struct.bignum_st* %70, %struct.bignum_st* %71, %struct.bignum_ctx* %72), !dbg !301
+RSINKGEP INSTRUCTION %struct.bignum_st* null
+RSINKGEP INSTRUCTION   %72 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !301
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %70 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !301
+Added child elem: 	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %71 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !301
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+REACHABLE SOURCE: %struct.bignum_st* null
+REACHABLE SOURCE:   %72 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !301
+REACHABLE SOURCE:   %am = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %70 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !301
+REACHABLE SOURCE:   %71 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !301
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d26154c0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26154c0:s0 -> Node0x7ff2d2625750;
+	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION %struct.bignum_st* null
+RSINKGEP INSTRUCTION   %72 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !301
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %70 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !301
+Added child elem: 	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %71 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !301
+Added child elem: 	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Using taint reachable signature for:   %call118 = call i32 @BN_to_montgomery(%struct.bignum_st* %am, %struct.bignum_st* %am, %struct.bn_mont_ctx_st* %73, %struct.bignum_ctx* %74), !dbg !309
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %74 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !308
+RSINKGEP INSTRUCTION   %73 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !306
+REACHABLE SOURCE:   %am = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %74 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !308
+REACHABLE SOURCE:   %73 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !306
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %74 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !308
+RSINKGEP INSTRUCTION   %73 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !306
+Using taint reachable signature for:   %call123 = call i32 @BN_to_montgomery(%struct.bignum_st* %am, %struct.bignum_st* %75, %struct.bn_mont_ctx_st* %76, %struct.bignum_ctx* %77), !dbg !317
+RSINKGEP INSTRUCTION   %77 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !316
+RSINKGEP INSTRUCTION   %76 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !315
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %75 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !313
+Added child elem: 	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+REACHABLE SOURCE:   %77 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !316
+REACHABLE SOURCE:   %76 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !315
+REACHABLE SOURCE:   %am = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %75 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !313
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d26154c0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26154c0:s0 -> Node0x7ff2d2625750;
+	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+RSINKGEP INSTRUCTION   %77 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !316
+RSINKGEP INSTRUCTION   %76 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !315
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %75 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !313
+Added child elem: 	Node0x7ff2d2625750 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Using taint reachable signature for:   %call139 = call i32 @BN_mod_mul_montgomery(%struct.bignum_st* %tmp, %struct.bignum_st* %am, %struct.bignum_st* %am, %struct.bn_mont_ctx_st* %85, %struct.bignum_ctx* %86), !dbg !343
+RSINKGEP INSTRUCTION   %86 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !342
+RSINKGEP INSTRUCTION   %85 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !339
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %86 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !342
+REACHABLE SOURCE:   %85 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !339
+REACHABLE SOURCE:   %am = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %tmp = alloca %struct.bignum_st, align 8
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %86 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !342
+RSINKGEP INSTRUCTION   %85 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !339
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Using taint reachable signature for:   %call151 = call i32 @BN_mod_mul_montgomery(%struct.bignum_st* %tmp, %struct.bignum_st* %am, %struct.bignum_st* %tmp, %struct.bn_mont_ctx_st* %92, %struct.bignum_ctx* %93), !dbg !365
+RSINKGEP INSTRUCTION   %92 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !361
+RSINKGEP INSTRUCTION   %93 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !364
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %92 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !361
+REACHABLE SOURCE:   %93 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !364
+REACHABLE SOURCE:   %am = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %tmp = alloca %struct.bignum_st, align 8
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %92 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !361
+RSINKGEP INSTRUCTION   %93 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !364
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Using taint reachable signature for:   %call168 = call i32 @BN_is_bit_set(%struct.bignum_st* %104, i32 %105), !dbg !396
+RSINKGEP INSTRUCTION   %104 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !394
+REACHABLE SOURCE:   %104 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !394
+	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %104 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !394
+Using taint reachable signature for:   %call184 = call i32 @BN_mod_mul_montgomery(%struct.bignum_st* %tmp, %struct.bignum_st* %tmp, %struct.bignum_st* %tmp, %struct.bn_mont_ctx_st* %115, %struct.bignum_ctx* %116), !dbg !428
+RSINKGEP INSTRUCTION   %116 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !427
+RSINKGEP INSTRUCTION   %115 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !424
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %116 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !427
+REACHABLE SOURCE:   %115 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !424
+REACHABLE SOURCE:   %tmp = alloca %struct.bignum_st, align 8
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %116 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !427
+RSINKGEP INSTRUCTION   %115 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !424
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Using taint reachable signature for:   %call189 = call i32 @BN_is_bit_set(%struct.bignum_st* %118, i32 %119), !dbg !435
+RSINKGEP INSTRUCTION   %118 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !433
+REACHABLE SOURCE:   %118 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !433
+	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %118 = load %struct.bignum_st*, %struct.bignum_st** %p.addr, align 8, !dbg !433
+Using taint reachable signature for:   %call199 = call i32 @BN_mod_mul_montgomery(%struct.bignum_st* %tmp, %struct.bignum_st* %tmp, %struct.bignum_st* %am, %struct.bn_mont_ctx_st* %126, %struct.bignum_ctx* %127), !dbg !453
+RSINKGEP INSTRUCTION   %126 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !450
+RSINKGEP INSTRUCTION   %127 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !452
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %126 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !450
+REACHABLE SOURCE:   %127 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !452
+REACHABLE SOURCE:   %am = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %tmp = alloca %struct.bignum_st, align 8
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %126 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !450
+RSINKGEP INSTRUCTION   %127 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !452
+RSINKGEP INSTRUCTION   %am = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Using taint reachable signature for:   %call203 = call i32 @BN_from_montgomery(%struct.bignum_st* %128, %struct.bignum_st* %tmp, %struct.bn_mont_ctx_st* %129, %struct.bignum_ctx* %130), !dbg !460
+RSINKGEP INSTRUCTION   %130 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !459
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %128 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !456
+RSINKGEP INSTRUCTION   %129 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !458
+REACHABLE SOURCE:   %130 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !459
+REACHABLE SOURCE:   %tmp = alloca %struct.bignum_st, align 8
+REACHABLE SOURCE:   %128 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !456
+REACHABLE SOURCE:   %129 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !458
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+	Node0x7ff2d26153a0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %130 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !459
+RSINKGEP INSTRUCTION   %tmp = alloca %struct.bignum_st, align 8
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %128 = load %struct.bignum_st*, %struct.bignum_st** %rr.addr, align 8, !dbg !456
+RSINKGEP INSTRUCTION   %129 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !458
+Using taint reachable signature for:   call void @BN_MONT_CTX_free(%struct.bn_mont_ctx_st* %132), !dbg !470
+RSINKGEP INSTRUCTION   %132 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !469
+REACHABLE SOURCE:   %132 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !469
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %132 = load %struct.bn_mont_ctx_st*, %struct.bn_mont_ctx_st** %mont, align 8, !dbg !469
+Using taint reachable signature for:   call void @OPENSSL_cleanse(i8* %134, i64 %conv214), !dbg !478
+RSINKGEP INSTRUCTION   %134 = load i8*, i8** %powerbuf, align 8, !dbg !475
+REACHABLE SOURCE:   %134 = load i8*, i8** %powerbuf, align 8, !dbg !475
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %134 = load i8*, i8** %powerbuf, align 8, !dbg !475
+Using taint reachable signature for:   call void @CRYPTO_free(i8* %136, i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0), i32 1091), !dbg !479
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+RSINKGEP INSTRUCTION   %136 = load i8*, i8** %powerbufFree, align 8, !dbg !479
+REACHABLE SOURCE: i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+REACHABLE SOURCE:   %136 = load i8*, i8** %powerbufFree, align 8, !dbg !479
+	Node0x7ff2d26231b0 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [9 x i8] c\"bn_exp.c\\00\", align 1\n|{<s0>0}}"];
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i32 0, i32 0)
+RSINKGEP INSTRUCTION   %136 = load i8*, i8** %powerbufFree, align 8, !dbg !479
+Using taint reachable signature for:   call void @BN_CTX_end(%struct.bignum_ctx* %137), !dbg !482
+RSINKGEP INSTRUCTION   %137 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !481
+REACHABLE SOURCE:   %137 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !481
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+RSINKGEP INSTRUCTION   %137 = load %struct.bignum_ctx*, %struct.bignum_ctx** %ctx.addr, align 8, !dbg !481
+Creating ConsElem Map for :	Node0x7ff2d2615820 [shape=record,shape=Mrecord,label="{0: %struct.bignum_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d2615820:s0 -> Node0x7ff2d26153a0;
+EDGE: [0: tymap-size 1]:%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+	Node0x7ff2d26153a0 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+Creating ConsElem Map for :	Node0x7ff2d26158b0 [shape=record,shape=Mrecord,label="{0: %struct.bignum_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d26158b0:s0 -> Node0x7ff2d26154c0;
+EDGE: [0: tymap-size 1]:%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+	Node0x7ff2d26154c0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26154c0:s0 -> Node0x7ff2d2625750;
+Creating ConsElem Map for :	Node0x7ff2d2615940 [shape=record,shape=Mrecord,label="{0: %struct.bignum_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d2615940:s0 -> Node0x7ff2d2615550;
+EDGE: [0: tymap-size 1]:%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+Creating ConsElem Map for :	Node0x7ff2d26159d0 [shape=record,shape=Mrecord,label="{0: %struct.bignum_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d26159d0:s0 -> Node0x7ff2d26155e0;
+EDGE: [0: tymap-size 1]:%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Creating ConsElem Map for :	Node0x7ff2d2615a60 [shape=record,shape=Mrecord,label="{0: %struct.bignum_ctx*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d2615a60:s0 -> Node0x7ff2d2615670;
+EDGE: [0: tymap-size 1]:%struct.bignum_ctx = type opaque
+	Node0x7ff2d2615670 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2615af0 [shape=record,shape=Mrecord,label="{0: %struct.bn_mont_ctx_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d2615af0:s0 -> Node0x7ff2d2615700;
+EDGE: [0: tymap-size 1]:%struct.bn_mont_ctx_st = type { i32, %struct.bignum_st, %struct.bignum_st, %struct.bignum_st, [2 x i64], i32 }
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2615ca0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d26160a0 [shape=record,shape=Mrecord,label="{0: %struct.bn_mont_ctx_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d26160a0:s0 -> Node0x7ff2d2615700;
+EDGE: [0: tymap-size 1]:%struct.bn_mont_ctx_st = type { i32, %struct.bignum_st, %struct.bignum_st, %struct.bignum_st, [2 x i64], i32 }
+	Node0x7ff2d2615700 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+Creating ConsElem Map for :	Node0x7ff2d26162e0 [shape=record,shape=Mrecord,label="{0: i8*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d26162e0:s0 -> Node0x7ff2d2616b30;
+EDGE: [0: tymap-size 1]:i8
+	Node0x7ff2d2616b30 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2616420 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2616520 [shape=record,shape=Mrecord,label="{0: i8*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d2616520:s0 -> Node0x7ff2d2616b30;
+EDGE: [0: tymap-size 1]:i8
+	Node0x7ff2d2616b30 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2615790 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+DSOURCEGEP INSTRUCTION   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %1, i32 0, i32 1, !dbg !130
+[Source:]   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %1, i32 0, i32 1, !dbg !130
+StructType: allocation intermediate:   %1 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !129
+=>  %m.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %m.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 8
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE: elem 0:default:0x7ff2d2701b30
+Creating ConsElem Map for :	Node0x7ff2d2615fa0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2615c10 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d2615da0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d26161e0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+DSINKGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !225
+[Sink:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !225
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !225
+[Sink:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !225
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %d73 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !227
+[Source:]   %d73 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !227
+StructType:FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Trying to find element at offset 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+CONSTRAINING: COLLAPSED: SCMRE2: elem 0:default:0x7ff2d24bea80
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+DSINKGEP INSTRUCTION   %d75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !230
+[Sink:]   %d75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !230
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %d75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !230
+[Sink:]   %d75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !230
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top76 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !232
+[Sink:]   %top76 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !232
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top76 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !232
+[Sink:]   %top76 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !232
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top77 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !234
+[Sink:]   %top77 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !234
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top77 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !234
+[Sink:]   %top77 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !234
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !237
+[Sink:]   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !237
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 12
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !237
+[Sink:]   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !237
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 12
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax78 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !239
+[Sink:]   %dmax78 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !239
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 12
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax78 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !239
+[Sink:]   %dmax78 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !239
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 12
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !241
+[Sink:]   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !241
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 16
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !241
+[Sink:]   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !241
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 16
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg79 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !243
+[Sink:]   %neg79 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !243
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 16
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg79 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !243
+[Sink:]   %neg79 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !243
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 16
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !245
+[Sink:]   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !245
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 20
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !245
+[Sink:]   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !245
+StructType:::IS STRUCT TY::FINAL:   %am = alloca %struct.bignum_st, align 8
+Tainting at offset: 20
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !247
+[Sink:]   %flags80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !247
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 20
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !247
+[Sink:]   %flags80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !247
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 20
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %d82 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %47, i32 0, i32 0, !dbg !253
+[Source:]   %d82 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %47, i32 0, i32 0, !dbg !253
+StructType: allocation intermediate:   %47 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !252
+=>  %m.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %m.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE: elem 0:default:0x7ff2d2701b30
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %48, i64 %idxprom, !dbg !252
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %48, i64 %idxprom, !dbg !252
+DSOURCEGEP INSTRUCTION   %d86 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %50, i32 0, i32 0, !dbg !258
+[Source:]   %d86 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %50, i32 0, i32 0, !dbg !258
+StructType: allocation intermediate:   %50 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !256
+=>  %m.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %m.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE: elem 0:default:0x7ff2d2701b30
+DSOURCEGEP INSTRUCTION   %arrayidx87 = getelementptr inbounds i64, i64* %51, i64 0, !dbg !256
+[Source:]   %arrayidx87 = getelementptr inbounds i64, i64* %51, i64 0, !dbg !256
+ allocation intermediate:   %51 = load i64*, i64** %d86, align 8, !dbg !258
+=>  %d86 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %50, i32 0, i32 0, !dbg !258
+ allocation intermediate:   %d86 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %50, i32 0, i32 0, !dbg !258
+=>  %50 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !256
+ allocation intermediate:   %50 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !256
+=>  %m.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %m.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Trying to find element at offset 0
+CONSTRAINING: 0: i64,   array: CRE: elem 0:default:0x7ff2d2701670
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE: elem 0:default:0x7ff2d2701b30
+DSOURCEGEP INSTRUCTION   %d89 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !260
+[Source:]   %d89 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !260
+StructType:FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Trying to find element at offset 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+CONSTRAINING: COLLAPSED: SCMRE2: elem 0:default:0x7ff2d24bea80
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+DSINKGEP INSTRUCTION   %arrayidx90 = getelementptr inbounds i64, i64* %53, i64 0, !dbg !261
+[Sink:]   %arrayidx90 = getelementptr inbounds i64, i64* %53, i64 0, !dbg !261
+ allocation intermediate:   %53 = load i64*, i64** %d89, align 8, !dbg !260
+=>  %d89 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !260
+ allocation intermediate:   %d89 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !260
+=>  %tmp = alloca %struct.bignum_st, align 8
+FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 0
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %arrayidx90 = getelementptr inbounds i64, i64* %53, i64 0, !dbg !261
+[Sink:]   %arrayidx90 = getelementptr inbounds i64, i64* %53, i64 0, !dbg !261
+ allocation intermediate:   %53 = load i64*, i64** %d89, align 8, !dbg !260
+=>  %d89 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !260
+ allocation intermediate:   %d89 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !260
+=>  %tmp = alloca %struct.bignum_st, align 8
+FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 0
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+Creating ConsElem Map for :	Node0x7ff2d2615b80 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+DSOURCEGEP INSTRUCTION   %d94 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %57, i32 0, i32 0, !dbg !273
+[Source:]   %d94 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %57, i32 0, i32 0, !dbg !273
+StructType: allocation intermediate:   %57 = load %struct.bignum_st*, %struct.bignum_st** %m.addr, align 8, !dbg !272
+=>  %m.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %m.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE: elem 0:default:0x7ff2d2701b30
+DSOURCEGEP INSTRUCTION   %arrayidx95 = getelementptr inbounds i64, i64* %58, i64 %idxprom93, !dbg !272
+[Source:]   %arrayidx95 = getelementptr inbounds i64, i64* %58, i64 %idxprom93, !dbg !272
+DSOURCEGEP INSTRUCTION   %d98 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !277
+[Source:]   %d98 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !277
+StructType:FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Trying to find element at offset 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+CONSTRAINING: COLLAPSED: SCMRE2: elem 0:default:0x7ff2d24bea80
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+DSINKGEP INSTRUCTION   %arrayidx99 = getelementptr inbounds i64, i64* %61, i64 %idxprom97, !dbg !276
+[Sink:]   %arrayidx99 = getelementptr inbounds i64, i64* %61, i64 %idxprom97, !dbg !276
+DSINKGEP INSTRUCTION   %arrayidx99 = getelementptr inbounds i64, i64* %61, i64 %idxprom97, !dbg !276
+[Sink:]   %arrayidx99 = getelementptr inbounds i64, i64* %61, i64 %idxprom97, !dbg !276
+DSINKGEP INSTRUCTION   %top100 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !282
+[Sink:]   %top100 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !282
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top100 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !282
+[Sink:]   %top100 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !282
+StructType:::IS STRUCT TY::FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %neg108 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %66, i32 0, i32 3, !dbg !294
+[Source:]   %neg108 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %66, i32 0, i32 3, !dbg !294
+StructType: allocation intermediate:   %66 = load %struct.bignum_st*, %struct.bignum_st** %a.addr, align 8, !dbg !292
+=>  %a.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %a.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 16
+	Node0x7ff2d26154c0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26154c0:s0 -> Node0x7ff2d2625750;
+Trying to find element at offset 16
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE: elem 0:default:0x7ff2d24bfda0
+Creating ConsElem Map for :	Node0x7ff2d2615ea0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Running on BN_MONT_CTX_new in context []
+Running on BN_MONT_CTX_set in context []
+Running on BN_ucmp in context []
+Running on BN_to_montgomery in context []
+Running on BN_mod_mul_montgomery in context []
+Running on bn_wexpand in context []
+Running on BN_MONT_CTX_free in context []
+Running on CRYPTO_malloc in context []
+Running on __memset_chk in context []
+Running on llvm.objectsize.i64.p0i8 in context []
+Running on BN_div in context []
+Running on OPENSSL_cleanse in context []
+Running on CRYPTO_free in context []
+Running on BN_mul_word in context []
+Running on BN_mod_exp_simple in context []
+Running on BN_mod_mul in context []
+Running on MOD_EXP_CTIME_COPY_TO_PREBUF in context [BN_mod_exp_mont_consttime ]
+Creating ConsElem Map for :	Node0x7ff2d261a3d0 [shape=record,shape=Mrecord,label="{0: %struct.bignum_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d261a3d0:s0 -> Node0x7ff2d261a220;
+EDGE: [0: tymap-size 1]:%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+	Node0x7ff2d261a220 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261a220:s0 -> Node0x7ff2d26257e0;
+Creating ConsElem Map for :	Node0x7ff2d261a460 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261a4f0 [shape=record,shape=Mrecord,label="{0: i8*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d261a4f0:s0 -> Node0x7ff2d26257e0;
+EDGE: [0: tymap-size 1]:i8
+	Node0x7ff2d26257e0 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Creating ConsElem Map for :	Node0x7ff2d261a580 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261a610 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261a7c0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261a850 [shape=record,shape=Mrecord,label="{0: i64*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d261a850:s0 -> Node0x7ff2d26257e0;
+EDGE: [0: tymap-size 1]:i64
+	Node0x7ff2d26257e0 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+DSOURCEGEP INSTRUCTION   %top1 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %4, i32 0, i32 1, !dbg !109
+[Source:]   %top1 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %4, i32 0, i32 1, !dbg !109
+StructType: allocation intermediate:   %4 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !108
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE[8,12]0x7ff2d2633f50
+DSOURCEGEP INSTRUCTION   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %6, i32 0, i32 1, !dbg !113
+[Source:]   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %6, i32 0, i32 1, !dbg !113
+StructType: allocation intermediate:   %6 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !112
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE[8,12]0x7ff2d2633f50
+Creating ConsElem Map for :	Node0x7ff2d261a6a0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261a730 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+DSOURCEGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %12, i32 0, i32 0, !dbg !129
+[Source:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %12, i32 0, i32 0, !dbg !129
+StructType: allocation intermediate:   %12 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !128
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE[0,8]0x7ff2d2633eb0
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %13, i64 %idxprom, !dbg !128
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %13, i64 %idxprom, !dbg !128
+DSINKGEP INSTRUCTION   %arrayidx5 = getelementptr inbounds i64, i64* %16, i64 %idxprom4, !dbg !131
+[Sink:]   %arrayidx5 = getelementptr inbounds i64, i64* %16, i64 %idxprom4, !dbg !131
+DSINKGEP INSTRUCTION   %arrayidx5 = getelementptr inbounds i64, i64* %16, i64 %idxprom4, !dbg !131
+[Sink:]   %arrayidx5 = getelementptr inbounds i64, i64* %16, i64 %idxprom4, !dbg !131
+Running on MOD_EXP_CTIME_COPY_FROM_PREBUF in context [BN_mod_exp_mont_consttime ]
+Using taint reachable signature for:   %call = call %struct.bignum_st* @bn_wexpand(%struct.bignum_st* %3, i32 %4), !dbg !109
+RSINKGEP INSTRUCTION   %3 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !106
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %3 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !106
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %3 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !106
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Using taint reachable signature for:   call void @bn_correct_top(%struct.bignum_st* %70), !dbg !285
+RSINKGEP INSTRUCTION   %70 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !284
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+REACHABLE SOURCE:   %70 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !284
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %70 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !284
+Added child elem: 	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Creating ConsElem Map for :	Node0x7ff2d261b270 [shape=record,shape=Mrecord,label="{0: %struct.bignum_st*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d261b270:s0 -> Node0x7ff2d261b030;
+EDGE: [0: tymap-size 1]:%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Creating ConsElem Map for :	Node0x7ff2d261b300 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261b3d0 [shape=record,shape=Mrecord,label="{0: i8*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d261b3d0:s0 -> Node0x7ff2d2625870;
+EDGE: [0: tymap-size 1]:i8
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Creating ConsElem Map for :	Node0x7ff2d261b510 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261b610 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261b910 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261ba10 [shape=record,shape=Mrecord,label="{0: i64*,  : SMR\n|{<s0>0}}"];
+	Node0x7ff2d261ba10:s0 -> Node0x7ff2d2625870;
+EDGE: [0: tymap-size 1]:i64
+	Node0x7ff2d2625870 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE2\n|{<s0>0}}"];
+Creating ConsElem Map for :	Node0x7ff2d261b1e0 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261b710 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261bb50 [shape=record,shape=Mrecord,label="{0: i64,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261b810 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %11, i64 %idxprom, !dbg !139
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %11, i64 %idxprom, !dbg !139
+DSOURCEGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %19, i32 0, i32 0, !dbg !154
+[Source:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %19, i32 0, i32 0, !dbg !154
+StructType: allocation intermediate:   %19 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !153
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+DSINKGEP INSTRUCTION   %arrayidx10 = getelementptr inbounds i64, i64* %20, i64 %idxprom9, !dbg !153
+[Sink:]   %arrayidx10 = getelementptr inbounds i64, i64* %20, i64 %idxprom9, !dbg !153
+DSINKGEP INSTRUCTION   %arrayidx10 = getelementptr inbounds i64, i64* %20, i64 %idxprom9, !dbg !153
+[Sink:]   %arrayidx10 = getelementptr inbounds i64, i64* %20, i64 %idxprom9, !dbg !153
+Creating ConsElem Map for :	Node0x7ff2d261bc50 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261bd50 [shape=record,shape=Mrecord,label="{0: i64,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261be50 [shape=record,shape=Mrecord,label="{0: i64,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261bf50 [shape=record,shape=Mrecord,label="{0: i64,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261c050 [shape=record,shape=Mrecord,label="{0: i64,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261c150 [shape=record,shape=Mrecord,label="{0: i64,  : SMR\n}"];
+DSOURCEGEP INSTRUCTION   %arrayidx45 = getelementptr inbounds i64, i64* %39, i64 %idxprom44, !dbg !232
+[Source:]   %arrayidx45 = getelementptr inbounds i64, i64* %39, i64 %idxprom44, !dbg !232
+DSOURCEGEP INSTRUCTION   %arrayidx50 = getelementptr inbounds i64, i64* %44, i64 %idxprom49, !dbg !239
+[Source:]   %arrayidx50 = getelementptr inbounds i64, i64* %44, i64 %idxprom49, !dbg !239
+DSOURCEGEP INSTRUCTION   %arrayidx56 = getelementptr inbounds i64, i64* %49, i64 %idxprom55, !dbg !247
+[Source:]   %arrayidx56 = getelementptr inbounds i64, i64* %49, i64 %idxprom55, !dbg !247
+DSOURCEGEP INSTRUCTION   %arrayidx62 = getelementptr inbounds i64, i64* %54, i64 %idxprom61, !dbg !255
+[Source:]   %arrayidx62 = getelementptr inbounds i64, i64* %54, i64 %idxprom61, !dbg !255
+DSOURCEGEP INSTRUCTION   %d75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %63, i32 0, i32 0, !dbg !273
+[Source:]   %d75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %63, i32 0, i32 0, !dbg !273
+StructType: allocation intermediate:   %63 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !272
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Trying to find element at offset 0
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMRE: elem 0:default:0x7ff2d24c05e0
+DSINKGEP INSTRUCTION   %arrayidx76 = getelementptr inbounds i64, i64* %64, i64 %idxprom74, !dbg !272
+[Sink:]   %arrayidx76 = getelementptr inbounds i64, i64* %64, i64 %idxprom74, !dbg !272
+DSINKGEP INSTRUCTION   %arrayidx76 = getelementptr inbounds i64, i64* %64, i64 %idxprom74, !dbg !272
+[Sink:]   %arrayidx76 = getelementptr inbounds i64, i64* %64, i64 %idxprom74, !dbg !272
+DSINKGEP INSTRUCTION   %top83 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %69, i32 0, i32 1, !dbg !282
+[Sink:]   %top83 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %69, i32 0, i32 1, !dbg !282
+StructType:::IS STRUCT TY:: allocation intermediate:   %69 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !281
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+DSINKGEP INSTRUCTION   %top83 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %69, i32 0, i32 1, !dbg !282
+[Sink:]   %top83 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %69, i32 0, i32 1, !dbg !282
+StructType:::IS STRUCT TY:: allocation intermediate:   %69 = load %struct.bignum_st*, %struct.bignum_st** %b.addr, align 8, !dbg !281
+=>  %b.addr = alloca %struct.bignum_st*, align 8
+FINAL:   %b.addr = alloca %struct.bignum_st*, align 8
+Tainting at offset: 8
+	Node0x7ff2d261b030 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMRE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d261b030:s0 -> Node0x7ff2d2625870;
+Trying to find element at offset 8
+Running on constant_time_eq_int in context [MOD_EXP_CTIME_COPY_FROM_PREBUF ]
+Creating ConsElem Map for :	Node0x7ff2d261d320 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261d440 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Running on constant_time_eq in context [constant_time_eq_int ]
+Creating ConsElem Map for :	Node0x7ff2d261d610 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Creating ConsElem Map for :	Node0x7ff2d261d730 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Running on constant_time_is_zero in context [constant_time_eq ]
+Creating ConsElem Map for :	Node0x7ff2d261d900 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Running on constant_time_msb in context [constant_time_is_zero ]
+Creating ConsElem Map for :	Node0x7ff2d261db60 [shape=record,shape=Mrecord,label="{0: i32,  : SMR\n}"];
+Trying to constrain p at 0 for value : p
+%struct.bignum_st* %p
+%struct.bignum_st* %p
+ has 5 elements.
+	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+FOUND 1 elements from the locsForValue
+Number of elements to constrain: 1
+VOIDTB==TE: CE: elem 0:default: : addr 0x7ff2d261f070
+DONE
+Trying to constrain m at 0 for value : m
+%struct.bignum_st* %m
+%struct.bignum_st* %m
+ has 5 elements.
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+Map size does not match number of elements 1
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Matching Type:%struct.bignum_st*
+Map size does not match number of elements 1
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+FOUND 0 elements from the locsForValue
+Number of elements to constrain: 0
+DONE
+Trying to constrain p at 0 for value : p
+%struct.bignum_st* %p
+%struct.bignum_st* %p
+ has 5 elements.
+	Node0x7ff2d2615550 [shape=record,shape=Mrecord,label="{VOID: E\n}"];
+FOUND 1 elements from the locsForValue
+Number of elements to constrain: 1
+VOIDTB==TE: CE: elem 0:default: : addr 0x7ff2d261f070
+DONE
+Trying to constrain m at 0 for value : m
+%struct.bignum_st* %m
+%struct.bignum_st* %m
+ has 5 elements.
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+Map size does not match number of elements 1
+	Node0x7ff2d26155e0 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7ff2d26155e0:s0 -> Node0x7ff2d2616cd0;
+Matching Type:%struct.bignum_st*
+Map size does not match number of elements 1
+	Node0x7ff2d2616cd0 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+FOUND 0 elements from the locsForValue
+Number of elements to constrain: 0
+DONE
+Removing values tied to bits
+Size of vector 3249
+Constraint to find 0: i32,  : SCMR: elem 0:default:
+Constraint erased: 0: i32,  : SCMR: elem 0:default:
+Constraint erased: 0: i32,  : SCMR: elem 0:default:
+Constraint erased: 0: i32,  : SCMR: elem 0:default:
+Constraint erased: 0: i32,  : SCMR: elem 0:default:
+Removing values tied to bits
+Size of vector 3245
+Constraint to find 0: i32,  : SCMR: elem 0:default:
+#--------------Results------------------
+bn_exp.c line 621
+bn_exp.c line 631
+bn_exp.c line 651
+bn_exp.c line 709
+bn_exp.c line 712
+bn_exp.c line 717
+bn_exp.c line 726
+bn_exp.c line 740
+bn_exp.c line 743
+bn_exp.c line 748
+bn_exp.c line 752
+bn_exp.c line 752
+bn_exp.c line 753
+bn_exp.c line 755
+bn_exp.c line 757
+bn_exp.c line 1024
+bn_exp.c line 1031
+bn_exp.c line 1055
+bn_exp.c line 1068
+bn_exp.c line 1083
+bn_exp.c line 1089
+bn_exp.c line 522
+bn_exp.c line 525
+bn_exp.c line 540
+bn_exp.c line 544
+bn_exp.c line 566
+#--------------Statistics----------------
+:: Tainted Branches: 26
+:: Branch Instructions: 498
+:: Conditional Branches: 218
+:: Vulnerable Branches: 5.22% [26/498]

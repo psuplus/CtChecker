@@ -32,11 +32,11 @@ is given in figure \ref{alg:simpleflow} to illustrate this concern.
     \State $a = -1$
 
     \If {$d.y == k/2$}
-      \State $a = 4$ 
+      \State $a = 4$
     \EndIf
 
     % \If {$d.x == 2$}
-      % \State $b = 2$ 
+      % \State $b = 2$
     % \Endif
   \end{algorithmic}
   \hrulefill
@@ -44,63 +44,62 @@ is given in figure \ref{alg:simpleflow} to illustrate this concern.
   \label{alg:simpleflow}
 \end{figure}
 
-In this simple example $k$ is confidential data, through information flow we
-can see that the value of $d.x$ is directly computed from $k$. The value $d.y$
-however is not confidential due to its value having no reliance on the
-confidential data. The flow between $k$ and $d.x$ is called explicit flow,
+In this simple example, $k$ is confidential data, and through information flow, we
+can see that the value of $d.x$ is directly computed from $k$. The value $d.y$,
+however, is not confidential since its value does not rely on the
+confidential data. The flow between $k$ and $d.x$ is explicit flow
 since the value of $d.x$ is computed from the confidential data. As the
-analysis continues, any value which is computed from $d.x$ will also be
-treated as confidential data. There is also implicit flow which can be seen in
+analysis continues, any value computed from $d.x$ will also be
+treated as confidential data. There is also implicit flow from $k$ to $a$, seen in
 the first branch on $d.y$ where it is compared with some value computed from
-$k$. In this case $d.y$ is still considered non-confidential data, since the
+$k$. In this case, $d.y$ is still considered non-confidential data since the
 value has no relation to $k$, but there is a flow from $k$ to $a$ indirectly.
-Although, $a$ is not computed from $k$, after the branch executes, the value
+Although $a$ is not computed from $k$ after the branch executes, the value
 of $a$ may or may not have changed. If it does change, the value of $k$ has been
 determined. If it does not change, the value of $k$ is not determined, but a
-possible value has been ruled out. This indirect flow from $k$ to $a$ is what
-is called implicit flow. Tracking the flow of information between variables can
+possible value has been ruled out. Tracking the flow of information between variables can
 be done by creating a set of constraints for each instruction to represent the
-direction of flow. Creating these constraints with mutable pointers, requires
+direction of flow. Creating these constraints with mutable pointers requires
 more information than is provided from IR code from the compilation process.
 
-Information flow analyses have been capable to find even hardware based
-vulnerabilities from analyzing the source. Information flow has been used to
-detect leaking of confidential data through the source and also leaking data
-through hardware side channels such as through the cache
-\cite{DBLP:journals/corr/DoychevK16}.
+Additionally, information flow analyses are capable of finding hardware based
+vulnerabilities by analyzing the source. Information flow has been used to
+detect leakage of confidential data through side channels both in the source and
+the hardware (such as through the cache) \cite{DBLP:journals/corr/DoychevK16}.
 
 \subsection{Points-to Analysis}
 
 A Points-to analysis is a reference tracking analysis to identify the targets of
-pointers in a program. Information flow alone is not enough once pointers are
+pointers in a program. Information flow alone is not sufficient once pointers are
 involved. For example, in Algorithm \ref{alg:simpleflow}, it must be possible to
 identify from the source the location of $d$, and subsequently the location of
 $x$. The points-to analysis provides this information so that the proper
-location of $x$ and $y$ can be known even if the value of $d$ changes, meaning
-it points to another location in memory. In addition to providing spatial
-information, the points-to analysis used in this research, DSA,  provides type and data
+location of $x$ and $y$ remain known, even if the value of $d$ changes
+(it points to another location in memory). In addition to providing spatial
+information, the points-to analysis used in this research, DSA, provides type and data
 layout information \cite{DSA-lattner}. The analysis accomplishes tracking by maintaining a internal
 graph representation of memory throughout the program. The graph is made up of
-nodes which are units of memory that are able to be the target of a pointer.
-Data structures identified in program source have one node for an instance of
+nodes (units of memory) that are able to be the target of a pointer.
+Data structures identified in program source have one node for each instance of
 the data structure, where all fields pertaining to that data structure are
 represented by that node. The edges in the graph are references, so it is
 possible to identify where the target of a pointer resides. Additionally, this
 analysis provides type information along with offsets of the type from the base
 pointer. In the baseline tainted flow analysis, the granularity of the results
 was achieved by creating  constraints of information flow between nodes from the
-points-to graph. This however, as will be discussed, leads to an
-over-approximation of the resulting tainted values. The points-to analysis used
-also has a method of determining the validity of the type information. 
+points-to graph. However, this leads to an over-approximation of the resulting
+tainted values, which will be discussed later in this paper. The points-to analysis
+used also has a method of determining the validity of the type information.
 
 \subsection{Timing Channels in Cryptosystems}
 
 A timing channel is a side channel in which an attacker uses execution time to
 learn information about sensitive data. In some implementations of sliding
-window exponentiation, the sequences of squares and multiplies could be measured
-due to differences in each methods execution time. This attack though timing
-based can be observed in source code in OpenSSL's previous implementation of
-sliding window exponentiation, shown in Algorithm \ref{alg:timingsqrmlt}. 
+window exponentiation, the sequences of squares and multiplies can be measured
+due to differences in each methods execution time. Though timing
+based, this attack can be observed in the source code of OpenSSL's previous
+implementation of sliding window exponentiation, shown in Algorithm
+\ref{alg:timingsqrmlt}.
 
 \begin{figure}
 \begin{lstlisting}
@@ -118,14 +117,14 @@ for (i = 1; i < bits; i++) {
 \end{figure}
 
 The for-loop here iterates through the number of bits in the confidential power
-\texttt{p}, each time through squaring \texttt{v} until a set bit is encountered
+\texttt{p}, each time by squaring \texttt{v} until a set bit is encountered
 in \texttt{p}. Once a set bit is encountered, an additional multiply step is
 executed before proceeding to the next loop iteration. This lends itself to a
-timing attack due to multiplication more expensive to compute than a square. The
+timing attack since a multiplication is more expensive to compute than a square. The
 timing channel exists because the number of operations executed during one
-iteration changes based on the value of the confidential data. The result is if
+iteration changes based on the value of the confidential data. If
 one can determine the locations of the multiplies and the length of time
-expected between each multiplication, the key can be rebuilt as has been done
+expected between each multiplication, the key can be rebuilt, which has been done
 by Bernstein et al \cite{bernstein2017sliding}. There are other forms of timing
 channels which may or may not be viewable in source code, such as disk access
-timing or network timing attacks. 
+timing or network timing attacks.

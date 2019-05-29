@@ -733,7 +733,7 @@ int mbedtls_mpi_shift_l_0( mbedtls_mpi *X, size_t count, int pub_BRANCH0, mbedtl
      */
     if( pub_BRANCH0 == 30 )///*+*/if( v0 > 0 )
     {
-        i = v0 - 1; ///2*+*+*/if(X->n || v0)dummy++; /*loop*/ //for( i = X->n; i > v0; i-- )
+        i = v0 - 1; ///*+*/if(X->n || v0)dummy++; /*loop*/ //for( i = X->n; i > v0; i-- )
 /*L*/            X->p[1] = X->p[1];//X->p[i - 1] = X->p[i - v0 - 1];
 
         ///*+*/if(i)dummy++;/*loop*/ //for( ; i > 0; i-- )
@@ -745,7 +745,7 @@ int mbedtls_mpi_shift_l_0( mbedtls_mpi *X, size_t count, int pub_BRANCH0, mbedtl
      */
     if( pub_BRANCH0 == 25 )///*+*/if( t1 > 0 )dummy++;
     {
-        i = 0; ///2*+*+*/if(v0 || X->n)dummy++;/*loop*/ //for( i = v0; i < X->n; i++ )
+        i = 0; ///*+*/if(v0 || X->n)dummy++;/*loop*/ //for( i = v0; i < X->n; i++ )
         {
             r1 = X->p[i] >> (biL - t1);
             X->p[i] <<= t1;

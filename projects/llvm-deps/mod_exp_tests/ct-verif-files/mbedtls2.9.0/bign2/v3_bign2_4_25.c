@@ -1562,7 +1562,7 @@ static int mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mp
     n = N->n;
     m = ( B->n < n ) ? B->n : n;
 
-    i = 0; if(n)dummy++;/*loop*/for( i = 0; i < n; i++ )
+    i = 0; if(n)dummy++;/*loop*/ //for( i = 0; i < n; i++ )
     {
         /*
          * T = (T + u0*B + u1*N) / 2^biL

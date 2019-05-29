@@ -6,7 +6,7 @@
  * in the file LICENSE in the source distribution or at
  * https://www.openssl.org/source/license.html
  */
-//#include "v4_4_mont_consttime_lib/bn_lib.c"
+#include "revised.h"
 #include "internal/cryptlib.h"
 #include "internal/constant_time_locl.h"
 #include "bn_lcl.h"
@@ -24,7 +24,7 @@ int dummy = 0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-#include "revised.h"
+
 #include "rsaz_exp.h"
 
 #undef SPARC_T4_MONT
@@ -541,7 +541,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF_0(BIGNUM *b, int top,
         return 0;
 
     if (pub_BRANCH0 == 25) {///*+*/if (window <= 3) {
-        i = 0; if(top)dummy++; {/*loop*/ //for (i = 0; i < top; i++, table += width) {
+        i = 0; if(i + top)dummy++; {/*loop*/ //for (i = 0; i < top; i++, table += width) {
             BN_ULONG acc = 0;
 
             j = 0; {///*+*/if(width)dummy++; {/*loop*/ //for (j = 0; j < width; j++) {
@@ -563,7 +563,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF_0(BIGNUM *b, int top,
         y2 = (BN_ULONG)0 - (constant_time_eq_int(i,2)&1);
         y3 = (BN_ULONG)0 - (constant_time_eq_int(i,3)&1);
 
-        i = 0; if(top)dummy++; {/*loop*/ //for (i = 0; i < top; i++, table += width) {
+        i = 0; if(i + top)dummy++; {/*loop*/ //for (i = 0; i < top; i++, table += width) {
             BN_ULONG acc = 0;
 
             j = 0; {///*+*/if(xstride)dummy++; {/*loop*/ //for (j = 0; j < xstride; j++) {
@@ -739,7 +739,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
     if (pub_BRANCH7) {///*+*/if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
         /* 2^(top*BN_BITS2) - m */
         tmp.d[0] = (0 - m->d[0]) & BN_MASK2;
-        i = 1; if(top)dummy++;/*loop*/ //for (i = 1; i < top; i++)
+        i = 1; if(i + top)dummy++;/*loop*/ //for (i = 1; i < top; i++)
             tmp.d[i] = (~m->d[i]) & BN_MASK2;
         tmp.top = top;
     } else

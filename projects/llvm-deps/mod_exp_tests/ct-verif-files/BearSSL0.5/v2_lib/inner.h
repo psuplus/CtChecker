@@ -978,8 +978,7 @@ void br_i32_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
  *
  * x[] MUST be distinct from m[].
  */
-void br_i32_decode_reduce(uint32_t *x,
-	const void *src, size_t len, const uint32_t *m);
+
 
 /*
  * Encode an integer into its big-endian unsigned representation. The
@@ -1243,8 +1242,8 @@ void br_i31_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
  *
  * x[] MUST be distinct from m[].
  */
-void br_i31_decode_reduce(uint32_t *x,
-	const void *src, size_t len, const uint32_t *m);
+void br_i32_decode_reduce(uint32_t *x,const void *src, size_t len, const uint32_t *m,
+						  uint32_t public_0,uint32_t public_1,uint32_t public_2);
 
 /*
  * Multiply x[] by 2^31 and then add integer z, modulo m[]. This

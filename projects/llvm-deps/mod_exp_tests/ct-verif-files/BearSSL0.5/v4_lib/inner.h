@@ -969,8 +969,8 @@ uint32_t br_i32_decode_mod(uint32_t *x,
  *
  * CT: only announced bit lengths leak, not values of x, a or m.
  */
-void br_i32_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
-
+void br_i32_decode_reduce(uint32_t *x,const void *src, size_t len, const uint32_t *m,
+						  uint32_t public_0,uint32_t public_1,uint32_t public_2);
 /*
  * Decode an integer from its big-endian unsigned representation, and
  * reduce it modulo the provided modulus m[]. The announced bit length
@@ -978,8 +978,7 @@ void br_i32_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
  *
  * x[] MUST be distinct from m[].
  */
-void br_i32_decode_reduce(uint32_t *x,
-	const void *src, size_t len, const uint32_t *m);
+
 
 /*
  * Encode an integer into its big-endian unsigned representation. The

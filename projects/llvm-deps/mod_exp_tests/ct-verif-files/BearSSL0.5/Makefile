@@ -39,3 +39,9 @@ v3_testall: v3_testall.bc
 	./run.sh $< results_with_source_v3.txt
 v2_testall: v2_testall.bc
 	./run.sh $< results_with_source_v2.txt
+
+clean:
+	rm *.bc
+	rm v2_lib/*.bc
+	rm v3_lib/*.bc
+	rm v4_lib/*.bc

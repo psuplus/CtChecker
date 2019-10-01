@@ -9,6 +9,7 @@ fi
 
 LEVEL="../../../../.."
 
+make clean
 make $1
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc

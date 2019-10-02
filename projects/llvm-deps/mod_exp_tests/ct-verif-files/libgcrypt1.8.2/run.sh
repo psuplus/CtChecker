@@ -18,7 +18,7 @@ LEVEL="../../../../.."
 #LDFLAGS=`llvm-config --ldflags`
 
 CUR=$(pwd)
-cd ../../../../;
+
 make $1
 cd $CUR
 

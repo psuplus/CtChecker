@@ -1,3 +1,2 @@
-main.c line 32
-main.c line 34
-main.c line 36
+main.c line 26
+main.c line 29

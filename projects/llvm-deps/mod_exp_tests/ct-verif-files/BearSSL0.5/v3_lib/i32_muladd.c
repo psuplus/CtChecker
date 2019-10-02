@@ -105,7 +105,7 @@ br_i32_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m,uint32_t public_0
      */
     cc = 0;
     tb = 1;
-    u = 1; if(mlen)dummy++; /*for (u = 1; u <= mlen; u ++)*/ {
+    u = 1; if(u <= mlen) /*for (u = 1; u <= mlen; u ++)*/ {
         uint32_t mw, zw, xw, nxw;
         uint64_t zl;
 

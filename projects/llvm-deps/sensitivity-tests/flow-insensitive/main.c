@@ -3,17 +3,17 @@
 
 void mbed (int secret)
 {
-	size_t wbits;
+	size_t wbits = 0;
 	size_t i;
-	size_t nbits;
+	size_t nbits = 0;
 	
+	i = wbits;
 	i = secret;
-	/*
-	 * process the remaining bits
-	 */
+	
+	
 	for( i = 0; i < nbits; i++ )
 	{
-	
+		printf("c");
 		wbits <<= 1;
 	}
 	

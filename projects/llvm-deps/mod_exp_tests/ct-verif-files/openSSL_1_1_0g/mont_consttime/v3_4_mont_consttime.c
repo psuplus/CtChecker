@@ -544,7 +544,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF_0(BIGNUM *b, int top,
         for (i = 0; i < top; i++, table += width) {
             BN_ULONG acc = 0;
 
-            if(width)dummy++; {/*loop*/ //for (j = 0; j < width; j++) {
+            if(width) {/*loop*/ //for (j = 0; j < width; j++) {
                 acc |= table[j] &
                        ((BN_ULONG)0 - (constant_time_eq_int(j,idx)&1));
             }
@@ -566,7 +566,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF_0(BIGNUM *b, int top,
         for (i = 0; i < top; i++, table += width) {
             BN_ULONG acc = 0;
 
-            if(xstride)dummy++; {/*loop*/ //for (j = 0; j < xstride; j++) {
+            if(xstride) {/*loop*/ //for (j = 0; j < xstride; j++) {
                 acc |= ( (table[j + 0 * xstride] & y0) |
                          (table[j + 1 * xstride] & y1) |
                          (table[j + 2 * xstride] & y2) |
@@ -1025,7 +1025,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
             if (!MOD_EXP_CTIME_COPY_TO_PREBUF(&tmp, top, powerbuf, 2,
                                               window))
                 goto err;
-            if(numPowers)dummy++; {/*loop*/ //for (i = 3; i < numPowers; i++) {
+            if(numPowers) {/*loop*/ //for (i = 3; i < numPowers; i++) {
                 /* Calculate a^i = a^(i-1) * a */
 /*X*/                if(pub_BRANCH16) {//if (!BN_mod_mul_montgomery(&tmp, &am, &tmp, mont, ctx))
                         goto err;}
@@ -1036,7 +1036,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
         }
 
         bits--;
-        wvalue = 0; i = bits % window; if(bits % window)dummy++;/*loop*/ //for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
+        wvalue = 0; i = bits % window; if(wvalue && bits % window)/*loop*/ //for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
             wvalue = (wvalue << 1) + BN_is_bit_set_0(p, bits, pub_BRANCH17);
         if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&tmp, top, powerbuf, wvalue,
                                             window))
@@ -1046,11 +1046,11 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
          * Scan the exponent one window at a time starting from the most
          * significant bits.
          */
-        if (bits >= 0)dummy++; {/*loop*/ //while (bits >= 0) {
+        if (bits >= 0) {/*loop*/ //while (bits >= 0) {
             wvalue = 0;         /* The 'value' of the window */
 
             /* Scan the window, squaring the result as we go */
-            i = 0; if(window)dummy++; {/*loop*/ //for (i = 0; i < window; i++, bits--) {
+            i = 0; if(window) {/*loop*/ //for (i = 0; i < window; i++, bits--) {
 /*X*/                if(pub_BRANCH19) {//if (!BN_mod_mul_montgomery(&tmp, &tmp, &tmp, mont, ctx))
                         goto err;}
                 wvalue = (wvalue << 1) + BN_is_bit_set_0(p, bits, pub_BRANCH20);

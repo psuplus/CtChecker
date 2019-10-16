@@ -375,7 +375,7 @@ mul_mod (mpi_ptr_t xp, mpi_size_t *xsize_p,
          struct karatsuba_ctx *karactx_p,int pub_branch0)
 {
   if( pub_branch0 == 4)///*+*/if( ssize < KARATSUBA_THRESHOLD )
-/*excluded*/    dummy++;//_gcry_mpih_mul ( xp, rp, rsize, sp, ssize );
+/*excluded*/    printf("print");//_gcry_mpih_mul ( xp, rp, rsize, sp, ssize );
   else
 /*excluded*/    dummy*=2;//_gcry_mpih_mul_karatsuba_case (xp, rp, rsize, sp, ssize, karactx_p);
 

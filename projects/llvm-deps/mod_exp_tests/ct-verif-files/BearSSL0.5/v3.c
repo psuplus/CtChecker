@@ -53,7 +53,7 @@ br_i32_modpow (uint32_t *x,
     br_i32_to_monty(x, m, public_0, public_1, public_2);//br_i32_to_monty(t1, m);
     br_i32_zero(x, m[0]);
     x[1] = 1;
-    k = 0;/*loop*/    if((uint32_t)elen)dummy++;//for (k = 0; k < ((uint32_t)elen << 3); k ++) {
+    k = 0;/*loop*/    if((uint32_t)elen)/*for (k = 0; k < ((uint32_t)elen << 3); k ++)*/ {
         uint32_t ctl;
 
         ctl = (e[elen - 1 - (k >> 3)] >> (k & 7)) & 1;
@@ -61,7 +61,7 @@ br_i32_modpow (uint32_t *x,
         CCOPY(ctl, x, t2, mlen);
         br_i32_montymul(t2, t1, t1, m, m0i);
 /**/        memcpy(t1, t2, 10);//memcpy(t1, t2, mlen);
-//    }
+    }
 }
 
 ///**********************/

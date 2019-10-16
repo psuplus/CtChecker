@@ -375,13 +375,13 @@ mul_mod (mpi_ptr_t xp, mpi_size_t *xsize_p,
          struct karatsuba_ctx *karactx_p,int pub_branch0)
 {
   if( ssize < KARATSUBA_THRESHOLD )
-/*excluded*/    dummy++;//_gcry_mpih_mul ( xp, rp, rsize, sp, ssize );
+	  /*excluded*/    printf("print");//_gcry_mpih_mul ( xp, rp, rsize, sp, ssize );
   else
-/*excluded*/    dummy*=2;//_gcry_mpih_mul_karatsuba_case (xp, rp, rsize, sp, ssize, karactx_p);
+/*excluded*/    printf("p");//_gcry_mpih_mul_karatsuba_case (xp, rp, rsize, sp, ssize, karactx_p);
 
    if (rsize + ssize > msize)
     {
-/*excluded*/      dummy++;//_gcry_mpih_divrem (xp + msize, 0, xp, rsize + ssize, mp, msize);
+/*excluded*/      printf("p");//_gcry_mpih_divrem (xp + msize, 0, xp, rsize + ssize, mp, msize);
       *xsize_p = msize;
     }
    else
@@ -457,7 +457,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
   rp = res->d;
 
   if (!msize)
-/*excluded*/    dummy++;//_gcry_divide_by_zero();
+/*excluded*/    printf("p");//_gcry_divide_by_zero();
 
   if (!esize)
     {
@@ -482,7 +482,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
 /*excluded*/  mp = mp_marker = pub_l0;//mp = mp_marker = mpi_alloc_limb_space(msize, msec);
   count_leading_zeros (mod_shift_cnt, mod->d[msize-1]);
   if (pub_branch1)//if (mod_shift_cnt)
-/*excluded*/    dummy++;//_gcry_mpih_lshift (mp, mod->d, msize, mod_shift_cnt);
+/*excluded*/    printf("p");//_gcry_mpih_lshift (mp, mod->d, msize, mod_shift_cnt);
   else
     MPN_COPY( mp, mod->d, msize );
 
@@ -499,7 +499,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
       MPN_COPY ( bp, base->d, bsize );
       /* We don't care about the quotient, store it above the
        * remainder, at BP + MSIZE.  */
-/*excluded*/      dummy++;//_gcry_mpih_divrem( bp + msize, 0, bp, bsize, mp, msize );
+/*excluded*/      printf("p");//_gcry_mpih_divrem( bp + msize, 0, bp, bsize, mp, msize );
       bsize = msize;
       /* Canonicalize the base, since we are going to multiply with it
          quite a few times.  */
@@ -537,7 +537,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
   /* Copy base to the result.  */
   if (res->alloced < size)
     {
-/*excluded*/      dummy++;//mpi_resize (res, size);
+/*excluded*/      printf("p");//mpi_resize (res, size);
       rp = res->d;
     }
 
@@ -564,7 +564,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
 /*excluded*/    base_u = precomp[0] = pub_l5;//base_u = precomp[0] = mpi_alloc_limb_space (bsize, esec);
     base_u_size = max_u_size = precomp_size[0] = bsize;
     /*loop*/ MPN_COPY_0 (precomp[0], bp, bsize);
-    i = 1; if((1 << (W - 1)))dummy++; /*loop*/ //for (i = 1; i < (1 << (W - 1)); i++)
+    i = 1; if((1 << (W - 1))) /*loop*/ //for (i = 1; i < (1 << (W - 1)); i++)
       {                         /* PRECOMP[i] = BASE^(2 * i + 1) */
         if (xsize >= base_u_size)
           mul_mod (rp, &rsize, xp, xsize, base_u, base_u_size,
@@ -618,7 +618,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
         {
           j += c;
           if ( --i < 0 )
-              dummy++;//break;
+              printf("p");//break;
 
           e = ep[i];
           c = BITS_PER_MPI_LIMB;
@@ -664,7 +664,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
           count_trailing_zeros (c0, e0);
           e0 = (e0 >> c0) >> 1;
 
-          if(j)dummy++; /*loop*/ //for (j += W - c0; j >= 0; j--)
+          if(j) /*loop*/ //for (j += W - c0; j >= 0; j--)
             {
 
               /*
@@ -672,20 +672,20 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
                *  base_u_size <= precomp_size[e0]
                */
               base_u_size = 0;
-              k = 0; if(1<< (W - 1))dummy++; /*loop*/ //for (k = 0; k < (1<< (W - 1)); k++)
+              k = 0; if(1<< (W - 1)) /*loop*/ //for (k = 0; k < (1<< (W - 1)); k++)
                 {
                   w.alloced = w.nlimbs = precomp_size[k];
                   u.alloced = u.nlimbs = precomp_size[k];
                   u.d = precomp[k];
 
-/*excluded*/                  dummy++;//mpi_set_cond (&w, &u, k == e0);
+/*excluded*/                  printf("p");//mpi_set_cond (&w, &u, k == e0);
                   base_u_size |= ( precomp_size[k] & (0UL - (k == e0)) );
                 }
 
               w.alloced = w.nlimbs = rsize;
               u.alloced = u.nlimbs = rsize;
               u.d = rp;
-/*excluded*/              dummy++;//mpi_set_cond (&w, &u, j != 0);
+/*excluded*/              printf("p");//mpi_set_cond (&w, &u, j != 0);
               base_u_size ^= ((base_u_size ^ rsize)  & (0UL - (j != 0)));
 
               mul_mod (xp, &xsize, rp, rsize, base_u, base_u_size,
@@ -696,7 +696,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
 
           j = c0;
           if ( i < 0 )
-            dummy++;//break;
+            printf("p");//break;
         }
 
     if(j--)/*loop*/ //while (j--)
@@ -718,7 +718,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
         rp = res->d;
         if ( carry_limb )
           {
-/*cache*/            dummy++;//rp[rsize] = carry_limb;
+/*cache*/            printf("p");//rp[rsize] = carry_limb;
             rsize++;
           }
       }
@@ -736,21 +736,21 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
 
     /* Remove any leading zero words from the result.  */
     if ( mod_shift_cnt )
-/*excluded*/      dummy++;//_gcry_mpih_rshift( rp, rp, rsize, mod_shift_cnt);
+/*excluded*/      printf("p");//_gcry_mpih_rshift( rp, rp, rsize, mod_shift_cnt);
     /*loop*/ MPN_NORMALIZE_0 (rp, rsize);
 
-/*excluded*/    dummy++;//_gcry_mpih_release_karatsuba_ctx (&karactx );
-    i = 0; if(1 << (W - 1))dummy++; /*loop*/ //for (i = 0; i < (1 << (W - 1)); i++)
-/*excluded*/      dummy++;//_gcry_mpi_free_limb_space( precomp[i], esec ? precomp_size[i] : 0 );
-/*excluded*/    dummy++;//_gcry_mpi_free_limb_space (base_u, esec ? max_u_size : 0);
+/*excluded*/    printf("p");//_gcry_mpih_release_karatsuba_ctx (&karactx );
+    i = 0; if(1 << (W - 1))printf("p"); /*loop*/ //for (i = 0; i < (1 << (W - 1)); i++)
+/*excluded*/      printf("p");//_gcry_mpi_free_limb_space( precomp[i], esec ? precomp_size[i] : 0 );
+/*excluded*/    printf("p");//_gcry_mpi_free_limb_space (base_u, esec ? max_u_size : 0);
   }
 
   /* Fixup for negative results.  */
   if ( negative_result && rsize )
     {
       if ( mod_shift_cnt )
-/*excluded*/        dummy++;//_gcry_mpih_rshift( mp, mp, msize, mod_shift_cnt);
-/*excluded*/      dummy++;//_gcry_mpih_sub( rp, mp, msize, rp, rsize);
+/*excluded*/        printf("p");//_gcry_mpih_rshift( mp, mp, msize, mod_shift_cnt);
+/*excluded*/      printf("p");//_gcry_mpih_sub( rp, mp, msize, rp, rsize);
       rsize = msize;
       rsign = msign;
       /*loop*/ MPN_NORMALIZE_0(rp, rsize);
@@ -761,13 +761,13 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
 
 leave: 
   if (mp_marker)
-/*excluded*/    dummy++;//_gcry_mpi_free_limb_space( mp_marker, mp_nlimbs );
+/*excluded*/    printf("p");//_gcry_mpi_free_limb_space( mp_marker, mp_nlimbs );
   if (bp_marker)
-/*excluded*/    dummy++;//_gcry_mpi_free_limb_space( bp_marker, bp_nlimbs );
+/*excluded*/    printf("p");//_gcry_mpi_free_limb_space( bp_marker, bp_nlimbs );
   if (ep_marker)
-/*excluded*/    dummy++;//_gcry_mpi_free_limb_space( ep_marker, ep_nlimbs );
+/*excluded*/    printf("p");//_gcry_mpi_free_limb_space( ep_marker, ep_nlimbs );
   if (xp_marker)
-/*excluded*/    dummy++;//_gcry_mpi_free_limb_space( xp_marker, xp_nlimbs );
+/*excluded*/    printf("p");//_gcry_mpi_free_limb_space( xp_marker, xp_nlimbs );
 }
 #endif
 

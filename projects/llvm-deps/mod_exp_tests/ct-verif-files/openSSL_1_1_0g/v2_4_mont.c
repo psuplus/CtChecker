@@ -445,10 +445,12 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         j = wend + 1;
         /* add the 'bytes above' */
         if (!start)
+        {
             for (i = 0; i < j; i++) {
-/*excluded*/                if (pub_BRANCH22)//if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+/*excluded*/    if (pub_BRANCH22)//if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
                     goto err;
             }
+        }
 
         /* wvalue will be an odd number < 2^window */
 /*excluded*/        if (pub_BRANCH23)//if (!BN_mod_mul_montgomery(r, r, val[wvalue >> 1], mont, ctx))

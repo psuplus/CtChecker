@@ -379,7 +379,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 /*excluded*/        if (pub_BRANCH11)
             goto err;           /* 2 */
         j = 1 << (window - 1);
-        i = 1; if(j)dummy++; {/*loop*/ //for (i = 1; i < j; i++) {
+        i = 1; if(j) {/*loop*/ //for (i = 1; i < j; i++) {
 /*excluded*/            if (pub_BRANCH13//if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
                             ){//!BN_mod_mul_montgomery(val[i], val[i - 1], d, mont, ctx))
                 goto err;}
@@ -400,7 +400,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             goto err;
         /* 2^(top*BN_BITS2) - m */
         r->d[0] = (0 - m->d[0]) & BN_MASK2;
-        i = 1; if(j)dummy++; /*loop*/ //for (i = 1; i < j; i++)
+        i = 1; if(j) /*loop*/ //for (i = 1; i < j; i++)
             r->d[i] = (~m->d[i]) & BN_MASK2;
         r->top = j;
         /*
@@ -431,7 +431,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         j = wstart;
         wvalue = 1;
         wend = 0;
-        i = window-1; if(window)dummy++; {/*loop*/ //for (i = 1; i < window; i++) {
+        i = window-1; if(window) {/*loop*/ //for (i = 1; i < window; i++) {
             if (wstart - i < 0)
                 dummy++;//break;
             if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH27)) {
@@ -445,10 +445,12 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         j = wend + 1;
         /* add the 'bytes above' */
         if (!start)
-            i = j - 1; if(j)dummy++; {/*loop*/ //for (i = 0; i < j; i++) {
+        {
+                i = j - 1; if(i < j) {/*loop*/ //for (i = 0; i < j; i++) {
 /*excluded*/                if (pub_BRANCH22)//if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
                     goto err;
             }
+        }
 
         /* wvalue will be an odd number < 2^window */
 /*excluded*/        if (pub_BRANCH23)//if (!BN_mod_mul_montgomery(r, r, val[wvalue >> 1], mont, ctx))

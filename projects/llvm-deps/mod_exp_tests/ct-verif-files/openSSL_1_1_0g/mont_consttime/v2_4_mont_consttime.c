@@ -1038,8 +1038,8 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
         bits--;
         for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
             wvalue = (wvalue << 1) + BN_is_bit_set_0(p, bits, pub_BRANCH17);
-        if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&tmp, top, powerbuf, wvalue,
-                                            window))
+        if (!MOD_EXP_CTIME_COPY_FROM_PREBUF_0(&tmp, top, powerbuf, wvalue,
+                                            window ,pub_BRANCH18))
             goto err;
 
         /*
@@ -1059,8 +1059,8 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
             /*
              * Fetch the appropriate pre-computed value from the pre-buf
              */
-            if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&am, top, powerbuf, wvalue,
-                                                window))
+            if (!MOD_EXP_CTIME_COPY_FROM_PREBUF_0(&am, top, powerbuf, wvalue,
+                                                window, pub_BRANCH19))
                 goto err;
 
             /* Multiply the result into the intermediate result */

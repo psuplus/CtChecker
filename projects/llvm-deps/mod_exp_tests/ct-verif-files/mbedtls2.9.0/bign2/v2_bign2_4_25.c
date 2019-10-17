@@ -743,7 +743,7 @@ int mbedtls_mpi_shift_l_0( mbedtls_mpi *X, size_t count, int pub_BRANCH0, mbedtl
     /*
      * shift by count % limb_size
      */
-    if( t1 > 0 )dummy++;
+    if( t1 > 0 )
     {
         for( i = v0; i < X->n; i++ )
         {

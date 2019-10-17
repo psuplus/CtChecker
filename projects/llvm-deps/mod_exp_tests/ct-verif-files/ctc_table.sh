@@ -5,6 +5,11 @@ NC='\033[0m' # No Color
 
 CUR=$(pwd)
 
+# Params
+# $1 - Directory
+# $2 - search query
+# $3 - file to analyze
+# $4 - optional parameter in case extra positives were counted. 
 countPositives()
 {
     cd $1

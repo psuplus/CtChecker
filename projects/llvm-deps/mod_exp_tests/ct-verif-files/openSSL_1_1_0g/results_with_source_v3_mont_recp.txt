@@ -1,6 +1,5 @@
 mont_recp/v3_4_mont_recp_lib/bn_lib.c line  746 - if (n < 0)
-mont_recp/v3_4_mont_recp_lib/bn_lib.c line  748 - i = n / BN_BITS2;
-mont_recp/v3_4_mont_recp_lib/bn_lib.c line  751 - return 0;
+mont_recp/v3_4_mont_recp_lib/bn_lib.c line  750 - if (a->top <= i)
 mont_recp/v3_4_mont_recp.c line  190 - if (bits == 0) {
 mont_recp/v3_4_mont_recp.c line  228 - window = BN_window_bits_for_exponent_size(bits);
 mont_recp/v3_4_mont_recp.c line  228 - window = BN_window_bits_for_exponent_size(bits);

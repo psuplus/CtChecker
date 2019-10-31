@@ -1,4 +1,4 @@
-v2_lib/inner.h line 1019 - if (j == 0) {
+v2_lib/inner.h line 1018 - if (j == 0) {
 v2_lib/ccopy.c line   36 - while (len -- > 0) {
 v2_lib/i32_montmul.c line   38 - for (u = 0; u < len; u ++) {
 v2_lib/i32_montmul.c line   46 - for (v = 0; v < len; v ++) {

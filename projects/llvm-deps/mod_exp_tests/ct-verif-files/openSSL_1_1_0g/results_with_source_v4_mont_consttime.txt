@@ -1,0 +1,2 @@
+mont_consttime/v4_4_mont_consttime.c line  522 - if (top > b->top)
+mont_consttime/v4_4_mont_consttime.c line  525 - i = 0, j = idx; if(idx && top) {/*loop*/ //for (i = 0, j = idx; i < top; i++, j += width) {

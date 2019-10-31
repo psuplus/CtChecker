@@ -11,7 +11,7 @@ v3_4.c line  585 - /*loop*/ MPN_ZERO_0 (base_u, max_u_size);
 v3_4.c line  605 - /*loop*/ MPN_ZERO_0 (rp, rsize);
 v3_4.c line  617 - if (e == 0)
 v3_4.c line  641 - if (c >= W)
-v3_4.c line  667 - if(j)dummy++; /*loop*/ //for (j += W - c0; j >= 0; j--)
+v3_4.c line  667 - if(j) /*loop*/ //for (j += W - c0; j >= 0; j--)
 v3_4.c line  702 - if(j--)/*loop*/ //while (j--)
 v3_4.c line  727 - /*loop*/ MPN_COPY_0 (res->d, rp, rsize);
 v3_4.c line  731 - if ( rsize >= msize )

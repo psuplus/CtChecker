@@ -1,2 +1,1 @@
 bign2/v4_bign2_4_25.c line 1636 - if( wsize > MBEDTLS_MPI_WINDOW_SIZE )
-bign2/v4_bign2_4_25.c line 1778 - for( i = 0; i < nbits; i++ )

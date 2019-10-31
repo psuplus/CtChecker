@@ -431,7 +431,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         j = wstart;
         wvalue = 1;
         wend = 0;
-        i = window-1; if(window) {/*loop*/ //for (i = 1; i < window; i++) {
+        i = 1; if(window) {/*loop*/ //for (i = 1; i < window; i++) {
             if (wstart - i < 0)
                 dummy++;//break;
             if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH27)) {

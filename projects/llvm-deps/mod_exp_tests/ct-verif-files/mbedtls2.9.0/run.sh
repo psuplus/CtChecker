@@ -2,9 +2,9 @@
 # linking example
 
 if [ "$(uname)" == "Darwin" ]; then
-        EXT="dylib"
+EXT="dylib"
 else
-        EXT="so"
+EXT="so"
 fi
 
 CPPFLAGS=
@@ -17,19 +17,19 @@ LEVEL="../../../../.."
 #LLVMLIBS=`llvm-config --libs`
 #LDFLAGS=`llvm-config --ldflags`
 
-## compile the instrumentation module to bitcode
-## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
-make clean
+CUR=$(pwd)
+
 make $1
+cd $CUR
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+-load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
+-load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
+-load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
+-load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
+-load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
+-vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
 
 export PATH="$PATH:../../../processing_tools" # tmp change to path to have post-processing tools
 post_analysis.py tmp.dat > $2
@@ -43,4 +43,3 @@ post_analysis.py tmp.dat > $2
 #g++ welcome.o $LLVMLIBS $LDFLAGS -o welcome
 
 #./welcome
-

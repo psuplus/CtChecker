@@ -118,3 +118,9 @@ v2_test_mont_consttime: v2_test_mont_consttime.bc
 
 %.bc: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm *.bc
+	rm mont_recp/*.bc
+	rm mont_word/*.bc
+	rm mont_consttime/*.bc

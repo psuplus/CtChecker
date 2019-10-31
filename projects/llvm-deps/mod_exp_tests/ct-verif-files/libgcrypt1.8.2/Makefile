@@ -32,3 +32,6 @@ esizetest: esizetest.bc
 
 %.bc: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm *.bc

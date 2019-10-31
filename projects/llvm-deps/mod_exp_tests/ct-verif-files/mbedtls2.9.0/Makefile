@@ -33,3 +33,4 @@ v2_bign2_4_25_test: v2_bign2_4_25_test.bc
 
 clean:
 	$(RM) *.bc
+	$(RM) bign2/*.bc

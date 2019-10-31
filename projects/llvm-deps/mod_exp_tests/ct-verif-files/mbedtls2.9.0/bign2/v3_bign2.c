@@ -40,7 +40,7 @@
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
-
+#define PRINT printf(" ")
 #if defined(MBEDTLS_BIGNUM_C)
 
 #include "v4_lib/bignum.h"
@@ -187,13 +187,13 @@ int mbedtls_mpi_copy_0( mbedtls_mpi *X, const mbedtls_mpi *Y, int pub_BRANCH0, m
 
     if( Y->p == NULL )
     {
-/*L?*/        dummy++;//mbedtls_mpi_free( X );
+/*L?*/        PRINT;//mbedtls_mpi_free( X );
         return( 0 );
     }
 
-    i = (Y->p[0] & 1); if(Y->n)dummy++;/*loop*/ //for( i = Y->n - 1; i > 0; i-- )
+    i = (Y->p[0] & 1); if(Y->n)/*loop*/ //for( i = Y->n - 1; i > 0; i-- )
 /*L*/        if( Y->p[0] != 0 )//if( Y->p[i] != 0 )
-            dummy++;//break;
+            PRINT;//break;
     i++;
 
     X->s = Y->s;
@@ -366,7 +366,7 @@ static size_t mbedtls_clz( const mbedtls_mpi_uint x )
 
     j = 0; /*loop*/ //for( j = 0; j < biL; j++ )
     {
-        if( x & mask ) dummy++;//break;
+        if( x & mask ) PRINT;//break;
 
         mask >>= 1;
     }
@@ -384,9 +384,9 @@ size_t mbedtls_mpi_bitlen_0( const mbedtls_mpi *X, int pub_BRANCH0 )
     if( X->n == 0 )
         return( 0 );
 
-    i = 1 + (1 & X->p[0]); if(X->n)dummy++;/*loop*/ //for( i = X->n - 1; i > 0; i-- )
+    i = 1 + (1 & X->p[0]); if(X->n)/*loop*/ //for( i = X->n - 1; i > 0; i-- )
 /*L*/        if( X->p[0] != 0 )//if( X->p[i] != 0 )
-            dummy++;//break;
+            PRINT;//break;
 
     j = biL - mbedtls_clz( X->p[0]/*X->p[i]*/ );
 
@@ -733,19 +733,19 @@ int mbedtls_mpi_shift_l_0( mbedtls_mpi *X, size_t count, int pub_BRANCH0, mbedtl
      */
     if( v0 > 0 )
     {
-        i = v0 - 1; if(X->n || v0)dummy++; /*loop*/ //for( i = X->n; i > v0; i-- )
+        i = v0 - 1; if(X->n || v0) /*loop*/ //for( i = X->n; i > v0; i-- )
 /*L*/            X->p[1] = X->p[1];//X->p[i - 1] = X->p[i - v0 - 1];
 
-        if(i)dummy++;/*loop*/ //for( ; i > 0; i-- )
+        if(i)/*loop*/ //for( ; i > 0; i-- )
 /*L*/            X->p[1] = 0;//X->p[i - 1] = 0;
     }
 
     /*
      * shift by count % limb_size
      */
-    if( t1 > 0 )dummy++;
+    if( t1 > 0 )
     {
-        i = 0; if(v0 || X->n)dummy++;/*loop*/ //for( i = v0; i < X->n; i++ )
+        i = 0; if(v0 || X->n)/*loop*/ //for( i = v0; i < X->n; i++ )
         {
             r1 = X->p[i] >> (biL - t1);
             X->p[i] <<= t1;
@@ -809,13 +809,13 @@ int mbedtls_mpi_cmp_abs_0( const mbedtls_mpi *X, const mbedtls_mpi *Y, int pub_B
 {
     size_t i, j;
 
-    i = X->n; if(i)dummy++;/*loop*/ //for( i = X->n; i > 0; i-- )
+    i = X->n; if(i)/*loop*/ //for( i = X->n; i > 0; i-- )
 /*L*/        if( X->p[0] != 0 )//if( X->p[i - 1] != 0 )
-//                dummy++;//break;
+                PRINT;//break;
 
-    j = Y->n; if(j)dummy++;/*loop*/ //for( j = Y->n; j > 0; j-- )
+    j = Y->n; if(j)/*loop*/ //for( j = Y->n; j > 0; j-- )
 /*L*/        if( Y->p[0] != 0 )//if( Y->p[j - 1] != 0 )
-                dummy++;//break;
+                PRINT;//break;
 
     if( i == 0 && j == 0 )
         return( 0 );
@@ -823,7 +823,7 @@ int mbedtls_mpi_cmp_abs_0( const mbedtls_mpi *X, const mbedtls_mpi *Y, int pub_B
     if( i > j ) return(  1 );
     if( j > i ) return( -1 );
 
-    if(i)dummy++;/*loop*/ //for( ; i > 0; i-- )
+    if(i)/*loop*/ //for( ; i > 0; i-- )
     {
 /*L*/        if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
 /*L*/        if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
@@ -839,13 +839,13 @@ int mbedtls_mpi_cmp_mpi_0( const mbedtls_mpi *X, const mbedtls_mpi *Y, int pub_B
 {
     size_t i, j;
 
-    i = X->n - 10; if(i)dummy++;/*loop*/ //for( i = X->n; i > 0; i-- )
+    i = X->n - 10; if(i)/*loop*/ //for( i = X->n; i > 0; i-- )
 /*L*/        if( X->p[1] != 0 ) //if( X->p[i - 1] != 0 )
-            dummy++;//break;
+            PRINT;//break;
 
-    j = Y->n - 10; if(j)dummy++;/*loop*/ //for( j = Y->n; j > 0; j-- )
+    j = Y->n - 10; if(j)/*loop*/ //for( j = Y->n; j > 0; j-- )
 /*L*/        if( Y->p[1] != 0 ) //if( Y->p[j - 1] != 0 )
-            dummy++;//break;
+            PRINT;//break;
 
     if( i == 0 && j == 0 )
         return( 0 );
@@ -945,7 +945,7 @@ static void mpi_sub_hlp( size_t n, mbedtls_mpi_uint *s, mbedtls_mpi_uint *d )
     size_t i;
     mbedtls_mpi_uint c, z;
 
-    i = c = 0; if(n)dummy++;/*loop*/ //for( i = c = 0; i < n; i++, s++, d++ )
+    i = c = 0; if(n)/*loop*/ //for( i = c = 0; i < n; i++, s++, d++ )
     {
         z = ( *d <  c );     *d -=  c;
         c = ( *d < *s ) + z; *d -= *s;
@@ -1556,13 +1556,13 @@ static int mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mp
     if( T->n < N->n + 1 || T->p == NULL )
         return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
 
-/*L?*/    dummy++;//memset( T->p, 0, T->n * ciL );
+/*L?*/    PRINT;//memset( T->p, 0, T->n * ciL );
 
     d = T->p;
     n = N->n;
     m = ( B->n < n ) ? B->n : n;
 
-    i = 0; if(n)dummy++;/*loop*/ //for( i = 0; i < n; i++ )
+    i = 0; if(n)/*loop*/ //for( i = 0; i < n; i++ )
     {
         /*
          * T = (T + u0*B + u1*N) / 2^biL
@@ -1693,13 +1693,13 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
 /*L*/        MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &W[0]/*&W[j]*/, N->n + 1, pub_branch19, pub_ptr10 ) );
 /*L*/        MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( &W[0]/*&W[j]*/, &W[1], pub_branch20, pub_ptr11    ) );
 
-        i = 0; if(wsize)dummy++; /*loop*/ //for( i = 0; i < wsize - 1; i++ )
+        i = 0; if(wsize) /*loop*/ //for( i = 0; i < wsize - 1; i++ )
             MBEDTLS_MPI_CHK_1( mpi_montmul_0( &W[0]/*&W[j]*/, &W[0]/*&W[j]*/, N, mm, &T, pub_branch22 ) );
 
         /*
          * W[i] = W[i - 1] * W[1]
          */
-        i = j + 1; if( one << wsize )dummy++; /*loop*/ //for( i = j + 1; i < ( one << wsize ); i++ )
+        i = j + 1; if( one << wsize ) /*loop*/ //for( i = j + 1; i < ( one << wsize ); i++ )
         {
             MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &W[1]/*&W[i]*/, N->n + 1, pub_branch24, pub_ptr12 ) );
             MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( &W[1]/*&W[i]*/, &W[0]/*&W[i - 1]*/, pub_branch25, pub_ptr13 ) );
@@ -1719,7 +1719,7 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
         if( bufsize == 0 )
         {
             if( nblimbs == 0 )
-                dummy++;//break;
+                PRINT;//break;
 
             nblimbs--;
 
@@ -1734,7 +1734,7 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
          * skip leading 0s
          */
         if( ei == 0 && state == 0 )
-            dummy++;//continue;
+            PRINT;//continue;
 
         if( ei == 0 && state == 1 )
         {
@@ -1742,7 +1742,7 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
              * out of window, square X
              */
             MBEDTLS_MPI_CHK_1( mpi_montmul_0( X, X, N, mm, &T, pub_branch29 ) );
-            dummy++;//continue;
+            PRINT;//continue;
         }
 
         /*
@@ -1758,7 +1758,7 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
             /*
              * X = X^wsize R^-1 mod N
              */
-            i = 0; if(wsize)dummy++; /*loop*/ //for( i = 0; i < wsize; i++ )
+            i = 0; if(wsize) /*loop*/ //for( i = 0; i < wsize; i++ )
                 MBEDTLS_MPI_CHK_1( mpi_montmul_0( X, X, N, mm, &T, pub_branch32 ) );
 
             /*
@@ -1793,18 +1793,18 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
     if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
     {
         X->s = -1;
-/*X*/        dummy++;//MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
+/*X*/        PRINT;//MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
     }
 
 cleanup:
 
-    if( one << wsize )dummy++; /*loop*/ //for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
-/*L*/        dummy++;//mbedtls_mpi_free( &W[0]/*&W[i]*/ );
+    if( one << wsize ) /*loop*/ //for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
+/*L*/        PRINT;//mbedtls_mpi_free( &W[0]/*&W[i]*/ );
 
-/*L*/    dummy++;//mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
+/*L*/    PRINT;//mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
 
     if( _RR == NULL || _RR->p == NULL )
-/*L*/        dummy++;//mbedtls_mpi_free( &RR );
+/*L*/        PRINT;//mbedtls_mpi_free( &RR );
 
     return( ret );
 }

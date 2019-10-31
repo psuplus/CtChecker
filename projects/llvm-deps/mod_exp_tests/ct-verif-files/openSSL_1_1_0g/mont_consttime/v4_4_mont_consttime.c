@@ -522,7 +522,7 @@ static int MOD_EXP_CTIME_COPY_TO_PREBUF(const BIGNUM *b, int top,
     if (top > b->top)
         top = b->top;           /* this works because 'buf' is explicitly
                                  * zeroed */
-    i = 0, j = idx; if(top)dummy++; {/*loop*/ //for (i = 0, j = idx; i < top; i++, j += width) {
+    i = 0, j = idx; if(idx && top) {/*loop*/ //for (i = 0, j = idx; i < top; i++, j += width) {
         table[j] = b->d[i];
     }
 

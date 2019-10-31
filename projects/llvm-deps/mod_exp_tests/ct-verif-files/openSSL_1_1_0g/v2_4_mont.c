@@ -10,7 +10,7 @@
 #include "internal/cryptlib.h"
 #include "internal/constant_time_locl.h"
 #include "include/bn_lcl.h"
-int dummy = 0;
+#define PRINT printf(" ")
 #include <stdlib.h>
 #ifdef _WIN32
 # include <malloc.h>
@@ -407,7 +407,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
          * Upper words will be zero if the corresponding words of 'm' were
          * 0xfff[...], so decrement r->top accordingly.
          */
-/*excluded*/        dummy++;//bn_correct_top(r);
+/*excluded*/        PRINT;//bn_correct_top(r);
     } else
 #endif
 /*excluded*/    if (pub_BRANCH16)//if (!BN_to_montgomery(r, BN_value_one(), mont, ctx))
@@ -419,9 +419,9 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                     goto err;
             }
             if (wstart == 0)
-                dummy++;//break;
+                PRINT;//break;
             wstart--;
-            dummy++;//continue;
+            PRINT;//continue;
         }
         /*
          * We now have wstart on a 'set' bit, we now need to work out how bit
@@ -433,7 +433,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         wend = 0;
         for (i = 1; i < window; i++) {
             if (wstart - i < 0)
-                dummy++;//break;
+                PRINT;//break;
             if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH27)) {
                 wvalue <<= (i - wend);
                 wvalue |= 1;
@@ -461,7 +461,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         wvalue = 0;
         start = 0;
         if (wstart < 0)
-            dummy++;//break;
+            PRINT;//break;
     }
 #if defined(SPARC_T4_MONT)
     if (OPENSSL_sparcv9cap_P[0] & (SPARCV9_VIS3 | SPARCV9_PREFER_FPU)) {
@@ -477,9 +477,9 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 /*excluded*/    if (pub_BRANCH25)//if (!BN_from_montgomery(rr, r, mont, ctx))
         goto err;
     ret = 1;
-    dummy++;err:
+    PRINT;err:
     if (in_mont == NULL)
-/*excluded*/        dummy++;//BN_MONT_CTX_free(mont);
+/*excluded*/        PRINT;//BN_MONT_CTX_free(mont);
 /*excluded*/    //BN_CTX_end(ctx);
 /*excluded*/    //bn_check_top(rr);
     return (ret);

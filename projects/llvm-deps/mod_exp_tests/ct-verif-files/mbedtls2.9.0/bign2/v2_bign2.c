@@ -40,7 +40,7 @@
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
-
+#define PRINT printf(" ")
 #if defined(MBEDTLS_BIGNUM_C)
 
 #include "v4_lib/bignum.h"
@@ -187,7 +187,7 @@ int mbedtls_mpi_copy_0( mbedtls_mpi *X, const mbedtls_mpi *Y, int pub_BRANCH0, m
 
     if( Y->p == NULL )
     {
-/*L?*/        dummy++;//mbedtls_mpi_free( X );
+/*L?*/        PRINT;//mbedtls_mpi_free( X );
         return( 0 );
     }
 
@@ -743,7 +743,7 @@ int mbedtls_mpi_shift_l_0( mbedtls_mpi *X, size_t count, int pub_BRANCH0, mbedtl
     /*
      * shift by count % limb_size
      */
-    if( t1 > 0 )dummy++;
+    if( t1 > 0 )
     {
         for( i = v0; i < X->n; i++ )
         {
@@ -1556,7 +1556,7 @@ static int mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mp
     if( T->n < N->n + 1 || T->p == NULL )
         return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
 
-/*L?*/    dummy++;//memset( T->p, 0, T->n * ciL );
+/*L?*/    PRINT;//memset( T->p, 0, T->n * ciL );
 
     d = T->p;
     n = N->n;
@@ -1793,18 +1793,18 @@ int mbedtls_mpi_exp_mod_algorithm ( mbedtls_mpi *X, const mbedtls_mpi *A, const 
     if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
     {
         X->s = -1;
-/*X*/        dummy++;//MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
+/*X*/        PRINT;//MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
     }
 
 cleanup:
 
     for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
-/*L*/        dummy++;//mbedtls_mpi_free( &W[0]/*&W[i]*/ );
+/*L*/        PRINT;//mbedtls_mpi_free( &W[0]/*&W[i]*/ );
 
-/*L*/    dummy++;//mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
+/*L*/    PRINT;//mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
 
     if( _RR == NULL || _RR->p == NULL )
-/*L*/        dummy++;//mbedtls_mpi_free( &RR );
+/*L*/        PRINT;//mbedtls_mpi_free( &RR );
 
     return( ret );
 }

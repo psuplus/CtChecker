@@ -535,7 +535,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
     }
 
   /* Copy base to the result.  */
-  if (pub_branch2)///*+*/if (res->alloced < size)
+  if (res->alloced < size)
     {
 /*excluded*/      dummy++;//mpi_resize (res, size);
       rp = res->d;
@@ -722,7 +722,7 @@ _gcry_mpi_powm_algorithm (gcry_mpi_t res,
             rsize++;
           }
       }
-    else if (pub_branch15)///*+*/else if (res->d != rp)
+    else if (res->d != rp)
       {
         /*loop*/ /*+*/ MPN_COPY_2 (res->d, rp, rsize);
         rp = res->d;

@@ -1180,14 +1180,14 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
     \cmidrule{3-6} \cmidrule{8-11}
     Library&& Baseline & No Loops & Removed & Diff && Baseline & No Loops & Removed & Diff\\
     \midrule
-    Libgcrypt 1.8.2                 			&&  47  & 27 & 0 & 20 &&	 	25 & 25 & 1 & 0 \\
+    Libgcrypt 1.8.2                 			&&  45  & 25 & 0 & 20 &&	 	25 & 25 & 1 & 0 \\
     BearSSL 0.5                     			&&  14  & 10 & 0 &  4  && 		10 & 10 & 0 & 0 \\
     mbedTLS 2.9.0                  		 	&& 100 & 80 & 0 & 20 && 		78 & 77 & 1 & 1 \\
     OpenSSL 1.1.0g                                                                                 \\
     \hspace{0.25cm}Reciprocal       		&&  23  & 19 & 0 &  4   && 	19 & 19 & 0 & 0 \\
-    \hspace{0.25cm}Mont.            		&&  30  & 24 & 0 &  6   && 	21 & 21 & 0 & 0 \\
-    \hspace{0.25cm}Mont Const. Time 	&&  38  & 27 & 0 & 11  && 	25 & 25 & 2 & 0 \\
-    \hspace{0.25cm}Mont. Word       		&&  18  & 17 & 0 &  1   && 	15 & 15 & 0 & 0 \\
+    \hspace{0.25cm}Mont.            		&&  29  & 23 & 0 &  6   && 	21 & 21 & 0 & 0 \\
+    \hspace{0.25cm}Mont Const. Time 	&&  39  & 28 & 0 & 11  && 	25 & 25 & 2 & 0 \\
+    \hspace{0.25cm}Mont. Word       		&&  16  & 15 & 0 &  1   && 	15 & 15 & 0 & 0 \\
     \bottomrule
   \end{tabular}
 \caption{ The baseline file (version 2) accommodated the excluded source.  Positives caused by loops were removed from the baseline in a separate file (version 3). A new file removed the remaining positives (version 4).}

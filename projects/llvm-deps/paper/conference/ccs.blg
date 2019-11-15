@@ -1,0 +1,83 @@
+This is BibTeX, Version 0.99d (TeX Live 2019)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: ccs.aux
+The style file: ACM-Reference-Format.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: research.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty publisher in almeida2016verifying
+Warning--empty address in almeida2016verifying
+Warning--empty publisher in proof-engineering
+Warning--empty address in proof-engineering
+Warning--empty publisher in bernstein2017sliding
+Warning--empty address in bernstein2017sliding
+Warning--empty publisher in brotzmancasym
+Warning--empty address in brotzmancasym
+Warning--empty publisher in cauligi2017fact
+Warning--empty address in cauligi2017fact
+Warning--page numbers missing in both pages and numpages fields in DBLP:journals/corr/DoychevK16
+Warning--empty publisher in fraser2000lomac
+Warning--empty address in fraser2000lomac
+Warning--empty publisher in genkin2015stealing
+Warning--empty address in genkin2015stealing
+Warning--empty publisher in kochertiming
+Warning--empty address in kochertiming
+Warning--empty publisher in molnar2005program
+Warning--empty address in molnar2005program
+Warning--empty publisher in moore2011static
+Warning--empty address in moore2011static
+Warning--empty publisher in schindler2000timing
+Warning--empty address in schindler2000timing
+Warning--empty address in sutton2007fuzzing
+Warning--empty publisher in walter2001distinguishing
+Warning--empty address in walter2001distinguishing
+Warning--empty publisher in wang2017cached
+Warning--empty address in wang2017cached
+Warning--page numbers missing in both pages and numpages fields in wang2017cached
+You've used 26 entries,
+            5719 wiz_defined-function locations,
+            1456 strings with 19890 characters,
+and the built_in function-call counts, 31688 in all, are:
+= -- 3690
+> -- 1182
+< -- 0
++ -- 388
+- -- 400
+* -- 2252
+:= -- 3243
+add.period$ -- 131
+call.type$ -- 26
+change.case$ -- 190
+chr.to.int$ -- 26
+cite$ -- 55
+duplicate$ -- 2885
+empty$ -- 2001
+format.name$ -- 476
+if$ -- 7496
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 106
+newline$ -- 255
+num.names$ -- 208
+pop$ -- 1110
+preamble$ -- 1
+purify$ -- 423
+quote$ -- 0
+skip$ -- 1047
+stack$ -- 0
+substring$ -- 2372
+swap$ -- 304
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 681
+warning$ -- 29
+while$ -- 204
+width$ -- 0
+write$ -- 504
+(There were 29 warnings)

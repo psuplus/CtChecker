@@ -1,0 +1,1 @@
+v4_lib/ccopy.c line   36 - if (len -- > 0)dummy++; //while (len -- > 0) {

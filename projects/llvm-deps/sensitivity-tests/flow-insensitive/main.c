@@ -3,13 +3,14 @@
 
 void mbed (int secret)
 {
-	size_t wbits = 0;
+	size_t wbits;
 	size_t i;
-	size_t nbits = 0;
+	size_t nbits;
 	
-	i = wbits;
 	i = secret;
-	
+	i = 5;
+	i = 6;
+	i = 7;
 	
 	for( i = 0; i < nbits; i++ )
 	{

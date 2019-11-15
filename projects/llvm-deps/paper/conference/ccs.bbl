@@ -1,0 +1,381 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{26}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{}, \showDOI{}, and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showDOI}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showDOI #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Almeida, Barbosa, Barthe, Dupressoir, and
+  Emmi}{Almeida et~al\mbox{.}}{2016}]%
+        {almeida2016verifying}
+\bibfield{author}{\bibinfo{person}{Jos{\'e}~Bacelar Almeida},
+  \bibinfo{person}{Manuel Barbosa}, \bibinfo{person}{Gilles Barthe},
+  \bibinfo{person}{Fran{\c{c}}ois Dupressoir}, {and} \bibinfo{person}{Michael
+  Emmi}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Verifying Constant-Time Implementations.}. In
+  \bibinfo{booktitle}{\emph{USENIX Security Symposium}}.
+  \bibinfo{pages}{53--70}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Bacelar~Almeida, Barbosa, Bangerter, Barthe,
+  Krenn, and Zanella~B{\'e}guelin}{Bacelar~Almeida et~al\mbox{.}}{2012}]%
+        {proof-engineering}
+\bibfield{author}{\bibinfo{person}{Jos{\'e} Bacelar~Almeida},
+  \bibinfo{person}{Manuel Barbosa}, \bibinfo{person}{Endre Bangerter},
+  \bibinfo{person}{Gilles Barthe}, \bibinfo{person}{Stephan Krenn}, {and}
+  \bibinfo{person}{Santiago Zanella~B{\'e}guelin}.}
+  \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{Full proof cryptography: verifiable compilation of
+  efficient zero-knowledge protocols}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 2012 ACM conference on Computer and communications security}}. ACM,
+  \bibinfo{pages}{488--500}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Barthe, Betarte, Campo, Luna, and
+  Pichardie}{Barthe et~al\mbox{.}}{2014}]%
+        {VirtualCert}
+\bibfield{author}{\bibinfo{person}{Gilles Barthe}, \bibinfo{person}{Gustavo
+  Betarte}, \bibinfo{person}{Juan Campo}, \bibinfo{person}{Carlos Luna}, {and}
+  \bibinfo{person}{David Pichardie}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{System-level Non-interference for Constant-time
+  Cryptography}. In \bibinfo{booktitle}{\emph{Proceedings of the 2014 ACM
+  SIGSAC Conference on Computer and Communications Security}}
+  \emph{(\bibinfo{series}{CCS '14})}. \bibinfo{publisher}{ACM},
+  \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{1267--1279}.
+\newblock
+\showISBNx{978-1-4503-2957-6}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2660267.2660283}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Bernstein, Breitner, Genkin, Bruinderink,
+  Heninger, Lange, van Vredendaal, and Yarom}{Bernstein et~al\mbox{.}}{2017}]%
+        {bernstein2017sliding}
+\bibfield{author}{\bibinfo{person}{Daniel~J Bernstein},
+  \bibinfo{person}{Joachim Breitner}, \bibinfo{person}{Daniel Genkin},
+  \bibinfo{person}{Leon~Groot Bruinderink}, \bibinfo{person}{Nadia Heninger},
+  \bibinfo{person}{Tanja Lange}, \bibinfo{person}{Christine van Vredendaal},
+  {and} \bibinfo{person}{Yuval Yarom}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Sliding right into disaster: Left-to-right sliding
+  windows leak}. In \bibinfo{booktitle}{\emph{International Conference on
+  Cryptographic Hardware and Embedded Systems}}. Springer,
+  \bibinfo{pages}{555--576}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Brotzman, Liu, Zhang, Tan, and
+  Kandemir}{Brotzman et~al\mbox{.}}{2018}]%
+        {brotzmancasym}
+\bibfield{author}{\bibinfo{person}{Robert Brotzman}, \bibinfo{person}{Shen
+  Liu}, \bibinfo{person}{Danfeng Zhang}, \bibinfo{person}{Gang Tan}, {and}
+  \bibinfo{person}{Mahmut Kandemir}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{CaSym: Cache Aware Symbolic Execution for Side
+  Channel Detection and Mitigation}. In \bibinfo{booktitle}{\emph{CaSym: Cache
+  Aware Symbolic Execution for Side Channel Detection and Mitigation}}. IEEE,
+  \bibinfo{pages}{0}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Brumley and Boneh}{Brumley and Boneh}{2005}]%
+        {brumley2005remote}
+\bibfield{author}{\bibinfo{person}{David Brumley} {and} \bibinfo{person}{Dan
+  Boneh}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{Remote timing attacks are practical}.
+\newblock \bibinfo{journal}{\emph{Computer Networks}} \bibinfo{volume}{48},
+  \bibinfo{number}{5} (\bibinfo{year}{2005}), \bibinfo{pages}{701--716}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Cauligi, Soeller, Brown, Johannesmeyer, Huang,
+  Jhala, and Stefan}{Cauligi et~al\mbox{.}}{2017}]%
+        {cauligi2017fact}
+\bibfield{author}{\bibinfo{person}{Sunjay Cauligi}, \bibinfo{person}{Gary
+  Soeller}, \bibinfo{person}{Fraser Brown}, \bibinfo{person}{Brian
+  Johannesmeyer}, \bibinfo{person}{Yunlu Huang}, \bibinfo{person}{Ranjit
+  Jhala}, {and} \bibinfo{person}{Deian Stefan}.}
+  \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{FaCT: A flexible, constant-time programming
+  language}. In \bibinfo{booktitle}{\emph{2017 IEEE Cybersecurity Development
+  (SecDev)}}. IEEE, \bibinfo{pages}{69--76}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Doychev and K{\"{o}}pf}{Doychev and
+  K{\"{o}}pf}{2016}]%
+        {DBLP:journals/corr/DoychevK16}
+\bibfield{author}{\bibinfo{person}{Goran Doychev} {and} \bibinfo{person}{Boris
+  K{\"{o}}pf}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Rigorous Analysis of Software Countermeasures
+  against Cache Attacks}.
+\newblock \bibinfo{journal}{\emph{CoRR}}  \bibinfo{volume}{abs/1603.02187}
+  (\bibinfo{year}{2016}).
+\newblock
+\showeprint[arxiv]{1603.02187}
+\urldef\tempurl%
+\url{http://arxiv.org/abs/1603.02187}
+\showURL{%
+\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Dugardin, Guilley, Danger, Najm, and
+  Rioul}{Dugardin et~al\mbox{.}}{2016}]%
+        {mbedtlsreductions}
+\bibfield{author}{\bibinfo{person}{Margaux Dugardin}, \bibinfo{person}{Sylvain
+  Guilley}, \bibinfo{person}{Jean-Luc Danger}, \bibinfo{person}{Zakaria Najm},
+  {and} \bibinfo{person}{Olivier Rioul}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Correlated Extra-Reductions Defeat Blinded Regular
+  Exponentiation-Extended Version.}
+\newblock \bibinfo{journal}{\emph{IACR Cryptology ePrint Archive}}
+  \bibinfo{volume}{2016} (\bibinfo{year}{2016}), \bibinfo{pages}{597}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Fraser}{Fraser}{2000}]%
+        {fraser2000lomac}
+\bibfield{author}{\bibinfo{person}{Timothy Fraser}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{LOMAC: Low water-mark integrity protection for COTS
+  environments}. In \bibinfo{booktitle}{\emph{Security and Privacy, 2000. S\&P
+  2000. Proceedings. 2000 IEEE Symposium on}}. IEEE, \bibinfo{pages}{230--245}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Genkin, Pachmanov, Pipman, and Tromer}{Genkin
+  et~al\mbox{.}}{2015}]%
+        {genkin2015stealing}
+\bibfield{author}{\bibinfo{person}{Daniel Genkin}, \bibinfo{person}{Lev
+  Pachmanov}, \bibinfo{person}{Itamar Pipman}, {and} \bibinfo{person}{Eran
+  Tromer}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Stealing keys from PCs using a radio: Cheap
+  electromagnetic attacks on windowed exponentiation}. In
+  \bibinfo{booktitle}{\emph{International workshop on cryptographic hardware
+  and embedded systems}}. Springer, \bibinfo{pages}{207--228}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Gueron}{Gueron}{2011}]%
+        {cryptoeprint:2011:239}
+\bibfield{author}{\bibinfo{person}{Shay Gueron}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \bibinfo{title}{Efficient Software Implementations of Modular
+  Exponentiation}.
+\newblock \bibinfo{howpublished}{Cryptology ePrint Archive, Report 2011/239}.
+\newblock
+\newblock
+\shownote{\url{https://eprint.iacr.org/2011/239}.}
+
+
+\bibitem[\protect\citeauthoryear{Kocher}{Kocher}{1996}]%
+        {kochertiming}
+\bibfield{author}{\bibinfo{person}{Paul~C Kocher}.}
+  \bibinfo{year}{1996}\natexlab{}.
+\newblock \showarticletitle{Timing attacks on implementations of
+  Diffie-Hellman, RSA, DSS, and other systems}. In
+  \bibinfo{booktitle}{\emph{Annual International Cryptology Conference}}.
+  Springer, \bibinfo{pages}{104--113}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Lattner, Lenharth, and Adve}{Lattner
+  et~al\mbox{.}}{2007}]%
+        {DSA-lattner}
+\bibfield{author}{\bibinfo{person}{Chris Lattner}, \bibinfo{person}{Andrew
+  Lenharth}, {and} \bibinfo{person}{Vikram Adve}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Making context-sensitive points-to analysis with
+  heap cloning practical for the real world}.
+\newblock \bibinfo{journal}{\emph{ACM SIGPLAN Notices}} \bibinfo{volume}{42},
+  \bibinfo{number}{6} (\bibinfo{year}{2007}), \bibinfo{pages}{278--289}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Molnar, Piotrowski, Schultz, and
+  Wagner}{Molnar et~al\mbox{.}}{2005}]%
+        {molnar2005program}
+\bibfield{author}{\bibinfo{person}{David Molnar}, \bibinfo{person}{Matt
+  Piotrowski}, \bibinfo{person}{David Schultz}, {and} \bibinfo{person}{David
+  Wagner}.} \bibinfo{year}{2005}\natexlab{}.
+\newblock \showarticletitle{The program counter security model: Automatic
+  detection and removal of control-flow side channel attacks}. In
+  \bibinfo{booktitle}{\emph{International Conference on Information Security
+  and Cryptology}}. Springer, \bibinfo{pages}{156--168}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Moore and Chong}{Moore and Chong}{2011}]%
+        {moore2011static}
+\bibfield{author}{\bibinfo{person}{Scott Moore} {and} \bibinfo{person}{Stephen
+  Chong}.} \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Static analysis for efficient hybrid
+  information-flow control}. In \bibinfo{booktitle}{\emph{Computer Security
+  Foundations Symposium (CSF), 2011 IEEE 24th}}. IEEE,
+  \bibinfo{pages}{146--160}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Percival}{Percival}{2005}]%
+        {percival2005cache}
+\bibfield{author}{\bibinfo{person}{Colin Percival}.}
+  \bibinfo{year}{2005}\natexlab{}.
+\newblock \bibinfo{title}{Cache missing for fun and profit}.
+\newblock
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Pornin}{Pornin}{2018}]%
+        {BearSSLweb}
+\bibfield{author}{\bibinfo{person}{Thomas Pornin}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{BearSSL is an implementation of the SSL/TLS protocol
+  (RFC 5246) written in C.}
+\newblock
+\newblock
+\urldef\tempurl%
+\url{https://bearssl.org}
+\showURL{%
+\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Rodrigues, Quint\~{a}o Pereira, and
+  Aranha}{Rodrigues et~al\mbox{.}}{2016}]%
+        {FlowTracker}
+\bibfield{author}{\bibinfo{person}{Bruno Rodrigues},
+  \bibinfo{person}{Fernando~Magno Quint\~{a}o Pereira}, {and}
+  \bibinfo{person}{Diego~F. Aranha}.} \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Sparse Representation of Implicit Flows with
+  Applications to Side-channel Detection}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 25th International Conference on
+  Compiler Construction}} \emph{(\bibinfo{series}{CC 2016})}.
+  \bibinfo{publisher}{ACM}, \bibinfo{address}{New York, NY, USA},
+  \bibinfo{pages}{110--120}.
+\newblock
+\showISBNx{978-1-4503-4241-4}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2892208.2892230}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Schindler}{Schindler}{2000}]%
+        {schindler2000timing}
+\bibfield{author}{\bibinfo{person}{Werner Schindler}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{A timing attack against RSA with the chinese
+  remainder theorem}. In \bibinfo{booktitle}{\emph{International Workshop on
+  Cryptographic Hardware and Embedded Systems}}. Springer,
+  \bibinfo{pages}{109--124}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Somorovsky}{Somorovsky}{2016}]%
+        {Somorovsky}
+\bibfield{author}{\bibinfo{person}{Juraj Somorovsky}.}
+  \bibinfo{year}{2016}\natexlab{}.
+\newblock \showarticletitle{Systematic Fuzzing and Testing of TLS Libraries}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the 2016 ACM SIGSAC Conference on
+  Computer and Communications Security}} \emph{(\bibinfo{series}{CCS '16})}.
+  \bibinfo{publisher}{ACM}, \bibinfo{address}{New York, NY, USA},
+  \bibinfo{pages}{1492--1504}.
+\newblock
+\showISBNx{978-1-4503-4139-4}
+\urldef\tempurl%
+\url{https://doi.org/10.1145/2976749.2978411}
+\showDOI{\tempurl}
+
+
+\bibitem[\protect\citeauthoryear{Sutton, Greene, and Amini}{Sutton
+  et~al\mbox{.}}{2007}]%
+        {sutton2007fuzzing}
+\bibfield{author}{\bibinfo{person}{Michael Sutton}, \bibinfo{person}{Adam
+  Greene}, {and} \bibinfo{person}{Pedram Amini}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \bibinfo{booktitle}{\emph{Fuzzing: brute force vulnerability
+  discovery}}.
+\newblock \bibinfo{publisher}{Pearson Education}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Walter and Thompson}{Walter and
+  Thompson}{2001}]%
+        {walter2001distinguishing}
+\bibfield{author}{\bibinfo{person}{Colin~D Walter} {and} \bibinfo{person}{Susan
+  Thompson}.} \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Distinguishing exponent digits by observing modular
+  subtractions}. In \bibinfo{booktitle}{\emph{Cryptographers’ Track at the
+  RSA Conference}}. Springer, \bibinfo{pages}{192--207}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Wang, Wang, Liu, Zhang, and Wu}{Wang
+  et~al\mbox{.}}{2017}]%
+        {wang2017cached}
+\bibfield{author}{\bibinfo{person}{Shuai Wang}, \bibinfo{person}{Pei Wang},
+  \bibinfo{person}{Xiao Liu}, \bibinfo{person}{Danfeng Zhang}, {and}
+  \bibinfo{person}{Dinghao Wu}.} \bibinfo{year}{2017}\natexlab{}.
+\newblock \showarticletitle{Cached: Identifying cache-based timing channels in
+  production software}. In \bibinfo{booktitle}{\emph{Proceedings of the 26th
+  USENIX Security Symposium}}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhang, Askarov, and Myers}{Zhang
+  et~al\mbox{.}}{2012}]%
+        {cached-zhang}
+\bibfield{author}{\bibinfo{person}{Danfeng Zhang}, \bibinfo{person}{Aslan
+  Askarov}, {and} \bibinfo{person}{Andrew~C Myers}.}
+  \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{Language-based control and mitigation of timing
+  channels}.
+\newblock \bibinfo{journal}{\emph{ACM SIGPLAN Notices}} \bibinfo{volume}{47},
+  \bibinfo{number}{6} (\bibinfo{year}{2012}), \bibinfo{pages}{99--110}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zhang, Wang, Suh, and Myers}{Zhang
+  et~al\mbox{.}}{2015}]%
+        {zhang2015hardware}
+\bibfield{author}{\bibinfo{person}{Danfeng Zhang}, \bibinfo{person}{Yao Wang},
+  \bibinfo{person}{G~Edward Suh}, {and} \bibinfo{person}{Andrew~C Myers}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{A hardware design language for timing-sensitive
+  information-flow security}.
+\newblock \bibinfo{journal}{\emph{ACM SIGPLAN Notices}} \bibinfo{volume}{50},
+  \bibinfo{number}{4} (\bibinfo{year}{2015}), \bibinfo{pages}{503--516}.
+\newblock
+
+
+\end{thebibliography}

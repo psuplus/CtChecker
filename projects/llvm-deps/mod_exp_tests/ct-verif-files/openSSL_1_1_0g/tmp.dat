@@ -1,4 +1,4 @@
-Args: ../../../../..//Debug+Asserts/bin/opt -load ../../../../..//projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Constraints.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/pointstointerface.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Deps.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Security.dylib -vulnerablebranch -debug 
+Args: ../../../../..//Debug+Asserts/bin/opt -mem2reg -load ../../../../..//projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Constraints.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/pointstointerface.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Deps.dylib -load ../../../../..//projects/llvm-deps/Debug+Asserts/lib/Security.dylib -vulnerablebranch -debug 
 
 Features:+64bit,+sse2
 CPU:generic
@@ -10,452 +10,728 @@ Merged 6 call nodes.
 Merged 3 call nodes.
 Merged 6 call nodes.
 Merged 5 call nodes.
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from constant_time_eq_int
-Removing llvm.dbg.declare from constant_time_eq_int
-Removing llvm.dbg.declare from constant_time_eq
-Removing llvm.dbg.declare from constant_time_eq
-Removing llvm.dbg.declare from constant_time_is_zero
-Removing llvm.dbg.declare from constant_time_msb
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
 Removing llvm.dbg.declare from BN_mod_exp_simple
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
 Removing llvm.dbg.declare from BN_mod_exp_recp
 Removing llvm.dbg.declare from BN_mod_exp_recp
 Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.objectsize.i64.p0i8 from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_TO_PREBUF
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-Removing llvm.dbg.declare from constant_time_eq_int
-Removing llvm.dbg.declare from constant_time_eq_int
-Removing llvm.dbg.declare from constant_time_eq
-Removing llvm.dbg.declare from constant_time_eq
-Removing llvm.dbg.declare from constant_time_is_zero
-Removing llvm.dbg.declare from constant_time_msb
+Removing llvm.dbg.value from constant_time_msb
+Removing llvm.dbg.value from constant_time_is_zero
+Removing llvm.dbg.value from constant_time_eq
+Removing llvm.dbg.value from constant_time_eq
+Removing llvm.dbg.value from constant_time_eq_int
+Removing llvm.dbg.value from constant_time_eq_int
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
 Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_simple
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
-Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_mont_consttime_algorithm
 Removing llvm.dbg.declare from BN_mod_exp_recp
 Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
-Removing llvm.dbg.declare from BN_mod_exp_recp
 Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp_mont_word
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_mod_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_exp
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_is_bit_set
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
-Removing llvm.dbg.declare from BN_ucmp_0
+Removing llvm.dbg.value from constant_time_msb
+Removing llvm.dbg.value from constant_time_is_zero
+Removing llvm.dbg.value from constant_time_eq
+Removing llvm.dbg.value from constant_time_eq
+Removing llvm.dbg.value from constant_time_eq_int
+Removing llvm.dbg.value from constant_time_eq_int
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_FROM_PREBUF_0
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from MOD_EXP_CTIME_COPY_TO_PREBUF
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_simple
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_mont_consttime_algorithm
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_recp
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp_mont_word
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_mod_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_exp
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_is_bit_set
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
+Removing llvm.dbg.value from BN_ucmp_0
 Visiting single node SCC #: 1 fn: BN_ucmp_0
   [BU] Calculating graph for: BN_ucmp_0
-  [BU] Done inlining: BN_ucmp_0 [14+0]
+  [BU] Done inlining: BN_ucmp_0 [4+0]
 Visiting single node SCC #: 2 fn: BN_is_bit_set
   [BU] Calculating graph for: BN_is_bit_set
-  [BU] Done inlining: BN_is_bit_set [7+0]
+  [BU] Done inlining: BN_is_bit_set [2+0]
 Visiting single node SCC #: 3 fn: BN_exp
   [BU] Calculating graph for: BN_exp
-    Inlining graph for BN_is_bit_set[7+0] into 'BN_exp' [18+0]
-  [BU] Done inlining: BN_exp [19+0]
-Visiting single node SCC #: 5 fn: BN_mod_exp_mont
-  [BU] Calculating graph for: BN_mod_exp_mont
-    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_mont' [34+0]
-  [BU] Done inlining: BN_mod_exp_mont [35+0]
-Visiting single node SCC #: 6 fn: BN_mod_exp_mont_word
+    Inlining graph for BN_is_bit_set[2+0] into 'BN_exp' [9+0]
+  [BU] Done inlining: BN_exp [10+0]
+Visiting single node SCC #: 5 fn: BN_mod_exp_mont_word
   [BU] Calculating graph for: BN_mod_exp_mont_word
-    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_mont_word' [27+0]
-  [BU] Done inlining: BN_mod_exp_mont_word [28+0]
+    Inlining graph for BN_is_bit_set[2+0] into 'BN_mod_exp_mont_word' [9+0]
+  [BU] Done inlining: BN_mod_exp_mont_word [10+0]
+Visiting single node SCC #: 6 fn: BN_mod_exp_mont
+  [BU] Calculating graph for: BN_mod_exp_mont
+    Inlining graph for BN_is_bit_set[2+0] into 'BN_mod_exp_mont' [14+0]
+  [BU] Done inlining: BN_mod_exp_mont [15+0]
 Visiting single node SCC #: 7 fn: BN_mod_exp_recp
   [BU] Calculating graph for: BN_mod_exp_recp
-    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_recp' [27+0]
-  [BU] Done inlining: BN_mod_exp_recp [28+0]
+    Inlining graph for BN_is_bit_set[2+0] into 'BN_mod_exp_recp' [11+0]
+  [BU] Done inlining: BN_mod_exp_recp [12+0]
 Visiting single node SCC #: 4 fn: BN_mod_exp
   [BU] Calculating graph for: BN_mod_exp
-    Inlining graph for BN_mod_exp_mont[35+0] into 'BN_mod_exp' [13+0]
-    Inlining graph for BN_mod_exp_mont_word[28+0] into 'BN_mod_exp' [16+0]
-    Inlining graph for BN_mod_exp_recp[28+0] into 'BN_mod_exp' [17+0]
-  [BU] Done inlining: BN_mod_exp [15+0]
+    Inlining graph for BN_mod_exp_mont_word[10+0] into 'BN_mod_exp' [6+0]
+    Inlining graph for BN_mod_exp_mont[15+0] into 'BN_mod_exp' [9+0]
+    Inlining graph for BN_mod_exp_recp[12+0] into 'BN_mod_exp' [10+0]
+  [BU] Done inlining: BN_mod_exp [8+0]
 Visiting single node SCC #: 9 fn: MOD_EXP_CTIME_COPY_TO_PREBUF
   [BU] Calculating graph for: MOD_EXP_CTIME_COPY_TO_PREBUF
-  [BU] Done inlining: MOD_EXP_CTIME_COPY_TO_PREBUF [12+0]
+  [BU] Done inlining: MOD_EXP_CTIME_COPY_TO_PREBUF [3+0]
 Visiting single node SCC #: 14 fn: constant_time_msb
   [BU] Calculating graph for: constant_time_msb
-  [BU] Done inlining: constant_time_msb [1+0]
+  [BU] Done inlining: constant_time_msb [0+0]
 Visiting single node SCC #: 13 fn: constant_time_is_zero
   [BU] Calculating graph for: constant_time_is_zero
-  [BU] Done inlining: constant_time_is_zero [1+0]
+  [BU] Done inlining: constant_time_is_zero [0+0]
 Visiting single node SCC #: 12 fn: constant_time_eq
   [BU] Calculating graph for: constant_time_eq
-  [BU] Done inlining: constant_time_eq [2+0]
+  [BU] Done inlining: constant_time_eq [0+0]
 Visiting single node SCC #: 11 fn: constant_time_eq_int
   [BU] Calculating graph for: constant_time_eq_int
-  [BU] Done inlining: constant_time_eq_int [2+0]
+  [BU] Done inlining: constant_time_eq_int [0+0]
 Visiting single node SCC #: 10 fn: MOD_EXP_CTIME_COPY_FROM_PREBUF_0
   [BU] Calculating graph for: MOD_EXP_CTIME_COPY_FROM_PREBUF_0
-  [BU] Done inlining: MOD_EXP_CTIME_COPY_FROM_PREBUF_0 [21+0]
+  [BU] Done inlining: MOD_EXP_CTIME_COPY_FROM_PREBUF_0 [3+0]
 Visiting single node SCC #: 8 fn: BN_mod_exp_mont_consttime_algorithm
   [BU] Calculating graph for: BN_mod_exp_mont_consttime_algorithm
-    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[12+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
-    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[12+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
-    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF_0[21+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
-    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF_0[21+0] into 'BN_mod_exp_mont_consttime_algorithm' [77+0]
-  [BU] Done inlining: BN_mod_exp_mont_consttime_algorithm [77+0]
+    Inlining graph for BN_ucmp_0[4+0] into 'BN_mod_exp_mont_consttime_algorithm' [16+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[3+0] into 'BN_mod_exp_mont_consttime_algorithm' [17+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_TO_PREBUF[3+0] into 'BN_mod_exp_mont_consttime_algorithm' [17+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF_0[3+0] into 'BN_mod_exp_mont_consttime_algorithm' [17+0]
+    Inlining graph for MOD_EXP_CTIME_COPY_FROM_PREBUF_0[3+0] into 'BN_mod_exp_mont_consttime_algorithm' [17+0]
+  [BU] Done inlining: BN_mod_exp_mont_consttime_algorithm [17+0]
 Visiting single node SCC #: 15 fn: BN_mod_exp_simple
   [BU] Calculating graph for: BN_mod_exp_simple
-    Inlining graph for BN_is_bit_set[7+0] into 'BN_mod_exp_simple' [25+0]
-  [BU] Done inlining: BN_mod_exp_simple [26+0]
+    Inlining graph for BN_is_bit_set[2+0] into 'BN_mod_exp_simple' [9+0]
+  [BU] Done inlining: BN_mod_exp_simple [10+0]
 [TD] Inlining callers into 'BN_mod_exp_simple'
 [TD] Inlining callers into 'BN_mod_exp_mont_consttime_algorithm'
 [TD] Inlining callers into 'MOD_EXP_CTIME_COPY_FROM_PREBUF_0'
@@ -475,39 +751,41 @@ Visiting single node SCC #: 15 fn: BN_mod_exp_simple
 [TD] Inlining callers into 'BN_mod_exp'
 [TD] Inlining callers into 'BN_mod_exp_recp'
    [TD] Inlining graph into Fn 'BN_mod_exp_recp' from Fn 'BN_mod_exp': 5 args
-[TD] Inlining callers into 'BN_mod_exp_mont_word'
-   [TD] Inlining graph into Fn 'BN_mod_exp_mont_word' from Fn 'BN_mod_exp': 6 args
 [TD] Inlining callers into 'BN_mod_exp_mont'
    [TD] Inlining graph into Fn 'BN_mod_exp_mont' from Fn 'BN_mod_exp': 6 args
+[TD] Inlining callers into 'BN_mod_exp_mont_word'
+   [TD] Inlining graph into Fn 'BN_mod_exp_mont_word' from Fn 'BN_mod_exp': 6 args
 [TD] Inlining callers into 'BN_exp'
 [TD] Inlining callers into 'BN_is_bit_set'
    [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_simple': 2 args
    [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_recp': 2 args
-   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_mont_word': 2 args
    [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_mont': 2 args
+   [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_mod_exp_mont_word': 2 args
    [TD] Inlining graph into Fn 'BN_is_bit_set' from Fn 'BN_exp': 2 args
 [TD] Inlining callers into 'BN_ucmp_0'
-Running on BN_get_flags in context []
-Running on ERR_put_error in context []
-Running on BN_CTX_start in context []
-Running on BN_mod_exp in context []
-Running on BN_CTX_get in context []
-Running on BN_copy in context []
-Running on BN_num_bits in context []
+   [TD] Inlining graph into Fn 'BN_ucmp_0' from Fn 'BN_mod_exp_mont_consttime_algorithm': 3 args
 Running on BN_ucmp_0 in context []
 Running on llvm.dbg.declare in context []
 Running on BN_is_bit_set in context []
-Running on BN_mod_exp_mont in context []
-Running on BN_exp in context []
+Running on BN_get_flags in context []
+Running on ERR_put_error in context []
+Running on BN_CTX_start in context []
+Running on BN_CTX_get in context []
+Running on BN_copy in context []
+Running on BN_num_bits in context []
 Running on BN_is_odd in context []
 Running on BN_set_word in context []
 Running on BN_sqr in context []
 Running on BN_mul in context []
 Running on BN_CTX_end in context []
+Running on BN_exp in context []
+Running on llvm.dbg.value in context []
 Running on BN_mod_mul_montgomery in context []
 Running on bn_wexpand in context []
 Running on bn_correct_top in context []
+Running on BN_mod_exp in context []
 Running on BN_mod_exp_mont_word in context []
+Running on BN_mod_exp_mont in context []
 Running on BN_mod_exp_recp in context []
 Running on BN_is_one in context []
 Running on BN_RECP_CTX_init in context []
@@ -525,8 +803,358 @@ Running on BN_value_one in context []
 Running on BN_from_montgomery in context []
 Running on BN_MONT_CTX_free in context []
 Running on BN_mod_exp_mont_consttime_algorithm in context []
-Running on __memset_chk in context []
-Running on llvm.objectsize.i64.p0i8 in context []
+Using taint reachable signature for:   call void @ERR_put_error(i32 3, i32 124, i32 102, i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0), i32 621), !dbg !224
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0)
+Creating ConsElem Map for :	Node0x7fa892437e00 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [37 x i8] c\"mont_consttime/v2_4_mont_consttime.c\\00\", align 1\n|{<s0>0}}"];
+REACHABLE SOURCE: i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0)
+	Node0x7fa892437e00 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [37 x i8] c\"mont_consttime/v2_4_mont_consttime.c\\00\", align 1\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0)
+Using taint reachable signature for:   %call155 = call i32 @BN_is_bit_set_0(%struct.bignum_st* %p, i32 %bits.0, i32 %pub_BRANCH17), !dbg !423
+RSINKGEP INSTRUCTION %struct.bignum_st* %p
+Added child elem: 	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+Creating ConsElem Map for :	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+EDGE: [0: tymap-size 1]:i64
+	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+Creating ConsElem Map for :	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+REACHABLE SOURCE: %struct.bignum_st* %p
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+RSINKGEP INSTRUCTION %struct.bignum_st* %p
+Added child elem: 	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+Using taint reachable signature for:   %call175 = call i32 @BN_is_bit_set_0(%struct.bignum_st* %p, i32 %bits.2, i32 %pub_BRANCH20), !dbg !448
+RSINKGEP INSTRUCTION %struct.bignum_st* %p
+Added child elem: 	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+REACHABLE SOURCE: %struct.bignum_st* %p
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+RSINKGEP INSTRUCTION %struct.bignum_st* %p
+Added child elem: 	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+Using taint reachable signature for:   call void @OPENSSL_cleanse(i8* %powerbuf.1, i64 %conv200), !dbg !479
+RSINKGEP INSTRUCTION   %powerbuf.1 = phi i8* [ %powerbuf.0, %if.then107 ], [ %powerbuf.0, %if.then110 ], [ %powerbuf.0, %if.then129 ], [ %powerbuf.0, %if.then140 ], [ %powerbuf.0, %if.then144 ], [ %powerbuf.0, %if.then172 ], [ %powerbuf.0, %if.then186 ], [ %powerbuf.0, %if.then183 ], [ %powerbuf.0, %if.then189 ], [ %powerbuf.0, %if.end190 ], [ %powerbuf.0, %if.then163 ], [ %powerbuf.0, %if.then133 ], [ %powerbuf.0, %if.then123 ], [ %powerbuf.0, %if.then119 ], [ %powerbuf.0, %if.then114 ], [ %powerbuf.0, %if.then98 ], [ null, %if.then18 ], [ null, %if.then21 ]
+Creating ConsElem Map for :	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+REACHABLE SOURCE:   %powerbuf.1 = phi i8* [ %powerbuf.0, %if.then107 ], [ %powerbuf.0, %if.then110 ], [ %powerbuf.0, %if.then129 ], [ %powerbuf.0, %if.then140 ], [ %powerbuf.0, %if.then144 ], [ %powerbuf.0, %if.then172 ], [ %powerbuf.0, %if.then186 ], [ %powerbuf.0, %if.then183 ], [ %powerbuf.0, %if.then189 ], [ %powerbuf.0, %if.end190 ], [ %powerbuf.0, %if.then163 ], [ %powerbuf.0, %if.then133 ], [ %powerbuf.0, %if.then123 ], [ %powerbuf.0, %if.then119 ], [ %powerbuf.0, %if.then114 ], [ %powerbuf.0, %if.then98 ], [ null, %if.then18 ], [ null, %if.then21 ]
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %powerbuf.1 = phi i8* [ %powerbuf.0, %if.then107 ], [ %powerbuf.0, %if.then110 ], [ %powerbuf.0, %if.then129 ], [ %powerbuf.0, %if.then140 ], [ %powerbuf.0, %if.then144 ], [ %powerbuf.0, %if.then172 ], [ %powerbuf.0, %if.then186 ], [ %powerbuf.0, %if.then183 ], [ %powerbuf.0, %if.then189 ], [ %powerbuf.0, %if.end190 ], [ %powerbuf.0, %if.then163 ], [ %powerbuf.0, %if.then133 ], [ %powerbuf.0, %if.then123 ], [ %powerbuf.0, %if.then119 ], [ %powerbuf.0, %if.then114 ], [ %powerbuf.0, %if.then98 ], [ null, %if.then18 ], [ null, %if.then21 ]
+Using taint reachable signature for:   call void @CRYPTO_free(i8* %powerbufFree.2, i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0), i32 1090), !dbg !480
+RSINKGEP INSTRUCTION   %powerbufFree.2 = phi i8* [ %powerbufFree.1, %if.then107 ], [ %powerbufFree.1, %if.then110 ], [ %powerbufFree.1, %if.then129 ], [ %powerbufFree.1, %if.then140 ], [ %powerbufFree.1, %if.then144 ], [ %powerbufFree.1, %if.then172 ], [ %powerbufFree.1, %if.then186 ], [ %powerbufFree.1, %if.then183 ], [ %powerbufFree.1, %if.then189 ], [ %powerbufFree.1, %if.end190 ], [ %powerbufFree.1, %if.then163 ], [ %powerbufFree.1, %if.then133 ], [ %powerbufFree.1, %if.then123 ], [ %powerbufFree.1, %if.then119 ], [ %powerbufFree.1, %if.then114 ], [ %powerbufFree.1, %if.then98 ], [ null, %if.then18 ], [ null, %if.then21 ]
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0)
+Creating ConsElem Map for :	Node0x7fa892434420 [shape=record,shape=Mrecord,label="{0: i8,  : SME\n}"];
+REACHABLE SOURCE:   %powerbufFree.2 = phi i8* [ %powerbufFree.1, %if.then107 ], [ %powerbufFree.1, %if.then110 ], [ %powerbufFree.1, %if.then129 ], [ %powerbufFree.1, %if.then140 ], [ %powerbufFree.1, %if.then144 ], [ %powerbufFree.1, %if.then172 ], [ %powerbufFree.1, %if.then186 ], [ %powerbufFree.1, %if.then183 ], [ %powerbufFree.1, %if.then189 ], [ %powerbufFree.1, %if.end190 ], [ %powerbufFree.1, %if.then163 ], [ %powerbufFree.1, %if.then133 ], [ %powerbufFree.1, %if.then123 ], [ %powerbufFree.1, %if.then119 ], [ %powerbufFree.1, %if.then114 ], [ %powerbufFree.1, %if.then98 ], [ null, %if.then18 ], [ null, %if.then21 ]
+REACHABLE SOURCE: i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0)
+	Node0x7fa892434420 [shape=record,shape=Mrecord,label="{0: i8,  : SME\n}"];
+	Node0x7fa892437e00 [shape=record,shape=Mrecord,label="{VOID array: GE\n@.str = private unnamed_addr constant [37 x i8] c\"mont_consttime/v2_4_mont_consttime.c\\00\", align 1\n|{<s0>0}}"];
+RSINKGEP INSTRUCTION   %powerbufFree.2 = phi i8* [ %powerbufFree.1, %if.then107 ], [ %powerbufFree.1, %if.then110 ], [ %powerbufFree.1, %if.then129 ], [ %powerbufFree.1, %if.then140 ], [ %powerbufFree.1, %if.then144 ], [ %powerbufFree.1, %if.then172 ], [ %powerbufFree.1, %if.then186 ], [ %powerbufFree.1, %if.then183 ], [ %powerbufFree.1, %if.then189 ], [ %powerbufFree.1, %if.end190 ], [ %powerbufFree.1, %if.then163 ], [ %powerbufFree.1, %if.then133 ], [ %powerbufFree.1, %if.then123 ], [ %powerbufFree.1, %if.then119 ], [ %powerbufFree.1, %if.then114 ], [ %powerbufFree.1, %if.then98 ], [ null, %if.then18 ], [ null, %if.then21 ]
+RSINKGEP INSTRUCTION i8* getelementptr inbounds ([37 x i8], [37 x i8]* @.str, i32 0, i32 0)
+Creating ConsElem Map for :	Node0x7fa892428ec0 [shape=record,shape=Mrecord,label="{0: i32,  : GMRE\n@dummy = global i32 0, align 4\n}"];
+DSOURCEGEP INSTRUCTION   %top4 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 1, !dbg !227
+[Source:]   %top4 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 1, !dbg !227
+StructType:	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  : CRE[8,12]0x7fa892621880
+DSOURCEGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %p, i32 0, i32 0, !dbg !230
+[Source:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %p, i32 0, i32 0, !dbg !230
+StructType:Trying to find element at offset 0
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64,  : CRE: elem 0:default:0x7fa892614260
+CONSTRAINING: 0: i64*,  : CRE: elem 0:default:0x7fa89261ce20
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %4, i64 0, !dbg !231
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %4, i64 0, !dbg !231
+ allocation intermediate:   %4 = load i64*, i64** %d, align 8, !dbg !230
+=>  %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %p, i32 0, i32 0, !dbg !230
+ allocation intermediate:   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %p, i32 0, i32 0, !dbg !230
+=>%struct.bignum_st* %p
+Trying to find element at offset 0
+	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+Trying to find element at offset 0
+CONSTRAINING: 0: i64,  : CRE: elem 0:default:0x7fa892614260
+DSINKGEP INSTRUCTION   %d67 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !290
+[Sink:]   %d67 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !290
+StructType:::IS STRUCT TY::Tainting at offset: 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %d67 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !290
+[Sink:]   %d67 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !290
+StructType:::IS STRUCT TY::Tainting at offset: 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %d68 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !292
+[Source:]   %d68 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !292
+StructType:FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Trying to find element at offset 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[0,8]0x7fa892440eb0
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSINKGEP INSTRUCTION   %d70 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !294
+[Sink:]   %d70 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !294
+StructType:::IS STRUCT TY::Tainting at offset: 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %d70 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !294
+[Sink:]   %d70 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 0, !dbg !294
+StructType:::IS STRUCT TY::Tainting at offset: 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+Tainting at offset: 0
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top71 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !296
+[Sink:]   %top71 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !296
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top71 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !296
+[Sink:]   %top71 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 1, !dbg !296
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top72 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !298
+[Sink:]   %top72 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !298
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top72 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !298
+[Sink:]   %top72 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !298
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !300
+[Sink:]   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !300
+StructType:::IS STRUCT TY::Tainting at offset: 12
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !300
+[Sink:]   %dmax = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 2, !dbg !300
+StructType:::IS STRUCT TY::Tainting at offset: 12
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax73 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !302
+[Sink:]   %dmax73 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !302
+StructType:::IS STRUCT TY::Tainting at offset: 12
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %dmax73 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !302
+[Sink:]   %dmax73 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 2, !dbg !302
+StructType:::IS STRUCT TY::Tainting at offset: 12
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 12
+Tainting at offset: 12
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !304
+[Sink:]   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !304
+StructType:::IS STRUCT TY::Tainting at offset: 16
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !304
+[Sink:]   %neg = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 3, !dbg !304
+StructType:::IS STRUCT TY::Tainting at offset: 16
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg74 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !306
+[Sink:]   %neg74 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !306
+StructType:::IS STRUCT TY::Tainting at offset: 16
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %neg74 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !306
+[Sink:]   %neg74 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 3, !dbg !306
+StructType:::IS STRUCT TY::Tainting at offset: 16
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 16
+Tainting at offset: 16
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !308
+[Sink:]   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !308
+StructType:::IS STRUCT TY::Tainting at offset: 20
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !308
+[Sink:]   %flags = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %am, i32 0, i32 4, !dbg !308
+StructType:::IS STRUCT TY::Tainting at offset: 20
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !310
+[Sink:]   %flags75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !310
+StructType:::IS STRUCT TY::Tainting at offset: 20
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %flags75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !310
+[Sink:]   %flags75 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 4, !dbg !310
+StructType:::IS STRUCT TY::Tainting at offset: 20
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 20
+Tainting at offset: 20
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %d76 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !315
+[Source:]   %d76 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !315
+StructType:	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  : CRE[0,8]0x7fa89262b130
+DSOURCEGEP INSTRUCTION   %arrayidx77 = getelementptr inbounds i64, i64* %10, i64 %idxprom, !dbg !314
+[Source:]   %arrayidx77 = getelementptr inbounds i64, i64* %10, i64 %idxprom, !dbg !314
+Created 1 constraint variable(s) for node of size 8
+DSOURCEGEP INSTRUCTION   %d80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !318
+[Source:]   %d80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !318
+StructType:Trying to find element at offset 0
+	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  : CRE[0,8]0x7fa89262b130
+CONSTRAINING: 0: i64,   array: CRE: elem 0::0x7fa892633ce0
+DSOURCEGEP INSTRUCTION   %arrayidx81 = getelementptr inbounds i64, i64* %12, i64 0, !dbg !320
+[Source:]   %arrayidx81 = getelementptr inbounds i64, i64* %12, i64 0, !dbg !320
+ allocation intermediate:   %12 = load i64*, i64** %d80, align 8, !dbg !318
+=>  %d80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !318
+ allocation intermediate:   %d80 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !318
+=>%struct.bignum_st* %m
+Trying to find element at offset 0
+	Node0x7fa892429990 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+Trying to find element at offset 0
+CONSTRAINING: 0: i64,   array: CRE: elem 0::0x7fa892633ce0
+DSOURCEGEP INSTRUCTION   %d83 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !322
+[Source:]   %d83 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !322
+StructType:FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Trying to find element at offset 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[0,8]0x7fa892440eb0
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSINKGEP INSTRUCTION   %arrayidx84 = getelementptr inbounds i64, i64* %14, i64 0, !dbg !323
+[Sink:]   %arrayidx84 = getelementptr inbounds i64, i64* %14, i64 0, !dbg !323
+Tainting at offset: 0
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %arrayidx84 = getelementptr inbounds i64, i64* %14, i64 0, !dbg !323
+[Sink:]   %arrayidx84 = getelementptr inbounds i64, i64* %14, i64 0, !dbg !323
+Tainting at offset: 0
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %d88 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !333
+[Source:]   %d88 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %m, i32 0, i32 0, !dbg !333
+StructType:Trying to find element at offset 0
+	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  : CRE[0,8]0x7fa89262b130
+CONSTRAINING: 0: i64,   array: CRE: elem 0::0x7fa892633ce0
+DSOURCEGEP INSTRUCTION   %arrayidx89 = getelementptr inbounds i64, i64* %15, i64 %idxprom87, !dbg !332
+[Source:]   %arrayidx89 = getelementptr inbounds i64, i64* %15, i64 %idxprom87, !dbg !332
+DSOURCEGEP INSTRUCTION   %d92 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !336
+[Source:]   %d92 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 0, !dbg !336
+StructType:FINAL:   %tmp = alloca %struct.bignum_st, align 8
+Trying to find element at offset 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[0,8]0x7fa892440eb0
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSINKGEP INSTRUCTION   %arrayidx93 = getelementptr inbounds i64, i64* %17, i64 %idxprom91, !dbg !335
+[Sink:]   %arrayidx93 = getelementptr inbounds i64, i64* %17, i64 %idxprom91, !dbg !335
+DSINKGEP INSTRUCTION   %arrayidx93 = getelementptr inbounds i64, i64* %17, i64 %idxprom91, !dbg !335
+[Sink:]   %arrayidx93 = getelementptr inbounds i64, i64* %17, i64 %idxprom91, !dbg !335
+DSINKGEP INSTRUCTION   %top95 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !340
+[Sink:]   %top95 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !340
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top95 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !340
+[Sink:]   %top95 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %tmp, i32 0, i32 1, !dbg !340
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSOURCEGEP INSTRUCTION   %neg101 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 3, !dbg !348
+[Source:]   %neg101 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 3, !dbg !348
+StructType:	Node0x7fa892429560 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429560:s0 -> Node0x7fa892429890;
+Trying to find element at offset 16
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE[16,20]0x7fa8924441a0
 Running on BN_is_bit_set_0 in context []
 Running on OPENSSL_cleanse in context []
 Running on CRYPTO_free in context []
@@ -534,19 +1162,219 @@ Running on BN_mul_word in context []
 Running on BN_div in context []
 Running on BN_mod_exp_simple in context []
 Running on BN_mod_mul in context []
-Running on MOD_EXP_CTIME_COPY_TO_PREBUF in context []
-Running on MOD_EXP_CTIME_COPY_FROM_PREBUF_0 in context []
-Running on constant_time_eq_int in context []
-Running on constant_time_eq in context []
-Running on constant_time_is_zero in context []
-Running on constant_time_msb in context []
+Running on BN_ucmp_0 in context [BN_mod_exp_mont_consttime_algorithm ]
+DSOURCEGEP INSTRUCTION   %top = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 1, !dbg !114
+[Source:]   %top = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 1, !dbg !114
+StructType:	Node0x7fa892429560 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429560:s0 -> Node0x7fa892429890;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE[8,12]0x7fa8924440a0
+DSOURCEGEP INSTRUCTION   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !115
+[Source:]   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !115
+StructType:Trying to find element at offset 8
+	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  : CRE[8,12]0x7fa892621880
+CONSTRAINING: 0: i64,   array: CRE: elem 0::0x7fa892633ce0
+DSOURCEGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 0, !dbg !123
+[Source:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 0, !dbg !123
+StructType:	Node0x7fa892429560 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429560:s0 -> Node0x7fa892429890;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE[0,8]0x7fa892443e30
+DSOURCEGEP INSTRUCTION   %d3 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !126
+[Source:]   %d3 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !126
+StructType:Trying to find element at offset 0
+	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  : CRE[0,8]0x7fa89262b130
+CONSTRAINING: 0: i64,   array: CRE: elem 0::0x7fa892633ce0
+DSOURCEGEP INSTRUCTION   %top4 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 1, !dbg !129
+[Source:]   %top4 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %a, i32 0, i32 1, !dbg !129
+StructType:	Node0x7fa892429560 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  16: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429560:s0 -> Node0x7fa892429890;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  16: i32,  : CRE[8,12]0x7fa8924440a0
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %2, i64 %idxprom, !dbg !136
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %2, i64 %idxprom, !dbg !136
+Created 1 constraint variable(s) for node of size 8
+DSOURCEGEP INSTRUCTION   %arrayidx8 = getelementptr inbounds i64, i64* %3, i64 %idxprom7, !dbg !140
+[Source:]   %arrayidx8 = getelementptr inbounds i64, i64* %3, i64 %idxprom7, !dbg !140
+Running on MOD_EXP_CTIME_COPY_TO_PREBUF in context [BN_mod_exp_mont_consttime_algorithm ]
+DSOURCEGEP INSTRUCTION   %top1 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !120
+[Source:]   %top1 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !120
+StructType:Trying to find element at offset 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[8,12]0x7fa892440d80
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSOURCEGEP INSTRUCTION   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !124
+[Source:]   %top2 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !124
+StructType:Trying to find element at offset 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[8,12]0x7fa892440d80
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSOURCEGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !137
+[Source:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !137
+StructType:Trying to find element at offset 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[0,8]0x7fa892440eb0
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %3, i64 %idxprom, !dbg !135
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %3, i64 %idxprom, !dbg !135
+DSINKGEP INSTRUCTION   %arrayidx5 = getelementptr inbounds i64, i64* %0, i64 %idxprom4, !dbg !138
+[Sink:]   %arrayidx5 = getelementptr inbounds i64, i64* %0, i64 %idxprom4, !dbg !138
+DSINKGEP INSTRUCTION   %arrayidx5 = getelementptr inbounds i64, i64* %0, i64 %idxprom4, !dbg !138
+[Sink:]   %arrayidx5 = getelementptr inbounds i64, i64* %0, i64 %idxprom4, !dbg !138
+Running on MOD_EXP_CTIME_COPY_FROM_PREBUF_0 in context [BN_mod_exp_mont_consttime_algorithm ]
+DSOURCEGEP INSTRUCTION   %arrayidx = getelementptr inbounds i64, i64* %table.0, i64 %idxprom, !dbg !147
+[Source:]   %arrayidx = getelementptr inbounds i64, i64* %table.0, i64 %idxprom, !dbg !147
+DSOURCEGEP INSTRUCTION   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !159
+[Source:]   %d = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !159
+StructType:Trying to find element at offset 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[0,8]0x7fa892440eb0
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSINKGEP INSTRUCTION   %arrayidx9 = getelementptr inbounds i64, i64* %2, i64 %idxprom8, !dbg !158
+[Sink:]   %arrayidx9 = getelementptr inbounds i64, i64* %2, i64 %idxprom8, !dbg !158
+DSINKGEP INSTRUCTION   %arrayidx9 = getelementptr inbounds i64, i64* %2, i64 %idxprom8, !dbg !158
+[Sink:]   %arrayidx9 = getelementptr inbounds i64, i64* %2, i64 %idxprom8, !dbg !158
+DSOURCEGEP INSTRUCTION   %arrayidx44 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom43, !dbg !215
+[Source:]   %arrayidx44 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom43, !dbg !215
+DSOURCEGEP INSTRUCTION   %arrayidx49 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom48, !dbg !219
+[Source:]   %arrayidx49 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom48, !dbg !219
+DSOURCEGEP INSTRUCTION   %arrayidx55 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom54, !dbg !224
+[Source:]   %arrayidx55 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom54, !dbg !224
+DSOURCEGEP INSTRUCTION   %arrayidx61 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom60, !dbg !229
+[Source:]   %arrayidx61 = getelementptr inbounds i64, i64* %table.1, i64 %idxprom60, !dbg !229
+DSOURCEGEP INSTRUCTION   %d74 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !242
+[Source:]   %d74 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 0, !dbg !242
+StructType:Trying to find element at offset 0
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 0
+CONSTRAINING: 0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SCMR[0,8]0x7fa892440eb0
+CONSTRAINING: COLLAPSED: SCMRE: elem 0:default:0x7fa89275a6c0
+DSINKGEP INSTRUCTION   %arrayidx75 = getelementptr inbounds i64, i64* %7, i64 %idxprom73, !dbg !241
+[Sink:]   %arrayidx75 = getelementptr inbounds i64, i64* %7, i64 %idxprom73, !dbg !241
+DSINKGEP INSTRUCTION   %arrayidx75 = getelementptr inbounds i64, i64* %7, i64 %idxprom73, !dbg !241
+[Sink:]   %arrayidx75 = getelementptr inbounds i64, i64* %7, i64 %idxprom73, !dbg !241
+DSINKGEP INSTRUCTION   %top82 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !248
+[Sink:]   %top82 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !248
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+DSINKGEP INSTRUCTION   %top82 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !248
+[Sink:]   %top82 = getelementptr inbounds %struct.bignum_st, %struct.bignum_st* %b, i32 0, i32 1, !dbg !248
+StructType:::IS STRUCT TY::Tainting at offset: 8
+	Node0x7fa892436690 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  12: i32,  16: i32,  20: i32,  : SMR\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892436690:s0 -> Node0x7fa892525300;
+Trying to find element at offset 8
+Tainting at offset: 8
+	Node0x7fa892525300 [shape=record,shape=Mrecord,label="{COLLAPSED: SMRE\n|{<s0>0}}"];
+Adding 1 elements
+Running on constant_time_eq_int in context [MOD_EXP_CTIME_COPY_FROM_PREBUF_0 ]
+Running on constant_time_eq in context [constant_time_eq_int ]
+Running on constant_time_is_zero in context [constant_time_eq ]
+Running on constant_time_msb in context [constant_time_is_zero ]
+Trying to constrain p at 0 for value : p
+%struct.bignum_st* %p
+%struct.bignum_st* %p
+ has 5 elements.
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+Map size does not match number of elements 1
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+Matching Type:%struct.bignum_st*
+Map size does not match number of elements 1
+	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+FOUND 0 elements from the locsForValue
+Number of elements to constrain: 0
 DONE
+Trying to constrain m at 0 for value : m
+%struct.bignum_st* %m
+%struct.bignum_st* %m
+ has 5 elements.
+	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+Trying to find element at offset 0
+Matching Type:%struct.bignum_st*
+Map size does not match number of elements 1
+	Node0x7fa892429990 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+FOUND 1 elements from the locsForValue
+Number of elements to constrain: 1
+0: i64*,  8: i32,  : CRE[0,8] : addr 0x7fa89262b130
 DONE
+Trying to constrain p at 0 for value : p
+%struct.bignum_st* %p
+%struct.bignum_st* %p
+ has 5 elements.
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+Map size does not match number of elements 1
+	Node0x7fa892433eb0 [shape=record,shape=Mrecord,label="{0: i64*,  : RE\n|{<s0>0}}"];
+	Node0x7fa892433eb0:s0 -> Node0x7fa892434ac0;
+Matching Type:%struct.bignum_st*
+Map size does not match number of elements 1
+	Node0x7fa892434ac0 [shape=record,shape=Mrecord,label="{0: i64,  : RE\n}"];
+FOUND 0 elements from the locsForValue
+Number of elements to constrain: 0
 DONE
+Trying to constrain m at 0 for value : m
+%struct.bignum_st* %m
+%struct.bignum_st* %m
+ has 5 elements.
+	Node0x7fa892429720 [shape=record,shape=Mrecord,label="{0: i64*,  8: i32,  : RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7|<s8>8|<s9>9|<s10>10|<s11>11|<s12>12|<s13>13|<s14>14|<s15>15|<s16>16|<s17>17|<s18>18|<s19>19|<s20>20|<s21>21|<s22>22|<s23>23}}"];
+	Node0x7fa892429720:s0 -> Node0x7fa892429990;
+%struct.bignum_st = type { i64*, i32, i32, i32, i32 }
+Trying to find element at offset 0
+Matching Type:%struct.bignum_st*
+Map size does not match number of elements 1
+	Node0x7fa892429990 [shape=record,shape=Mrecord,label="{0: i64,   array: RE\n|{<s0>0|<s1>1|<s2>2|<s3>3|<s4>4|<s5>5|<s6>6|<s7>7}}"];
+FOUND 1 elements from the locsForValue
+Number of elements to constrain: 1
+0: i64*,  8: i32,  : CRE[0,8] : addr 0x7fa89262b130
 DONE
 #--------------Results------------------
+mont_consttime/v2_4_mont_consttime_lib/bn_lib.c line 648
+mont_consttime/v2_4_mont_consttime.c line 628
+mont_consttime/v2_4_mont_consttime.c line 684
+mont_consttime/v2_4_mont_consttime.c line 684
+mont_consttime/v2_4_mont_consttime.c line 684
+mont_consttime/v2_4_mont_consttime.c line 708
+mont_consttime/v2_4_mont_consttime.c line 711
+mont_consttime/v2_4_mont_consttime.c line 725
+mont_consttime/v2_4_mont_consttime.c line 739
+mont_consttime/v2_4_mont_consttime.c line 751
+mont_consttime/v2_4_mont_consttime.c line 1022
+mont_consttime/v2_4_mont_consttime.c line 1028
+mont_consttime/v2_4_mont_consttime.c line 1039
+mont_consttime/v2_4_mont_consttime.c line 1049
+mont_consttime/v2_4_mont_consttime.c line 1053
+mont_consttime/v2_4_mont_consttime.c line 522
+mont_consttime/v2_4_mont_consttime.c line 525
+mont_consttime/v2_4_mont_consttime.c line 543
+mont_consttime/v2_4_mont_consttime.c line 547
+mont_consttime/v2_4_mont_consttime.c line 569
 #--------------Statistics----------------
-:: Tainted Branches: 0
-:: Branch Instructions: 452
-:: Conditional Branches: 205
-:: Vulnerable Branches: 0.00% [0/452]
+:: Tainted Branches: 20
+:: Branch Instructions: 510
+:: Conditional Branches: 222
+:: Vulnerable Branches: 3.92% [20/510]

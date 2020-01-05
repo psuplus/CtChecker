@@ -7,12 +7,63 @@ else
         EXT="so"
 fi
 
+COL=""
+MEM2REG=""
+
+cp whitelist.txt whitelist_tmp.txt
+if [ $2 = true ] ; then
+        if [ "$COL" = "" ] ; then
+                COL+="WL"
+        else
+                COL+="/WL"
+        fi
+else
+        : > whitelist.txt
+fi
+
+if git branch -a | grep -q '* master'; then
+        if [ "$COL" = "" ] ; then
+                COL+="FS"
+        else
+                COL+="/FS"
+        fi
+fi
+
+if [ $3 = true ] ; then
+        MEM2REG="-mem2reg"
+        if [ "$COL" = "" ] ; then
+                COL+="FlS"
+        else
+                COL+="/FlS"
+        fi
+fi
+
+if [ $4 = true ] ; then
+        if [ "$COL" = "" ] ; then
+                COL+="SRC"
+        else
+                COL+="/SRC"
+        fi
+fi
+
+if [ "$COL" = "" ] ; then
+        COL="Base"
+fi
+
+START=27
+END=37
+FILE="i32_tmont.c"
+
+echo "$COL"
+echo "$MEM2REG"
+
+
 LEVEL="../../../.."
 
 make $1
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
@@ -21,4 +72,6 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
   -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
 
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat > $2
+post_analysis.py tmp.dat $START $END $COL 3 $FILE > results_with_source.txt
+
+mv whitelist_tmp.txt whitelist.txt

@@ -23,4 +23,4 @@ DIRS := $(filter-out libcxx,$(DIRS))
 # DragonEgg may be checked out here but doesn't (yet) build directly.
 DIRS := $(filter-out dragonegg,$(DIRS))
 
-include $(PROJ_SRC_ROOT)/Makefile.rules
+# include $(PROJ_SRC_ROOT)/Makefile.rules

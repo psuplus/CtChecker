@@ -80,6 +80,11 @@ post_analysis.py tmp.dat 305 485 $COL 5 $FILE > results_with_source.txt
 post_analysis.py tmp.dat 593 1096 $COL 6 $FILE > results_with_source.txt
 post_analysis.py tmp.dat 1096 1244 $COL 7 $FILE > results_with_source.txt
 
+COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
+
+echo Output log: ./$COL
+mv tmp.dat $COL
+
 mv whitelist_tmp.txt whitelist.txt
 
 #SPLITPY="../utils/split.py"

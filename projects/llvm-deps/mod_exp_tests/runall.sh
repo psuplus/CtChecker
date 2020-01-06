@@ -33,7 +33,7 @@ execute_test()
     rm_file_if_exists results_with_source.txt
     rm_file_if_exists tmp.dat
 
-    # flags: white_list flow_sensitivity source
+    # flags: white_list; flow_sensitivity; source
     if [ $5 = true ] ; then 
         $2 $3 true false $5     # WL/FS/SRC
         $2 $3 true true $5      # WL/FS/FlS/SRC

@@ -68,10 +68,10 @@ def update_table(lines):
 
     # print(sys.argv[4])
 
-    df = pd.read_csv('../../paper/conference/benchmark-table.tex',
-                     sep='&',
-                     header=None,
-                     engine='python')
+    # df = pd.read_csv('../../paper/conference/benchmark-table.tex',
+    #                  sep='&',
+    #                  header=None,
+    #                  engine='python')
 
     # print(df)
     # print('\n')

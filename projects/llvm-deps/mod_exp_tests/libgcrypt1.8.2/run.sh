@@ -89,6 +89,11 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
 post_analysis.py tmp.dat $START $END $COL 1 $FILE> results_with_source.txt
 
+COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
+
+echo Output log: ./$COL
+mv tmp.dat $COL
+
 mv whitelist_tmp.txt whitelist.txt
 
 ## link instrumentation module

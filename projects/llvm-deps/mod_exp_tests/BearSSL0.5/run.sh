@@ -50,14 +50,15 @@ START=27
 END=37
 FILE="i32_tmont.c"
 
-echo "$COL"
-echo "$MEM2REG"
+echo "Running with flags: $COL"
+# echo "$MEM2REG"
 
 
 LEVEL="../../../.."
 
 make $1
 
+TIME=$(date +%s.%N)
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
@@ -66,9 +67,11 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
   -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
+TIME=$(echo "$(date +%s.%N) - $TIME" | bc)
+printf "Execution time: %.6f seconds\n" $TIME
 
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat $START $END $COL 3 $FILE > results_with_source.txt
+post_analysis.py tmp.dat $START $END $COL 3 $FILE $TIME > results_with_source.txt
 
 COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 

@@ -14,7 +14,6 @@ post_analysis.py tmp.dat > positives_with_source.txt
 '''
 import re
 import sys
-import pandas as pd
 
 from collections import defaultdict
 
@@ -57,6 +56,8 @@ def update_table(lines):
     end = int(sys.argv[3])
     row_idx = int(sys.argv[5])
     interested_file = sys.argv[6]
+    min, sec = divmod(int(float(sys.argv[7])), 60)
+    running_time = "%02d:%02d" % (min, sec)
 
     count = 0
     for fname, result_pair in lines.items():
@@ -65,16 +66,6 @@ def update_table(lines):
             if line >= start and line <= end:
                 if fname == interested_file:
                     count = count + 1
-
-    # print(sys.argv[4])
-
-    df = pd.read_csv('../../paper/conference/benchmark-table.tex',
-                     sep='&',
-                     header=None,
-                     engine='python')
-
-    # print(df)
-    # print('\n')
 
     table = []
     with open("../../paper/conference/benchmark-table.tex", 'r') as f:
@@ -90,32 +81,49 @@ def update_table(lines):
         if label == sys.argv[4]:
             table[row_idx][idx] = count
 
-    df = pd.DataFrame(table)
-    # print(df)
-
-    with open("../../paper/conference/benchmark-table.tex", 'w+') as f:
-        # f.write("\\begin{table*}\n")
-        # f.write("\t\\centering\n\n")
-        # f.write("\t\t\\begin{tabular}{@{}lrrrrrrrrrrr@{}}\n")
-        # f.write("\t\t\\toprule\n")
-
-        f.write(df.to_latex(index=False))
-
-        # f.write("\n\t\\caption{Number of Warnings based on Features}\n")
-        # f.write("\t\\label{tbl:overall-feature-benchmark}\n")
-        # f.write("\\end{table*}\n")
-
-        # f.write("start=%d\n" % int(sys.argv[2]))
-        # f.write("end=%d" % int(sys.argv[3]))
+    with open('../../paper/conference/benchmark-table.tex', 'w') as f:
+        f.write((' & '.join(table[0]) + ' \\\\\n').replace('%', '\%'))
+        f.write('\\midrule\n')
+        for i in range(1, 4):
+            table[i][0] = '\\textbf{' + table[i][0] + '}'
+            f.write((' & '.join(map(str, table[i])) + ' \\\\\n')
+                    .replace('%', '\%'))
+        f.write('\\textbf{OpenSSL 1.1.0g} \\\\\n')
+        for i in range(4, 8):
+            table[i][0] = '\\hspace{0.25cm}' + table[i][0]
+            f.write((' & '.join(map(str, table[i])) + ' \\\\\n')
+                    .replace('%', '\%'))
         f.close()
 
-    flines = open('../../paper/conference/benchmark-table.tex').readlines()
-    with open('../../paper/conference/benchmark-table.tex', 'w') as f:
-        f.writelines(flines[4])
+    running_time_table = []
+    with open("../../paper/conference/benchmark-running-time.tex", 'r') as f:
+        for i, line in enumerate(f):
+            l = line.split('&')
+            if len(l) == 12:
+                running_time_table.append([s.replace('\\', '')
+                                           .replace('hspace{0.25cm}', '')
+                                           .replace('textbf{', '').replace('}', '')
+                                           .strip() for s in l])
+
+    for idx, label in enumerate(running_time_table[0]):
+        if label == sys.argv[4]:
+            running_time_table[row_idx][idx] = running_time
+
+    with open('../../paper/conference/benchmark-running-time.tex', 'w') as f:
+        f.write((' & '.join(running_time_table[0]) + ' \\\\\n')
+                .replace('%', '\%'))
         f.write('\\midrule\n')
-        f.writelines(flines[5:8])
-        f.write('OpenSSL 1.1.0g \\\\\n')
-        f.writelines(flines[8:-2])
+        for i in range(1, 4):
+            running_time_table[i][0] = '\\textbf{' + \
+                running_time_table[i][0] + '}'
+            f.write((' & '.join(map(str, running_time_table[i])) + ' \\\\\n')
+                    .replace('%', '\%'))
+        f.write('\\textbf{OpenSSL 1.1.0g} \\\\\n')
+        for i in range(4, 8):
+            running_time_table[i][0] = '\\hspace{0.25cm}' + \
+                running_time_table[i][0]
+            f.write((' & '.join(map(str, running_time_table[i])) + ' \\\\\n')
+                    .replace('%', '\%'))
         f.close()
 
 

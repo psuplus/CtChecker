@@ -18,6 +18,13 @@ import sys
 from collections import defaultdict
 
 
+def parse_number(num):
+    try:
+        return int(num)
+    except ValueError:
+        return float(num)
+
+
 def filter_lines_from_results(fname):
     '''Filters through vulnerable branch dat file for tainted lines'''
     match = '[a-zA-Z0-9/_-]+.(c|h|cpp|hpp) line [0-9]+'
@@ -56,7 +63,7 @@ def update_table(lines):
     end = int(sys.argv[3])
     row_idx = int(sys.argv[5])
     interested_file = sys.argv[6]
-    min, sec = divmod(int(float(sys.argv[7])), 60)
+    min, sec = divmod(parse_number(sys.argv[7]), 60)
     running_time = "%02d:%02d" % (min, sec)
 
     count = 0

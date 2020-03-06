@@ -23,6 +23,8 @@
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/DebugInfo.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/CommandLine.h"
@@ -770,6 +772,19 @@ const MDLocation* findVar(const Value* V, const Function* F) {
   }
   return NULL;
 }
+
+const MDLocalVariable* findVarNode(const Value* V, const Function* F) {
+  for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End; ++Iter) {
+    const Instruction* I = &*Iter;
+    if (const DbgDeclareInst* DbgDeclare = dyn_cast<DbgDeclareInst>(I)) {
+      if (DbgDeclare->getAddress() == V) return DbgDeclare->getVariable();
+    } else if (const DbgValueInst* DbgValue = dyn_cast<DbgValueInst>(I)) {
+      if (DbgValue->getValue() == V) return DbgValue->getVariable();
+    }
+  }
+  return NULL;
+}
+
 
 void 
 InfoflowSolution::getOriginalLocation(const Value* V) {
@@ -2371,11 +2386,58 @@ Infoflow::parseTaintString(std::string line) {
   return ret;
 }
 
+bool
+Infoflow::valueMatchParsedString(const Value& value, std::string kind, std::tuple<std::string, int, std::string> match) {
+  std::string match_name;
+  int t_offset;
+  std::string fn_name;
+  std::tie(match_name, t_offset, fn_name) = match;
+
+  errs() << "Matching value with parsed string.\n";
+
+  const Function * fn = findEnclosingFunc(&value);
+  bool function_matches = false;
+  if(fn_name.size() == 0 || (fn && fn->hasName() && fn->getName() == fn_name)) {
+    function_matches = true;
+  }
+
+  errs() << "\t- function matched\n";
+
+  bool variable_matches = false;
+
+  if (function_matches) {
+    const MDLocalVariable* local_var;
+    if (fn) {
+      local_var = findVarNode(&value, fn);
+    }
+    if (local_var && (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+      errs() << "\t- local_var has the name: [" << local_var->getName() << "]\n";
+      if (value.hasName()) 
+        errs() << "\t- value has the name: [" << value.getName() << "]\n";
+      if ((value.hasName() && value.getName() == match_name) || (local_var && local_var->getName() == match_name)) {
+        variable_matches = true;
+      }
+    }
+  }
+
+  if (variable_matches)
+    errs() << "\t- Found a match\n\n";
+  else
+    errs() << "\t- Not a match\n\n";
+  return variable_matches;
+
+}
+
+
+
 void
 Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::string> match) {
   errs() << "Removing values tied to " << std::get<0>(match) << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
          end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
+    errs() << "=== Iteration starts on a value===" << "\n";
+    
+
     const Value & value = *(entry->first);
 
     std::string s;
@@ -2387,68 +2449,104 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
     int t_offset;
     std::string fn_name;
     std::tie(match_name, t_offset, fn_name) = match;
+    
+    errs() << "The value under examination is: [" << s << "]\n" 
+           << "\twith offset = [" << t_offset 
+           << "], and in the function: [" << fn_name << "]\n\n";
 
-    const Function * fn = findEnclosingFunc(&value);
+    const Function *fn = findEnclosingFunc(&value);
     bool function_matches = false;
     if(fn_name.size() == 0 || (fn && fn->hasName() && fn->getName() == fn_name)) {
       function_matches = true;
     }
 
-    if(function_matches  && value.hasName() && value.getName() == match_name) {
-      const std::set<const AbstractLoc *> &locs = locsForValue(value);
-      for(std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
-        DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
-
-        std::map<unsigned, const ConsElem *> elemMap;
-        if (curElem != locConstraintMap.end()) {
-          elemMap = curElem->second;
-        }
-
-        if (t_offset >= 0) {
-          // Check if we are loading from a pointer.
-          bool linkExists = false;
-          if(curElem->first->getSize() > 0)
-            linkExists = curElem->first->hasLink(0);
-
-          if (linkExists) {
-            // If the value is a pointer, use pointsto analysis to resolve the target
-            const DSNodeHandle nh = curElem->first->getLink(0);
-            const AbstractLoc * node = nh.getNode();
-            errs() << "Linked Node";
-            if (node != NULL){
-
-              node->dump();
-              DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = locConstraintMap.find(node);
-
-              // Instead look at this set of constraint elements
-              elemMap = childElem->second;
+    bool variable_matches = valueMatchParsedString(value, kind, match);
+    bool remove_reg = true, remove_mem = true;
+    if (variable_matches) {
+      // Removing constraints in the registers, i.e., valueConstraintMap
+      if (remove_reg) {
+        errs() << "Removing constraint from valueConstraintMap\n";
+        for (DenseMap<ContextID, DenseMap<const Value *, const ConsElem *>>::iterator id = valueConstraintMap.begin(),
+              end = valueConstraintMap.end(); id != end; ++id) {
+          errs() << "Checking contextID: " << id->first << "\n";
+          for (DenseMap<const Value *, const ConsElem *>::iterator I = id->second.begin(), 
+                E = id->second.end(); I != E; ++I) {
+            if (I->first == &value) {
+              errs() << "Found the matching value in the valueConstraintMap:\n";
+              errs() << "\t- value name: " << (*I->first).getName() << "\n";
+              errs() << "\t- value addr: " << I->first << "\n";
+              const ConsElem * thisElem = I->second;
+              errs() << "Removing ConsElem addr: " << thisElem << "\n";
+              kit->removeConstraintRHS(kind, *thisElem);
             }
           }
+          errs() << "Checking contextID: " << id->first << " finished.\n\n";
+        }
+      }
 
-          // Remove the relevant constraint
-          removeConstraintFromIndex(kind, *loc, &value, elemMap, t_offset);
-        } else {
-          // Removes any constraints tied to that AbstractLoc
-          for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-              it != itEnd; ++it){
-            const ConsElem * e = it->second;
-            kit->removeConstraintRHS(kind, *e);
+      // Removing constraints in the memory, i.e., AbstractLoc set derived from the value
+      if (remove_mem) {
+        const std::set<const AbstractLoc *> &locs = locsForValue(value);
+        errs() << "--" << match_name << " : " << value
+              << ", t_offset: " << t_offset 
+              << ", locs: " << locs.size() << "\n";
+        for (std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
+          DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(*loc);
+
+          std::map<unsigned, const ConsElem *> elemMap;
+          if (curElem != locConstraintMap.end()) {
+            elemMap = curElem->second;
+          }
+
+          if (t_offset >= 0) {
+            // Check if we are loading from a pointer.
+            bool linkExists = false;
+            if(curElem->first->getSize() > 0)
+              linkExists = curElem->first->hasLink(0);
+
+            if (linkExists) {
+              // If the value is a pointer, use pointsto analysis to resolve the target
+              const DSNodeHandle nh = curElem->first->getLink(0);
+              const AbstractLoc * node = nh.getNode();
+              errs() << "Linked Node";
+              if (node != NULL){
+
+                node->dump();
+                DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator childElem = locConstraintMap.find(node);
+
+                // Instead look at this set of constraint elements
+                elemMap = childElem->second;
+              }
+            }
+
+            // Remove the relevant constraint
+            removeConstraintFromIndex(kind, *loc, &value, elemMap, t_offset);
+          } else {
+            // Removes any constraints tied to that AbstractLoc
+            for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
+                it != itEnd; ++it){
+              const ConsElem * e = it->second;
+
+              errs() << "------" << " conselem addr" << " : " << e << "\n";
+              kit->removeConstraintRHS(kind, *e);
+            }
           }
         }
       }
-    } else if (s.find(match_name) == 0 ) {
-      errs() << "Removing constraint ";
+    } else if (s.find(match_name) == 0) {
+      errs() << "Removing constraint with a no match: ";
       const ConsElem & elem = *(entry->second);
       elem.dump(errs());
       errs() << "\n";
       kit->removeConstraintRHS(kind, elem);
     }
+    errs() << "=== Iteration ends ===" << "\n\n\n";
   }
 }
 
 void
 Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsElem*> elemMap) {
-  //errs() << "Tainting all constraint elements from value\n";
+  errs() << "Tainting all constraint elements from value\n";
   for(std::map<unsigned, const ConsElem*>::iterator it = elemMap.begin(), end = elemMap.end(); it != end; ++it){
     //it->second->dump(errs());
     if((it->second) != NULL)
@@ -2457,7 +2555,7 @@ Infoflow::constrainAllConsElem(std::string kind, std::map<unsigned, const ConsEl
 }
 void
 Infoflow::constrainAllConsElem(std::string kind, std::set<const ConsElem*> elems) {
-  //errs() << "Tainting all constraint elements from value\n";
+  errs() << "Tainting all constraint elements from value\n";
   for(std::set<const ConsElem*>::iterator it = elems.begin(), end = elems.end(); it != end; ++it){
     //(*it)->dump(errs());
     kit->addConstraint(kind, kit->highConstant(), *(*it));
@@ -2465,7 +2563,7 @@ Infoflow::constrainAllConsElem(std::string kind, std::set<const ConsElem*> elems
 }
 void
 Infoflow::constrainAllConsElem(std::string kind, const Value & v, std::set<const ConsElem*> elems) {
-  //errs() << "Tainting all constraint elements from value\n";
+  errs() << "Tainting all constraint elements from value\n";
   if (elems.size() == 0) {
     setTainted(kind,v);
   } else {

@@ -2,7 +2,7 @@
 
 # Make output directories
 CUR=$(pwd)
-PROJ_DIR=../..
+PROJ_DIR=..
 OUT_DIR=results
 OUT_FULL_DIR=$OUT_DIR/full
 OUT_MIN_DIR=$OUT_DIR/min
@@ -51,7 +51,7 @@ full_library_tests()
 {
     execute_test "BearSSL0.5" "./run.sh" "testall.bc" $OUT_FULL_DIR true
     execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
-    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true # TODO there is no full.bc in the folder
     execute_test "mbedtls2.9.0" "./run.sh" "test2.bc" $OUT_FULL_DIR true
 }
 
@@ -94,6 +94,7 @@ ct_verif_tests()
 main()
 {
     cd $PROJ_DIR
+    pwd
     make
     cd $CUR
 

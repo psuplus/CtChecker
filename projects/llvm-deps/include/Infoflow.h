@@ -311,6 +311,7 @@ private:
   void putOrConstrainConsElemCollapsed(bool, bool, const AbstractLoc &, const ConsElem &, unsigned, const StructType*);
 
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
+  static bool valueMatchParsedString(const Value& value, std::string kind, std::tuple<std::string, int, std::string> match);
   void removeConstraint (std::string kind, std::string match);
   void removeConstraint (std::string kind, std::tuple<std::string, int,std::string> match);
   void removeConstraintFromIndex(std::string, const AbstractLoc*, const Value *, std::map<unsigned, const ConsElem*>, int);

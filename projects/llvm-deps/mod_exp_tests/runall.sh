@@ -27,6 +27,7 @@ pool_results()
 
 execute_test()
 {
+    echo
     echo ":::: Changing to $1 directory"
     cd $1
     echo "::::: Running $2 $3"
@@ -58,7 +59,7 @@ full_library_tests()
 
 min_library_tests()
 {
-    execute_test "BearSSL0.5" "./run.sh" "testall.bc" $OUT_MIN_DIR false
+    execute_test "BearSSL0.5" "./run.sh" "test2.bc" $OUT_MIN_DIR false
     execute_test "openSSL_1_1_0g" "./run.sh" "test1.bc" $OUT_MIN_DIR false
     execute_test "mbedtls2.9.0" "./run.sh" "test1.bc" $OUT_MIN_DIR false
     execute_test "libgcrypt1.8.2" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false

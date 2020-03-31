@@ -4,6 +4,9 @@ LD=../../../../Debug+Asserts/bin/llvm-link
 CFLAGS=-isystem include -I include -O0 -g -emit-llvm
 
 
+test0.bc : i32_tmont.bc
+	$(LD) $^ -o $@
+
 test1.bc : i32_modpow.bc
 	$(LD) $^ -o $@
 

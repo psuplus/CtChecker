@@ -96,3 +96,10 @@ Support
 *.spec
 ocaml
 *.llvmbuild
+
+#==============================================================================#
+# Adding more files that should be ignored - 3/31/2020
+#==============================================================================#
+tmp*.dat
+results_with_source*.txt
+/projects/llvm-deps/mod_exp_tests/results/

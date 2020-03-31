@@ -69,7 +69,7 @@ FILE="mpi/mpi-pow.c"
 
 # CUR=$(pwd)
 # cd ../../../;
-# make
+make $1
 # cd $CUR
 
 ## compile the instrumentation module to bitcode
@@ -90,7 +90,7 @@ TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat $START $END $COL 1 $FILE $TIME > results_with_source.txt
+post_analysis.py tmp.dat $START $END $COL 1 $FILE $TIME > results_with_source_$COL.txt
 
 COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 

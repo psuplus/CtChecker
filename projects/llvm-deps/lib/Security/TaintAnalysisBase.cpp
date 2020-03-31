@@ -221,9 +221,8 @@ TaintAnalysisBase::taintStr (std::string kind, std::tuple<std::string,int,std::s
       function_matches = true;
     }
 
-    bool variable_matches = Infoflow::valueMatchParsedString(value, kind, match);
     // if (function_matches && value.hasName() && value.getName() == match_name ) {
-    if (variable_matches) {
+    if (Infoflow::matchValueAndParsedString(value, kind, match) > 0) {
       constrainValue(kind, value, t_offset, match_name);
     } else {
       std::string s;

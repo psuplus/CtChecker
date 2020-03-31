@@ -55,7 +55,6 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
 
   std::string s = value.getName();
   errs() << "Trying to constrain " << match_name << " at " << t_offset << " for value : " << s << "\n";
-  value.dump();
   const std::set<const AbstractLoc *> & locs = ifa->locsForValue(value);
   const std::set<const AbstractLoc *> & rlocs = ifa->reachableLocsForValue(value);
   if(t_offset < 0  || (locs.size() == 0 && rlocs.size() == 0)) {
@@ -90,6 +89,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value & value, in
 
   std::set<const ConsElem *> elementsToConstrain;
   for(;loc != end; ++loc){
+    errs() << "??? " ;
     (*loc)->dump();
     //if((*loc)->isNodeCompletelyFolded() || (*loc)->type_begin() == (*loc)->type_end()){
     //  hasOffset = false;
@@ -222,9 +222,8 @@ TaintAnalysisBase::taintStr (std::string kind, std::tuple<std::string,int,std::s
       function_matches = true;
     }
 
-    bool variable_matches = Infoflow::valueMatchParsedString(value, kind, match);
     // if (function_matches && value.hasName() && value.getName() == match_name ) {
-    if (variable_matches) {
+    if (Infoflow::matchValueAndParsedString(value, kind, match) > 0) {
       constrainValue(kind, value, t_offset, match_name);
     } else {
       std::string s;

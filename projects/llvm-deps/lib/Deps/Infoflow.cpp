@@ -774,6 +774,11 @@ const MDLocation* findVar(const Value* V, const Function* F) {
 }
 
 const MDLocalVariable* findVarNode(const Value* V, const Function* F) {
+  StringRef vName;
+  if (V->hasName()) {
+    vName = V->getName();
+  }
+  errs() << "\t- looking for value [" << vName << "] in function [" << F->getName() << "]\n";
   for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End; ++Iter) {
     const Instruction* I = &*Iter;
     if (const DbgDeclareInst* DbgDeclare = dyn_cast<DbgDeclareInst>(I)) {
@@ -2386,8 +2391,8 @@ Infoflow::parseTaintString(std::string line) {
   return ret;
 }
 
-bool
-Infoflow::valueMatchParsedString(const Value& value, std::string kind, std::tuple<std::string, int, std::string> match) {
+int
+Infoflow::matchValueAndParsedString(const Value& value, std::string kind, std::tuple<std::string, int, std::string> match) {
   std::string match_name;
   int t_offset;
   std::string fn_name;
@@ -2396,36 +2401,30 @@ Infoflow::valueMatchParsedString(const Value& value, std::string kind, std::tupl
   errs() << "Matching value with parsed string.\n";
 
   const Function * fn = findEnclosingFunc(&value);
-  bool function_matches = false;
+  int variable_matches = 0;
   if(fn_name.size() == 0 || (fn && fn->hasName() && fn->getName() == fn_name)) {
-    function_matches = true;
-  }
-
-  errs() << "\t- function matched\n";
-
-  bool variable_matches = false;
-
-  if (function_matches) {
+    errs() << "\t- function matched\n";
     const MDLocalVariable* local_var;
     if (fn) {
       local_var = findVarNode(&value, fn);
     }
     if (local_var && (local_var->getTag() == 257 || local_var->getTag() == 256)) {
       errs() << "\t- local_var has the name: [" << local_var->getName() << "]\n";
-      if (value.hasName()) 
-        errs() << "\t- value has the name: [" << value.getName() << "]\n";
-      if ((value.hasName() && value.getName() == match_name) || (local_var && local_var->getName() == match_name)) {
-        variable_matches = true;
+      if (local_var->getName() == match_name) {
+        variable_matches |= 1;
+        errs() << "\t- Found a local variable match\n\n";
+      }
+    }
+    if (value.hasName()) {
+      errs() << "\t- value has the name: [" << value.getName() << "]\n";
+      if (value.getName() == match_name) {
+        variable_matches |= 2;
+        errs() << "\t- Found a value name match\n\n";
       }
     }
   }
-
-  if (variable_matches)
-    errs() << "\t- Found a match\n\n";
-  else
-    errs() << "\t- Not a match\n\n";
+  // errs() << "\t- Not a match\n\n";
   return variable_matches;
-
 }
 
 
@@ -2460,9 +2459,9 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
       function_matches = true;
     }
 
-    bool variable_matches = valueMatchParsedString(value, kind, match);
     bool remove_reg = true, remove_mem = true;
-    if (variable_matches) {
+    // if(function_matches && value.hasName() && value.getName() == match_name) {
+    if (matchValueAndParsedString(value, kind, match)) {
       // Removing constraints in the registers, i.e., valueConstraintMap
       if (remove_reg) {
         errs() << "Removing constraint from valueConstraintMap\n";

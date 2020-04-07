@@ -1337,12 +1337,16 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
     errs() << "Creating ConsElem Map for :"; loc.dump();
+    loc.dumpParentGraph();
     std::string name = getCaption(&loc, NULL);
     unsigned size =  1;
     //errs() << "Created " << size << " constraint variable(s)...\n";
     for(unsigned offset = 0; offset < size; offset++ ){
       const ConsElem & elem = kit->newVar(name+": elem " + std::to_string(offset) + ":default:");
       locConstraintMap[&loc].insert(std::make_pair(offset,&elem));
+
+      errs() << "CREATED ConsElem at: " << &elem << " text: "
+             << name << ": elem " << std::to_string(offset) << ":default:\n";
     }
 
     DSNode::TyMapTy child_loc_types{loc.type_begin(), loc.type_end()};
@@ -2031,6 +2035,8 @@ Infoflow::constrainCallInst(const CallInst & inst, bool analyzeCallees, Flows & 
   if (const IntrinsicInst *intr = dyn_cast<IntrinsicInst>(&inst)) {
     return constrainIntrinsic(*intr, flows);
   } else {
+    errs() << "%%% constrainCallSite: " << analyzeCallees << ":";
+    inst.dump();
     return constrainCallSite(ImmutableCallSite(&inst), analyzeCallees, flows);
   }
 }
@@ -2077,6 +2083,9 @@ Infoflow::constrainCallSite(const ImmutableCallSite & cs, bool analyzeCallees, F
   // Do constraints for each callee
   for (std::set<std::pair<const Function *, const ContextID> >::iterator callee = callees.begin(), end = callees.end();
        callee != end; ++callee) {
+    errs() << "%%%% function: ";
+    (*callee).first->dump();
+    // (*callee).second->dump();
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
 }
@@ -2095,9 +2104,24 @@ Infoflow::constrainCallee(const ContextID calleeContext, const Function & callee
   pcFlow.addSinkValue(callee.getEntryBlock());
   flows.push_back(pcFlow);
 
+
+  errs() << "CALLSITE\n";
+  cs->dump();
+  errs() << "SOURCE\n";
+  for (FlowRecord::value_iterator ii = pcFlow.source_value_begin(); ii != pcFlow.source_value_end(); ii++) {
+    (*ii)->dump();
+  }
+  errs() << "SINK\n";
+  for (FlowRecord::value_iterator ii = pcFlow.sink_value_begin(); ii != pcFlow.sink_value_end(); ii++) {
+    (*ii)->dump();
+  }
+
+
   // 2) levels of params should be as high as corresponding args
   unsigned int numArgs = cs.arg_size();
+  errs() << "numArgs = cs.arg_size() = " << numArgs << "\n";
   unsigned int numParams = callee.arg_size();
+  errs() << "numParams = callee.arg_size() = " << numParams << "\n";
 
   // Check arities for sanity...
   assert((!callee.isVarArg() || numArgs >= numParams)
@@ -2112,6 +2136,29 @@ Infoflow::constrainCallee(const ContextID calleeContext, const Function & callee
     argFlow.addSourceValue(*cs.getArgument(i));
     argFlow.addSinkValue(*param);
     flows.push_back(argFlow);
+
+
+    errs() << "CALLSITE\n";
+    cs->dump();
+    errs() << "SOURCE\n";
+    for (FlowRecord::value_iterator ii = argFlow.source_value_begin(); ii != argFlow.source_value_end(); ii++) {
+      (*ii)->dump();
+      const Value *value = (*ii);
+      const std::set<const AbstractLoc *> &locs = locsForValue(*value);
+      for (std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
+        (*loc)->dump();
+      }
+
+    }
+    errs() << "SINK\n";
+    for (FlowRecord::value_iterator ii = argFlow.sink_value_begin(); ii != argFlow.sink_value_end(); ii++) {
+      (*ii)->dump();
+      const Value *value = (*ii);
+      const std::set<const AbstractLoc *> &locs = locsForValue(*value);
+      for (std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
+        (*loc)->dump();
+      }
+    }
     ++param;
   }
   // The remaining arguments provide a bound on the vararg structure
@@ -2502,8 +2549,8 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
             removeConstraintFromIndex(kind, *loc, &value, elemMap, t_offset);
           } else {
             // Removes any constraints tied to that AbstractLoc
-            for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(), itEnd= elemMap.end();
-                it != itEnd; ++it){
+            for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin();
+                it != elemMap.end(); ++it){
               const ConsElem * e = it->second;
 
               errs() << "------" << " conselem addr" << " : " << e << "\n";

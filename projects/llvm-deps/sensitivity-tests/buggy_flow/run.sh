@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 # linking example
 
+
+cd ../../
+pwd
+make
+cd -
+pwd
+
+
 if [ "$(uname)" == "Darwin" ]; then
         EXT="dylib"
 else
@@ -30,8 +38,8 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < main.bc > /dev/null
-
+  -vulnerablebranch  -debug < main.bc 2> tmp.dat > /dev/null
+# 2> tmp.dat 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc
 

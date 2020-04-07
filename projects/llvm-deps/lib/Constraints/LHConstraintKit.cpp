@@ -145,6 +145,21 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
     const ConsElem & constraintRight = c.rhs();
     constraintRight.dump(*ss2);
     ss2->str();
+
+    llvm::errs() << "\n"; 
+    std::string ll = "";
+    std::string rr = "";
+    llvm::raw_string_ostream* lls = new llvm::raw_string_ostream(ll);
+    llvm::raw_string_ostream* rrs = new llvm::raw_string_ostream(rr);
+    c.lhs().dump(*lls);
+    c.rhs().dump(*rrs);
+    lls->str();
+    rrs->str();
+
+    llvm::errs() << "addr:  " << &constraintRight << "\n";
+    llvm::errs() << "lhs: " << ll << "\n"; 
+    llvm::errs() << "rhs: " << rr << "\n"; 
+
     if (&rhs == &constraintRight){
       llvm::errs() << "Constraint erased: ";
       llvm::errs() << consText << "\n";
@@ -152,6 +167,8 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
     } else {
       ++vIt;
     }
+
+    llvm::errs() << "\n+++++++++++++\n";
     vEnd = set.end();
   }
 

@@ -59,18 +59,29 @@ VulnerableBranch::runOnModule(Module &M) {
   InfoflowSolution* soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> tainted = soln->getAllTaintValues();
 
+  errs() << "--taint\n";
+  for (std::set<const Value*>::iterator i = tainted.begin(); i != tainted.end(); i++) {
+    (*i)->dump();
+  }
+
+
   kinds.clear();
   kinds.insert("untrust");
   soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> untrusted = soln->getAllTaintValues();
 
-  /**
-     std::set<const Value*> vul;
-     std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
-     for(std::set<const Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
-     soln->getOriginalLocation(*it);
-     errs() << "\n";
-     }*/
+
+  errs() << "--untrust\n";
+  for (std::set<const Value*>::iterator i = untrusted.begin(); i != untrusted.end(); i++) {
+    (*i)->dump();
+  }
+  
+  // std::set<const Value*> vul;
+  // std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(), untrusted.end(), std::inserter(vul, vul.end()));
+  // for(std::set<const Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
+  // soln->getOriginalLocation(*it);
+  // errs() << "\n";
+  // }
 
   // Variables to gather branch statistics
   unsigned long number_branches = 0;

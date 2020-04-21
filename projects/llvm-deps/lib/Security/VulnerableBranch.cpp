@@ -59,10 +59,22 @@ VulnerableBranch::runOnModule(Module &M) {
   InfoflowSolution* soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> tainted = soln->getAllTaintValues();
 
+  errs() << "--taint\n";
+  for (std::set<const Value*>::iterator i = tainted.begin(); i != tainted.end(); i++) {
+    (*i)->dump();
+  }
+
+
   kinds.clear();
   kinds.insert("untrust");
   soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value*> untrusted = soln->getAllTaintValues();
+
+
+  errs() << "--untrust\n";
+  for (std::set<const Value*>::iterator i = untrusted.begin(); i != untrusted.end(); i++) {
+    (*i)->dump();
+  }
 
   /**
      std::set<const Value*> vul;

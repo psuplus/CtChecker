@@ -2094,6 +2094,9 @@ Infoflow::constrainCallSite(const ImmutableCallSite & cs, bool analyzeCallees, F
   // Do constraints for each callee
   for (std::set<std::pair<const Function *, const ContextID> >::iterator callee = callees.begin(), end = callees.end();
        callee != end; ++callee) {
+    errs() << "%%%% function: ";
+    (*callee).first->dump();
+    // (*callee).second->dump();
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
 }
@@ -2112,6 +2115,17 @@ Infoflow::constrainCallee(const ContextID calleeContext, const Function & callee
   pcFlow.addSinkValue(callee.getEntryBlock());
   flows.push_back(pcFlow);
 
+  errs() << "CALLSITE\n";
+  cs->dump();
+  errs() << "SOURCE\n";
+  for (FlowRecord::value_iterator ii = pcFlow.source_value_begin(); ii != pcFlow.source_value_end(); ii++) {
+    (*ii)->dump();
+  }
+  errs() << "SINK\n";
+  for (FlowRecord::value_iterator ii = pcFlow.sink_value_begin(); ii != pcFlow.sink_value_end(); ii++) {
+    (*ii)->dump();
+  }
+
   // 2) levels of params should be as high as corresponding args
   unsigned int numArgs = cs.arg_size();
   unsigned int numParams = callee.arg_size();
@@ -2129,6 +2143,27 @@ Infoflow::constrainCallee(const ContextID calleeContext, const Function & callee
     argFlow.addSourceValue(*cs.getArgument(i));
     argFlow.addSinkValue(*param);
     flows.push_back(argFlow);
+    
+    errs() << "CALLSITE\n";
+    cs->dump();
+    errs() << "SOURCE\n";
+    for (FlowRecord::value_iterator ii = argFlow.source_value_begin(); ii != argFlow.source_value_end(); ii++) {
+      (*ii)->dump();
+      const Value *value = (*ii);
+      const std::set<const AbstractLoc *> &locs = locsForValue(*value);
+      for (std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
+        (*loc)->dump();
+      }
+    }
+    errs() << "SINK\n";
+    for (FlowRecord::value_iterator ii = argFlow.sink_value_begin(); ii != argFlow.sink_value_end(); ii++) {
+      (*ii)->dump();
+      const Value *value = (*ii);
+      const std::set<const AbstractLoc *> &locs = locsForValue(*value);
+      for (std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
+        (*loc)->dump();
+      }
+    }
     ++param;
   }
   // The remaining arguments provide a bound on the vararg structure
@@ -2427,10 +2462,36 @@ Infoflow::matchValueAndParsedString(const Value& value, std::string kind, std::t
   return variable_matches;
 }
 
+void Infoflow::getOrCreateLocationValueMap() {
+  errs() << "getOrCreateLocationValueMap\n";
+  if (invertedLocConstraintMap.size() > 0) {
+    return;
+  }
+
+  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry =
+           summarySourceValueConstraintMap.begin();
+       entry != summarySourceValueConstraintMap.end(); ++entry) {
+    const Value &value = *(entry->first);
+    if (!isa<BasicBlock>(value)) {
+      const std::set<const AbstractLoc *> &locs = locsForValue(value);
+      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin();
+           loc != locs.end(); ++loc) {
+        (*loc)->dump();
+        DenseMap<const AbstractLoc *, std::set<const Value *>>::iterator
+            setIter = invertedLocConstraintMap.find(*loc);
+        invertedLocConstraintMap[*loc].insert(&value);
+        errs() << "VVVVALUE" << invertedLocConstraintMap[*loc].size() << "\n";
+        value.dump();
+
+      }
+    }
+  }
+}
 
 
 void
 Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::string> match) {
+  getOrCreateLocationValueMap();
   errs() << "Removing values tied to " << std::get<0>(match) << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
          end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
@@ -2497,6 +2558,15 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
             elemMap = curElem->second;
           }
 
+          if (invertedLocConstraintMap.find(*loc) !=
+                  invertedLocConstraintMap.end() &&
+              invertedLocConstraintMap.find(*loc)->getSecond().size() > 1) {
+            // if the AbsLocation is a merged node, we conservatively kick it out of the whitelisting process
+            errs() << "^^^^^: "
+                   << invertedLocConstraintMap.find(*loc)->getSecond().size() << "\n";
+            invertedLocConstraintMap.find(*loc)->getSecond().erase(&value);
+            continue;
+          }
           if (t_offset >= 0) {
             // Check if we are loading from a pointer.
             bool linkExists = false;

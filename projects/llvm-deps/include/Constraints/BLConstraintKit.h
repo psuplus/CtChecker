@@ -1,4 +1,5 @@
-//===-- constraints/LHConstraintKit.h - LH Lattice Solver -------*- C++ -*-===//
+//===-- constraints/BLConstraintKit.h - Bell-LaPadula Lattice Solver -------*-
+// C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -8,15 +9,15 @@
 //===----------------------------------------------------------------------===//
 //
 // This file declares a concrete constraint solver for solving constraints
-// over the two level lattice L-H.
+// over the lattice introduced by the Bell-LaPadula security model.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LHCONSTRAINTKIT_H_
-#define LHCONSTRAINTKIT_H_
+#ifndef BLCONSTRAINTKIT_H_
+#define BLCONSTRAINTKIT_H_
 
+#include "Constraints/BLConstraint.h"
 #include "Constraints/ConstraintKit.h"
-#include "Constraints/LHConstraint.h"
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/StringMap.h"
@@ -27,23 +28,18 @@
 
 namespace deps {
 
-class LHConstant;
-class LHConsVar;
-class LHJoin;
+class BLConstant;
+class BLConsVar;
+class BLJoin;
 class PartialSolution;
 
-/// Singleton, concrete implementation of ConstraintKit for creating and
-/// solving constraints over a two level lattice.
-class LHConstraintKit : public ConstraintKit {
+class BLConstraintKit : public ConstraintKit {
 public:
-  LHConstraintKit();
-  ~LHConstraintKit();
-  /// Get a reference to the constant "low" element of the lattice
-  const ConsElem &lowConstant() const;
-  /// Get a reference to the constant "high" element of the lattice
-  const ConsElem &highConstant() const;
-  /// Get a reference to the constant "mid" element of the lattice
-  const ConsElem &midConstant() const;
+  BLConstraintKit();
+  ~BLConstraintKit();
+
+  const ConsElem &consElemConstant() const;
+
   /// Create a new constraint variable
   virtual const ConsVar &newVar(const std::string description);
   /// Create a new constraint element by taking the upper bound of two
@@ -68,8 +64,8 @@ public:
   /// Unconstrained variables will be "High" (caller delete)
   virtual ConsSoln *greatestSolution(const std::set<std::string> kinds);
   /// return the vars and joins
-  std::vector<const LHConsVar *> getVars() { return vars; }
-  std::set<LHJoin> &getJoins() { return joins; }
+  std::vector<const BLConsVar *> getVars() { return vars; }
+  std::set<BLJoin> &getJoins() { return joins; }
 
   // Compute both least and greatest solutions simultaneously
   // for the given kind.
@@ -77,17 +73,16 @@ public:
   // Solve the given kinds in parallel (per thread limit)
   std::vector<PartialSolution *> solveLeastMT(std::vector<std::string> kinds,
                                               bool useDefaultSinks);
-  std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind);
+  std::vector<BLConstraint> &getOrCreateConstraintSet(const std::string kind);
 
 private:
-  static LHConstraintKit *singleton;
+  static BLConstraintKit *singleton;
 
-  // "defult" "default-sinks" "implicit" "implicit-sinks"
-  llvm::StringMap<std::vector<LHConstraint>> constraints;
+  llvm::StringMap<std::vector<BLConstraint>> constraints;
   std::set<std::string> lockedConstraintKinds;
 
-  std::vector<const LHConsVar *> vars;
-  std::set<LHJoin> joins;
+  std::vector<const BLConsVar *> vars;
+  std::set<BLJoin> joins;
 
   // Cached solutions for each kind
   llvm::StringMap<PartialSolution *> leastSolutions;
@@ -98,4 +93,4 @@ private:
 
 } // namespace deps
 
-#endif /* LHCONSTRAINTKIT_H_ */
+#endif

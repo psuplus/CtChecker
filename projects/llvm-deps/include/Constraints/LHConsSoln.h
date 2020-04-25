@@ -27,61 +27,73 @@
 
 namespace deps {
 
-    class LHConstraint;
-    class LHConstant;
-    class LHConstraintKit;
+class LHConstraint;
+class LHConstant;
+class LHConstraintKit;
 
-    class LHConsSoln : public ConsSoln {
-    public:
-        LHConsSoln(LHConstraintKit & kit, const LHConstant & defaultValue, std::vector<const LHConstraint*> *constraints);
-        virtual const LHConstant &subst(const ConsElem & elem);
-    protected:
-        LHConstraintKit &kit;
+class LHConsSoln : public ConsSoln {
+public:
+  LHConsSoln(LHConstraintKit &kit, const LHConstant &defaultValue,
+             std::vector<const LHConstraint *> *constraints);
+  virtual const LHConstant &subst(const ConsElem &elem);
 
-        const LHConstant & defaultValue;
-        std::vector<const LHConstraint*> *constraints;
+protected:
+  LHConstraintKit &kit;
 
-        std::deque<const LHConstraint *> queue;
-        llvm::DenseSet<const LHConstraint*> queueSet;
+  const LHConstant &defaultValue;
+  std::vector<const LHConstraint *> *constraints;
 
-        llvm::DenseSet<const ConsVar *> changed;
-        bool solved;
+  std::deque<const LHConstraint *> queue;
+  llvm::DenseSet<const LHConstraint *> queueSet;
 
-        void solve(void);
-        void enqueueConstraints(const std::vector<const LHConstraint*> & constraints);
-        const LHConstraint &dequeueConstraint(void);
+  llvm::DenseSet<const ConsVar *> changed;
+  bool solved;
 
-        virtual ~LHConsSoln();
-        virtual void releaseMemory() = 0;
-        virtual void satisfyConstraint(const LHConstraint & constraint, const ConsElem & left, const ConsElem & right) = 0;
-    };
+  void solve(void);
+  void enqueueConstraints(const std::vector<const LHConstraint *> &constraints);
+  const LHConstraint &dequeueConstraint(void);
 
-    class LHConsGreatestSoln : public LHConsSoln {
-        llvm::DenseMap<const ConsVar*, std::vector<const LHConstraint*> > invalidIfDecreased;
-        std::vector<const LHConstraint*> &getOrCreateInvalidIfDecreasedSet(const ConsVar *var);
-        void addInvalidIfDecreased(const ConsVar *var, const LHConstraint *c);
-        public:
-            LHConsGreatestSoln(LHConstraintKit & kit, std::vector<const LHConstraint*> * constraints);
-        protected:
-            virtual void satisfyConstraint(const LHConstraint & constraint, const ConsElem & left, const ConsElem & right);
-            virtual void releaseMemory() {
-              invalidIfDecreased.clear();
-            }
-        };
+  virtual ~LHConsSoln();
+  virtual void releaseMemory() = 0;
+  virtual void satisfyConstraint(const LHConstraint &constraint,
+                                 const ConsElem &left,
+                                 const ConsElem &right) = 0;
+};
 
-    class LHConsLeastSoln : public LHConsSoln {
-        llvm::DenseMap<const ConsVar *, std::vector<const LHConstraint*> > invalidIfIncreased;
-        std::vector<const LHConstraint*> &getOrCreateInvalidIfIncreasedSet(const ConsVar *var);
-        void addInvalidIfIncreased(const ConsVar *var, const LHConstraint *c);
-        public:
-            LHConsLeastSoln(LHConstraintKit & kit, std::vector<const LHConstraint*> * constraints);
-        protected:
-            virtual void satisfyConstraint(const LHConstraint & constraint, const ConsElem & left, const ConsElem & right);
-            virtual void releaseMemory() {
-              invalidIfIncreased.clear();
-            }
-        };
+class LHConsGreatestSoln : public LHConsSoln {
+  llvm::DenseMap<const ConsVar *, std::vector<const LHConstraint *>>
+      invalidIfDecreased;
+  std::vector<const LHConstraint *> &
+  getOrCreateInvalidIfDecreasedSet(const ConsVar *var);
+  void addInvalidIfDecreased(const ConsVar *var, const LHConstraint *c);
 
-}
+public:
+  LHConsGreatestSoln(LHConstraintKit &kit,
+                     std::vector<const LHConstraint *> *constraints);
+
+protected:
+  virtual void satisfyConstraint(const LHConstraint &constraint,
+                                 const ConsElem &left, const ConsElem &right);
+  virtual void releaseMemory() { invalidIfDecreased.clear(); }
+};
+
+class LHConsLeastSoln : public LHConsSoln {
+  llvm::DenseMap<const ConsVar *, std::vector<const LHConstraint *>>
+      invalidIfIncreased;
+  std::vector<const LHConstraint *> &
+  getOrCreateInvalidIfIncreasedSet(const ConsVar *var);
+  void addInvalidIfIncreased(const ConsVar *var, const LHConstraint *c);
+
+public:
+  LHConsLeastSoln(LHConstraintKit &kit,
+                  std::vector<const LHConstraint *> *constraints);
+
+protected:
+  virtual void satisfyConstraint(const LHConstraint &constraint,
+                                 const ConsElem &left, const ConsElem &right);
+  virtual void releaseMemory() { invalidIfIncreased.clear(); }
+};
+
+} // namespace deps
 
 #endif /* LHCONSSOLN_H_ */

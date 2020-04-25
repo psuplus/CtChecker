@@ -1,4 +1,5 @@
-//===-- constraints/LHConstraints - LH Constraint Classes -------*- C++ -*-===//
+//===-- constraints/BLConstraintKit.h - Bell-LaPadula Lattice Solver -------*-
+// C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -7,62 +8,59 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file declares concrete classes of constraint elements for use with
-// the LHConstraintKit.
+// This file declares a concrete constraint solver for solving constraints
+// over the lattice introduced by the Bell-LaPadula security model.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LHCONSTRAINTS_H_
-#define LHCONSTRAINTS_H_
+#ifndef BLCONSTRAINTS_H_
+#define BLCONSTRAINTS_H_
 
 #include "Constraints/ConstraintKit.h"
 #include <string>
 
 namespace deps {
 
-/// Singleton constants in the L-H lattice (Low and High)
-class LHConstant : public ConsElem {
+/// Singleton constants in the Bell-LaPadula lattice
+class BLConstant : public ConsElem {
 public:
-  /// Get a reference to the low constant (do not delete!)
-  static const LHConstant &low();
-  /// Get a reference to the high constant (do not delete!)
-  static const LHConstant &high();
-  /// Get a reference to the mid constant (do not delete!)
-  static const LHConstant &mid();
-  /// Compare with another constraint element. False if element is
-  /// not an LHConstant.
+  static const BLConstant &constant(std::string sensitivity,
+                                    std::set<std::string> compartments);
+
+  /// Compare with another constraint element.
+  /// False if element is not an BLConstant.
   virtual bool leq(const ConsElem &elem) const;
+
   /// Returns the empty set of constraint variables.
   virtual void variables(std::set<const ConsVar *> &) const {}
-  /// Returns the least upper bound of two members of the L-H lattice
-  virtual const LHConstant &join(const LHConstant &other) const;
+
+  /// Returns the least upper bound of two members of the Bell-LaPadula lattice
+  virtual const BLConstant &join(const BLConstant &other) const;
   virtual bool operator==(const ConsElem &c) const;
   virtual void dump(llvm::raw_ostream &o) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
-  virtual DepsType type() const { return DT_LHConstant; }
-  static inline bool classof(const LHConstant *) { return true; }
+  virtual DepsType type() const { return DT_BLConstant; }
+  static inline bool classof(const BLConstant *) { return true; }
   static inline bool classof(const ConsElem *elem) {
-    return elem->type() == DT_LHConstant;
+    return elem->type() == DT_BLConstant;
   }
-  enum LHLevel { LOW, MID, HIGH };
 
 protected:
-  LHConstant(LHLevel level);
-  LHConstant &operator=(const LHConstant &);
+  enum Clearance { PUBLIC, CONFIDENTIAL, SECRET, TOPSECRECT };
+  BLConstant(Clearance level);
+  BLConstant &operator=(const BLConstant &);
 
-  const LHLevel level;
-  static LHConstant *lowSingleton;
-  static LHConstant *midSingleton;
-  static LHConstant *highSingleton;
+  const Clearance level;
+  static std::set<BLConstant *> constants;
 };
 
 /// Concrete implementation of constraint variables for use with
-/// LHConstraintKit.
-class LHConsVar : public ConsVar {
+/// BLConstraintKit.
+class BLConsVar : public ConsVar {
 public:
   /// Create a new variable with description
-  LHConsVar(const std::string desc);
+  BLConsVar(const std::string desc);
   /// Compare two elements for constraint satisfaction
   virtual bool leq(const ConsElem &elem) const;
   /// Returns the singleton set containing this variable
@@ -73,25 +71,25 @@ public:
   virtual void dump(llvm::raw_ostream &o) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
-  virtual DepsType type() const { return DT_LHConsVar; }
-  static inline bool classof(const LHConsVar *) { return true; }
+  virtual DepsType type() const { return DT_BLConsVar; }
+  static inline bool classof(const BLConsVar *) { return true; }
   static inline bool classof(const ConsVar *var) {
-    return var->type() == DT_LHConsVar;
+    return var->type() == DT_BLConsVar;
   }
   static inline bool classof(const ConsElem *elem) {
-    return elem->type() == DT_LHConsVar;
+    return elem->type() == DT_BLConsVar;
   }
 
   const std::string getDesc() const { return desc; }
 
 private:
-  LHConsVar(const LHConsVar &);
-  LHConsVar &operator=(const LHConsVar &);
+  BLConsVar(const BLConsVar &);
+  BLConsVar &operator=(const BLConsVar &);
   const std::string desc;
 };
 
 /// Constraint element representing the join of L-H lattice elements.
-class LHJoin : public ConsElem {
+class BLJoin : public ConsElem {
 public:
   /// Returns true if all of the elements of the join are leq(elem)
   virtual bool leq(const ConsElem &elem) const;
@@ -99,11 +97,11 @@ public:
   virtual void variables(std::set<const ConsVar *> &set) const;
   /// Create a new constraint element by joining two existing constraints
   /// (caller delete)
-  static const LHJoin *create(const ConsElem &e1, const ConsElem &e2);
+  static const BLJoin *create(const ConsElem &e1, const ConsElem &e2);
   /// Returns the set of elements joined by this element
   const std::set<const ConsElem *> &elements() const { return elems; }
   virtual bool operator==(const ConsElem &c) const;
-  bool operator<(const LHJoin &c) const {
+  bool operator<(const BLJoin &c) const {
     if (elems.size() != c.elems.size())
       return elems.size() < c.elems.size();
     return elems < c.elems;
@@ -111,18 +109,18 @@ public:
   virtual void dump(llvm::raw_ostream &o) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
-  virtual DepsType type() const { return DT_LHJoin; }
-  static inline bool classof(const LHJoin *) { return true; }
+  virtual DepsType type() const { return DT_BLJoin; }
+  static inline bool classof(const BLJoin *) { return true; }
   static inline bool classof(const ConsElem *elem) {
-    return elem->type() == DT_LHJoin;
+    return elem->type() == DT_BLJoin;
   }
-  LHJoin(std::set<const ConsElem *> elems);
+  BLJoin(std::set<const ConsElem *> elems);
 
 private:
   const std::set<const ConsElem *> elems;
-  LHJoin &operator=(const LHJoin &);
+  BLJoin &operator=(const BLJoin &);
 };
 
 } // namespace deps
 
-#endif /* LHCONSTRAINTS_H_ */
+#endif

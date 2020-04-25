@@ -16,11 +16,14 @@
 
 /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
 namespace deps {
-    enum DepsType {
-        DT_LHConstant,
-        DT_LHConsVar,
-        DT_LHJoin
-    };
+enum DepsType {
+  DT_LHConstant,
+  DT_LHConsVar,
+  DT_LHJoin,
+  DT_BLConstant,
+  DT_BLConsVar,
+  DT_BLJoin
+};
 }
 
 #endif /* DEPSTYPES_H */

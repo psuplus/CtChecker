@@ -19,8 +19,8 @@
 #include "Constraints/PartialSolution.h"
 
 #include "llvm/ADT/DenseSet.h"
-#include "llvm/Support/Threading.h"
 #include "llvm/Support/Atomic.h"
+#include "llvm/Support/Threading.h"
 
 #include <cassert>
 
@@ -35,22 +35,21 @@ class SolverThread {
   Constraints &C;
   bool greatest;
 
-  SolverThread(Constraints &C, bool isG)
-    : C(C), greatest(isG) {}
+  SolverThread(Constraints &C, bool isG) : C(C), greatest(isG) {}
 
-  static void* solve(void * arg);
+  static void *solve(void *arg);
+
 public:
-
   // Create a new thread to solve the given constraints
   static SolverThread *spawn(Constraints &C, bool greatest);
 
   // Wait for this thread to finish
-  void join(PartialSolution*& P);
+  void join(PartialSolution *&P);
 
   // Please just call join() explicitly
   // But just in case...
   ~SolverThread() {
-    PartialSolution* P;
+    PartialSolution *P;
     join(P);
   }
 };

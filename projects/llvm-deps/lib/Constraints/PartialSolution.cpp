@@ -21,22 +21,61 @@ using namespace deps;
 using namespace llvm;
 
 // Helper function
-static const LHConstant & boolToLHC(bool B) {
-  return B ? LHConstant::high() : LHConstant::low();
-}
-
-bool PartialSolution::isChanged(const ConsVar *V) {
-  for (std::vector<PartialSolution*>::iterator CI = Chained.begin(),
-      CE = Chained.end(); CI != CE; ++CI) {
-    if ((*CI)->VSet.count(V)) return true;
+static const LHConstant &levelToLHC(LHConstant::LHLevel l) {
+  switch (l) {
+  case LHConstant::LOW:
+    return LHConstant::low();
+    break;
+  case LHConstant::MID:
+    return LHConstant::mid();
+    break;
+  case LHConstant::HIGH:
+    return LHConstant::high();
+    break;
   }
-  return false;
 }
 
-const LHConstant& PartialSolution::subst(const ConsElem& E) {
+LHConstant::LHLevel PartialSolution::isChanged(const ConsVar *V) {
+  LHConstant::LHLevel level;
+  if (initial) {
+    level = LHConstant::HIGH;
+  } else {
+    level = LHConstant::LOW;
+  }
+
+  for (std::vector<PartialSolution *>::iterator CI = Chained.begin();
+       CI != Chained.end(); ++CI) {
+    if (initial) {
+      for (auto set : (*CI)->VSet) {
+        if (set.second.count(V)) {
+          // V->dump(errs());
+          // errs() << " : " << set.first << " greatest\n";
+          if (level > set.first) {
+            level = set.first;
+          }
+        }
+      }
+      return level;
+    } else {
+      for (auto set : (*CI)->VSet) {
+        if (set.second.count(V)) {
+          // V->dump(errs());
+          // errs() << " : " << set.first << " least\n";
+          if (level < set.first) {
+            level = set.first;
+          }
+        }
+      }
+      return level;
+    }
+  }
+  return level;
+}
+
+const LHConstant &PartialSolution::subst(const ConsElem &E) {
   // If this is a variable, look it up in VSet:
-  if (const LHConsVar* V = dyn_cast<LHConsVar>(&E))
-    return boolToLHC(initial != isChanged(V));
+  if (const LHConsVar *V = dyn_cast<LHConsVar>(&E))
+    return levelToLHC(isChanged(V));
 
   // If this is already a constant, return it
   if (const LHConstant *LHC = dyn_cast<LHConstant>(&E))
@@ -45,7 +84,7 @@ const LHConstant& PartialSolution::subst(const ConsElem& E) {
   // Otherwise, this better be a join (asserting cast)
   const LHJoin *J = cast<LHJoin>(&E);
   // Find all elements of the join, and evaluate it recursively
-  const std::set<const ConsElem *> & elements = J->elements();
+  const std::set<const ConsElem *> &elements = J->elements();
 
   // XXX: LHConsSoln starts with substVal as the defaultValue,
   // which ...seems wrong?  Seems like this would make all join's
@@ -55,7 +94,8 @@ const LHConstant& PartialSolution::subst(const ConsElem& E) {
   const LHConstant *substVal = &LHConstant::low();
 
   for (std::set<const ConsElem *>::iterator elem = elements.begin(),
-       end = elements.end(); elem != end; ++elem) {
+                                            end = elements.end();
+       elem != end; ++elem) {
     substVal = &(substVal->join(subst(**elem)));
   }
 
@@ -73,7 +113,6 @@ PartialSolution::PartialSolution(PartialSolution &P) {
   Chained.erase(std::unique(Chained.begin(), Chained.end()), Chained.end());
 
   assert(std::find(Chained.begin(), Chained.end(), &P) != Chained.end());
-
 }
 
 // Merging constructor
@@ -95,7 +134,7 @@ void PartialSolution::mergeIn(PartialSolution &P) {
 
 // Only run for normal constructor.
 // Scan constraints for non-initial, building up seed VarSet.
-void PartialSolution::initialize(Constraints & C) {
+void PartialSolution::initialize(Constraints &C) {
 
   // Add ourselves to the chained list
   Chained.push_back(this);
@@ -113,10 +152,12 @@ void PartialSolution::initialize(Constraints & C) {
     From.variables(vars);
     To.variables(targets);
 
-    if (targets.empty()) continue;
+    if (targets.empty())
+      continue;
 
     for (std::set<const ConsVar *>::iterator var = vars.begin(),
-         end = vars.end(); var != end; ++var) {
+                                             end = vars.end();
+         var != end; ++var) {
       // Update PMap for this var
       P[*var].insert(P[*var].end(), targets.begin(), targets.end());
     }
@@ -126,57 +167,84 @@ void PartialSolution::initialize(Constraints & C) {
       if (subst(From).leq(LHConstant::low())) {
         // A <= B, 'B' is low
         // Mark all in 'A' as low also
-        VSet.insert(targets.begin(), targets.end());
+        VSet[LHConstant::LOW].insert(targets.begin(), targets.end());
+      } else if (subst(From).leq(LHConstant::mid())) {
+        // A <= B, 'B' is at most mid
+        // Mark all in 'A' as mid also
+        VSet[LHConstant::MID].insert(targets.begin(), targets.end());
       }
     } else {
-      if (!subst(From).leq(LHConstant::low())) {
+      if (!subst(From).leq(LHConstant::mid())) {
         // A <= B, 'A' is high
         // Mark all in 'B' as high also
-        VSet.insert(targets.begin(), targets.end());
+        VSet[LHConstant::HIGH].insert(targets.begin(), targets.end());
+      } else if (!subst(From).leq(LHConstant::low())) {
+        // A <= B, 'A' is at least mid
+        // Mark all in 'B' as mid also
+        VSet[LHConstant::MID].insert(targets.begin(), targets.end());
       }
     }
   }
-
 }
 
 void PartialSolution::propagate() {
-  std::deque<const ConsVar *> workList;
+  std::map<LHConstant::LHLevel, std::deque<const ConsVar *>> workList{
+      {LHConstant::LOW, {}}, {LHConstant::MID, {}}, {LHConstant::HIGH, {}}};
 
   assert(!Chained.empty());
   assert(std::find(Chained.begin(), Chained.end(), this) != Chained.end());
 
   // Enqueue all known changed variables
-  for (std::vector<PartialSolution*>::iterator CI = Chained.begin(),
-      CE = Chained.end(); CI != CE; ++CI) {
-    workList.insert(workList.end(),
-                    (*CI)->VSet.begin(), (*CI)->VSet.end());
+  for (std::vector<PartialSolution *>::iterator CI = Chained.begin(),
+                                                CE = Chained.end();
+       CI != CE; ++CI) {
+    // workList.insert(workList.end(), (*CI)->VSet.begin(), (*CI)->VSet.end());
+    for (auto set : (*CI)->VSet) {
+      workList[set.first].insert(workList[set.first].end(), set.second.begin(),
+                                 set.second.end());
+    }
   }
 
   // Compute transitive closure of the non-default variables,
   // using all propagation maps in PMaps.
-  while (!workList.empty()) {
-    // Dequeue variable
-    const ConsVar * V = workList.front();
-    workList.pop_front();
 
-    for (std::vector<PartialSolution*>::iterator CI = Chained.begin(),
-         CE = Chained.end(); CI != CE; ++CI) {
-      PartialSolution &PS = **CI;
+  for (auto listPair : workList) {
+    std::deque<const ConsVar *> list = listPair.second;
+    while (!list.empty()) {
+      // Dequeue variable
+      const ConsVar *V = list.front();
+      list.pop_front();
 
-      PMap::iterator I = PS.P.find(V);
-      if (I == PS.P.end()) continue; // Not in map
+      for (std::vector<PartialSolution *>::iterator CI = Chained.begin(),
+                                                    CE = Chained.end();
+           CI != CE; ++CI) {
+        PartialSolution &PS = **CI;
 
-      std::vector<const ConsVar*> &Updates = I->second;
-      // For each such variable...
-      for (std::vector<const ConsVar*>::iterator I = Updates.begin(),
-           E = Updates.end(); I != E; ++I) {
-        // If we haven't changed it already, add it to the worklist:
-        if (!isChanged(*I)) {
-          VSet.insert(*I);
-          workList.push_back(*I);
+        PMap::iterator I = PS.P.find(V);
+        if (I == PS.P.end())
+          continue; // Not in map
+
+        std::vector<const ConsVar *> &Updates = I->second;
+        // For each such variable...
+        for (std::vector<const ConsVar *>::iterator I = Updates.begin(),
+                                                    E = Updates.end();
+             I != E; ++I) {
+          // If we haven't changed it already, add it to the worklist:
+          // if (!isChanged(*I)) {
+          const ConsVar *cv = *I;
+          LHConstant::LHLevel level;
+          if (initial) {
+            level = LHConstant::HIGH;
+          } else {
+            level = LHConstant::LOW;
+          }
+          LHConstant::LHLevel vLevel = isChanged(cv);
+          if (level != vLevel && listPair.first == vLevel) {
+            VSet[listPair.first].insert(*I);
+            list.push_back(*I);
+          }
         }
       }
     }
   }
 }
-

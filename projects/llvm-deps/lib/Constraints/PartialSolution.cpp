@@ -239,7 +239,7 @@ void PartialSolution::propagate() {
             level = LHConstant::LOW;
           }
           LHConstant::LHLevel vLevel = isChanged(cv);
-          if (level != vLevel && listPair.first == vLevel) {
+          if (listPair.first > vLevel) {
             VSet[listPair.first].insert(*I);
             list.push_back(*I);
           }

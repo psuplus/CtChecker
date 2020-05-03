@@ -55,7 +55,7 @@ private:
   // Solve by propagation
   void propagate();
   // Query VSets of this and all chained solutions
-  LHConstant::LHLevel isChanged(const ConsVar *);
+  LHLabel isChanged(const ConsVar *);
 
   // Member variables:
 
@@ -63,7 +63,7 @@ private:
   // Used to store by-value the PropagationMap when the non-merge ctor is used.
   PMap P;
   // Set of variables with non-default values
-  std::map<LHConstant::LHLevel, VarSet> VSet;
+  std::map<LHLabel, VarSet> VSet;
 
   // Chained solutions
   std::vector<PartialSolution *> Chained;

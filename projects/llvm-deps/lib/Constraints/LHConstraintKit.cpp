@@ -54,16 +54,17 @@ const ConsVar &LHConstraintKit::newVar(const std::string description) {
   return *var;
 }
 
-const ConsElem &LHConstraintKit::lowConstant() const {
-  return LHConstant::low();
+const ConsElem &LHConstraintKit::botConstant() const {
+  return LHConstant::bot();
 }
 
-const ConsElem &LHConstraintKit::highConstant() const {
-  return LHConstant::high();
+const ConsElem &LHConstraintKit::topConstant() const {
+  return LHConstant::top();
 }
 
-const ConsElem &LHConstraintKit::midConstant() const {
-  return LHConstant::mid();
+const ConsElem &LHConstraintKit::constant(LHLevel l,
+                                          CompartmentSet cSet) const {
+  return LHConstant::constant(l, cSet);
 }
 
 const ConsElem &LHConstraintKit::upperBound(const ConsElem &e1,

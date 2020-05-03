@@ -28,9 +28,9 @@ LHConsSoln::LHConsSoln(LHConstraintKit &kit, const LHConstant &defaultValue,
 const LHConstant &LHConsSoln::subst(const ConsElem &elem) {
   solve();
   if (const LHConsVar *var = llvm::dyn_cast<LHConsVar>(&elem)) {
-    const LHConstant &other = (defaultValue == LHConstant::low())
-                                  ? LHConstant::high()
-                                  : LHConstant::low();
+    const LHConstant &other = (defaultValue == LHConstant::bot())
+                                  ? LHConstant::top()
+                                  : LHConstant::bot();
     return changed.count(var) ? other : defaultValue;
   } else if (const LHConstant *var = llvm::dyn_cast<LHConstant>(&elem)) {
     return *var;
@@ -105,7 +105,7 @@ LHConsSoln::~LHConsSoln() { delete constraints; }
 
 LHConsLeastSoln::LHConsLeastSoln(LHConstraintKit &kit,
                                  std::vector<const LHConstraint *> *constraints)
-    : LHConsSoln(kit, LHConstant::low(), constraints) {
+    : LHConsSoln(kit, LHConstant::bot(), constraints) {
   std::set<const ConsVar *> leftVariables;
   for (std::vector<const LHConstraint *>::iterator cons = constraints->begin(),
                                                    end = constraints->end();
@@ -152,7 +152,7 @@ void LHConsLeastSoln::addInvalidIfIncreased(const ConsVar *var,
 
 LHConsGreatestSoln::LHConsGreatestSoln(
     LHConstraintKit &kit, std::vector<const LHConstraint *> *constraints)
-    : LHConsSoln(kit, LHConstant::high(), constraints) {
+    : LHConsSoln(kit, LHConstant::top(), constraints) {
   std::set<const ConsVar *> rightVariables;
   for (std::vector<const LHConstraint *>::iterator cons = constraints->begin(),
                                                    end = constraints->end();

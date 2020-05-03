@@ -16,43 +16,106 @@
 
 namespace deps {
 
-LHConstant *LHConstant::lowSingleton = NULL;
-LHConstant *LHConstant::midSingleton = NULL;
-LHConstant *LHConstant::highSingleton = NULL;
+const CompartmentSet LHConstant::EmptySet;
+const CompartmentSet LHConstant::CompleteSet{LHCompartment::CRYPTO,
+                                             LHCompartment::NUCLEAR};
+LHLabelConstantMap LHConstant::labelConstants;
 
-LHConstant::LHConstant(LHLevel level) : level(level) {}
+LHConstant::LHConstant(LHLevel l, CompartmentSet cSet)
+    : level(l), compartmentSet(cSet) {}
 
-const LHConstant &LHConstant::low() {
-  if (LHConstant::lowSingleton == NULL) {
-    LHConstant::lowSingleton = new LHConstant(LOW);
-  }
-  return *LHConstant::lowSingleton;
+LHConstant::LHConstant(LHLabel label)
+    : level(label.first), compartmentSet(label.second) {}
+
+const LHConstant &LHConstant::bot() {
+  return LHConstant::constant(LHLevel::LOW, LHConstant::EmptySet);
 }
-const LHConstant &LHConstant::mid() {
-  if (LHConstant::midSingleton == NULL) {
-    LHConstant::midSingleton = new LHConstant(MID);
-  }
-  return *LHConstant::midSingleton;
+
+const LHConstant &LHConstant::top() {
+  return LHConstant::constant(LHLevel::HIGH, LHConstant::CompleteSet);
 }
-const LHConstant &LHConstant::high() {
-  if (LHConstant::highSingleton == NULL) {
-    LHConstant::highSingleton = new LHConstant(HIGH);
+
+const LHConstant &LHConstant::constant(LHLevel l, CompartmentSet cSet) {
+  LHLabel label = LHLabel(l, cSet);
+
+  if (LHConstant::labelConstants.find(label) ==
+      LHConstant::labelConstants.end()) {
+    LHConstant::labelConstants[label] = new LHConstant(l, cSet);
   }
-  return *LHConstant::highSingleton;
+  return *LHConstant::labelConstants[label];
+}
+
+const LHConstant &LHConstant::constant(LHLabel label) {
+  return constant(label.first, label.second);
 }
 
 bool LHConstant::leq(const ConsElem &elem) const {
   const LHConstant *other;
   // TODO not sure if dyn_cast support is set up properly
   if ((other = llvm::dyn_cast<LHConstant>(&elem))) {
-    return (this->level <= other->level);
+    CompartmentSet diff;
+    set_difference(compartmentSet.begin(), compartmentSet.end(),
+                   other->compartmentSet.begin(), other->compartmentSet.end(),
+                   inserter(diff, diff.end()));
+    return (this->level <= other->level && diff.size() == 0);
   } else {
     return false;
   }
 }
 
 const LHConstant &LHConstant::join(const LHConstant &other) const {
-  return (level <= other.level) ? other : *this;
+  LHLevel levelUpperBound = level <= other.level ? other.level : level;
+  CompartmentSet setUnion;
+  set_union(compartmentSet.begin(), compartmentSet.end(),
+            other.compartmentSet.begin(), other.compartmentSet.end(),
+            inserter(setUnion, setUnion.end()));
+
+  return constant(levelUpperBound, setUnion);
+}
+
+const LHLabel LHConstant::upperBoundLabel(const LHConstant &other) const {
+  // LHLevel levelUpperBound = level <= other.level ? other.level : level;
+  // CompartmentSet setUnion;
+  // set_union(compartmentSet.begin(), compartmentSet.end(),
+  //           other.compartmentSet.begin(), other.compartmentSet.end(),
+  //           inserter(setUnion, setUnion.end()));
+  // return make_pair(levelUpperBound, setUnion);
+  return upperBoundLabel(make_pair(level, compartmentSet),
+                         make_pair(other.level, other.compartmentSet));
+}
+
+const LHLabel LHConstant::lowerBoundLabel(const LHConstant &other) const {
+  // LHLevel levelLowerBound = level > other.level ? other.level : level;
+  // CompartmentSet setIntersection;
+  // set_intersection(compartmentSet.begin(), compartmentSet.end(),
+  //                  other.compartmentSet.begin(), other.compartmentSet.end(),
+  //                  inserter(setIntersection, setIntersection.end()));
+  // return make_pair(levelLowerBound, setIntersection);
+  return lowerBoundLabel(make_pair(level, compartmentSet),
+                         make_pair(other.level, other.compartmentSet));
+}
+
+const LHLabel LHConstant::upperBoundLabel(LHLabel label, LHLabel other) {
+  LHLevel levelUpperBound =
+      label.first < other.first ? other.first : label.first;
+  CompartmentSet setUnion;
+  set_union(label.second.begin(), label.second.end(), other.second.begin(),
+            other.second.end(), inserter(setUnion, setUnion.end()));
+  return make_pair(levelUpperBound, setUnion);
+}
+
+const LHLabel LHConstant::lowerBoundLabel(LHLabel label, LHLabel other) {
+  LHLevel levelLowerBound =
+      label.first > other.first ? other.first : label.first;
+  CompartmentSet setIntersection;
+  set_intersection(label.second.begin(), label.second.end(),
+                   other.second.begin(), other.second.end(),
+                   inserter(setIntersection, setIntersection.end()));
+  return make_pair(levelLowerBound, setIntersection);
+}
+
+const LHLabel LHConstant::label() const {
+  return make_pair(level, compartmentSet);
 }
 
 void LHConstant::dump(llvm::raw_ostream &o) const {
@@ -63,11 +126,21 @@ void LHConstant::dump(llvm::raw_ostream &o) const {
   } else {
     o << "HIGH";
   }
+  o << ", {";
+  for (auto c : compartmentSet) {
+    if (c == CRYPTO) {
+      o << " CRYPTO ";
+    } else if (c == NUCLEAR) {
+      o << " NUCLEAR ";
+    }
+  }
+  o << "}\n";
 }
 
 bool LHConstant::operator==(const ConsElem &elem) const {
   if (const LHConstant *other = llvm::dyn_cast<const LHConstant>(&elem)) {
-    return (this->level == other->level);
+    return (this->level == other->level &&
+            this->compartmentSet == other->compartmentSet);
   } else {
     return false;
   }

@@ -16,27 +16,51 @@
 #define LHCONSTRAINTS_H_
 
 #include "Constraints/ConstraintKit.h"
+#include <map>
 #include <string>
+
+using namespace std;
 
 namespace deps {
 
-/// Singleton constants in the L-H lattice (Low and High)
+class LHConstant;
+
+enum LHLevel { LOW, MID, HIGH };
+enum LHCompartment { NUCLEAR, CRYPTO };
+typedef set<LHCompartment> CompartmentSet;
+typedef pair<LHLevel, CompartmentSet> LHLabel;
+typedef std::map<LHLabel, LHConstant *> LHLabelConstantMap;
+
+/// Singleton constants in the lattice
 class LHConstant : public ConsElem {
 public:
-  /// Get a reference to the low constant (do not delete!)
-  static const LHConstant &low();
-  /// Get a reference to the high constant (do not delete!)
-  static const LHConstant &high();
-  /// Get a reference to the mid constant (do not delete!)
-  static const LHConstant &mid();
-  /// Compare with another constraint element. False if element is
-  /// not an LHConstant.
+  /// Get a reference to the constant (do not delete!)
+  static const LHConstant &bot();
+  static const LHConstant &top();
+  // static const LHConstant &mid();
+  static const LHConstant &constant(LHLevel level, CompartmentSet compartments);
+  static const LHConstant &constant(LHLabel label);
+
+  /// Compare with another constraint element.
+  /// False if element is not an LHConstant.
   virtual bool leq(const ConsElem &elem) const;
+
   /// Returns the empty set of constraint variables.
   virtual void variables(std::set<const ConsVar *> &) const {}
-  /// Returns the least upper bound of two members of the L-H lattice
+
+  /// Returns the least upper bound of two members of the lattice
   virtual const LHConstant &join(const LHConstant &other) const;
+
+  virtual const LHLabel upperBoundLabel(const LHConstant &other) const;
+  virtual const LHLabel lowerBoundLabel(const LHConstant &other) const;
+
+  static const LHLabel upperBoundLabel(LHLabel label, LHLabel other);
+  static const LHLabel lowerBoundLabel(LHLabel label, LHLabel other);
+
+  virtual const LHLabel label() const;
+
   virtual bool operator==(const ConsElem &c) const;
+
   virtual void dump(llvm::raw_ostream &o) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -45,16 +69,18 @@ public:
   static inline bool classof(const ConsElem *elem) {
     return elem->type() == DT_LHConstant;
   }
-  enum LHLevel { LOW, MID, HIGH };
+
+  static const CompartmentSet EmptySet;
+  static const CompartmentSet CompleteSet;
 
 protected:
-  LHConstant(LHLevel level);
+  LHConstant(LHLevel level, CompartmentSet cSet);
+  LHConstant(LHLabel label);
   LHConstant &operator=(const LHConstant &);
-
   const LHLevel level;
-  static LHConstant *lowSingleton;
-  static LHConstant *midSingleton;
-  static LHConstant *highSingleton;
+  const CompartmentSet compartmentSet;
+
+  static LHLabelConstantMap labelConstants;
 };
 
 /// Concrete implementation of constraint variables for use with

@@ -25,78 +25,68 @@ void test(void) {
   const ConsElem &b = kit.newVar("b");
   const ConsElem &c = kit.newVar("c");
 
-  kit.addConstraint("default", a, b);
-  kit.addConstraint("default", a, kit.lowConstant());
-  kit.addConstraint("default", a, kit.midConstant());
-  kit.addConstraint("default", b, kit.highConstant());
-  kit.addConstraint("default", kit.midConstant(), b);
-  kit.addConstraint("default", c, kit.midConstant());
-  kit.addConstraint("default", kit.midConstant(), c);
+  std::vector<const ConsElem *> elemVec{&a, &b, &c};
 
-  std::set<std::string> kinds;
-  kinds.insert("default");
+  CompartmentSet emptySet{};
+  CompartmentSet cS1{NUCLEAR};
+  CompartmentSet cS2{NUCLEAR, CRYPTO};
+  CompartmentSet cS3{CRYPTO};
+
+  // const ConsElem &ln1 = kit.constant(LHLevel::LOW, cS1);
+  // const ConsElem &ln2 = kit.constant(LHLevel::LOW, cS2);
+  // const ConsElem &ln3 = kit.constant(LHLevel::LOW, cS3);
+  // const ConsElem &ln4 = kit.constant(LHLevel::MID, cS4);
+
+  // ln1.dump(llvm::errs());
+  // ln2.dump(llvm::errs());
+  // ln3.dump(llvm::errs());
+  // ln4.dump(llvm::errs());
+
+  // if (ln3 == ln4) {
+  //   llvm::errs() << "YES!\n";
+  // } else {
+  //   llvm::errs() << "NO!\n";
+  // }
+
+  // std::cout << ln4.leq(ln1) << "\n";
+  // std::cout << ln4.leq(ln2) << "\n";
+  // std::cout << ln4.leq(ln3) << "\n";
+  // std::cout << ln4.leq(ln4) << "\n";
+
+  // Testing kit for least solution
+  kit.addConstraint("default", kit.constant(LHLevel::LOW, cS3), a);
+  kit.addConstraint("default", a, b);
+  kit.addConstraint("default", b, kit.topConstant());
+  kit.addConstraint("default", kit.constant(LHLevel::MID, cS1), b);
+  kit.addConstraint("default", b, c);
+
+  // Testing kit for greatest solution
+  kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3));
+  kit.addConstraint("greatest", a, b);
+  kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS2));
+  kit.addConstraint("greatest", c, kit.constant(LHLevel::HIGH, cS1));
+  kit.addConstraint("greatest", c, a);
+
+  std::set<std::string> kinds{"default"};
+  std::set<std::string> greatest{"greatest"};
 
   std::cout << "Least solution" << std::endl;
-
-  ConsSoln *soln = kit.leastSolution(kinds);
-
-  //   delete (soln);
-
-  if (soln->subst(a) == kit.lowConstant()) {
-    std::cout << "a : L\n";
-  } else if (soln->subst(a) == kit.highConstant()) {
-    std::cout << "a : H\n";
-  } else {
-    std::cout << "a : M\n";
+  ConsSoln *leastSoln = kit.leastSolution(kinds);
+  for (auto elem : elemVec) {
+    elem->dump(llvm::errs());
+    llvm::errs() << ": ";
+    leastSoln->subst(*elem).dump(llvm::errs());
   }
-
-  if (soln->subst(b) == kit.lowConstant()) {
-    std::cout << "b : L\n";
-  } else if (soln->subst(b) == kit.highConstant()) {
-    std::cout << "b : H\n";
-  } else {
-    std::cout << "b : M\n";
-  }
-
-  if (soln->subst(c) == kit.lowConstant()) {
-    std::cout << "c : L\n";
-  } else if (soln->subst(c) == kit.highConstant()) {
-    std::cout << "c : H\n";
-  } else {
-    std::cout << "c : M\n";
-  }
+  delete leastSoln;
 
   std::cout << "Greatest solution" << std::endl;
-
-  //   delete soln;
-
-  soln = kit.greatestSolution(kinds);
-
-  if (soln->subst(a) == kit.lowConstant()) {
-    std::cout << "a : L\n";
-  } else if (soln->subst(a) == kit.highConstant()) {
-    std::cout << "a : H\n";
-  } else {
-    std::cout << "a : M\n";
+  ConsSoln *greatestSoln = kit.greatestSolution(greatest);
+  for (auto elem : elemVec) {
+    elem->dump(llvm::errs());
+    llvm::errs() << ": ";
+    greatestSoln->subst(*elem).dump(llvm::errs());
   }
-
-  if (soln->subst(b) == kit.lowConstant()) {
-    std::cout << "b : L\n";
-  } else if (soln->subst(b) == kit.highConstant()) {
-    std::cout << "b : H\n";
-  } else {
-    std::cout << "b : M\n";
-  }
-
-  if (soln->subst(c) == kit.lowConstant()) {
-    std::cout << "c : L\n";
-  } else if (soln->subst(c) == kit.highConstant()) {
-    std::cout << "c : H\n";
-  } else {
-    std::cout << "c : M\n";
-  }
-
-  delete soln;
+  delete greatestSoln;
 }
 
 int main(void) {

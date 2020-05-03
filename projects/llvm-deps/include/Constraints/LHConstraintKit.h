@@ -17,6 +17,7 @@
 
 #include "Constraints/ConstraintKit.h"
 #include "Constraints/LHConstraint.h"
+#include "Constraints/LHConstraints.h"
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/StringMap.h"
@@ -24,6 +25,8 @@
 #include <map>
 #include <set>
 #include <vector>
+
+using namespace std;
 
 namespace deps {
 
@@ -39,11 +42,12 @@ public:
   LHConstraintKit();
   ~LHConstraintKit();
   /// Get a reference to the constant "low" element of the lattice
-  const ConsElem &lowConstant() const;
+  const ConsElem &botConstant() const;
   /// Get a reference to the constant "high" element of the lattice
-  const ConsElem &highConstant() const;
-  /// Get a reference to the constant "mid" element of the lattice
-  const ConsElem &midConstant() const;
+  const ConsElem &topConstant() const;
+
+  const ConsElem &constant(LHLevel l, CompartmentSet cSet) const;
+
   /// Create a new constraint variable
   virtual const ConsVar &newVar(const std::string description);
   /// Create a new constraint element by taking the upper bound of two

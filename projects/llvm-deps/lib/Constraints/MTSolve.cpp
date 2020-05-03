@@ -166,7 +166,7 @@ Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks) {
   for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();
        I != E; ++I) {
     Solns.push_back(new InfoflowSolution(
-        *this, *I, kit->highConstant(), false, /* default to untainted */
+        *this, *I, kit->topConstant(), false, /* default to untainted */
         summarySinkValueConstraintMap, locConstraintMap,
         summarySinkVargConstraintMap));
   }

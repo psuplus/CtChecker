@@ -24,7 +24,7 @@ namespace deps {
 class LHConstant;
 
 enum LHLevel { LOW, MID, HIGH };
-enum LHCompartment { NUCLEAR, CRYPTO };
+enum LHCompartment { NUCLEAR, CRYPTO, BIO };
 typedef std::set<LHCompartment> CompartmentSet;
 typedef std::pair<LHLevel, CompartmentSet> LHLabel;
 typedef std::map<LHLabel, LHConstant *> LHLabelConstantMap;

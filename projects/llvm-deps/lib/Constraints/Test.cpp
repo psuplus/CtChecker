@@ -12,12 +12,60 @@
 //===----------------------------------------------------------------------===//
 
 #include "Constraints/LHConstraintKit.h"
+#include "Constraints/PredicatedConstraints.h"
 #include "llvm/Support/Casting.h"
 #include <iostream>
 
 using namespace deps;
 
 void test(void) {
+
+ std::vector<Predicate* > PSet ;
+
+
+  // Test 0 
+  PSet.push_back(new Predicate(-1,5,'x'));
+  PSet.push_back(new Predicate(2,7,'x'));
+  
+  // // Test 1 
+  // PSet.push_back(new Predicate(-1,5,'x'));
+  // PSet.push_back(new Predicate(2,7,'y'));  
+
+  // // Test 2 
+  // PSet.push_back(new Predicate(-1,2,'x'));
+  // PSet.push_back(new Predicate(5,2,'x'));
+  // PSet.push_back(new Predicate(1 ,6,'x'));  
+
+  // // Test 3  
+  // PSet.push_back(new Predicate(-1,6,'x'));
+  // PSet.push_back(new Predicate(4,8,'x'));
+  // PSet.push_back(new Predicate(0,5,'x'));
+  // PSet.push_back(new Predicate(-3,7,'x'));
+
+  // // Test 4
+  // PSet.push_back(new Predicate(P_NEGINF,P_INF,'x'));
+  // PSet.push_back(new Predicate(P_NEGINF,5,'x'));  
+  // PSet.push_back(new Predicate(-2,P_INF,'x'));  
+
+  unsigned long i;
+  std::cout<<"Before: \n";
+  for (i = 0; i < PSet.size(); i++) {
+    Predicate* P = PSet[i];
+    std::cout<<P->pred->intervals->L<<" <= "<<P->pred->intervals->var
+      <<" <= "<<P->pred->intervals->U<<"\n";
+  }
+
+  NonOverlappingConstraints(PSet);
+
+  std::cout<<"After: \n";
+  for (i = 0; i < PSet.size(); i++) {
+    Predicate* P = PSet[i];
+    std::cout<<P->pred->intervals->L<<" <= "<<P->pred->intervals->var
+      <<" <= "<<P->pred->intervals->U<<"\n";
+  }
+
+
+
 
   LHConstraintKit kit;
 
@@ -31,6 +79,7 @@ void test(void) {
   CompartmentSet cS1{NUCLEAR};
   CompartmentSet cS2{NUCLEAR, CRYPTO};
   CompartmentSet cS3{CRYPTO};
+  CompartmentSet cS4{BIO};
 
   // const ConsElem &ln1 = kit.constant(LHLevel::LOW, cS1);
   // const ConsElem &ln2 = kit.constant(LHLevel::LOW, cS2);
@@ -54,7 +103,7 @@ void test(void) {
   // std::cout << ln4.leq(ln4) << "\n";
 
   // Testing kit for least solution
-  kit.addConstraint("default", kit.constant(LHLevel::LOW, cS3), a);
+  kit.addConstraint("default", kit.constant(LHLevel::LOW, cS1), a); // ,p3
   kit.addConstraint("default", a, b);
   kit.addConstraint("default", b, kit.topConstant());
   kit.addConstraint("default", kit.constant(LHLevel::MID, cS1), b);
@@ -63,7 +112,7 @@ void test(void) {
   // Testing kit for greatest solution
   kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3));
   kit.addConstraint("greatest", a, b);
-  kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS2));
+  kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS1));
   kit.addConstraint("greatest", c, kit.constant(LHLevel::HIGH, cS1));
   kit.addConstraint("greatest", c, a);
 

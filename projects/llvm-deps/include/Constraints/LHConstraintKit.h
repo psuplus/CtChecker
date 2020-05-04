@@ -85,7 +85,8 @@ private:
   static LHConstraintKit *singleton;
 
   // "defult" "default-sinks" "implicit" "implicit-sinks"
-  llvm::StringMap<std::vector<LHConstraint>> constraints;
+  //llvm::StringMap<std::vector<LHConstraint>> constraints;
+  std::map<Predicate* , llvm::StringMap<std::vector<LHConstraint>> > constraints;
   std::set<std::string> lockedConstraintKinds;
 
   std::vector<const LHConsVar *> vars;

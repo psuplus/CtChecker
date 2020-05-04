@@ -19,16 +19,14 @@
 #include <map>
 #include <string>
 
-using namespace std;
-
 namespace deps {
 
 class LHConstant;
 
 enum LHLevel { LOW, MID, HIGH };
 enum LHCompartment { NUCLEAR, CRYPTO };
-typedef set<LHCompartment> CompartmentSet;
-typedef pair<LHLevel, CompartmentSet> LHLabel;
+typedef std::set<LHCompartment> CompartmentSet;
+typedef std::pair<LHLevel, CompartmentSet> LHLabel;
 typedef std::map<LHLabel, LHConstant *> LHLabelConstantMap;
 
 /// Singleton constants in the lattice

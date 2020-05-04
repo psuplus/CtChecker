@@ -26,8 +26,6 @@
 #include <set>
 #include <vector>
 
-using namespace std;
-
 namespace deps {
 
 class LHConstant;

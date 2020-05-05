@@ -254,6 +254,7 @@ private:
 
   bool offsetForValue(const Value & value, unsigned *Offset);
 
+  DenseMap<const AbstractLoc *, std::set<const Value *>> invertedLocConstraintMap;
   DenseMap<ContextID, DenseMap<const Value *, const ConsElem *> > valueConstraintMap;
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> locConstraintMap;
   DenseMap<ContextID, DenseMap<const Function *, const ConsElem *> > vargConstraintMap;
@@ -312,6 +313,7 @@ private:
 
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
   static int matchValueAndParsedString(const Value& value, std::string kind, std::tuple<std::string, int, std::string> match);
+  void getOrCreateLocationValueMap();
   void removeConstraint (std::string kind, std::string match);
   void removeConstraint (std::string kind, std::tuple<std::string, int,std::string> match);
   void removeConstraintFromIndex(std::string, const AbstractLoc*, const Value *, std::map<unsigned, const ConsElem*>, int);

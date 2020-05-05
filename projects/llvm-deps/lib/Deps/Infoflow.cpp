@@ -763,6 +763,11 @@ const MDLocation* findVar(const Value* V, const Function* F) {
 }
 
 const MDLocalVariable* findVarNode(const Value* V, const Function* F) {
+  StringRef vName;
+  if (V->hasName()) {
+    vName = V->getName();
+  }
+  errs() << "\t- looking for value [" << vName << "] in function [" << F->getName() << "]\n";
   for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End; ++Iter) {
     const Instruction* I = &*Iter;
     if (const DbgDeclareInst* DbgDeclare = dyn_cast<DbgDeclareInst>(I)) {
@@ -773,6 +778,7 @@ const MDLocalVariable* findVarNode(const Value* V, const Function* F) {
   }
   return NULL;
 }
+
 
 void 
 InfoflowSolution::getOriginalLocation(const Value* V) {
@@ -2148,7 +2154,6 @@ Infoflow::constrainCallee(const ContextID calleeContext, const Function & callee
       for (std::set<const AbstractLoc* >::const_iterator loc = locs.begin(), end = locs.end(); loc != end; ++loc) {
         (*loc)->dump();
       }
-
     }
     errs() << "SINK\n";
     for (FlowRecord::value_iterator ii = argFlow.sink_value_begin(); ii != argFlow.sink_value_end(); ii++) {
@@ -2457,8 +2462,55 @@ Infoflow::matchValueAndParsedString(const Value& value, std::string kind, std::t
   return variable_matches;
 }
 
+void Infoflow::getOrCreateLocationValueMap() {
+  errs() << "getOrCreateLocationValueMap\n";
+  if (invertedLocConstraintMap.size() > 0) {
+    return;
+  }
+
+  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry =
+           summarySourceValueConstraintMap.begin();
+       entry != summarySourceValueConstraintMap.end(); ++entry) {
+    const Value &value = *(entry->first);
+    // const Function *fn = findEnclosingFunc(&value);
+    // int variable_matches = 0;
+    // if (!fn || (fn && fn->hasName())) {
+    //   const MDLocalVariable *local_var;
+    //   if (fn) {
+    //     local_var = findVarNode(&value, fn);
+    //   }
+    //   if (local_var &&
+    //       (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+    //     variable_matches |= 1;
+    //   }
+    // }
+    if (!isa<BasicBlock>(value)) {
+      const std::set<const AbstractLoc *> &locs = locsForValue(value);
+      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin();
+           loc != locs.end(); ++loc) {
+        (*loc)->dump();
+        DenseMap<const AbstractLoc *, std::set<const Value *>>::iterator
+            setIter = invertedLocConstraintMap.find(*loc);
+        // if (setIter != invertedLocConstraintMap.end()) {
+        //   errs() << "FOUNND\n";
+        //   (*setIter).second.insert(&value);
+        // } else {
+        //   std::set<const Value *> vSet;
+        //   invertedLocConstraintMap[*loc] = vSet;
+        //   vSet.insert(&value);
+        // }
+        invertedLocConstraintMap[*loc].insert(&value);
+        errs() << "VVVVALUE" << invertedLocConstraintMap[*loc].size() << "\n";
+        value.dump();
+
+      }
+    }
+  }
+}
+
 void
 Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::string> match) {
+  getOrCreateLocationValueMap();
   errs() << "Removing values tied to " << std::get<0>(match) << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator entry = summarySourceValueConstraintMap.begin(),
          end = summarySourceValueConstraintMap.end(); entry != end; ++entry) {
@@ -2480,12 +2532,6 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
     errs() << "The value under examination is: [" << s << "]\n" 
            << "\twith offset = [" << t_offset 
            << "], and in the function: [" << fn_name << "]\n\n";
-
-    const Function *fn = findEnclosingFunc(&value);
-    bool function_matches = false;
-    if(fn_name.size() == 0 || (fn && fn->hasName() && fn->getName() == fn_name)) {
-      function_matches = true;
-    }
 
     bool remove_reg = true, remove_mem = true;
     if (matchValueAndParsedString(value, kind, match)) {
@@ -2524,6 +2570,15 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
             elemMap = curElem->second;
           }
 
+          if (invertedLocConstraintMap.find(*loc) !=
+                  invertedLocConstraintMap.end() &&
+              invertedLocConstraintMap.find(*loc)->getSecond().size() > 1) {
+            // if the AbsLocation is a merged node, we conservatively kick it out of the whitelisting process
+            errs() << "^^^^^: "
+                   << invertedLocConstraintMap.find(*loc)->getFirst() << "\n";
+            invertedLocConstraintMap.find(*loc)->getSecond().erase(&value);
+            continue;
+          }
           if (t_offset >= 0) {
             // Check if we are loading from a pointer.
             bool linkExists = false;
@@ -2552,7 +2607,6 @@ Infoflow::removeConstraint(std::string kind, std::tuple<std::string, int, std::s
             for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin();
                 it != elemMap.end(); ++it){
               const ConsElem * e = it->second;
-
               errs() << "------" << " conselem addr" << " : " << e << "\n";
               kit->removeConstraintRHS(kind, *e);
             }

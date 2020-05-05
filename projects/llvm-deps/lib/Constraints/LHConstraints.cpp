@@ -132,6 +132,8 @@ void LHConstant::dump(llvm::raw_ostream &o) const {
       o << " CRYPTO ";
     } else if (c == NUCLEAR) {
       o << " NUCLEAR ";
+    } else if (c == BIO) {
+      o << " BIO ";
     }
   }
   o << "}\n";

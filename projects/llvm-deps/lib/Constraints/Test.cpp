@@ -20,23 +20,22 @@ using namespace deps;
 
 void test(void) {
 
- std::vector<Predicate* > PSet ;
+  std::vector<Predicate *> PSet;
 
+  // Test 0
+  PSet.push_back(new Predicate(-1, 5, 'x'));
+  PSet.push_back(new Predicate(2, 7, 'x'));
 
-  // Test 0 
-  PSet.push_back(new Predicate(-1,5,'x'));
-  PSet.push_back(new Predicate(2,7,'x'));
-  
-  // // Test 1 
+  // // Test 1
   // PSet.push_back(new Predicate(-1,5,'x'));
-  // PSet.push_back(new Predicate(2,7,'y'));  
+  // PSet.push_back(new Predicate(2,7,'y'));
 
-  // // Test 2 
+  // // Test 2
   // PSet.push_back(new Predicate(-1,2,'x'));
   // PSet.push_back(new Predicate(5,2,'x'));
-  // PSet.push_back(new Predicate(1 ,6,'x'));  
+  // PSet.push_back(new Predicate(1 ,6,'x'));
 
-  // // Test 3  
+  // // Test 3
   // PSet.push_back(new Predicate(-1,6,'x'));
   // PSet.push_back(new Predicate(4,8,'x'));
   // PSet.push_back(new Predicate(0,5,'x'));
@@ -44,28 +43,25 @@ void test(void) {
 
   // // Test 4
   // PSet.push_back(new Predicate(P_NEGINF,P_INF,'x'));
-  // PSet.push_back(new Predicate(P_NEGINF,5,'x'));  
-  // PSet.push_back(new Predicate(-2,P_INF,'x'));  
+  // PSet.push_back(new Predicate(P_NEGINF,5,'x'));
+  // PSet.push_back(new Predicate(-2,P_INF,'x'));
 
   unsigned long i;
-  std::cout<<"Before: \n";
+  std::cout << "Before: \n";
   for (i = 0; i < PSet.size(); i++) {
-    Predicate* P = PSet[i];
-    std::cout<<P->pred->intervals->L<<" <= "<<P->pred->intervals->var
-      <<" <= "<<P->pred->intervals->U<<"\n";
+    Predicate *P = PSet[i];
+    std::cout << P->pred->intervals->L << " <= " << P->pred->intervals->var
+              << " <= " << P->pred->intervals->U << "\n";
   }
 
   NonOverlappingConstraints(PSet);
 
-  std::cout<<"After: \n";
+  std::cout << "After: \n";
   for (i = 0; i < PSet.size(); i++) {
-    Predicate* P = PSet[i];
-    std::cout<<P->pred->intervals->L<<" <= "<<P->pred->intervals->var
-      <<" <= "<<P->pred->intervals->U<<"\n";
+    Predicate *P = PSet[i];
+    std::cout << P->pred->intervals->L << " <= " << P->pred->intervals->var
+              << " <= " << P->pred->intervals->U << "\n";
   }
-
-
-
 
   LHConstraintKit kit;
 
@@ -103,24 +99,24 @@ void test(void) {
   // std::cout << ln4.leq(ln4) << "\n";
 
   // Testing kit for least solution
-  kit.addConstraint("default", kit.constant(LHLevel::LOW, cS1), a); // ,p3
-  kit.addConstraint("default", a, b);
-  kit.addConstraint("default", b, kit.topConstant());
-  kit.addConstraint("default", kit.constant(LHLevel::MID, cS1), b);
-  kit.addConstraint("default", b, c);
+  kit.addConstraint("default", kit.constant(LHLevel::LOW, cS1), a, PSet[0]); // ,p3
+  kit.addConstraint("default", a, b, PSet[0]);
+  kit.addConstraint("default", b, kit.topConstant(), PSet[0]);
+  kit.addConstraint("default", kit.constant(LHLevel::MID, cS4), b, PSet[0]);
+  kit.addConstraint("default", b, c, PSet[0]);
 
   // Testing kit for greatest solution
-  kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3));
-  kit.addConstraint("greatest", a, b);
-  kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS1));
-  kit.addConstraint("greatest", c, kit.constant(LHLevel::HIGH, cS1));
-  kit.addConstraint("greatest", c, a);
+  kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3), PSet[0]);
+  kit.addConstraint("greatest", a, b, PSet[0]);
+  kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS1), PSet[0]);
+  kit.addConstraint("greatest", c, kit.constant(LHLevel::HIGH, cS1), PSet[0]);
+  kit.addConstraint("greatest", c, a, PSet[0]);
 
   std::set<std::string> kinds{"default"};
   std::set<std::string> greatest{"greatest"};
 
   std::cout << "Least solution" << std::endl;
-  ConsSoln *leastSoln = kit.leastSolution(kinds);
+  ConsSoln *leastSoln = kit.leastSolution(kinds, PSet[0]);
   for (auto elem : elemVec) {
     elem->dump(llvm::errs());
     llvm::errs() << ": ";
@@ -129,7 +125,7 @@ void test(void) {
   delete leastSoln;
 
   std::cout << "Greatest solution" << std::endl;
-  ConsSoln *greatestSoln = kit.greatestSolution(greatest);
+  ConsSoln *greatestSoln = kit.greatestSolution(greatest, PSet[0]);
   for (auto elem : elemVec) {
     elem->dump(llvm::errs());
     llvm::errs() << ": ";

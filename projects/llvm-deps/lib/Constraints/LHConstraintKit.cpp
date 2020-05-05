@@ -95,14 +95,18 @@ const ConsElem &LHConstraintKit::upperBound(std::set<const ConsElem *> elems) {
 }
 
 std::vector<LHConstraint> &
-LHConstraintKit::getOrCreateConstraintSet(const std::string kind) {
+LHConstraintKit::getOrCreateConstraintSet(const std::string kind,
+                                          Predicate *pred) {
   // return constraints.lookup(kind).getValue();
   // return constraints.insert(constraints.Create(kind))->getValue();
-  return constraints[kind];
+  if (constraints.find(pred) != constraints.end()) {
+    return constraints[pred][kind];
+  }
+  return constraints[pred][kind];
 }
 
 void LHConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
-                                    const ConsElem &rhs) {
+                                    const ConsElem &rhs, Predicate *pred) {
   if (lockedConstraintKinds.find(kind) != lockedConstraintKinds.end()) {
     assert(false && "Have already started solving this kind and cannot add "
                     "more constraints.");
@@ -113,7 +117,7 @@ void LHConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
   if (kind == "implicit")
     implicitLHConstraints++;
 
-  std::vector<LHConstraint> &set = getOrCreateConstraintSet(kind);
+  std::vector<LHConstraint> &set = getOrCreateConstraintSet(kind, pred);
 
   assert(!llvm::isa<LHJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
@@ -132,13 +136,14 @@ void LHConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
 }
 
 void LHConstraintKit::removeConstraintRHS(const std::string kind,
-                                          const ConsElem &rhs) {
+                                          const ConsElem &rhs,
+                                          Predicate *pred) {
   if (kind == "default")
     explicitLHConstraints--;
   if (kind == "implicit")
     implicitLHConstraints--;
 
-  std::vector<LHConstraint> &set = getOrCreateConstraintSet("default");
+  std::vector<LHConstraint> &set = getOrCreateConstraintSet("default", pred);
 
   assert(!llvm::isa<LHJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
@@ -177,15 +182,16 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
   delete ss2;
 }
 
-ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds) {
+ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds,
+                                         Predicate *pred) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
        kind != end; ++kind) {
     if (!leastSolutions.count(*kind)) {
       lockedConstraintKinds.insert(*kind);
       leastSolutions[*kind] =
-          new PartialSolution(getOrCreateConstraintSet(*kind), false);
-      freeUnneededConstraints(*kind);
+          new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
+      freeUnneededConstraints(*kind, pred);
     }
     PartialSolution *P = leastSolutions[*kind];
 
@@ -198,15 +204,16 @@ ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds) {
   return PS;
 }
 
-ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds) {
+ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds,
+                                            Predicate *pred) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
        kind != end; ++kind) {
     if (!greatestSolutions.count(*kind)) {
       lockedConstraintKinds.insert(*kind);
       greatestSolutions[*kind] =
-          new PartialSolution(getOrCreateConstraintSet(*kind), true);
-      freeUnneededConstraints(*kind);
+          new PartialSolution(getOrCreateConstraintSet(*kind, pred), true);
+      freeUnneededConstraints(*kind, pred);
     }
     PartialSolution *P = greatestSolutions[*kind];
 
@@ -219,13 +226,14 @@ ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds) {
   return PS;
 }
 
-void LHConstraintKit::freeUnneededConstraints(std::string kind) {
+void LHConstraintKit::freeUnneededConstraints(std::string kind,
+                                              Predicate *pred) {
   // If we have the two kinds of PartialSolutions already generated
   // for this kind, then we no longer need the original constraints
   if (lockedConstraintKinds.count(kind) && leastSolutions.count(kind) &&
       greatestSolutions.count(kind)) {
     // Clear out the constraints for this kind!
-    getOrCreateConstraintSet(kind).clear();
+    getOrCreateConstraintSet(kind, pred).clear();
   }
 }
 

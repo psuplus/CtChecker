@@ -18,6 +18,7 @@
 #include "Constraints/ConstraintKit.h"
 #include "Constraints/LHConstraint.h"
 #include "Constraints/LHConstraints.h"
+#include "Constraints/PredicatedConstraints.h"
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/StringMap.h"
@@ -60,33 +61,38 @@ public:
 
   /// Add the constraint lhs <= rhs to the set "kind"
   virtual void addConstraint(const std::string kind, const ConsElem &lhs,
-                             const ConsElem &rhs);
-  virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs);
+                             const ConsElem &rhs, Predicate *pred);
+  virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs,
+                                   Predicate *pred);
 
   /// Find the lfp of the constraints in the "kinds" sets
   /// Unconstrained variables will be "Low" (caller delete)
-  virtual ConsSoln *leastSolution(const std::set<std::string> kinds);
+  virtual ConsSoln *leastSolution(const std::set<std::string> kinds,
+                                  Predicate *pred);
   /// Find the gfp of the constraints in the "kinds" sets
   /// Unconstrained variables will be "High" (caller delete)
-  virtual ConsSoln *greatestSolution(const std::set<std::string> kinds);
+  virtual ConsSoln *greatestSolution(const std::set<std::string> kinds,
+                                     Predicate *pred);
   /// return the vars and joins
   std::vector<const LHConsVar *> getVars() { return vars; }
   std::set<LHJoin> &getJoins() { return joins; }
 
   // Compute both least and greatest solutions simultaneously
   // for the given kind.
-  void solveMT(std::string kind);
+  void solveMT(std::string kind, Predicate *pred);
   // Solve the given kinds in parallel (per thread limit)
   std::vector<PartialSolution *> solveLeastMT(std::vector<std::string> kinds,
-                                              bool useDefaultSinks);
-  std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind);
+                                              bool useDefaultSinks,
+                                              Predicate *pred);
+  std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind,
+                                                      Predicate *pred);
 
 private:
   static LHConstraintKit *singleton;
 
   // "defult" "default-sinks" "implicit" "implicit-sinks"
-  //llvm::StringMap<std::vector<LHConstraint>> constraints;
-  std::map<Predicate* , llvm::StringMap<std::vector<LHConstraint>> > constraints;
+  // llvm::StringMap<std::vector<LHConstraint>> constraints;
+  std::map<Predicate *, llvm::StringMap<std::vector<LHConstraint>>> constraints;
   std::set<std::string> lockedConstraintKinds;
 
   std::vector<const LHConsVar *> vars;
@@ -96,7 +102,7 @@ private:
   llvm::StringMap<PartialSolution *> leastSolutions;
   llvm::StringMap<PartialSolution *> greatestSolutions;
 
-  void freeUnneededConstraints(std::string kind);
+  void freeUnneededConstraints(std::string kind, Predicate *pred);
 };
 
 } // namespace deps

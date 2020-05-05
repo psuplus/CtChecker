@@ -16,6 +16,7 @@
 #define CONSTRAINTKIT_H_
 
 #include "Constraints/DepsTypes.h"
+#include "Constraints/PredicatedConstraints.h"
 #include "llvm/Support/raw_ostream.h"
 #include <set>
 #include <string>
@@ -67,13 +68,15 @@ public:
   /// Constrain the left hand side with the right hand side and put it
   /// in the set "kind"
   virtual void addConstraint(const std::string kind, const ConsElem &lhs,
-                             const ConsElem &rhs) = 0;
-  virtual void removeConstraintRHS(const std::string kind,
-                                   const ConsElem &rhs) = 0;
+                             const ConsElem &rhs, Predicate *pred) = 0;
+  virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs,
+                                   Predicate *pred) = 0;
   /// Find the lfp of the constraints in the "kinds" sets (caller must delete)
-  virtual ConsSoln *leastSolution(const std::set<std::string> kinds) = 0;
+  virtual ConsSoln *leastSolution(const std::set<std::string> kinds,
+                                  Predicate *pred) = 0;
   /// Find the gfp of the constraints in the "kinds" sets (caller must delete)
-  virtual ConsSoln *greatestSolution(const std::set<std::string> kinds) = 0;
+  virtual ConsSoln *greatestSolution(const std::set<std::string> kinds,
+                                     Predicate *pred) = 0;
 
   virtual ~ConstraintKit() {}
 };

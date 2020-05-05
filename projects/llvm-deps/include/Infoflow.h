@@ -225,11 +225,14 @@ public:
   Flows getInstructionFlows(const Instruction &);
 
   // Solve the given kind using two threads.
-  void solveMT(std::string kind="default") {
+  void solveMT(std::string kind, Predicate *pred) {
     assert(kit);
-    kit->solveMT(kind);
+    kit->solveMT(kind, pred);
   }
-  std::vector<InfoflowSolution*> solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks);
+  std::vector<InfoflowSolution *> solveLeastMT(std::vector<std::string> kinds,
+                                               bool useDefaultSinks,
+                                               Predicate *pred);
+
 private:
   virtual void doInitialization();
   virtual void doFinalization();

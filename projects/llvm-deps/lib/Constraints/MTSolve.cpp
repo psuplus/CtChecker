@@ -47,7 +47,7 @@ void SolverThread::join(PartialSolution *&P) {
   ::pthread_join(thread, (void **)&P);
 }
 
-void LHConstraintKit::solveMT(std::string kind) {
+void LHConstraintKit::solveMT(std::string kind, Predicate *pred) {
   assert(lockedConstraintKinds.insert(kind).second && "Already solved");
   assert(!leastSolutions.count(kind));
   assert(!greatestSolutions.count(kind));
@@ -55,7 +55,7 @@ void LHConstraintKit::solveMT(std::string kind) {
   PartialSolution *&G = greatestSolutions[kind];
   PartialSolution *&L = leastSolutions[kind];
 
-  Constraints &C = getOrCreateConstraintSet(kind);
+  Constraints &C = getOrCreateConstraintSet(kind, pred);
 
   SolverThread *TG = SolverThread::spawn(C, true);
   SolverThread *TL = SolverThread::spawn(C, false);
@@ -70,7 +70,7 @@ void LHConstraintKit::solveMT(std::string kind) {
   assert(greatestSolutions.count(kind));
 
   // Cleanup
-  freeUnneededConstraints(kind);
+  freeUnneededConstraints(kind, pred);
 }
 
 struct MergeInfo {
@@ -95,7 +95,7 @@ void *merge(void *arg) {
 
 std::vector<PartialSolution *>
 LHConstraintKit::solveLeastMT(std::vector<std::string> kinds,
-                              bool useDefaultSinks) {
+                              bool useDefaultSinks, Predicate *pred) {
   assert(leastSolutions.count("default"));
 
   PartialSolution *P = leastSolutions["default"];
@@ -107,7 +107,7 @@ LHConstraintKit::solveLeastMT(std::vector<std::string> kinds,
     assert(lockedConstraintKinds.insert(*kind).second && "Already solved");
     assert(!leastSolutions.count(*kind));
     leastSolutions[*kind] =
-        new PartialSolution(getOrCreateConstraintSet(*kind), false);
+        new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
     ToMerge.push_back(new PartialSolution(*leastSolutions[*kind]));
   }
 
@@ -159,8 +159,8 @@ LHConstraintKit::solveLeastMT(std::vector<std::string> kinds,
 }
 
 std::vector<InfoflowSolution *>
-Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks) {
-  std::vector<PartialSolution *> PS = kit->solveLeastMT(kinds, useDefaultSinks);
+Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks, Predicate*pred) {
+  std::vector<PartialSolution *> PS = kit->solveLeastMT(kinds, useDefaultSinks, pred);
 
   std::vector<InfoflowSolution *> Solns;
   for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();

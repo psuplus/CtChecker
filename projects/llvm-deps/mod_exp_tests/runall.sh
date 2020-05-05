@@ -7,9 +7,9 @@ OUT_DIR=results
 OUT_FULL_DIR=$OUT_DIR/full
 OUT_MIN_DIR=$OUT_DIR/min
 mkdir -p $OUT_FULL_DIR
-mkdir -p $OUT_FULL_DIR/raw
+# mkdir -p $OUT_FULL_DIR/raw
 mkdir -p $OUT_MIN_DIR
-mkdir -p $OUT_MIN_DIR/raw
+# mkdir -p $OUT_MIN_DIR/raw
 
 #
 rm_file_if_exists()
@@ -21,8 +21,10 @@ rm_file_if_exists()
 
 pool_results()
 {
-    cp ${1}/results_with_source.txt ${2}/${1}.txt
-    cp ${1}/tmp.dat  ${2}/raw/${1}.txt
+    # mkdir -p ${2}/${1}
+    mkdir -p ${2}/${1}/raw
+    mv ${1}/results_with_source*.txt ${2}/${1}
+    mv ${1}/tmp*.dat  ${2}/${1}/raw
 }
 
 execute_test()
@@ -31,17 +33,19 @@ execute_test()
     echo ":::: Changing to $1 directory"
     cd $1
     echo "::::: Running $2 $3"
-    rm_file_if_exists results_with_source.txt
-    rm_file_if_exists tmp.dat
+    # rm_file_if_exists results_with_source.txt
+    # rm_file_if_exists tmp.dat
 
-    # flags: white_list flow_sensitivity source
-    
+    # flags: $2 $3 [white_list] [flow_sensitivity] [source]
     if [ $5 = true ] ; then 
         $2 $3 false false $5    # SRC
+        $2 $3 false true $5     # FlS/SRC
+        $2 $3 true false $5     # WL/SRC
+        $2 $3 true true $5      # WL/FlS/SRC
     else 
         $2 $3 false false $5    # Base 
-        $2 $3 true false $5     # WL
         $2 $3 false true $5     # FlS
+        $2 $3 true false $5     # WL
         $2 $3 true true $5      # WL/FlS
     fi
 

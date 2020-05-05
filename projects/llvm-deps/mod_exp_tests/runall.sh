@@ -7,9 +7,9 @@ OUT_DIR=results
 OUT_FULL_DIR=$OUT_DIR/full
 OUT_MIN_DIR=$OUT_DIR/min
 mkdir -p $OUT_FULL_DIR
-mkdir -p $OUT_FULL_DIR/raw
+# mkdir -p $OUT_FULL_DIR/raw
 mkdir -p $OUT_MIN_DIR
-mkdir -p $OUT_MIN_DIR/raw
+# mkdir -p $OUT_MIN_DIR/raw
 
 #
 rm_file_if_exists()
@@ -21,8 +21,10 @@ rm_file_if_exists()
 
 pool_results()
 {
-    cp ${1}/results_with_source.txt ${2}/${1}.txt
-    cp ${1}/tmp.dat  ${2}/raw/${1}.txt
+    # mkdir -p ${2}/${1}
+    mkdir -p ${2}/${1}/raw
+    mv ${1}/results_with_source*.txt ${2}/${1}
+    mv ${1}/tmp*.dat  ${2}/${1}/raw
 }
 
 execute_test()
@@ -31,15 +33,18 @@ execute_test()
     echo ":::: Changing to $1 directory"
     cd $1
     echo "::::: Running $2 $3"
-    rm_file_if_exists results_with_source.txt
-    rm_file_if_exists tmp.dat
+    # rm_file_if_exists results_with_source.txt
+    # rm_file_if_exists tmp.dat
 
-    # flags: white_list; flow_sensitivity; source
+    # flags: $2 $3 [white_list] [flow_sensitivity] [source]
     if [ $5 = true ] ; then 
+        $2 $3 false false $5    # FS/SRC
+        $2 $3 false true $5     # FS/Fls/SRC
         $2 $3 true false $5     # WL/FS/SRC
         $2 $3 true true $5      # WL/FS/FlS/SRC
     else 
         $2 $3 false false $5    # FS
+        $2 $3 false true $5     # FS/Fls
         $2 $3 true false $5     # WL/FS
         $2 $3 true true $5      # WL/FS/FlS
     fi
@@ -52,7 +57,7 @@ full_library_tests()
 {
     execute_test "BearSSL0.5" "./run.sh" "testall.bc" $OUT_FULL_DIR true
     execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
-    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true # TODO there is no full.bc in the folder
+    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
     execute_test "mbedtls2.9.0" "./run.sh" "test2.bc" $OUT_FULL_DIR true
 }
 

@@ -1,7 +1,8 @@
 CC=../../../../Debug+Asserts/bin/clang
 LD=../../../../Debug+Asserts/bin/llvm-link
 
-FULL_LIB=mpi/ec-ed25519.c
+FULL_BC=
+FULL_LIB+=mpi/ec-ed25519.c
 FULL_LIB+=mpi/mpi-add.c
 FULL_LIB+=mpi/mpi-bit.c
 FULL_LIB+=mpi/mpi-cmp.c

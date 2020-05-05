@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+
 class Predicate {
 public:
   Predicate(long L, long U, char var) { pred = new Interval(L, U, var); }
@@ -13,7 +14,7 @@ public:
   Interval *pred;
 };
 
-void NonOverlappingConstraints(std::vector<Predicate *> &P);
+
 
 /*Output:
 flag >= 0, copy constraints of P1 into P3

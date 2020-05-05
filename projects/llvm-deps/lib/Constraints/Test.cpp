@@ -46,22 +46,22 @@ void test(void) {
   // PSet.push_back(new Predicate(P_NEGINF,5,'x'));
   // PSet.push_back(new Predicate(-2,P_INF,'x'));
 
-  unsigned long i;
-  std::cout << "Before: \n";
-  for (i = 0; i < PSet.size(); i++) {
-    Predicate *P = PSet[i];
-    std::cout << P->pred->intervals->L << " <= " << P->pred->intervals->var
-              << " <= " << P->pred->intervals->U << "\n";
-  }
+  // unsigned long i;
+  // std::cout << "Before: \n";
+  // for (i = 0; i < PSet.size(); i++) {
+  //   Predicate *P = PSet[i];
+  //   std::cout << P->pred->intervals->L << " <= " << P->pred->intervals->var
+  //             << " <= " << P->pred->intervals->U << "\n";
+  // }
 
-  NonOverlappingConstraints(PSet);
 
-  std::cout << "After: \n";
-  for (i = 0; i < PSet.size(); i++) {
-    Predicate *P = PSet[i];
-    std::cout << P->pred->intervals->L << " <= " << P->pred->intervals->var
-              << " <= " << P->pred->intervals->U << "\n";
-  }
+
+  // std::cout << "After: \n";
+  // for (i = 0; i < PSet.size(); i++) {
+  //   Predicate *P = PSet[i];
+  //   std::cout << P->pred->intervals->L << " <= " << P->pred->intervals->var
+  //             << " <= " << P->pred->intervals->U << "\n";
+  // }
 
   LHConstraintKit kit;
 
@@ -99,11 +99,12 @@ void test(void) {
   // std::cout << ln4.leq(ln4) << "\n";
 
   // Testing kit for least solution
+  // L, cs1 <= a <= b <= TOP; MID, cs4 <= b <= c 
   kit.addConstraint("default", kit.constant(LHLevel::LOW, cS1), a, PSet[0]); // ,p3
-  kit.addConstraint("default", a, b, PSet[0]);
-  kit.addConstraint("default", b, kit.topConstant(), PSet[0]);
-  kit.addConstraint("default", kit.constant(LHLevel::MID, cS4), b, PSet[0]);
-  kit.addConstraint("default", b, c, PSet[0]);
+  // kit.addConstraint("default", a, b, PSet[0]);
+  kit.addConstraint("default", b, kit.topConstant(), PSet[1]);
+  // kit.addConstraint("default", kit.constant(LHLevel::MID, cS4), b, PSet[0]);
+  // kit.addConstraint("default", b, c, PSet[0]);
 
   // Testing kit for greatest solution
   kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3), PSet[0]);
@@ -115,23 +116,36 @@ void test(void) {
   std::set<std::string> kinds{"default"};
   std::set<std::string> greatest{"greatest"};
 
-  std::cout << "Least solution" << std::endl;
-  ConsSoln *leastSoln = kit.leastSolution(kinds, PSet[0]);
+  NonOverlappingConstraints(PSet, &kit);
+
+    std::cout << "Least solution" << std::endl;
+
+  for (auto i: PSet) {
+    Predicate *P = i;
+    llvm::errs() << P->pred->intervals->L << " <= " << P->pred->intervals->var
+              << " <= " << P->pred->intervals->U << ": \n";  
+  ConsSoln *leastSoln = kit.leastSolution(kinds, i);
   for (auto elem : elemVec) {
     elem->dump(llvm::errs());
     llvm::errs() << ": ";
     leastSoln->subst(*elem).dump(llvm::errs());
   }
-  delete leastSoln;
+  delete leastSoln;    
+  }
 
-  std::cout << "Greatest solution" << std::endl;
-  ConsSoln *greatestSoln = kit.greatestSolution(greatest, PSet[0]);
+  std::cout << "Greatest solution" << std::endl;  
+  for (auto i: PSet) {
+    Predicate *P = i;
+    llvm::errs() << P->pred->intervals->L << " <= " << P->pred->intervals->var
+              << " <= " << P->pred->intervals->U << ": \n";    
+  ConsSoln *greatestSoln = kit.greatestSolution(greatest,i );
   for (auto elem : elemVec) {
     elem->dump(llvm::errs());
     llvm::errs() << ": ";
     greatestSoln->subst(*elem).dump(llvm::errs());
   }
   delete greatestSoln;
+  }
 }
 
 int main(void) {

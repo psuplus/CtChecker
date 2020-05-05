@@ -87,6 +87,8 @@ public:
   std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind,
                                                       Predicate *pred);
 
+  void Constraintunion(Predicate* P1, Predicate* P2, Predicate* P3, int flag );
+
 private:
   static LHConstraintKit *singleton;
 
@@ -104,6 +106,8 @@ private:
 
   void freeUnneededConstraints(std::string kind, Predicate *pred);
 };
+
+void NonOverlappingConstraints(std::vector<Predicate *> &P, LHConstraintKit* kit);
 
 } // namespace deps
 

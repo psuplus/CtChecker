@@ -237,4 +237,81 @@ void LHConstraintKit::freeUnneededConstraints(std::string kind,
   }
 }
 
+void LHConstraintKit::Constraintunion(Predicate* P1, Predicate* P2, Predicate* P3, int flag ) {
+  switch (flag)
+  {
+  case 0:
+    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i = constraints[P1].begin(); i != constraints[P1].end(); ++i ) {
+        std::vector<LHConstraint> tempvector = getOrCreateConstraintSet(i->first(), P3);
+        for (auto j: getOrCreateConstraintSet(i->first() , P1) ) {
+          LHConstraint temp(j.lhs() , j.rhs());
+          tempvector.push_back(temp);
+         } 
+        for (auto j: getOrCreateConstraintSet(i->first() , P2) ) {
+          LHConstraint temp(j.lhs() , j.rhs());
+          tempvector.push_back(temp);
+         }         
+    }
+    case 1:
+    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i = constraints[P1].begin(); i != constraints[P1].end(); ++i ) {
+        std::vector<LHConstraint> tempvector = getOrCreateConstraintSet(i->first(), P3);
+        for (auto j: getOrCreateConstraintSet(i->first() , P1) ) {
+          LHConstraint temp(j.lhs() , j.rhs());
+          tempvector.push_back(temp);
+         }        
+        
+        std::vector<LHConstraint> tempvector2 = getOrCreateConstraintSet(i->first(), P2);
+        for (auto j: getOrCreateConstraintSet(i->first() , P1) ) {
+          LHConstraint temp(j.lhs() , j.rhs());
+          tempvector2.push_back(temp);
+         }      
+    }    
+    break;
+    case -1:
+    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i = constraints[P2].begin(); i != constraints[P2].end(); ++i ) {
+        std::vector<LHConstraint> tempvector = getOrCreateConstraintSet(i->first(), P3);
+        for (auto j: getOrCreateConstraintSet(i->first() , P2) ) {
+          LHConstraint temp(j.lhs() , j.rhs());
+          tempvector.push_back(temp);
+         }        
+        
+        std::vector<LHConstraint> tempvector2 = getOrCreateConstraintSet(i->first(), P1);
+        for (auto j: getOrCreateConstraintSet(i->first() , P2) ) {
+          LHConstraint temp(j.lhs() , j.rhs());
+          tempvector2.push_back(temp);
+         }      
+    }      
+    break;
+    default: 
+    break;
+  }
+}
+
+
+void NonOverlappingConstraints(std::vector<Predicate *> &P, LHConstraintKit* kit ) {
+  long unsigned i, j;
+  for (i = 0; i < P.size(); i++) {
+    for (j = i + 1; j < P.size(); j++) {
+      if (doPredicateOverlap(P[i], P[j])) {
+        int *flag = new int(0);
+        Predicate* P3 = PredicatePartition(P[i], P[j], flag);
+        kit->Constraintunion(P[i], P[j], P3, *flag);
+        P.push_back(P3);
+      }
+    }
+  }
+
+  // Sort the constraints
+  std::sort(P.begin(), P.end(), Compare);
+
+  // Remove the empty predicates
+  for (i = 0; i < P.size(); i++) {
+    if (isPredicateEmpty(P[i])) {
+      P.erase(P.begin() + i);
+      i--;
+    }
+  }
+}
+
+
 } // namespace deps

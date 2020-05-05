@@ -4,28 +4,6 @@
 #include <iostream>
 #include <vector>
 
-void NonOverlappingConstraints(std::vector<Predicate *> &P) {
-  long unsigned i, j;
-  for (i = 0; i < P.size(); i++) {
-    for (j = i + 1; j < P.size(); j++) {
-      if (doPredicateOverlap(P[i], P[j])) {
-        int *flag = new int(0);
-        P.push_back(PredicatePartition(P[i], P[j], flag));
-      }
-    }
-  }
-
-  // Sort the constraints
-  std::sort(P.begin(), P.end(), Compare);
-
-  // Remove the empty predicates
-  for (i = 0; i < P.size(); i++) {
-    if (isPredicateEmpty(P[i])) {
-      P.erase(P.begin() + i);
-      i--;
-    }
-  }
-}
 
 bool doPredicateOverlap(Predicate *P1, Predicate *P2) {
 
@@ -65,7 +43,7 @@ Predicate *PredicatePartition(Predicate *P1, Predicate *P2, int *flag) {
                                 P1->pred->intervals->var);
   L3 = P3->pred->intervals->L;
   U3 = P3->pred->intervals->U;
-
+ 
   // Checks for infinite cases
   if (L1 <= L2 && U1 < U2) {
     *flag = 0;

@@ -236,9 +236,9 @@ public:
     assert(kit);
     kit->solveMT(kind, pred);
   }
-  std::vector<InfoflowSolution *> solveLeastMT(std::vector<std::string> kinds,
-                                               bool useDefaultSinks,
-                                               Predicate *pred);
+  std::vector<InfoflowSolution *>
+  solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
+               Predicate *pred = RLConstraintKit::truePredicate);
 
 private:
   virtual void doInitialization();

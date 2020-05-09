@@ -61,18 +61,19 @@ public:
 
   /// Add the constraint lhs <= rhs to the set "kind"
   virtual void addConstraint(const std::string kind, const ConsElem &lhs,
-                             const ConsElem &rhs, Predicate *pred);
+                             const ConsElem &rhs,
+                             Predicate *pred = truePredicate);
   virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs,
-                                   Predicate *pred);
+                                   Predicate *pred = truePredicate);
 
   /// Find the lfp of the constraints in the "kinds" sets
   /// Unconstrained variables will be "Low" (caller delete)
   virtual ConsSoln *leastSolution(const std::set<std::string> kinds,
-                                  Predicate *pred);
+                                  Predicate *pred = truePredicate);
   /// Find the gfp of the constraints in the "kinds" sets
   /// Unconstrained variables will be "High" (caller delete)
   virtual ConsSoln *greatestSolution(const std::set<std::string> kinds,
-                                     Predicate *pred);
+                                     Predicate *pred = truePredicate);
   /// return the vars and joins
   std::vector<const RLConsVar *> getVars() { return vars; }
   std::set<RLJoin> &getJoins() { return joins; }
@@ -91,6 +92,8 @@ public:
                           int flag);
 
   void partitionPredicateSet(std::vector<Predicate *> &P);
+
+  static Predicate *truePredicate;
 
 private:
   static RLConstraintKit *singleton;

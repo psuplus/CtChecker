@@ -84,8 +84,9 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
+FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat $START $END $COL 2 $FILE $TIME > results_with_source_$COL.txt
+post_analysis.py tmp.dat $START $END $COL 2 $FILE $TIME > $FILENAME
 
 COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 

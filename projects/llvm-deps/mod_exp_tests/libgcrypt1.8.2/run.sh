@@ -65,13 +65,13 @@ FILE="mpi/mpi-pow.c"
 
 # CUR=$(pwd)
 # cd ../../../;
-make $1
-# cd $CUR
+make full.bc
+$LEVEL/Debug+Asserts/bin/llvm-dis full.bc
+$LEVEL/Debug+Asserts/bin/clang -isystem include -I include -O0 -g -emit-llvm -c mpi/mpi-pow.c
+$LEVEL/Debug+Asserts/bin/clang -isystem inlcude -I include -O0 -g -emit-llvm -S mpi/mpi-pow.c
 
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
-$LEVEL/Debug+Asserts/bin/clang -isystem include -I include -O0 -g -emit-llvm -o mpi-pow.bc -c mpi/mpi-pow.c
-$LEVEL/Debug+Asserts/bin/clang -isystem inlcude -I include -O0 -g -emit-llvm -S mpi/mpi-pow.c
 
 TIME=$(date +%s)
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
@@ -85,8 +85,9 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
+FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat $START $END $COL 1 $FILE $TIME > results_with_source_$COL.txt
+post_analysis.py tmp.dat $START $END $COL 1 $FILE $TIME > $FILENAME
 
 COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 

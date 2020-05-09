@@ -119,6 +119,7 @@ const RLLabel RLConstant::label() const {
 }
 
 void RLConstant::dump(llvm::raw_ostream &o) const {
+  o << "[ ";
   if (level == LOW) {
     o << "LOW";
   } else if (level == MID) {
@@ -136,7 +137,7 @@ void RLConstant::dump(llvm::raw_ostream &o) const {
       o << " BIO ";
     }
   }
-  o << "}\n";
+  o << "} ]";
 }
 
 bool RLConstant::operator==(const ConsElem &elem) const {

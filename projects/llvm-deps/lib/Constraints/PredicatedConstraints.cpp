@@ -8,7 +8,7 @@ namespace deps {
 
 void Predicate::dump() {
   llvm::errs() << pred->intervals->L << " <= " << pred->intervals->var
-               << " <= " << pred->intervals->U << ": \n";
+               << " <= " << pred->intervals->U << ": ";
 }
 
 bool Predicate::isOverlapping(Predicate *P1, Predicate *P2) {

@@ -137,10 +137,24 @@ void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
          elem != end; ++elem) {
       const RLConstraint c(**elem, rhs);
       set.push_back(c);
+
+      llvm::errs() << "Added predicated constraint in kind [" << kind << "] : ";
+      pred->dump();
+      lhs.dump(llvm::errs());
+      llvm::errs() << " <: ";
+      rhs.dump(llvm::errs());
+      llvm::errs() << "\n";
     }
   } else {
     RLConstraint c(lhs, rhs);
     set.push_back(c);
+
+    llvm::errs() << "Added predicated constraint in kind [" << kind << "] : ";
+    pred->dump();
+    lhs.dump(llvm::errs());
+    llvm::errs() << " <: ";
+    rhs.dump(llvm::errs());
+    llvm::errs() << "\n";
   }
 }
 

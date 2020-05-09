@@ -96,12 +96,14 @@ void test(void) {
 
   for (auto P : PSet) {
     P->dump();
+    llvm::errs() << "\n";
     ConsSoln *leastSoln = kit.leastSolution(kinds, P);
     for (auto elem : elemVec) {
       llvm::errs() << "\t";
       elem->dump(llvm::errs());
       llvm::errs() << ": ";
       leastSoln->subst(*elem).dump(llvm::errs());
+      llvm::errs() << "\n";
     }
     delete leastSoln;
   }
@@ -111,12 +113,14 @@ void test(void) {
 
   for (auto P : PSet) {
     P->dump();
+    llvm::errs() << "\n";
     ConsSoln *greatestSoln = kit.greatestSolution(greatest, P);
     for (auto elem : elemVec) {
       llvm::errs() << "\t";
       elem->dump(llvm::errs());
       llvm::errs() << ": ";
       greatestSoln->subst(*elem).dump(llvm::errs());
+      llvm::errs() << "\n";
     }
     delete greatestSoln;
   }

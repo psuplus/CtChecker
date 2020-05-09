@@ -48,12 +48,12 @@ void SolverThread::join(PartialSolution *&P) {
 }
 
 void LHConstraintKit::solveMT(std::string kind, Predicate *pred) {
-  assert(lockedConstraintKinds.insert(kind).second && "Already solved");
-  assert(!leastSolutions.count(kind));
-  assert(!greatestSolutions.count(kind));
+  assert(lockedConstraintKinds[pred].insert(kind).second && "Already solved");
+  assert(!leastSolutions[pred].count(kind));
+  assert(!greatestSolutions[pred].count(kind));
 
-  PartialSolution *&G = greatestSolutions[kind];
-  PartialSolution *&L = leastSolutions[kind];
+  PartialSolution *&G = greatestSolutions[pred][kind];
+  PartialSolution *&L = leastSolutions[pred][kind];
 
   Constraints &C = getOrCreateConstraintSet(kind, pred);
 
@@ -66,8 +66,8 @@ void LHConstraintKit::solveMT(std::string kind, Predicate *pred) {
   delete TG;
   delete TL;
 
-  assert(leastSolutions.count(kind));
-  assert(greatestSolutions.count(kind));
+  assert(leastSolutions[pred].count(kind));
+  assert(greatestSolutions[pred].count(kind));
 
   // Cleanup
   freeUnneededConstraints(kind, pred);
@@ -96,19 +96,20 @@ void *merge(void *arg) {
 std::vector<PartialSolution *>
 LHConstraintKit::solveLeastMT(std::vector<std::string> kinds,
                               bool useDefaultSinks, Predicate *pred) {
-  assert(leastSolutions.count("default"));
+  assert(leastSolutions[pred].count("default"));
 
-  PartialSolution *P = leastSolutions["default"];
-  PartialSolution *DS = leastSolutions["default-sinks"];
+  PartialSolution *P = leastSolutions[pred]["default"];
+  PartialSolution *DS = leastSolutions[pred]["default-sinks"];
   std::vector<PartialSolution *> ToMerge;
   for (std::vector<std::string>::iterator kind = kinds.begin(),
                                           end = kinds.end();
        kind != end; ++kind) {
-    assert(lockedConstraintKinds.insert(*kind).second && "Already solved");
-    assert(!leastSolutions.count(*kind));
-    leastSolutions[*kind] =
+    assert(lockedConstraintKinds[pred].insert(*kind).second &&
+           "Already solved");
+    assert(!leastSolutions[pred].count(*kind));
+    leastSolutions[pred][*kind] =
         new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
-    ToMerge.push_back(new PartialSolution(*leastSolutions[*kind]));
+    ToMerge.push_back(new PartialSolution(*leastSolutions[pred][*kind]));
   }
 
   // Make copy of the set of solutions for returning when we're done
@@ -159,8 +160,10 @@ LHConstraintKit::solveLeastMT(std::vector<std::string> kinds,
 }
 
 std::vector<InfoflowSolution *>
-Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks, Predicate*pred) {
-  std::vector<PartialSolution *> PS = kit->solveLeastMT(kinds, useDefaultSinks, pred);
+Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
+                       Predicate *pred) {
+  std::vector<PartialSolution *> PS =
+      kit->solveLeastMT(kinds, useDefaultSinks, pred);
 
   std::vector<InfoflowSolution *> Solns;
   for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();

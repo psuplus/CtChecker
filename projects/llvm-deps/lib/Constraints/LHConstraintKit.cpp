@@ -27,6 +27,9 @@ namespace deps {
 STATISTIC(explicitLHConstraints, "Number of explicit flow constraints");
 STATISTIC(implicitLHConstraints, "Number of implicit flow constraints");
 
+typedef std::map<Predicate *, llvm::StringMap<PartialSolution *>>
+    PartialSolutionMap;
+
 LHConstraintKit::LHConstraintKit() {}
 
 LHConstraintKit::~LHConstraintKit() {
@@ -37,15 +40,20 @@ LHConstraintKit::~LHConstraintKit() {
     delete (*var);
   }
 
-  for (llvm::StringMap<PartialSolution *>::iterator I = leastSolutions.begin(),
-                                                    E = leastSolutions.end();
-       I != E; ++I)
-    delete I->second;
-  for (llvm::StringMap<PartialSolution *>::iterator
-           I = greatestSolutions.begin(),
-           E = greatestSolutions.end();
-       I != E; ++I)
-    delete I->second;
+  for (PartialSolutionMap::iterator I = leastSolutions.begin();
+       I != leastSolutions.end(); ++I) {
+    for (llvm::StringMap<PartialSolution *>::iterator psI = I->second.begin();
+         psI != I->second.end(); psI++) {
+      delete psI->second;
+    }
+  }
+  for (PartialSolutionMap::iterator I = greatestSolutions.begin();
+       I != greatestSolutions.end(); ++I) {
+    for (llvm::StringMap<PartialSolution *>::iterator psI = I->second.begin();
+         psI != I->second.end(); psI++) {
+      delete psI->second;
+    }
+  }
 }
 
 const ConsVar &LHConstraintKit::newVar(const std::string description) {
@@ -99,15 +107,16 @@ LHConstraintKit::getOrCreateConstraintSet(const std::string kind,
                                           Predicate *pred) {
   // return constraints.lookup(kind).getValue();
   // return constraints.insert(constraints.Create(kind))->getValue();
-  if (constraints.find(pred) != constraints.end()) {
-    return constraints[pred][kind];
-  }
+  // if (constraints.find(pred) != constraints.end()) {
+  //   return constraints[pred][kind];
+  // }
   return constraints[pred][kind];
 }
 
 void LHConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs, Predicate *pred) {
-  if (lockedConstraintKinds.find(kind) != lockedConstraintKinds.end()) {
+  if (lockedConstraintKinds[pred].find(kind) !=
+      lockedConstraintKinds[pred].end()) {
     assert(false && "Have already started solving this kind and cannot add "
                     "more constraints.");
   }
@@ -187,13 +196,13 @@ ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds,
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
        kind != end; ++kind) {
-    if (!leastSolutions.count(*kind)) {
-      lockedConstraintKinds.insert(*kind);
-      leastSolutions[*kind] =
+    if (!leastSolutions[pred].count(*kind)) {
+      lockedConstraintKinds[pred].insert(*kind);
+      leastSolutions[pred][*kind] =
           new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
       freeUnneededConstraints(*kind, pred);
     }
-    PartialSolution *P = leastSolutions[*kind];
+    PartialSolution *P = leastSolutions[pred][*kind];
 
     if (!PS)
       PS = new PartialSolution(*P);
@@ -209,13 +218,13 @@ ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds,
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
        kind != end; ++kind) {
-    if (!greatestSolutions.count(*kind)) {
-      lockedConstraintKinds.insert(*kind);
-      greatestSolutions[*kind] =
+    if (!greatestSolutions[pred].count(*kind)) {
+      lockedConstraintKinds[pred].insert(*kind);
+      greatestSolutions[pred][*kind] =
           new PartialSolution(getOrCreateConstraintSet(*kind, pred), true);
       freeUnneededConstraints(*kind, pred);
     }
-    PartialSolution *P = greatestSolutions[*kind];
+    PartialSolution *P = greatestSolutions[pred][*kind];
 
     if (!PS)
       PS = new PartialSolution(*P);
@@ -230,88 +239,100 @@ void LHConstraintKit::freeUnneededConstraints(std::string kind,
                                               Predicate *pred) {
   // If we have the two kinds of PartialSolutions already generated
   // for this kind, then we no longer need the original constraints
-  if (lockedConstraintKinds.count(kind) && leastSolutions.count(kind) &&
-      greatestSolutions.count(kind)) {
+  if (lockedConstraintKinds[pred].count(kind) &&
+      leastSolutions[pred].count(kind) && greatestSolutions[pred].count(kind)) {
     // Clear out the constraints for this kind!
     getOrCreateConstraintSet(kind, pred).clear();
   }
 }
 
-void LHConstraintKit::Constraintunion(Predicate* P1, Predicate* P2, Predicate* P3, int flag ) {
-  switch (flag)
-  {
+void LHConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
+                                         Predicate *NewPred, int flag) {
+  switch (flag) {
   case 0:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i = constraints[P1].begin(); i != constraints[P1].end(); ++i ) {
-        std::vector<LHConstraint> tempvector = getOrCreateConstraintSet(i->first(), P3);
-        for (auto j: getOrCreateConstraintSet(i->first() , P1) ) {
-          LHConstraint temp(j.lhs() , j.rhs());
-          tempvector.push_back(temp);
-         } 
-        for (auto j: getOrCreateConstraintSet(i->first() , P2) ) {
-          LHConstraint temp(j.lhs() , j.rhs());
-          tempvector.push_back(temp);
-         }         
+    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+             constraints[Pred1].begin();
+         i != constraints[Pred1].end(); ++i) {
+      std::vector<LHConstraint> &tempvector =
+          getOrCreateConstraintSet(i->first(), NewPred);
+      for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
+        LHConstraint temp(j.lhs(), j.rhs());
+        tempvector.push_back(temp);
+      }
+      for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
+        LHConstraint temp(j.lhs(), j.rhs());
+        tempvector.push_back(temp);
+      }
     }
-    case 1:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i = constraints[P1].begin(); i != constraints[P1].end(); ++i ) {
-        std::vector<LHConstraint> tempvector = getOrCreateConstraintSet(i->first(), P3);
-        for (auto j: getOrCreateConstraintSet(i->first() , P1) ) {
-          LHConstraint temp(j.lhs() , j.rhs());
-          tempvector.push_back(temp);
-         }        
-        
-        std::vector<LHConstraint> tempvector2 = getOrCreateConstraintSet(i->first(), P2);
-        for (auto j: getOrCreateConstraintSet(i->first() , P1) ) {
-          LHConstraint temp(j.lhs() , j.rhs());
-          tempvector2.push_back(temp);
-         }      
-    }    
     break;
-    case -1:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i = constraints[P2].begin(); i != constraints[P2].end(); ++i ) {
-        std::vector<LHConstraint> tempvector = getOrCreateConstraintSet(i->first(), P3);
-        for (auto j: getOrCreateConstraintSet(i->first() , P2) ) {
-          LHConstraint temp(j.lhs() , j.rhs());
-          tempvector.push_back(temp);
-         }        
-        
-        std::vector<LHConstraint> tempvector2 = getOrCreateConstraintSet(i->first(), P1);
-        for (auto j: getOrCreateConstraintSet(i->first() , P2) ) {
-          LHConstraint temp(j.lhs() , j.rhs());
-          tempvector2.push_back(temp);
-         }      
-    }      
+  case 1:
+    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+             constraints[Pred1].begin();
+         i != constraints[Pred1].end(); ++i) {
+      llvm::errs() << i->first() << "1\n";
+      std::vector<LHConstraint> &tempvector =
+          getOrCreateConstraintSet(i->first(), NewPred);
+      for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
+        LHConstraint temp(j.lhs(), j.rhs());
+        tempvector.push_back(temp);
+      }
+
+      std::vector<LHConstraint> &tempvector2 =
+          getOrCreateConstraintSet(i->first(), Pred2);
+      for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
+        LHConstraint temp(j.lhs(), j.rhs());
+        tempvector2.push_back(temp);
+      }
+    }
     break;
-    default: 
+  case -1:
+    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+             constraints[Pred2].begin();
+         i != constraints[Pred2].end(); ++i) {
+      std::vector<LHConstraint> &tempvector =
+          getOrCreateConstraintSet(i->first(), NewPred);
+      for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
+        LHConstraint temp(j.lhs(), j.rhs());
+        tempvector.push_back(temp);
+      }
+
+      std::vector<LHConstraint> &tempvector2 =
+          getOrCreateConstraintSet(i->first(), Pred1);
+      for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
+        LHConstraint temp(j.lhs(), j.rhs());
+        tempvector2.push_back(temp);
+      }
+    }
+    break;
+  default:
     break;
   }
 }
 
-
-void NonOverlappingConstraints(std::vector<Predicate *> &P, LHConstraintKit* kit ) {
+void LHConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
   long unsigned i, j;
   for (i = 0; i < P.size(); i++) {
     for (j = i + 1; j < P.size(); j++) {
-      if (doPredicateOverlap(P[i], P[j])) {
+      if (Predicate::isOverlapping(P[i], P[j])) {
         int *flag = new int(0);
-        Predicate* P3 = PredicatePartition(P[i], P[j], flag);
-        kit->Constraintunion(P[i], P[j], P3, *flag);
-        P.push_back(P3);
+        Predicate *newPred =
+            Predicate::partitionPredicatePair(P[i], P[j], flag);
+        unionConstraintSet(P[i], P[j], newPred, *flag);
+        P.push_back(newPred);
       }
     }
   }
 
   // Sort the constraints
-  std::sort(P.begin(), P.end(), Compare);
+  std::sort(P.begin(), P.end(), Predicate::compare);
 
   // Remove the empty predicates
   for (i = 0; i < P.size(); i++) {
-    if (isPredicateEmpty(P[i])) {
+    if (P[i]->empty()) {
       P.erase(P.begin() + i);
       i--;
     }
   }
 }
-
 
 } // namespace deps

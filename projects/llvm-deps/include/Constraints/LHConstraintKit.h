@@ -87,7 +87,10 @@ public:
   std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind,
                                                       Predicate *pred);
 
-  void Constraintunion(Predicate* P1, Predicate* P2, Predicate* P3, int flag );
+  void unionConstraintSet(Predicate *P1, Predicate *P2, Predicate *P3,
+                          int flag);
+
+  void partitionPredicateSet(std::vector<Predicate *> &P);
 
 private:
   static LHConstraintKit *singleton;
@@ -95,19 +98,20 @@ private:
   // "defult" "default-sinks" "implicit" "implicit-sinks"
   // llvm::StringMap<std::vector<LHConstraint>> constraints;
   std::map<Predicate *, llvm::StringMap<std::vector<LHConstraint>>> constraints;
-  std::set<std::string> lockedConstraintKinds;
+  std::map<Predicate *, std::set<std::string>> lockedConstraintKinds;
+  // std::map<Predicate *, std::set<std::string>> lockedConstraintKinds;
 
   std::vector<const LHConsVar *> vars;
   std::set<LHJoin> joins;
 
   // Cached solutions for each kind
-  llvm::StringMap<PartialSolution *> leastSolutions;
-  llvm::StringMap<PartialSolution *> greatestSolutions;
+  // llvm::StringMap<PartialSolution *> leastSolutions;
+  // llvm::StringMap<PartialSolution *> greatestSolutions;
+  std::map<Predicate *, llvm::StringMap<PartialSolution *>> leastSolutions;
+  std::map<Predicate *, llvm::StringMap<PartialSolution *>> greatestSolutions;
 
   void freeUnneededConstraints(std::string kind, Predicate *pred);
 };
-
-void NonOverlappingConstraints(std::vector<Predicate *> &P, LHConstraintKit* kit);
 
 } // namespace deps
 

@@ -4,11 +4,17 @@
 #include <iostream>
 #include <vector>
 
+namespace deps {
 
-bool doPredicateOverlap(Predicate *P1, Predicate *P2) {
+void Predicate::dump() {
+  llvm::errs() << pred->intervals->L << " <= " << pred->intervals->var
+               << " <= " << pred->intervals->U << ": \n";
+}
+
+bool Predicate::isOverlapping(Predicate *P1, Predicate *P2) {
 
   // Check if Predicates are empty!
-  if (isPredicateEmpty(P1) || isPredicateEmpty(P2))
+  if (P1->empty() || P2->empty())
     return false;
 
   // Check if variables match;
@@ -30,7 +36,12 @@ bool doPredicateOverlap(Predicate *P1, Predicate *P2) {
   return false;
 }
 
-Predicate *PredicatePartition(Predicate *P1, Predicate *P2, int *flag) {
+long add1_extend(long x) { return (x == P_INF) ? P_INF : (x + 1); }
+
+long sub1_extend(long x) { return (x == P_NEGINF) ? P_NEGINF : (x - 1); }
+
+Predicate *Predicate::partitionPredicatePair(Predicate *P1, Predicate *P2,
+                                             int *flag) {
 
   long L1, L2, U1, U2, L3, U3;
   L1 = P1->pred->intervals->L;
@@ -43,58 +54,55 @@ Predicate *PredicatePartition(Predicate *P1, Predicate *P2, int *flag) {
                                 P1->pred->intervals->var);
   L3 = P3->pred->intervals->L;
   U3 = P3->pred->intervals->U;
- 
+
   // Checks for infinite cases
   if (L1 <= L2 && U1 < U2) {
     *flag = 0;
-    P1->pred->intervals->U = sub1_extend(L3);
-    P2->pred->intervals->L = add1_extend(U3);
+    P1->pred->intervals->U = deps::sub1_extend(L3);
+    P2->pred->intervals->L = deps::add1_extend(U3);
   } else if (L1 <= L2 && U1 >= U2) {
     *flag = 1;
     P3->pred->intervals->U = P1->pred->intervals->U;
-    P1->pred->intervals->U = sub1_extend(L2);
-    P3->pred->intervals->L = add1_extend(U2);
+    P1->pred->intervals->U = deps::sub1_extend(L2);
+    P3->pred->intervals->L = deps::add1_extend(U2);
   } else if (L2 < L1 && U2 < U1) {
     *flag = 0;
-    P2->pred->intervals->U = sub1_extend(L3);
-    P1->pred->intervals->L = add1_extend(U3);
+    P2->pred->intervals->U = deps::sub1_extend(L3);
+    P1->pred->intervals->L = deps::add1_extend(U3);
   } else {
     *flag = -1;
     P3->pred->intervals->U = P2->pred->intervals->U;
-    P2->pred->intervals->U = sub1_extend(L1);
-    P3->pred->intervals->L = add1_extend(U1);
+    P2->pred->intervals->U = deps::sub1_extend(L1);
+    P3->pred->intervals->L = deps::add1_extend(U1);
   }
 
   // Check if any predicate has become empty;
-  validPredicate(P1);
-  validPredicate(P2);
-  validPredicate(P3);
+  P1->validate();
+  P2->validate();
+  P3->validate();
 
   return P3;
 }
 
-void validPredicate(Predicate *P) {
+void Predicate::validate() {
   bool b1, b2;
-  b1 = (P->pred->intervals->L > P->pred->intervals->U);
-  b2 = (P->pred->intervals->L == P_INF) && (P->pred->intervals->U == P_INF);
+  b1 = (pred->intervals->L > pred->intervals->U);
+  b2 = (pred->intervals->L == P_INF) && (pred->intervals->U == P_INF);
   if (b1 || b2) {
-    P->pred->intervals->L = P_NEGINF;
-    P->pred->intervals->U = P_NEGINF;
+    pred->intervals->L = P_NEGINF;
+    pred->intervals->U = P_NEGINF;
   }
 }
 
-long add1_extend(long x) { return (x == P_INF) ? P_INF : (x + 1); }
-
-long sub1_extend(long x) { return (x == P_NEGINF) ? P_NEGINF : (x - 1); }
-
-bool isPredicateEmpty(Predicate *P) {
-  return (P->pred->intervals->L == P_NEGINF &&
-          P->pred->intervals->U == P_NEGINF);
+bool Predicate::empty() {
+  return (pred->intervals->L == P_NEGINF && pred->intervals->U == P_NEGINF);
 }
 
-bool Compare(Predicate *P1, Predicate *P2) {
+bool Predicate::compare(Predicate *P1, Predicate *P2) {
   if (P1->pred->intervals->var != P2->pred->intervals->var)
     return (P1->pred->intervals->var < P2->pred->intervals->var);
   else
     return (P1->pred->intervals->L < P2->pred->intervals->L);
+}
+
 }

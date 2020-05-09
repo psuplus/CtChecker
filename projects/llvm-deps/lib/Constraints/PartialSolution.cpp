@@ -54,9 +54,12 @@ LHLabel PartialSolution::isChanged(const ConsVar *V) {
   return label;
 }
 
-/* This function evaluates the argument E (which could be a LHConsVar, LHConstant or LHJoin) into a LHConstant ptr which is returned. */
+/* This function evaluates the argument E (which could be a LHConsVar,
+ * LHConstant or LHJoin) into a LHConstant ptr which is returned. */
 
-const LHConstant &PartialSolution::subst(const ConsElem &E) { // This is an element of any inherited class of ConsElem
+const LHConstant &PartialSolution::subst(
+    const ConsElem
+        &E) { // This is an element of any inherited class of ConsElem
   // If this is a variable, look it up in VSet:
   if (const LHConsVar *V = dyn_cast<LHConsVar>(&E))
     return LHConstant::constant(isChanged(V));
@@ -66,9 +69,12 @@ const LHConstant &PartialSolution::subst(const ConsElem &E) { // This is an elem
     return *LHC;
 
   // Otherwise, this better be a join (asserting cast)
-  const LHJoin *J = cast<LHJoin>(&E); // So classes inherited from ConsElem  - LHConsVar, LHConstant and LHJoin Only.
+  const LHJoin *J = cast<LHJoin>(&E); // So classes inherited from ConsElem  -
+                                      // LHConsVar, LHConstant and LHJoin Only.
   // Find all elements of the join, and evaluate it recursively
-  const std::set<const ConsElem *> &elements = J->elements(); // D. What are the elements i.e. 'elems' of LHJoin represent?
+  const std::set<const ConsElem *> &elements =
+      J->elements(); // D. What are the elements i.e. 'elems' of LHJoin
+                     // represent?
 
   // XXX: LHConsSoln starts with substVal as the defaultValue,
   // which ...seems wrong?  Seems like this would make all join's
@@ -77,16 +83,21 @@ const LHConstant &PartialSolution::subst(const ConsElem &E) { // This is an elem
   // produced across various CINT2006 benchmarks.  Oh well.
   const LHConstant *substVal = &LHConstant::bot();
 
-  for (std::set<const ConsElem *>::iterator elem = elements.begin(),  // this loop evaluates the join element.
-                                            end = elements.end();
+  for (std::set<const ConsElem *>::iterator
+           elem = elements.begin(), // this loop evaluates the join element.
+       end = elements.end();
        elem != end; ++elem) {
-    substVal = &(substVal->join(subst(**elem))); // join(arg) returns a LHConstant reference to  lub(substVal,arg), where lub is wrt level field of LHConstant
+    substVal = &(
+        substVal->join(subst(**elem))); // join(arg) returns a LHConstant
+                                        // reference to lub(substVal,arg), where
+                                        // lub is wrt level field of LHConstant
   }
 
   return *substVal;
 }
 
-// Copy constructor - simply copies the initial field and adds P.Chained and *this to this->Chained.
+// Copy constructor - simply copies the initial field and adds P.Chained and
+// *this to this->Chained.
 PartialSolution::PartialSolution(PartialSolution &P) {
   initial = P.initial;
 
@@ -94,13 +105,18 @@ PartialSolution::PartialSolution(PartialSolution &P) {
   Chained.push_back(this);
   Chained.insert(Chained.end(), P.Chained.begin(), P.Chained.end());
   std::sort(Chained.begin(), Chained.end());
-  Chained.erase(std::unique(Chained.begin(), Chained.end()), Chained.end()); /* The unique function first deletes all duplicates (copies) in chained, and 
-                                                                                erase deletes the additional space - overall just deletes copies and readjusts size*/
+  Chained.erase(
+      std::unique(Chained.begin(), Chained.end()),
+      Chained
+          .end()); /* The unique function first deletes all duplicates (copies)
+                      in chained, and erase deletes the additional space -
+                      overall just deletes copies and readjusts size*/
 
   assert(std::find(Chained.begin(), Chained.end(), &P) != Chained.end());
 }
 
-// Merging function (not a constructor) - same as the above copy constructor, except calls 'propogate' at the very end as well.
+// Merging function (not a constructor) - same as the above copy constructor,
+// except calls 'propogate' at the very end as well.
 void PartialSolution::mergeIn(PartialSolution &P) {
   // Sanity check
   assert(initial == P.initial);
@@ -117,11 +133,15 @@ void PartialSolution::mergeIn(PartialSolution &P) {
   propagate();
 }
 
-/* For each LHConstraint in the Constraints vector, we insert 'targets' (afer performing variables() on it (what does this do?)) into densemap P. And then we 
-check each constrant whether it is >= MID, LOW (different for greatest solution or least solution) etc. and accordingly put it in VSet. */
+/* For each LHConstraint in the Constraints vector, we insert 'targets' (afer
+performing variables() on it (what does this do?)) into densemap P. And then we
+check each constrant whether it is >= MID, LOW (different for greatest solution
+or least solution) etc. and accordingly put it in VSet. */
 // Only run for normal constructor.
 // Scan constraints for non-initial, building up seed VarSet.
-void PartialSolution::initialize(Constraints &C) { // Constraints is a vector of LHConstraint (which is a class with fields 'left' and 'right' ConsElem* ptrs)
+void PartialSolution::initialize(
+    Constraints &C) { // Constraints is a vector of LHConstraint (which is a
+                      // class with fields 'left' and 'right' ConsElem* ptrs)
 
   // Add ourselves to the chained list
   Chained.push_back(this);
@@ -133,10 +153,12 @@ void PartialSolution::initialize(Constraints &C) { // Constraints is a vector of
   for (Constraints::iterator I = C.begin(), E = C.end(); I != E; ++I) {
     vars.clear();
     targets.clear();
-    const ConsElem &From = initial ? I->rhs() : I->lhs(); // lhs() / rhs() is a function which returns 'left' / 'right' refereNmces.
+    const ConsElem &From =
+        initial ? I->rhs() : I->lhs(); // lhs() / rhs() is a function which
+                                       // returns 'left' / 'right' refereNmces.
     const ConsElem &To = initial ? I->lhs() : I->rhs();
-   // a <= b
-    From.variables(vars);        // a -> vars ; b -> targets
+    // a <= b
+    From.variables(vars); // a -> vars ; b -> targets
     To.variables(targets);
 
     if (targets.empty())
@@ -146,8 +168,11 @@ void PartialSolution::initialize(Constraints &C) { // Constraints is a vector of
                                              end = vars.end();
          var != end; ++var) {
       // Update PMap for this var
-      P[*var].insert(P[*var].end(), targets.begin(), targets.end()); // P is a 'PMap' in PartialSolution. 'PMap' is a densemap from ConsVar* to vector of ConsVar*.
-    } // P(a) <- P(a) U {b}
+      P[*var].insert(
+          P[*var].end(), targets.begin(),
+          targets.end()); // P is a 'PMap' in PartialSolution. 'PMap' is a
+                          // densemap from ConsVar* to vector of ConsVar*.
+    }                     // P(a) <- P(a) U {b}
 
     // Initialize varset:
     VSet[subst(From).label()].insert(targets.begin(), targets.end());
@@ -199,7 +224,7 @@ void PartialSolution::propagate() {
     while (!list.empty()) {
       // Dequeue variable
       const ConsVar *V = list.front(); // V = a
-      list.pop_front(); 
+      list.pop_front();
 
       for (auto PS : Chained) {
         PMap::iterator I = PS->P.find(V);

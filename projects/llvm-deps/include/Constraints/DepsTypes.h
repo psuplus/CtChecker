@@ -20,9 +20,9 @@ enum DepsType {
   DT_LHConstant,
   DT_LHConsVar,
   DT_LHJoin,
-  DT_BLConstant,
-  DT_BLConsVar,
-  DT_BLJoin
+  DT_RLConstant,
+  DT_RLConsVar,
+  DT_RLJoin
 };
 }
 

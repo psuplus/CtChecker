@@ -11,8 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Constraints/LHConstraintKit.h"
 #include "Constraints/PredicatedConstraints.h"
+#include "Constraints/RLConstraintKit.h"
 #include "llvm/Support/Casting.h"
 #include <iostream>
 
@@ -47,7 +47,7 @@ void test(void) {
   // PSet.push_back(new Predicate(P_NEGINF, 5, 'x'));
   // PSet.push_back(new Predicate(-2, P_INF, 'x'));
 
-  LHConstraintKit kit;
+  RLConstraintKit kit;
 
   const ConsElem &a = kit.newVar("a");
   const ConsElem &b = kit.newVar("b");
@@ -63,25 +63,25 @@ void test(void) {
 
   // Testing kit for least solution
   if (PSet.size() > 0) {
-    kit.addConstraint("least", kit.constant(LHLevel::LOW, cS1), a, PSet[0]);
+    kit.addConstraint("least", kit.constant(RLLevel::LOW, cS1), a, PSet[0]);
     kit.addConstraint("least", a, b, PSet[0]);
   }
   if (PSet.size() > 1) {
-    kit.addConstraint("least", kit.constant(LHLevel::MID, cS4), b, PSet[1]);
+    kit.addConstraint("least", kit.constant(RLLevel::MID, cS4), b, PSet[1]);
   }
   if (PSet.size() > 2) {
-    kit.addConstraint("least", kit.constant(LHLevel::MID, cS2), b, PSet[2]);
+    kit.addConstraint("least", kit.constant(RLLevel::MID, cS2), b, PSet[2]);
     kit.addConstraint("least", b, c, PSet[2]);
   }
 
   // Testing kit for greatest solution
   if (PSet.size() > 0) {
-    kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3), PSet[0]);
+    kit.addConstraint("greatest", a, kit.constant(RLLevel::LOW, cS3), PSet[0]);
     kit.addConstraint("greatest", a, b, PSet[0]);
-    kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS1), PSet[0]);
+    kit.addConstraint("greatest", b, kit.constant(RLLevel::MID, cS1), PSet[0]);
   }
   if (PSet.size() > 1) {
-    kit.addConstraint("greatest", c, kit.constant(LHLevel::HIGH, cS1), PSet[1]);
+    kit.addConstraint("greatest", c, kit.constant(RLLevel::HIGH, cS1), PSet[1]);
     kit.addConstraint("greatest", c, a, PSet[1]);
   }
   if (PSet.size() > 2) {

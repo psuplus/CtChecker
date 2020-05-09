@@ -1,4 +1,4 @@
-//===-- LHConstraintKit.cpp -------------------------------------*- C++ -*-===//
+//===-- RLConstraintKit.cpp -------------------------------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -13,10 +13,10 @@
 
 #define DEBUG_TYPE "deps"
 
-#include "Constraints/LHConstraintKit.h"
-#include "Constraints/LHConsSoln.h"
-#include "Constraints/LHConstraints.h"
+#include "Constraints/RLConstraintKit.h"
 #include "Constraints/PartialSolution.h"
+#include "Constraints/RLConsSoln.h"
+#include "Constraints/RLConstraints.h"
 #include <iostream>
 
 #include "llvm/ADT/Statistic.h"
@@ -24,17 +24,17 @@
 
 namespace deps {
 
-STATISTIC(explicitLHConstraints, "Number of explicit flow constraints");
-STATISTIC(implicitLHConstraints, "Number of implicit flow constraints");
+STATISTIC(explicitRLConstraints, "Number of explicit flow constraints");
+STATISTIC(implicitRLConstraints, "Number of implicit flow constraints");
 
 typedef std::map<Predicate *, llvm::StringMap<PartialSolution *>>
     PartialSolutionMap;
 
-LHConstraintKit::LHConstraintKit() {}
+RLConstraintKit::RLConstraintKit() {}
 
-LHConstraintKit::~LHConstraintKit() {
-  // Delete all associated LHConsVars
-  for (std::vector<const LHConsVar *>::iterator var = vars.begin(),
+RLConstraintKit::~RLConstraintKit() {
+  // Delete all associated RLConsVars
+  for (std::vector<const RLConsVar *>::iterator var = vars.begin(),
                                                 end = vars.end();
        var != end; ++var) {
     delete (*var);
@@ -56,54 +56,54 @@ LHConstraintKit::~LHConstraintKit() {
   }
 }
 
-const ConsVar &LHConstraintKit::newVar(const std::string description) {
-  LHConsVar *var = new LHConsVar(description);
+const ConsVar &RLConstraintKit::newVar(const std::string description) {
+  RLConsVar *var = new RLConsVar(description);
   vars.push_back(var);
   return *var;
 }
 
-const ConsElem &LHConstraintKit::botConstant() const {
-  return LHConstant::bot();
+const ConsElem &RLConstraintKit::botConstant() const {
+  return RLConstant::bot();
 }
 
-const ConsElem &LHConstraintKit::topConstant() const {
-  return LHConstant::top();
+const ConsElem &RLConstraintKit::topConstant() const {
+  return RLConstant::top();
 }
 
-const ConsElem &LHConstraintKit::constant(LHLevel l,
+const ConsElem &RLConstraintKit::constant(RLLevel l,
                                           CompartmentSet cSet) const {
-  return LHConstant::constant(l, cSet);
+  return RLConstant::constant(l, cSet);
 }
 
-const ConsElem &LHConstraintKit::upperBound(const ConsElem &e1,
+const ConsElem &RLConstraintKit::upperBound(const ConsElem &e1,
                                             const ConsElem &e2) {
-  const LHJoin *join = LHJoin::create(e1, e2);
-  std::set<LHJoin>::iterator J = joins.insert(*join).first;
+  const RLJoin *join = RLJoin::create(e1, e2);
+  std::set<RLJoin>::iterator J = joins.insert(*join).first;
   delete join;
   return *J;
 }
 
-const ConsElem *LHConstraintKit::upperBound(const ConsElem *e1,
+const ConsElem *RLConstraintKit::upperBound(const ConsElem *e1,
                                             const ConsElem *e2) {
   if (e1 == NULL)
     return e2;
   if (e2 == NULL)
     return e1;
 
-  const LHJoin *join = LHJoin::create(*e1, *e2);
-  std::set<LHJoin>::iterator J = joins.insert(*join).first;
+  const RLJoin *join = RLJoin::create(*e1, *e2);
+  std::set<RLJoin>::iterator J = joins.insert(*join).first;
   delete join;
   return &*J;
 }
 
-const ConsElem &LHConstraintKit::upperBound(std::set<const ConsElem *> elems) {
-  const LHJoin join = LHJoin(elems);
-  std::set<LHJoin>::iterator J = joins.insert(join).first;
+const ConsElem &RLConstraintKit::upperBound(std::set<const ConsElem *> elems) {
+  const RLJoin join = RLJoin(elems);
+  std::set<RLJoin>::iterator J = joins.insert(join).first;
   return *J;
 }
 
-std::vector<LHConstraint> &
-LHConstraintKit::getOrCreateConstraintSet(const std::string kind,
+std::vector<RLConstraint> &
+RLConstraintKit::getOrCreateConstraintSet(const std::string kind,
                                           Predicate *pred) {
   // return constraints.lookup(kind).getValue();
   // return constraints.insert(constraints.Create(kind))->getValue();
@@ -113,7 +113,7 @@ LHConstraintKit::getOrCreateConstraintSet(const std::string kind,
   return constraints[pred][kind];
 }
 
-void LHConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
+void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs, Predicate *pred) {
   if (lockedConstraintKinds[pred].find(kind) !=
       lockedConstraintKinds[pred].end()) {
@@ -122,43 +122,43 @@ void LHConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
   }
 
   if (kind == "default")
-    explicitLHConstraints++;
+    explicitRLConstraints++;
   if (kind == "implicit")
-    implicitLHConstraints++;
+    implicitRLConstraints++;
 
-  std::vector<LHConstraint> &set = getOrCreateConstraintSet(kind, pred);
+  std::vector<RLConstraint> &set = getOrCreateConstraintSet(kind, pred);
 
-  assert(!llvm::isa<LHJoin>(&rhs) && "We shouldn't have joins on rhs!");
+  assert(!llvm::isa<RLJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
-  if (const LHJoin *left = llvm::dyn_cast<LHJoin>(&lhs)) {
+  if (const RLJoin *left = llvm::dyn_cast<RLJoin>(&lhs)) {
     std::set<const ConsElem *> elems = left->elements();
     for (std::set<const ConsElem *>::iterator elem = elems.begin(),
                                               end = elems.end();
          elem != end; ++elem) {
-      const LHConstraint c(**elem, rhs);
+      const RLConstraint c(**elem, rhs);
       set.push_back(c);
     }
   } else {
-    LHConstraint c(lhs, rhs);
+    RLConstraint c(lhs, rhs);
     set.push_back(c);
   }
 }
 
-void LHConstraintKit::removeConstraintRHS(const std::string kind,
+void RLConstraintKit::removeConstraintRHS(const std::string kind,
                                           const ConsElem &rhs,
                                           Predicate *pred) {
   if (kind == "default")
-    explicitLHConstraints--;
+    explicitRLConstraints--;
   if (kind == "implicit")
-    implicitLHConstraints--;
+    implicitRLConstraints--;
 
-  std::vector<LHConstraint> &set = getOrCreateConstraintSet("default", pred);
+  std::vector<RLConstraint> &set = getOrCreateConstraintSet("default", pred);
 
-  assert(!llvm::isa<LHJoin>(&rhs) && "We shouldn't have joins on rhs!");
+  assert(!llvm::isa<RLJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
   llvm::errs() << "Size of vector " << set.size() << "\n";
-  std::vector<LHConstraint>::iterator vIt = set.begin();
-  std::vector<LHConstraint>::iterator vEnd = set.end();
+  std::vector<RLConstraint>::iterator vIt = set.begin();
+  std::vector<RLConstraint>::iterator vEnd = set.end();
   llvm::errs() << "Constraint to find ";
 
   std::string rhsText;
@@ -173,7 +173,7 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
 
   for (; vIt != vEnd;) {
     consText = "";
-    LHConstraint c = *vIt;
+    RLConstraint c = *vIt;
     const ConsElem &constraintRight = c.rhs();
     constraintRight.dump(*ss2);
     ss2->str();
@@ -191,7 +191,7 @@ void LHConstraintKit::removeConstraintRHS(const std::string kind,
   delete ss2;
 }
 
-ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds,
+ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
                                          Predicate *pred) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
@@ -213,7 +213,7 @@ ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds,
   return PS;
 }
 
-ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds,
+ConsSoln *RLConstraintKit::greatestSolution(const std::set<std::string> kinds,
                                             Predicate *pred) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
@@ -235,7 +235,7 @@ ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds,
   return PS;
 }
 
-void LHConstraintKit::freeUnneededConstraints(std::string kind,
+void RLConstraintKit::freeUnneededConstraints(std::string kind,
                                               Predicate *pred) {
   // If we have the two kinds of PartialSolutions already generated
   // for this kind, then we no longer need the original constraints
@@ -246,60 +246,60 @@ void LHConstraintKit::freeUnneededConstraints(std::string kind,
   }
 }
 
-void LHConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
+void RLConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
                                          Predicate *NewPred, int flag) {
   switch (flag) {
   case 0:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+    for (llvm::StringMap<std::vector<RLConstraint>>::iterator i =
              constraints[Pred1].begin();
          i != constraints[Pred1].end(); ++i) {
-      std::vector<LHConstraint> &tempvector =
+      std::vector<RLConstraint> &tempvector =
           getOrCreateConstraintSet(i->first(), NewPred);
       for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
-        LHConstraint temp(j.lhs(), j.rhs());
+        RLConstraint temp(j.lhs(), j.rhs());
         tempvector.push_back(temp);
       }
       for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
-        LHConstraint temp(j.lhs(), j.rhs());
+        RLConstraint temp(j.lhs(), j.rhs());
         tempvector.push_back(temp);
       }
     }
     break;
   case 1:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+    for (llvm::StringMap<std::vector<RLConstraint>>::iterator i =
              constraints[Pred1].begin();
          i != constraints[Pred1].end(); ++i) {
       llvm::errs() << i->first() << "1\n";
-      std::vector<LHConstraint> &tempvector =
+      std::vector<RLConstraint> &tempvector =
           getOrCreateConstraintSet(i->first(), NewPred);
       for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
-        LHConstraint temp(j.lhs(), j.rhs());
+        RLConstraint temp(j.lhs(), j.rhs());
         tempvector.push_back(temp);
       }
 
-      std::vector<LHConstraint> &tempvector2 =
+      std::vector<RLConstraint> &tempvector2 =
           getOrCreateConstraintSet(i->first(), Pred2);
       for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
-        LHConstraint temp(j.lhs(), j.rhs());
+        RLConstraint temp(j.lhs(), j.rhs());
         tempvector2.push_back(temp);
       }
     }
     break;
   case -1:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+    for (llvm::StringMap<std::vector<RLConstraint>>::iterator i =
              constraints[Pred2].begin();
          i != constraints[Pred2].end(); ++i) {
-      std::vector<LHConstraint> &tempvector =
+      std::vector<RLConstraint> &tempvector =
           getOrCreateConstraintSet(i->first(), NewPred);
       for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
-        LHConstraint temp(j.lhs(), j.rhs());
+        RLConstraint temp(j.lhs(), j.rhs());
         tempvector.push_back(temp);
       }
 
-      std::vector<LHConstraint> &tempvector2 =
+      std::vector<RLConstraint> &tempvector2 =
           getOrCreateConstraintSet(i->first(), Pred1);
       for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
-        LHConstraint temp(j.lhs(), j.rhs());
+        RLConstraint temp(j.lhs(), j.rhs());
         tempvector2.push_back(temp);
       }
     }
@@ -309,7 +309,7 @@ void LHConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
   }
 }
 
-void LHConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
+void RLConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
   long unsigned i, j;
   for (i = 0; i < P.size(); i++) {
     for (j = i + 1; j < P.size(); j++) {

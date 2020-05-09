@@ -15,8 +15,8 @@
 #define _PARTIAL_SOLUTION_H_
 
 #include "Constraints/ConstraintKit.h"
-#include "Constraints/LHConstraintKit.h"
-#include "Constraints/LHConstraints.h"
+#include "Constraints/RLConstraintKit.h"
+#include "Constraints/RLConstraints.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/DenseSet.h"
@@ -31,7 +31,7 @@ public:
   // Exported types:
   typedef llvm::SmallPtrSet<const ConsVar *, 1> VarSet;
   typedef llvm::DenseMap<const ConsVar *, std::vector<const ConsVar *>> PMap;
-  typedef std::vector<LHConstraint> Constraints;
+  typedef std::vector<RLConstraint> Constraints;
 
   // Constructor, constraints aren't stored
   PartialSolution(Constraints &C, bool initial) : initial(initial) {
@@ -46,7 +46,7 @@ public:
   void mergeIn(PartialSolution &P);
 
   // Evaluate the given ConsElem in our solution environment
-  const LHConstant &subst(const ConsElem &E);
+  const RLConstant &subst(const ConsElem &E);
 
 private:
   // Construct propagation map and seed VSet
@@ -55,7 +55,7 @@ private:
   // Solve by propagation
   void propagate();
   // Query VSets of this and all chained solutions
-  LHLabel isChanged(const ConsVar *);
+  RLLabel isChanged(const ConsVar *);
 
   // Member variables:
 
@@ -63,7 +63,7 @@ private:
   // Used to store by-value the PropagationMap when the non-merge ctor is used.
   PMap P;
   // Set of variables with non-default values
-  std::map<LHLabel, VarSet> VSet;
+  std::map<RLLabel, VarSet> VSet;
 
   // Chained solutions
   std::vector<PartialSolution *> Chained;

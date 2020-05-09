@@ -1,4 +1,4 @@
-//===-- constraints/LHConstraintKit.h - LH Lattice Solver -------*- C++ -*-===//
+//===-- constraints/RLConstraintKit.h - RL Lattice Solver -------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -12,13 +12,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LHCONSTRAINTKIT_H_
-#define LHCONSTRAINTKIT_H_
+#ifndef RLCONSTRAINTKIT_H_
+#define RLCONSTRAINTKIT_H_
 
 #include "Constraints/ConstraintKit.h"
-#include "Constraints/LHConstraint.h"
-#include "Constraints/LHConstraints.h"
 #include "Constraints/PredicatedConstraints.h"
+#include "Constraints/RLConstraint.h"
+#include "Constraints/RLConstraints.h"
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/StringMap.h"
@@ -29,23 +29,23 @@
 
 namespace deps {
 
-class LHConstant;
-class LHConsVar;
-class LHJoin;
+class RLConstant;
+class RLConsVar;
+class RLJoin;
 class PartialSolution;
 
 /// Singleton, concrete implementation of ConstraintKit for creating and
 /// solving constraints over a two level lattice.
-class LHConstraintKit : public ConstraintKit {
+class RLConstraintKit : public ConstraintKit {
 public:
-  LHConstraintKit();
-  ~LHConstraintKit();
+  RLConstraintKit();
+  ~RLConstraintKit();
   /// Get a reference to the constant "low" element of the lattice
   const ConsElem &botConstant() const;
   /// Get a reference to the constant "high" element of the lattice
   const ConsElem &topConstant() const;
 
-  const ConsElem &constant(LHLevel l, CompartmentSet cSet) const;
+  const ConsElem &constant(RLLevel l, CompartmentSet cSet) const;
 
   /// Create a new constraint variable
   virtual const ConsVar &newVar(const std::string description);
@@ -74,8 +74,8 @@ public:
   virtual ConsSoln *greatestSolution(const std::set<std::string> kinds,
                                      Predicate *pred);
   /// return the vars and joins
-  std::vector<const LHConsVar *> getVars() { return vars; }
-  std::set<LHJoin> &getJoins() { return joins; }
+  std::vector<const RLConsVar *> getVars() { return vars; }
+  std::set<RLJoin> &getJoins() { return joins; }
 
   // Compute both least and greatest solutions simultaneously
   // for the given kind.
@@ -84,7 +84,7 @@ public:
   std::vector<PartialSolution *> solveLeastMT(std::vector<std::string> kinds,
                                               bool useDefaultSinks,
                                               Predicate *pred);
-  std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind,
+  std::vector<RLConstraint> &getOrCreateConstraintSet(const std::string kind,
                                                       Predicate *pred);
 
   void unionConstraintSet(Predicate *P1, Predicate *P2, Predicate *P3,
@@ -93,16 +93,16 @@ public:
   void partitionPredicateSet(std::vector<Predicate *> &P);
 
 private:
-  static LHConstraintKit *singleton;
+  static RLConstraintKit *singleton;
 
   // "defult" "default-sinks" "implicit" "implicit-sinks"
-  // llvm::StringMap<std::vector<LHConstraint>> constraints;
-  std::map<Predicate *, llvm::StringMap<std::vector<LHConstraint>>> constraints;
+  // llvm::StringMap<std::vector<RLConstraint>> constraints;
+  std::map<Predicate *, llvm::StringMap<std::vector<RLConstraint>>> constraints;
   std::map<Predicate *, std::set<std::string>> lockedConstraintKinds;
   // std::map<Predicate *, std::set<std::string>> lockedConstraintKinds;
 
-  std::vector<const LHConsVar *> vars;
-  std::set<LHJoin> joins;
+  std::vector<const RLConsVar *> vars;
+  std::set<RLJoin> joins;
 
   // Cached solutions for each kind
   // llvm::StringMap<PartialSolution *> leastSolutions;
@@ -115,4 +115,4 @@ private:
 
 } // namespace deps
 
-#endif /* LHCONSTRAINTKIT_H_ */
+#endif /* RLCONSTRAINTKIT_H_ */

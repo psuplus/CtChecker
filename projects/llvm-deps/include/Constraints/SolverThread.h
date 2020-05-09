@@ -14,9 +14,9 @@
 #ifndef _SOLVERTHREAD_H_
 #define _SOLVERTHREAD_H_
 
-#include "Constraints/LHConstraintKit.h"
-#include "Constraints/LHConstraints.h"
 #include "Constraints/PartialSolution.h"
+#include "Constraints/RLConstraintKit.h"
+#include "Constraints/RLConstraints.h"
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/Support/Atomic.h"
@@ -26,7 +26,7 @@
 
 namespace deps {
 
-typedef std::vector<LHConstraint> Constraints;
+typedef std::vector<RLConstraint> Constraints;
 
 // Spawns thread to solve the given set of Constraints.
 class SolverThread {

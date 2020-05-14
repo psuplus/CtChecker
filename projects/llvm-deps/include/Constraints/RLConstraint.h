@@ -1,4 +1,4 @@
-//===-- BLConstraint.h ------------------------------------------*- C++ -*-===//
+//===-- RLConstraint.h ------------------------------------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -11,8 +11,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef BLCONSTRAINT_H_
-#define BLCONSTRAINT_H_
+#ifndef RLCONSTRAINT_H_
+#define RLCONSTRAINT_H_
 
 #include "llvm/ADT/DenseMap.h"
 
@@ -20,11 +20,11 @@ namespace deps {
 
 class ConsElem;
 
-class BLConstraint {
+class RLConstraint {
 public:
-  BLConstraint(const ConsElem &lhs, const ConsElem &rhs)
+  RLConstraint(const ConsElem &lhs, const ConsElem &rhs)
       : left(&lhs), right(&rhs) {}
-  BLConstraint(const ConsElem *lhs, const ConsElem *rhs)
+  RLConstraint(const ConsElem *lhs, const ConsElem *rhs)
       : left(lhs), right(rhs) {}
   const ConsElem &lhs() const { return *left; }
   const ConsElem &rhs() const { return *right; }
@@ -32,9 +32,9 @@ public:
 private:
   const ConsElem *left;
   const ConsElem *right;
-  friend struct llvm::DenseMapInfo<BLConstraint>;
+  friend struct llvm::DenseMapInfo<RLConstraint>;
 };
 
 } // namespace deps
 
-#endif
+#endif /* RLCONSTRAINT_H_ */

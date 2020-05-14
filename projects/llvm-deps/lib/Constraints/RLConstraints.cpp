@@ -1,4 +1,4 @@
-//===-- LHConstraints.cpp ---------------------------------------*- C++ -*-===//
+//===-- RLConstraints.cpp ---------------------------------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -11,48 +11,48 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Constraints/LHConstraints.h"
+#include "Constraints/RLConstraints.h"
 #include "llvm/Support/Casting.h"
 
 namespace deps {
 
-const CompartmentSet LHConstant::EmptySet;
-const CompartmentSet LHConstant::CompleteSet{LHCompartment::CRYPTO,
-                                             LHCompartment::NUCLEAR};
-LHLabelConstantMap LHConstant::labelConstants;
+const CompartmentSet RLConstant::EmptySet;
+const CompartmentSet RLConstant::CompleteSet{RLCompartment::CRYPTO,
+                                             RLCompartment::NUCLEAR};
+RLLabelConstantMap RLConstant::labelConstants;
 
-LHConstant::LHConstant(LHLevel l, CompartmentSet cSet)
+RLConstant::RLConstant(RLLevel l, CompartmentSet cSet)
     : level(l), compartmentSet(cSet) {}
 
-LHConstant::LHConstant(LHLabel label)
+RLConstant::RLConstant(RLLabel label)
     : level(label.first), compartmentSet(label.second) {}
 
-const LHConstant &LHConstant::bot() {
-  return LHConstant::constant(LHLevel::LOW, LHConstant::EmptySet);
+const RLConstant &RLConstant::bot() {
+  return RLConstant::constant(RLLevel::LOW, RLConstant::EmptySet);
 }
 
-const LHConstant &LHConstant::top() {
-  return LHConstant::constant(LHLevel::HIGH, LHConstant::CompleteSet);
+const RLConstant &RLConstant::top() {
+  return RLConstant::constant(RLLevel::HIGH, RLConstant::CompleteSet);
 }
 
-const LHConstant &LHConstant::constant(LHLevel l, CompartmentSet cSet) {
-  LHLabel label = LHLabel(l, cSet);
+const RLConstant &RLConstant::constant(RLLevel l, CompartmentSet cSet) {
+  RLLabel label = RLLabel(l, cSet);
 
-  if (LHConstant::labelConstants.find(label) ==
-      LHConstant::labelConstants.end()) {
-    LHConstant::labelConstants[label] = new LHConstant(l, cSet);
+  if (RLConstant::labelConstants.find(label) ==
+      RLConstant::labelConstants.end()) {
+    RLConstant::labelConstants[label] = new RLConstant(l, cSet);
   }
-  return *LHConstant::labelConstants[label];
+  return *RLConstant::labelConstants[label];
 }
 
-const LHConstant &LHConstant::constant(LHLabel label) {
+const RLConstant &RLConstant::constant(RLLabel label) {
   return constant(label.first, label.second);
 }
 
-bool LHConstant::leq(const ConsElem &elem) const {
-  const LHConstant *other;
+bool RLConstant::leq(const ConsElem &elem) const {
+  const RLConstant *other;
   // TODO not sure if dyn_cast support is set up properly
-  if ((other = llvm::dyn_cast<LHConstant>(&elem))) {
+  if ((other = llvm::dyn_cast<RLConstant>(&elem))) {
     CompartmentSet diff;
     set_difference(compartmentSet.begin(), compartmentSet.end(),
                    other->compartmentSet.begin(), other->compartmentSet.end(),
@@ -63,8 +63,8 @@ bool LHConstant::leq(const ConsElem &elem) const {
   }
 }
 
-const LHConstant &LHConstant::join(const LHConstant &other) const {
-  LHLevel levelUpperBound = level <= other.level ? other.level : level;
+const RLConstant &RLConstant::join(const RLConstant &other) const {
+  RLLevel levelUpperBound = level <= other.level ? other.level : level;
   CompartmentSet setUnion;
   set_union(compartmentSet.begin(), compartmentSet.end(),
             other.compartmentSet.begin(), other.compartmentSet.end(),
@@ -73,8 +73,8 @@ const LHConstant &LHConstant::join(const LHConstant &other) const {
   return constant(levelUpperBound, setUnion);
 }
 
-const LHLabel LHConstant::upperBoundLabel(const LHConstant &other) const {
-  // LHLevel levelUpperBound = level <= other.level ? other.level : level;
+const RLLabel RLConstant::upperBoundLabel(const RLConstant &other) const {
+  // RLLevel levelUpperBound = level <= other.level ? other.level : level;
   // CompartmentSet setUnion;
   // set_union(compartmentSet.begin(), compartmentSet.end(),
   //           other.compartmentSet.begin(), other.compartmentSet.end(),
@@ -84,8 +84,8 @@ const LHLabel LHConstant::upperBoundLabel(const LHConstant &other) const {
                          make_pair(other.level, other.compartmentSet));
 }
 
-const LHLabel LHConstant::lowerBoundLabel(const LHConstant &other) const {
-  // LHLevel levelLowerBound = level > other.level ? other.level : level;
+const RLLabel RLConstant::lowerBoundLabel(const RLConstant &other) const {
+  // RLLevel levelLowerBound = level > other.level ? other.level : level;
   // CompartmentSet setIntersection;
   // set_intersection(compartmentSet.begin(), compartmentSet.end(),
   //                  other.compartmentSet.begin(), other.compartmentSet.end(),
@@ -95,8 +95,8 @@ const LHLabel LHConstant::lowerBoundLabel(const LHConstant &other) const {
                          make_pair(other.level, other.compartmentSet));
 }
 
-const LHLabel LHConstant::upperBoundLabel(LHLabel label, LHLabel other) {
-  LHLevel levelUpperBound =
+const RLLabel RLConstant::upperBoundLabel(RLLabel label, RLLabel other) {
+  RLLevel levelUpperBound =
       label.first < other.first ? other.first : label.first;
   CompartmentSet setUnion;
   set_union(label.second.begin(), label.second.end(), other.second.begin(),
@@ -104,8 +104,8 @@ const LHLabel LHConstant::upperBoundLabel(LHLabel label, LHLabel other) {
   return make_pair(levelUpperBound, setUnion);
 }
 
-const LHLabel LHConstant::lowerBoundLabel(LHLabel label, LHLabel other) {
-  LHLevel levelLowerBound =
+const RLLabel RLConstant::lowerBoundLabel(RLLabel label, RLLabel other) {
+  RLLevel levelLowerBound =
       label.first > other.first ? other.first : label.first;
   CompartmentSet setIntersection;
   set_intersection(label.second.begin(), label.second.end(),
@@ -114,11 +114,12 @@ const LHLabel LHConstant::lowerBoundLabel(LHLabel label, LHLabel other) {
   return make_pair(levelLowerBound, setIntersection);
 }
 
-const LHLabel LHConstant::label() const {
+const RLLabel RLConstant::label() const {
   return make_pair(level, compartmentSet);
 }
 
-void LHConstant::dump(llvm::raw_ostream &o) const {
+void RLConstant::dump(llvm::raw_ostream &o) const {
+  o << "[ ";
   if (level == LOW) {
     o << "LOW";
   } else if (level == MID) {
@@ -136,11 +137,11 @@ void LHConstant::dump(llvm::raw_ostream &o) const {
       o << " BIO ";
     }
   }
-  o << "}\n";
+  o << "} ]";
 }
 
-bool LHConstant::operator==(const ConsElem &elem) const {
-  if (const LHConstant *other = llvm::dyn_cast<const LHConstant>(&elem)) {
+bool RLConstant::operator==(const ConsElem &elem) const {
+  if (const RLConstant *other = llvm::dyn_cast<const RLConstant>(&elem)) {
     return (this->level == other->level &&
             this->compartmentSet == other->compartmentSet);
   } else {
@@ -148,23 +149,23 @@ bool LHConstant::operator==(const ConsElem &elem) const {
   }
 }
 
-LHConsVar::LHConsVar(const std::string description) : desc(description) {}
+RLConsVar::RLConsVar(const std::string description) : desc(description) {}
 
-bool LHConsVar::leq(const ConsElem &elem) const { return false; }
+bool RLConsVar::leq(const ConsElem &elem) const { return false; }
 
-bool LHConsVar::operator==(const ConsElem &elem) const {
-  if (const LHConsVar *other = llvm::dyn_cast<const LHConsVar>(&elem)) {
+bool RLConsVar::operator==(const ConsElem &elem) const {
+  if (const RLConsVar *other = llvm::dyn_cast<const RLConsVar>(&elem)) {
     return this == other;
   } else {
     return false;
   }
 }
 
-void LHConsVar::dump(llvm::raw_ostream &o) const { o << desc; }
+void RLConsVar::dump(llvm::raw_ostream &o) const { o << desc; }
 
-LHJoin::LHJoin(std::set<const ConsElem *> elements) : elems(elements) {}
+RLJoin::RLJoin(std::set<const ConsElem *> elements) : elems(elements) {}
 
-bool LHJoin::leq(const ConsElem &other) const {
+bool RLJoin::leq(const ConsElem &other) const {
   for (std::set<const ConsElem *>::iterator elem = elems.begin(),
                                             end = elems.end();
        elem != end; ++elem) {
@@ -175,7 +176,7 @@ bool LHJoin::leq(const ConsElem &other) const {
   return true;
 }
 
-void LHJoin::variables(std::set<const ConsVar *> &vars) const {
+void RLJoin::variables(std::set<const ConsVar *> &vars) const {
   for (std::set<const ConsElem *>::iterator elem = elems.begin(),
                                             end = elems.end();
        elem != end; ++elem) {
@@ -183,27 +184,27 @@ void LHJoin::variables(std::set<const ConsVar *> &vars) const {
   }
 }
 
-const LHJoin *LHJoin::create(const ConsElem &e1, const ConsElem &e2) {
+const RLJoin *RLJoin::create(const ConsElem &e1, const ConsElem &e2) {
   std::set<const ConsElem *> elements;
 
-  if (const LHJoin *j1 = llvm::dyn_cast<LHJoin>(&e1)) {
+  if (const RLJoin *j1 = llvm::dyn_cast<RLJoin>(&e1)) {
     const std::set<const ConsElem *> &j1elements = j1->elements();
     elements.insert(j1elements.begin(), j1elements.end());
   } else {
     elements.insert(&e1);
   }
 
-  if (const LHJoin *j2 = llvm::dyn_cast<LHJoin>(&e2)) {
+  if (const RLJoin *j2 = llvm::dyn_cast<RLJoin>(&e2)) {
     const std::set<const ConsElem *> &j2elements = j2->elements();
     elements.insert(j2elements.begin(), j2elements.end());
   } else {
     elements.insert(&e2);
   }
 
-  return new LHJoin(elements);
+  return new RLJoin(elements);
 }
 
-void LHJoin::dump(llvm::raw_ostream &o) const {
+void RLJoin::dump(llvm::raw_ostream &o) const {
   o << "Join (";
   for (std::set<const ConsElem *>::iterator elem = elems.begin(),
                                             end = elems.end();
@@ -213,8 +214,8 @@ void LHJoin::dump(llvm::raw_ostream &o) const {
   o << ")";
 }
 
-bool LHJoin::operator==(const ConsElem &elem) const {
-  if (const LHJoin *other = llvm::dyn_cast<const LHJoin>(&elem)) {
+bool RLJoin::operator==(const ConsElem &elem) const {
+  if (const RLJoin *other = llvm::dyn_cast<const RLJoin>(&elem)) {
     return this == other;
   } else {
     return false;

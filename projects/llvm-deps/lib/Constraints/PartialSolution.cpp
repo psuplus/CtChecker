@@ -19,33 +19,33 @@
 
 using namespace deps;
 using namespace llvm;
-/// propogate, initialize function - modify and LHconstant function.
+/// propogate, initialize function - modify and RLconstant function.
 // Helper function
-// static const LHConstant &levelToLHC(LHLevel l, CompartmentSet cSet) {
-//   return LHConstant::constant(l, cSet);
+// static const RLConstant &levelToRLC(RLLevel l, CompartmentSet cSet) {
+//   return RLConstant::constant(l, cSet);
 // }
 
-LHLabel PartialSolution::isChanged(const ConsVar *V) {
-  LHLabel label;
+RLLabel PartialSolution::isChanged(const ConsVar *V) {
+  RLLabel label;
 
   if (initial) {
-    label = make_pair(LHLevel::HIGH, LHConstant::CompleteSet);
+    label = make_pair(RLLevel::HIGH, RLConstant::CompleteSet);
   } else {
-    label = make_pair(LHLevel::LOW, LHConstant::EmptySet);
+    label = make_pair(RLLevel::LOW, RLConstant::EmptySet);
   }
 
   for (auto ps : Chained) {
     if (initial) {
       for (auto set : ps->VSet) {
         if (set.second.count(V)) {
-          label = LHConstant::lowerBoundLabel(set.first, label);
+          label = RLConstant::lowerBoundLabel(set.first, label);
         }
       }
       return label;
     } else {
       for (auto set : ps->VSet) {
         if (set.second.count(V)) {
-          label = LHConstant::upperBoundLabel(set.first, label);
+          label = RLConstant::upperBoundLabel(set.first, label);
         }
       }
       return label;
@@ -54,43 +54,43 @@ LHLabel PartialSolution::isChanged(const ConsVar *V) {
   return label;
 }
 
-/* This function evaluates the argument E (which could be a LHConsVar,
- * LHConstant or LHJoin) into a LHConstant ptr which is returned. */
+/* This function evaluates the argument E (which could be a RLConsVar,
+ * RLConstant or RLJoin) into a RLConstant ptr which is returned. */
 
-const LHConstant &PartialSolution::subst(
+const RLConstant &PartialSolution::subst(
     const ConsElem
         &E) { // This is an element of any inherited class of ConsElem
   // If this is a variable, look it up in VSet:
-  if (const LHConsVar *V = dyn_cast<LHConsVar>(&E))
-    return LHConstant::constant(isChanged(V));
+  if (const RLConsVar *V = dyn_cast<RLConsVar>(&E))
+    return RLConstant::constant(isChanged(V));
 
   // If this is already a constant, return it
-  if (const LHConstant *LHC = dyn_cast<LHConstant>(&E))
-    return *LHC;
+  if (const RLConstant *RLC = dyn_cast<RLConstant>(&E))
+    return *RLC;
 
   // Otherwise, this better be a join (asserting cast)
-  const LHJoin *J = cast<LHJoin>(&E); // So classes inherited from ConsElem  -
-                                      // LHConsVar, LHConstant and LHJoin Only.
+  const RLJoin *J = cast<RLJoin>(&E); // So classes inherited from ConsElem  -
+                                      // RLConsVar, RLConstant and RLJoin Only.
   // Find all elements of the join, and evaluate it recursively
   const std::set<const ConsElem *> &elements =
-      J->elements(); // D. What are the elements i.e. 'elems' of LHJoin
+      J->elements(); // D. What are the elements i.e. 'elems' of RLJoin
                      // represent?
 
-  // XXX: LHConsSoln starts with substVal as the defaultValue,
+  // XXX: RLConsSoln starts with substVal as the defaultValue,
   // which ...seems wrong?  Seems like this would make all join's
   // evaluate to 'high' unconditionally when solving for greatest.
   // Curiously, however, I'm not seeing any differences in the solutions
   // produced across various CINT2006 benchmarks.  Oh well.
-  const LHConstant *substVal = &LHConstant::bot();
+  const RLConstant *substVal = &RLConstant::bot();
 
   for (std::set<const ConsElem *>::iterator
            elem = elements.begin(), // this loop evaluates the join element.
        end = elements.end();
        elem != end; ++elem) {
     substVal = &(
-        substVal->join(subst(**elem))); // join(arg) returns a LHConstant
+        substVal->join(subst(**elem))); // join(arg) returns a RLConstant
                                         // reference to lub(substVal,arg), where
-                                        // lub is wrt level field of LHConstant
+                                        // lub is wrt level field of RLConstant
   }
 
   return *substVal;
@@ -133,21 +133,21 @@ void PartialSolution::mergeIn(PartialSolution &P) {
   propagate();
 }
 
-/* For each LHConstraint in the Constraints vector, we insert 'targets' (afer
+/* For each RLConstraint in the Constraints vector, we insert 'targets' (afer
 performing variables() on it (what does this do?)) into densemap P. And then we
 check each constrant whether it is >= MID, LOW (different for greatest solution
 or least solution) etc. and accordingly put it in VSet. */
 // Only run for normal constructor.
 // Scan constraints for non-initial, building up seed VarSet.
 void PartialSolution::initialize(
-    Constraints &C) { // Constraints is a vector of LHConstraint (which is a
+    Constraints &C) { // Constraints is a vector of RLConstraint (which is a
                       // class with fields 'left' and 'right' ConsElem* ptrs)
 
   // Add ourselves to the chained list
   Chained.push_back(this);
 
   // Build propagation map
-  std::set<const ConsVar *> vars; // LHConsVar is inherited from ConsVar
+  std::set<const ConsVar *> vars; // RLConsVar is inherited from ConsVar
   std::set<const ConsVar *> targets;
   // Build propagation map
   for (Constraints::iterator I = C.begin(), E = C.end(); I != E; ++I) {
@@ -177,21 +177,21 @@ void PartialSolution::initialize(
     // Initialize varset:
     VSet[subst(From).label()].insert(targets.begin(), targets.end());
     // if (initial) {
-    //   if (subst(From).leq(LHConstant::bot())) {
+    //   if (subst(From).leq(RLConstant::bot())) {
     //     // A <= B, 'B' is low
     //     // Mark all in 'A' as low also
     //     VSet[LOW].insert(targets.begin(), targets.end());
-    //   } else if (subst(From).leq(LHConstant::top())) {
+    //   } else if (subst(From).leq(RLConstant::top())) {
     //     // A <= B, 'B' is at most mid
     //     // Mark all in 'A' as mid also
     //     VSet[MID].insert(targets.begin(), targets.end());
     //   }
     // } else {
-    //   if (!subst(From).leq(LHConstant::top())) {
+    //   if (!subst(From).leq(RLConstant::top())) {
     //     // A <= B, 'A' is high
     //     // Mark all in 'B' as high also
     //     VSet[HIGH].insert(targets.begin(), targets.end());
-    //   } else if (!subst(From).leq(LHConstant::bot())) {
+    //   } else if (!subst(From).leq(RLConstant::bot())) {
     //     // A <= B, 'A' is at least mid
     //     // Mark all in 'B' as mid also
     //     VSet[MID].insert(targets.begin(), targets.end());
@@ -203,7 +203,7 @@ void PartialSolution::initialize(
 // LOW -> {} , MID -> {a} ; P[a] = {b}
 
 void PartialSolution::propagate() {
-  std::map<LHLabel, std::deque<const ConsVar *>> workList;
+  std::map<RLLabel, std::deque<const ConsVar *>> workList;
   // {{LOW, {}}, {MID, {}}, {HIGH, {}}};
 
   assert(!Chained.empty());
@@ -235,16 +235,16 @@ void PartialSolution::propagate() {
         // For each such variable...
         for (const ConsVar *cv : Updates) {
           // If we haven't changed it already, add it to the worklist:
-          LHLabel vLabel = isChanged(cv);
+          RLLabel vLabel = isChanged(cv);
           if (initial) {
-            if (LHConstant::constant(listPair.first)
-                    .leq(LHConstant::constant(vLabel))) {
+            if (RLConstant::constant(listPair.first)
+                    .leq(RLConstant::constant(vLabel))) {
               VSet[listPair.first].insert(cv);
               list.push_back(cv);
             }
           } else {
-            if (LHConstant::constant(vLabel).leq(
-                    LHConstant::constant(listPair.first))) {
+            if (RLConstant::constant(vLabel).leq(
+                    RLConstant::constant(listPair.first))) {
               VSet[listPair.first].insert(cv);
               list.push_back(cv);
             }

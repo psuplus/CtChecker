@@ -1,4 +1,4 @@
-//===-- LHConsSoln.cpp ------------------------------------------*- C++ -*-===//
+//===-- RLConsSoln.cpp ------------------------------------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -11,32 +11,32 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Constraints/LHConsSoln.h"
-#include "Constraints/LHConstraint.h"
-#include "Constraints/LHConstraintKit.h"
+#include "Constraints/RLConsSoln.h"
+#include "Constraints/RLConstraint.h"
+#include "Constraints/RLConstraintKit.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/raw_ostream.h"
 
 namespace deps {
 
-LHConsSoln::LHConsSoln(LHConstraintKit &kit, const LHConstant &defaultValue,
-                       std::vector<const LHConstraint *> *constraints)
+RLConsSoln::RLConsSoln(RLConstraintKit &kit, const RLConstant &defaultValue,
+                       std::vector<const RLConstraint *> *constraints)
     : kit(kit), defaultValue(defaultValue), constraints(constraints),
       solved(false) {}
 
-const LHConstant &LHConsSoln::subst(const ConsElem &elem) {
+const RLConstant &RLConsSoln::subst(const ConsElem &elem) {
   solve();
-  if (const LHConsVar *var = llvm::dyn_cast<LHConsVar>(&elem)) {
-    const LHConstant &other = (defaultValue == LHConstant::bot())
-                                  ? LHConstant::top()
-                                  : LHConstant::bot();
+  if (const RLConsVar *var = llvm::dyn_cast<RLConsVar>(&elem)) {
+    const RLConstant &other = (defaultValue == RLConstant::bot())
+                                  ? RLConstant::top()
+                                  : RLConstant::bot();
     return changed.count(var) ? other : defaultValue;
-  } else if (const LHConstant *var = llvm::dyn_cast<LHConstant>(&elem)) {
+  } else if (const RLConstant *var = llvm::dyn_cast<RLConstant>(&elem)) {
     return *var;
-  } else if (const LHJoin *join = llvm::dyn_cast<LHJoin>(&elem)) {
+  } else if (const RLJoin *join = llvm::dyn_cast<RLJoin>(&elem)) {
     const std::set<const ConsElem *> &elements = join->elements();
-    const LHConstant *substVal = &defaultValue;
+    const RLConstant *substVal = &defaultValue;
     for (std::set<const ConsElem *>::iterator elem = elements.begin(),
                                               end = elements.end();
          elem != end; ++elem) {
@@ -49,9 +49,9 @@ const LHConstant &LHConsSoln::subst(const ConsElem &elem) {
   llvm_unreachable("Unknown security policy");
 }
 
-void LHConsSoln::enqueueConstraints(
-    const std::vector<const LHConstraint *> &constraints) {
-  for (std::vector<const LHConstraint *>::const_iterator
+void RLConsSoln::enqueueConstraints(
+    const std::vector<const RLConstraint *> &constraints) {
+  for (std::vector<const RLConstraint *>::const_iterator
            elem = constraints.begin(),
            end = constraints.end();
        elem != end; ++elem) {
@@ -60,14 +60,14 @@ void LHConsSoln::enqueueConstraints(
   }
 }
 
-const LHConstraint &LHConsSoln::dequeueConstraint() {
-  const LHConstraint &front = *(queue.front());
+const RLConstraint &RLConsSoln::dequeueConstraint() {
+  const RLConstraint &front = *(queue.front());
   queue.pop_front();
   queueSet.erase(&front);
   return front;
 }
 
-void LHConsSoln::solve(void) {
+void RLConsSoln::solve(void) {
   if (solved)
     return;
 
@@ -81,7 +81,7 @@ void LHConsSoln::solve(void) {
   unsigned int number = 0;
   while (!queue.empty()) {
     number++;
-    const LHConstraint &c = dequeueConstraint();
+    const RLConstraint &c = dequeueConstraint();
     const ConsElem &left = c.lhs();
     const ConsElem &right = c.rhs();
     if (subst(left).leq(subst(right))) {
@@ -101,13 +101,13 @@ void LHConsSoln::solve(void) {
   releaseMemory();
 }
 
-LHConsSoln::~LHConsSoln() { delete constraints; }
+RLConsSoln::~RLConsSoln() { delete constraints; }
 
-LHConsLeastSoln::LHConsLeastSoln(LHConstraintKit &kit,
-                                 std::vector<const LHConstraint *> *constraints)
-    : LHConsSoln(kit, LHConstant::bot(), constraints) {
+RLConsLeastSoln::RLConsLeastSoln(RLConstraintKit &kit,
+                                 std::vector<const RLConstraint *> *constraints)
+    : RLConsSoln(kit, RLConstant::bot(), constraints) {
   std::set<const ConsVar *> leftVariables;
-  for (std::vector<const LHConstraint *>::iterator cons = constraints->begin(),
+  for (std::vector<const RLConstraint *>::iterator cons = constraints->begin(),
                                                    end = constraints->end();
        cons != end; ++cons) {
     leftVariables.clear();
@@ -121,15 +121,15 @@ LHConsLeastSoln::LHConsLeastSoln(LHConstraintKit &kit,
   }
 }
 
-void LHConsLeastSoln::satisfyConstraint(const LHConstraint &constraint,
+void RLConsLeastSoln::satisfyConstraint(const RLConstraint &constraint,
                                         const ConsElem &left,
                                         const ConsElem &right) {
   std::set<const ConsVar *> vars;
   right.variables(vars);
-  const LHConstant &L = subst(left);
+  const RLConstant &L = subst(left);
   for (std::set<const ConsVar *>::iterator var = vars.begin(), end = vars.end();
        var != end; ++var) {
-    const LHConstant &R = subst(**var);
+    const RLConstant &R = subst(**var);
     if (!L.leq(R)) {
       changed.insert(*var);
       // add every constraint that may now be invalidated by changing var
@@ -138,23 +138,23 @@ void LHConsLeastSoln::satisfyConstraint(const LHConstraint &constraint,
   }
 }
 
-std::vector<const LHConstraint *> &
-LHConsLeastSoln::getOrCreateInvalidIfIncreasedSet(const ConsVar *var) {
+std::vector<const RLConstraint *> &
+RLConsLeastSoln::getOrCreateInvalidIfIncreasedSet(const ConsVar *var) {
   return invalidIfIncreased[var];
 }
 
-void LHConsLeastSoln::addInvalidIfIncreased(const ConsVar *var,
-                                            const LHConstraint *c) {
-  std::vector<const LHConstraint *> &varSet =
+void RLConsLeastSoln::addInvalidIfIncreased(const ConsVar *var,
+                                            const RLConstraint *c) {
+  std::vector<const RLConstraint *> &varSet =
       getOrCreateInvalidIfIncreasedSet(var);
   varSet.push_back(c);
 }
 
-LHConsGreatestSoln::LHConsGreatestSoln(
-    LHConstraintKit &kit, std::vector<const LHConstraint *> *constraints)
-    : LHConsSoln(kit, LHConstant::top(), constraints) {
+RLConsGreatestSoln::RLConsGreatestSoln(
+    RLConstraintKit &kit, std::vector<const RLConstraint *> *constraints)
+    : RLConsSoln(kit, RLConstant::top(), constraints) {
   std::set<const ConsVar *> rightVariables;
-  for (std::vector<const LHConstraint *>::iterator cons = constraints->begin(),
+  for (std::vector<const RLConstraint *>::iterator cons = constraints->begin(),
                                                    end = constraints->end();
        cons != end; ++cons) {
     rightVariables.clear();
@@ -168,15 +168,15 @@ LHConsGreatestSoln::LHConsGreatestSoln(
   }
 }
 
-void LHConsGreatestSoln::satisfyConstraint(const LHConstraint &constraint,
+void RLConsGreatestSoln::satisfyConstraint(const RLConstraint &constraint,
                                            const ConsElem &left,
                                            const ConsElem &right) {
   std::set<const ConsVar *> vars;
   left.variables(vars);
-  const LHConstant &R = subst(right);
+  const RLConstant &R = subst(right);
   for (std::set<const ConsVar *>::iterator var = vars.begin(), end = vars.end();
        var != end; ++var) {
-    const LHConstant &L = subst(**var);
+    const RLConstant &L = subst(**var);
     if (L.leq(R)) {
       // nothing to do, the variable is already low enough
     } else if (R.leq(L)) {
@@ -190,14 +190,14 @@ void LHConsGreatestSoln::satisfyConstraint(const LHConstraint &constraint,
   }
 }
 
-std::vector<const LHConstraint *> &
-LHConsGreatestSoln::getOrCreateInvalidIfDecreasedSet(const ConsVar *var) {
+std::vector<const RLConstraint *> &
+RLConsGreatestSoln::getOrCreateInvalidIfDecreasedSet(const ConsVar *var) {
   return invalidIfDecreased[var];
 }
 
-void LHConsGreatestSoln::addInvalidIfDecreased(const ConsVar *var,
-                                               const LHConstraint *c) {
-  std::vector<const LHConstraint *> &varSet =
+void RLConsGreatestSoln::addInvalidIfDecreased(const ConsVar *var,
+                                               const RLConstraint *c) {
+  std::vector<const RLConstraint *> &varSet =
       getOrCreateInvalidIfDecreasedSet(var);
   varSet.push_back(c);
 }

@@ -11,9 +11,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Constraints/LHConstraintKit.h"
-#include "Constraints/LHConstraints.h"
 #include "Constraints/PartialSolution.h"
+#include "Constraints/RLConstraintKit.h"
+#include "Constraints/RLConstraints.h"
 #include "Constraints/SolverThread.h"
 #include "Infoflow.h"
 
@@ -47,7 +47,7 @@ void SolverThread::join(PartialSolution *&P) {
   ::pthread_join(thread, (void **)&P);
 }
 
-void LHConstraintKit::solveMT(std::string kind, Predicate *pred) {
+void RLConstraintKit::solveMT(std::string kind, Predicate *pred) {
   assert(lockedConstraintKinds[pred].insert(kind).second && "Already solved");
   assert(!leastSolutions[pred].count(kind));
   assert(!greatestSolutions[pred].count(kind));
@@ -94,7 +94,7 @@ void *merge(void *arg) {
 }
 
 std::vector<PartialSolution *>
-LHConstraintKit::solveLeastMT(std::vector<std::string> kinds,
+RLConstraintKit::solveLeastMT(std::vector<std::string> kinds,
                               bool useDefaultSinks, Predicate *pred) {
   assert(leastSolutions[pred].count("default"));
 

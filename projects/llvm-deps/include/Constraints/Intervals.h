@@ -3,6 +3,7 @@
 
 #include <climits>
 #include <iostream>
+#include <vector>
 
 #define P_INF LONG_MAX
 #define P_NEGINF LONG_MIN
@@ -28,10 +29,10 @@ public:
 
 class Interval {
 public:
-  Interval(long L, long U, char var) { intervals = new Interval_1D(L, U, var); }
+  Interval(long L, long U, char var) { intervals.push_back(new Interval_1D(L, U, var) ); }
   ~Interval() {}
 
-  Interval_1D *intervals;
+  std::vector<Interval_1D*> intervals;
 };
 
 #endif

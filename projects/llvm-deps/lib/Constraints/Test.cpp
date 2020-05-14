@@ -17,17 +17,22 @@
 #include <iostream>
 
 using namespace deps;
+/*
+Issue with wrong answer is that it happens only for multivariable cases, because now they -1 <= x <= 2
+and 3 <= y <= 5 are considered to intersect, before they weren't - so fix partitionPredicatepair and
+this issue will get fixed too.
+*/
 
 void test(void) {
 
   std::vector<Predicate *> PSet;
 
   // Test 0
-  PSet.push_back(new Predicate(-1, 5, 'x'));
-  PSet.push_back(new Predicate(2, 7, 'x'));
-  PSet.push_back(new Predicate(4, 12, 'x'));
+  PSet.push_back(new Predicate(-1, 5, 'x')); // Need to check for case of flag = 0 - outputs correct
+  PSet.push_back(new Predicate(4, 6, 'x')); //Check this case 
+  // PSet.push_back(new Predicate(4, 12, 'x'));
 
-  // // Test 1
+  // // // Test 1
   // PSet.push_back(new Predicate(-1, 5, 'x'));
   // PSet.push_back(new Predicate(2, 7, 'y'));
 
@@ -42,10 +47,18 @@ void test(void) {
   // PSet.push_back(new Predicate(0, 5, 'y'));
   // PSet.push_back(new Predicate(-3, 7, 'y'));
 
-  // // Test 4
+  // // // Test 4
   // PSet.push_back(new Predicate(P_NEGINF, P_INF, 'x'));
   // PSet.push_back(new Predicate(P_NEGINF, 5, 'x'));
   // PSet.push_back(new Predicate(-2, P_INF, 'x'));
+
+  // Testing multidimension.
+  PSet[0]->addinequality(10,20,'y');
+  PSet[1]->addinequality(15,17, 'y'); 
+  // PSet[1]->addinequality(1,3, 'y');
+
+  // PSet[0]->dump();
+  // PSet[1]->dump();
 
   LHConstraintKit kit;
 
@@ -75,7 +88,7 @@ void test(void) {
   }
 
   // Testing kit for greatest solution
-  if (PSet.size() > 0) {
+  if (PSet.size() > 0) {  
     kit.addConstraint("greatest", a, kit.constant(LHLevel::LOW, cS3), PSet[0]);
     kit.addConstraint("greatest", a, b, PSet[0]);
     kit.addConstraint("greatest", b, kit.constant(LHLevel::MID, cS1), PSet[0]);
@@ -83,6 +96,8 @@ void test(void) {
   if (PSet.size() > 1) {
     kit.addConstraint("greatest", c, kit.constant(LHLevel::HIGH, cS1), PSet[1]);
     kit.addConstraint("greatest", c, a, PSet[1]);
+    std::vector<LHConstraint> tempvector2 =
+        kit.getOrCreateConstraintSet("greatest", PSet[1]);
   }
   if (PSet.size() > 2) {
   }

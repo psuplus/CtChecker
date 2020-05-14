@@ -87,6 +87,8 @@ public:
   std::vector<LHConstraint> &getOrCreateConstraintSet(const std::string kind,
                                                       Predicate *pred);
 
+  void copyConstraint( Predicate* src, Predicate* dest);
+  
   void unionConstraintSet(Predicate *P1, Predicate *P2, Predicate *P3,
                           int flag);
 

@@ -246,63 +246,43 @@ void LHConstraintKit::freeUnneededConstraints(std::string kind,
   }
 }
 
+
+void LHConstraintKit::copyConstraint( Predicate* src, Predicate* dest) {
+  for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
+            constraints[src].begin();
+        i != constraints[src].end(); ++i) {
+    std::vector<LHConstraint> &tempvector =
+        getOrCreateConstraintSet(i->first(), dest);
+    std::vector<LHConstraint> &tempvector2 =
+        getOrCreateConstraintSet(i->first(), src);
+    for (auto j : tempvector2) {
+      LHConstraint temp(j.lhs(), j.rhs());
+      tempvector.push_back(temp);
+    }
+  }  
+  return;
+}
+
 void LHConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
                                          Predicate *NewPred, int flag) {
   switch (flag) {
   case 0:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
-             constraints[Pred1].begin();
-         i != constraints[Pred1].end(); ++i) {
-      std::vector<LHConstraint> &tempvector =
-          getOrCreateConstraintSet(i->first(), NewPred);
-      for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
-        LHConstraint temp(j.lhs(), j.rhs());
-        tempvector.push_back(temp);
-      }
-      for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
-        LHConstraint temp(j.lhs(), j.rhs());
-        tempvector.push_back(temp);
-      }
-    }
+    copyConstraint(Pred1, NewPred) ;
+    copyConstraint(Pred2, NewPred) ;
     break;
   case 1:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
-             constraints[Pred1].begin();
-         i != constraints[Pred1].end(); ++i) {
-      llvm::errs() << i->first() << "1\n";
-      std::vector<LHConstraint> &tempvector =
-          getOrCreateConstraintSet(i->first(), NewPred);
-      for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
-        LHConstraint temp(j.lhs(), j.rhs());
-        tempvector.push_back(temp);
-      }
-
-      std::vector<LHConstraint> &tempvector2 =
-          getOrCreateConstraintSet(i->first(), Pred2);
-      for (auto j : getOrCreateConstraintSet(i->first(), Pred1)) {
-        LHConstraint temp(j.lhs(), j.rhs());
-        tempvector2.push_back(temp);
-      }
-    }
+    copyConstraint(Pred1, NewPred) ;
+    copyConstraint(Pred1, Pred2) ;    
     break;
   case -1:
-    for (llvm::StringMap<std::vector<LHConstraint>>::iterator i =
-             constraints[Pred2].begin();
-         i != constraints[Pred2].end(); ++i) {
-      std::vector<LHConstraint> &tempvector =
-          getOrCreateConstraintSet(i->first(), NewPred);
-      for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
-        LHConstraint temp(j.lhs(), j.rhs());
-        tempvector.push_back(temp);
-      }
-
-      std::vector<LHConstraint> &tempvector2 =
-          getOrCreateConstraintSet(i->first(), Pred1);
-      for (auto j : getOrCreateConstraintSet(i->first(), Pred2)) {
-        LHConstraint temp(j.lhs(), j.rhs());
-        tempvector2.push_back(temp);
-      }
-    }
+    copyConstraint(Pred2, NewPred) ;
+    copyConstraint(Pred2, Pred1) ;
+    break;
+  case 2:
+    copyConstraint(Pred1, NewPred);
+    break;
+  case -2: 
+    copyConstraint(Pred2, NewPred);
     break;
   default:
     break;
@@ -312,21 +292,42 @@ void LHConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
 void LHConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
   long unsigned i, j;
   for (i = 0; i < P.size(); i++) {
-    for (j = i + 1; j < P.size(); j++) {
-      if (Predicate::isOverlapping(P[i], P[j])) {
-        int *flag = new int(0);
-        Predicate *newPred =
-            Predicate::partitionPredicatePair(P[i], P[j], flag);
-        unionConstraintSet(P[i], P[j], newPred, *flag);
-        P.push_back(newPred);
+    long unsigned k = P.size();  // Increases efficiency
+    for (j = i + 1; j < k; j++) {
+      int *flag = new int(0);
+      if (Predicate::isOverlapping(P[i], P[j], flag )) {
+        int K1, K2;
+        std::vector<Predicate*> newPreds =
+            Predicate::partitionPredicatePair(P[i], P[j], *flag, &K1, &K2);
+        if (*flag != 0) {
+          for (auto newPred : newPreds ) {
+            unionConstraintSet(P[i], P[j], newPred, *flag);
+            P.push_back(newPred);
+          }
+        }
+        else {
+          for (int t = 0; t < K1 ; t++) {
+            *flag = 2;
+            unionConstraintSet(P[i], P[j], newPreds[t], *flag);
+            P.push_back(newPreds[t]);            
+          }
+          for (int t = K1; t < (K1 + K2) ; t++) {
+            *flag = -2;
+            unionConstraintSet(P[i], P[j], newPreds[t], *flag);
+            P.push_back(newPreds[t]);            
+          }
+          *flag = 0;
+          unionConstraintSet(P[i], P[j], newPreds[K1 + K2], *flag);
+          P.push_back(newPreds[K1 + K2]);             
+        }
       }
     }
   }
 
   // Sort the constraints
-  std::sort(P.begin(), P.end(), Predicate::compare);
+  std::sort(P.begin(), P.end(), Predicate::predcompare);
 
-  // Remove the empty predicates
+  // Remove the empty predicates - D. first validate all the constraints here
   for (i = 0; i < P.size(); i++) {
     if (P[i]->empty()) {
       P.erase(P.begin() + i);

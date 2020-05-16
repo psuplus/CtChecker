@@ -10,71 +10,187 @@ namespace deps {
 
 class Predicate {
 public:
-  // If want to add constructors for 2 or 3 intervals, make sure to 
-  // check for the conflicting variables case, and sort finally (check addinequality function) 
-  Predicate(long L, long U, char var) { pred = new Interval(L, U, var); }
-  Predicate(long L1, long U1, char var1, long L2, long U2, char var2) { 
-    pred = new Interval(L1, U1, var1);
-    addinequality (L2, U2, var2);
-  }
-  Predicate(long L1, long U1, char var1, long L2, long U2, char var2, long L3, long U3, char var3) { 
-    pred = new Interval(L1, U1, var1);
-    addinequality (L2, U2, var2);
-    addinequality (L3, U3, var3);
-  }  
+  /*Constructors: */
+  Predicate();
+  Predicate(long L1, long U1, char var1);
+  Predicate(long L1, long U1, char var1, long L2, long U2, char var2);
+  Predicate(long L1, long U1, char var1, long L2, long U2, char var2, 
+    long L3, long U3, char var3);
   
-  ~Predicate() {}
+  /*Destructor */
+  ~Predicate();
 
-  void dump();
   Interval *pred;
 
-  // Adds another inequality to the predicate
+  /**************************************************************************
+  Function Name : addinequality
+  Arguments     : L   - lower bound of inequality
+                  U   - upper bound of inequality
+                  var - variable name for inequality
+  Description   : Adds another inequality (dimension) to the predicate's 
+                  intervals
+  Return Value  : -
+  **************************************************************************/  
   void addinequality (long L, long U, char var);
-
-
-  /* Assumes P1 and P2 have non-empty intersection.
-     flag = 1: Returns P1/P2 as vector of n-dimensional intervals. Makes P1 empty.
-     flag = -1; Returns P2/P1 as vector of n-dimensional intervals. Makes P2 empty.
-     flag = 0; Returns P1/P2 and P2/P1 and intersection(P1,P2) as a vector of n-dimensional intervals. In
-     this case, if 'i' is an iteration variable on the vector returned, then:
-        0 <= i < *index1 : vector of P1/P2 as n-dimensional intervals.
-        *index1 <= i < *index1 + *index2: vector of P2/P1 as n-dimensional intervals
-        i = *index1 + *index2: intersection(P1,P2)
-        Makes P1 and P2 empty.
-  */
-  static std::vector<Predicate*> partitionPredicatePair(Predicate *P1, Predicate *P2, int flag, int* index1, int* index2);
-
-  /* Assumes P2 is a subset of P1.  Returns P1/P2 as a vector of n-dimensional 
-     intervals. Doesn't change P1 and P2.*/
-  static std::vector<Predicate*> partitionsubsetPredicatePair(Predicate *P1, Predicate *P2);
   
-  /*Utility functions - name implies usage:
-  If return value = true, then:
-  flag = 1: P2 is contained in P1, or P1 = P2; need to copy constraints of P1 into P3 and P2
-  flag = -1, P1 is contained in P2, but P1 != P2; need to copy constraints of P2 into P3 and P1
-  flag = 0; intersect but no containment; need to copy constraints of P1 and P2 into P3
-   */
-  static bool isOverlapping(Predicate *P1, Predicate *P2, int * flag);
 
-  bool empty();
 
-  // Checks if L > U, and if so makes P empty.
+  /**************************************************************************
+  Function Name : dump
+  Arguments     : -
+  Description   : Prints the predicate's intervals
+  Return Value  : -
+  **************************************************************************/ 
+  void dump();
+
+
+ 
+  /**************************************************************************
+  Function Name : isOverlapping
+  Arguments     : P    - Another predicate
+                  flag - Is used as another return type for function. If there
+                         is overlap, flag gives the type of overlap: 
+                             flag  = 1 <-> P is contained in this predicate
+                             flag = -1 <-> this predicate is contained in P
+                             flag = 0 <-> non subset overlap
+  Description   : Checks whether this predicate overlaps with predicate P, and 
+                  gives type of overlap through argument flag 
+  Return Value  : Returns true iff P overlaps with this predicate
+  **************************************************************************/ 
+  bool isOverlapping(Predicate *P, int * flag);
+
+
+
+  /**************************************************************************
+  Function Name : partitionPredicatePair
+  Arguments     : P    - Another predicate
+                  flag - Gives type of overlap as given by function 
+                         'isOverlapping' 
+  Description   : Let this predicate be denoted by Q. Then depending on the 
+                  type of overlap between Q and P, it gives Q/P, P/Q and 
+                  intersection(Q,P) as a vector of intervals, and accordingly
+                  makes Q or P's intervals empty.
+  Return Value  : Returns an array of vectors (say A). Then,
+                    A[0] - vector of intervals from (Q - P)
+                    A[1] - vector of intervals from (P - Q)
+                    A[2] - the intersection interval of Q and P.
+  Warnings      : This function generates a warning 'redundant move in ... 
+                  std::move'. This is because we return an array of vectors 
+                  (this warning can be ignored).
+  **************************************************************************/ 
+  std::vector<Predicate*>* partitionPredicatePair(Predicate *P, int flag);
+  
+
+
+  /**************************************************************************
+  Function Name : partitionsubsetPredicatePair
+  Arguments     : P1 - A predicate
+                  P2 - Another predicate. P2 must be contained in P1.
+  Description   : It assumes that P2 is contained in P1. It returns P1/P2 as
+                  a vector of intervals.
+  Return Value  : Returns P1 - P2 as a vector of intervals.
+  Warnings      : This function generates a warning 'redundant move in ... 
+                  std::move'. This is because we return a vectors. 
+                  (this warning can be ignored).
+  **************************************************************************/ 
+  static std::vector<Predicate*> partitionsubsetPredicatePair(Predicate *P1,
+           Predicate *P2);
+
+
+
+  /**************************************************************************
+  Function Name : intersection
+  Arguments     : P - Another predicate
+  Description   : It returns the intersection of current predicate and P
+  Return Value  : intersection(current predicate, P)
+  **************************************************************************/   
+  Predicate* intersection(Predicate* P) ;  
+
+
+
+  /**************************************************************************
+  Function Name : isEmpty
+  Arguments     : -
+  Description   : Checks if current predicate's interval is empty
+  Return Value  : Returns true iff current predicate is empty
+  **************************************************************************/ 
+  bool isEmpty();
+
+
+
+  /**************************************************************************
+  Function Name : makeEmpty
+  Arguments     : -
+  Description   : Makes the current predicate's interval empty
+  Return Value  : -
+  **************************************************************************/ 
+  void makeEmpty();
+
+
+
+  /**************************************************************************
+  Function Name : validate
+  Arguments     : -
+  Description   : Checks if current predicate's interval is a valid interval 
+                  and if not makes it empty.
+  Return Value  : -
+  **************************************************************************/ 
   void validate();
 
-  long add1_extend(long x);
-  long sub1_extend(long x);
 
-  /* Defines a < relation on predicates, assuming they are non-overlapping*/
-  static bool predcompare(Predicate *P1, Predicate *P2);
+  // D. REORDERING THIS IN .CPP GIVES AN ERROR!
+  /**************************************************************************
+  Function Name : add1_extend
+  Arguments     : x - long number
+  Description   : Bounded addition of 1
+  Return Value  : min(x+1, P_INF)
+  **************************************************************************/  
+  static long add1_extend(long x);
 
-  // Defines a < relation on Interval_1D
+
+
+  /**************************************************************************
+  Function Name : sub1_extend
+  Arguments     : x 
+  Description   : Bounded subtraction of 1
+  Return Value  : max(x-1, P_NEGINF)
+  **************************************************************************/ 
+  static long sub1_extend(long x);
+
+
+
+  /**************************************************************************
+  Function Name : predcompare
+  Arguments     : P1 - A predicate
+                  P2 - Another predicate
+  Description   : Defines a <= relation on predicates
+  Return Value  : True iff P1 <= P2
+  **************************************************************************/ 
+  static bool predcompare(Predicate* P1, Predicate *P2);
+
+
+
+  /**************************************************************************
+  Function Name : intervalcompare
+  Arguments     : I1 - A interval
+                  I2 - Another interval
+  Description   : Defines a < relation on Interval_1D
+  Return Value  : True iff I1 < I2
+  **************************************************************************/ 
   static bool intervalcompare(Interval_1D* I1, Interval_1D* I2);
 
-  // Finds v's interval in P, and returns it's index; if not find return P_INF 
-  static unsigned long char_to_index (Predicate* P, char v) ;
 
-  // Returns intersection(P1, P2)
-  static Predicate* intersection( Predicate* P1, Predicate* P2) ;
+
+  /**************************************************************************
+  Function Name : char_to_index
+  Arguments     : v - a variable name
+  Description   : Finds the 1Dinterval corresponding to variable name v, and
+                  returns it's index in the vector intervals.
+  Return Value  : Index of 1Dinterval corresponding to varname v, else 
+                  returns DEFAULT_UNSIGNEDLONG_RETVAL
+  **************************************************************************/ 
+  unsigned long char_to_index (char v) ;
+
 
 };
 

@@ -17,20 +17,16 @@
 #include <iostream>
 
 using namespace deps;
-/*
-Issue with wrong answer is that it happens only for multivariable cases, because now they -1 <= x <= 2
-and 3 <= y <= 5 are considered to intersect, before they weren't - so fix partitionPredicatepair and
-this issue will get fixed too.
-*/
+
 
 void test(void) {
 
   std::vector<Predicate *> PSet;
 
   // Test 0
-  PSet.push_back(new Predicate(-1, 5, 'x')); // Need to check for case of flag = 0 - outputs correct
-  PSet.push_back(new Predicate(4, 6, 'x')); //Check this case 
-  // PSet.push_back(new Predicate(4, 12, 'x'));
+  PSet.push_back(new Predicate(-1, 5, 'x', 10, 20,'y'));
+  PSet.push_back(new Predicate(2, 6, 'x', 15, 17, 'y')); 
+  PSet.push_back(new Predicate(4, 12, 'x', 20, 30, 'z'));
 
   // // // Test 1
   // PSet.push_back(new Predicate(-1, 5, 'x'));
@@ -52,13 +48,11 @@ void test(void) {
   // PSet.push_back(new Predicate(P_NEGINF, 5, 'x'));
   // PSet.push_back(new Predicate(-2, P_INF, 'x'));
 
-  // Testing multidimension.
-  PSet[0]->addinequality(10,20,'y');
-  PSet[1]->addinequality(15,17, 'y'); 
+  // Testing addinequality function
+  // PSet[0]->addinequality(10,20,'z');
+  // PSet[1]->addinequality(15,17, 'z'); 
   // PSet[1]->addinequality(1,3, 'y');
 
-  // PSet[0]->dump();
-  // PSet[1]->dump();
 
   RLConstraintKit kit;
 

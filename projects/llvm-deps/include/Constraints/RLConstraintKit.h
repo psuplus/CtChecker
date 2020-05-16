@@ -89,9 +89,6 @@ public:
                                                       Predicate *pred);
 
   void copyConstraint( Predicate* src, Predicate* dest);
-  
-  void unionConstraintSet(Predicate *P1, Predicate *P2, Predicate *P3,
-                          int flag);
 
   void partitionPredicateSet(std::vector<Predicate *> &P);
 

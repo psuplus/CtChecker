@@ -277,77 +277,72 @@ void RLConstraintKit::copyConstraint( Predicate* src, Predicate* dest) {
   return;
 }
 
-void RLConstraintKit::unionConstraintSet(Predicate *Pred1, Predicate *Pred2,
-                                         Predicate *NewPred, int flag) {
-  switch (flag) {
-  case 0:
-    copyConstraint(Pred1, NewPred) ;
-    copyConstraint(Pred2, NewPred) ;
-    break;
-  case 1:
-    copyConstraint(Pred1, NewPred) ;
-    copyConstraint(Pred1, Pred2) ;    
-    break;
-  case -1:
-    copyConstraint(Pred2, NewPred) ;
-    copyConstraint(Pred2, Pred1) ;
-    break;
-  case 2:
-    copyConstraint(Pred1, NewPred);
-    break;
-  case -2: 
-    copyConstraint(Pred2, NewPred);
-    break;
-  default:
-    break;
-  }
-}
-
 void RLConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
-  long unsigned i, j;
-  for (i = 0; i < P.size(); i++) {
-    long unsigned k = P.size();  // Increases efficiency
-    for (j = i + 1; j < k; j++) {
-      int *flag = new int(0);
-      if (Predicate::isOverlapping(P[i], P[j], flag )) {
-        int K1, K2;
-        std::vector<Predicate*> newPreds =
-            Predicate::partitionPredicatePair(P[i], P[j], *flag, &K1, &K2);
-        if (*flag != 0) {
-          for (auto newPred : newPreds ) {
-            unionConstraintSet(P[i], P[j], newPred, *flag);
+  for (long unsigned i = 0; i < P.size(); i++) {
+    long unsigned const size = P.size();  /* Increases efficiency, rather 
+      than performing below mentioned loop with range j < P.size(), as P's
+      size changes inside the loop */
+    for (long unsigned j = i + 1; j < size; j++) {
+      int flag;
+      if (P[i]->isOverlapping(P[j], &flag )) {
+        std::vector<Predicate*>* newPredsArrayvector =
+            P[i]->partitionPredicatePair(P[j], flag);
+        std::vector<Predicate*> newPredsvector;
+        switch (flag)
+        {
+        case 1: // P[j] is contained in P[i]
+          newPredsvector = newPredsArrayvector[0];
+          for (auto newPred : newPredsvector) {
+            copyConstraint(P[i], newPred);
             P.push_back(newPred);
           }
-        }
-        else {
-          for (int t = 0; t < K1 ; t++) {
-            *flag = 2;
-            unionConstraintSet(P[i], P[j], newPreds[t], *flag);
-            P.push_back(newPreds[t]);            
+          copyConstraint(P[i], P[j]);
+          break;
+        case -1: // P[i] is contained in P[j]
+          newPredsvector = newPredsArrayvector[1];
+          for (auto newPred : newPredsvector) {
+            copyConstraint(P[j], newPred);
+            P.push_back(newPred);
           }
-          for (int t = K1; t < (K1 + K2) ; t++) {
-            *flag = -2;
-            unionConstraintSet(P[i], P[j], newPreds[t], *flag);
-            P.push_back(newPreds[t]);            
+          copyConstraint(P[j], P[i]);
+          break;
+        case 0: // P[i] and P[j] intersect, but are not subsets of each other
+          newPredsvector = newPredsArrayvector[0];
+          for (auto newPred : newPredsvector) {
+            copyConstraint(P[i], newPred);
+            P.push_back(newPred);
           }
-          *flag = 0;
-          unionConstraintSet(P[i], P[j], newPreds[K1 + K2], *flag);
-          P.push_back(newPreds[K1 + K2]);             
+          newPredsvector = newPredsArrayvector[1];
+          for (auto newPred : newPredsvector) {
+            copyConstraint(P[j], newPred);
+            P.push_back(newPred);
+          }
+          newPredsvector = newPredsArrayvector[2];
+          for (auto newPred : newPredsvector) {
+            copyConstraint(P[i], newPred);
+            copyConstraint(P[j], newPred);
+            P.push_back(newPred);
+          }  
+          break;
+        default:
+          break;
         }
       }
     }
   }
-
-  // Sort the constraints
-  std::sort(P.begin(), P.end(), Predicate::predcompare);
-
-  // Remove the empty predicates - D. first validate all the constraints here
-  for (i = 0; i < P.size(); i++) {
-    if (P[i]->empty()) {
-      P.erase(P.begin() + i);
-      i--;
+  
+  // Remove the empty predicates (D. Figure out how to free empty predicates)
+  for (long unsigned k = 0; k < P.size(); k++) {
+    if (P[k]->isEmpty()) {
+      P.erase(P.begin() + k);
+      k--;
     }
   }
+
+  // Sort the predicated constraints 
+  std::sort(P.begin(), P.end(), Predicate::predcompare);
+
+
 }
 
 } // namespace deps

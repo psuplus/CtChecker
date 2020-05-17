@@ -1,2 +1,1 @@
-mod 4
-expo 4
+expo 4 _gcry_mpi_powm

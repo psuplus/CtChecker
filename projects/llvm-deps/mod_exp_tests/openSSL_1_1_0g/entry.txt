@@ -1,4 +1,1 @@
-BN_mod_exp_recp
-BN_mod_exp_mont
-BN_mod_exp_mont_consttime
 BN_mod_exp_mont_word

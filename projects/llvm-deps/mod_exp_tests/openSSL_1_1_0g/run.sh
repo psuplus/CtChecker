@@ -66,31 +66,91 @@ FILE="bn_exp.c"
 #use makefile
 make $1
 
-TIME=$(date +%s)
-## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
-  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
-TIME=$(echo "$(date +%s) - $TIME" | bc)
-printf "Execution time: %d seconds\n" $TIME
+for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
+    do
+        FN="BN_mod_exp_"$FUNC
+        echo $FN
+        echo 'p 0 '$FN > taint.txt
+        echo 'p 0 '$FN > untrust.txt
+        echo $FN > entry.txt
+        # cat taint.txt
+        # cat untrust.txt
+        # cat entry.txt
+        
+        if [ $FUNC == "recp" ]; then
+            echo "recp"
+            START=170
+            END=305
+            TABLECOL=4
+        elif [ $FUNC == "mont" ]; then
+            echo "mont"
+            START=305
+            END=485
+            TABLECOL=5
+        elif [ $FUNC == "mont_consttime" ]; then
+            echo "mont_consttime"
+            START=593
+            END=1096
+            TABLECOL=6
+        elif [ $FUNC == "mont_word" ]; then
+            echo "mont_word"
+            START=1096
+            END=1244
+            TABLECOL=7
+        fi 
 
-FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
-export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat 170 305 $COL 4 $FILE $TIME > $FILENAME
-post_analysis.py tmp.dat 305 485 $COL 5 $FILE $TIME > $FILENAME
-post_analysis.py tmp.dat 593 1096 $COL 6 $FILE $TIME > $FILENAME
-post_analysis.py tmp.dat 1096 1244 $COL 7 $FILE $TIME > $FILENAME
+        TIME=$(date +%s)
+        ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
+        $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+        -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
+        -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
+        -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
+        -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
+        -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
+        -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
+        TIME=$(echo "$(date +%s) - $TIME" | bc)
+        printf "Execution time: %d seconds\n" $TIME
 
-COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 
-echo Output log: ./$COL
-mv tmp.dat $COL
+        FILENAME=$( echo 'results_with_source-'$FUNC'-'$COL'.txt' | tr '/' '-')
+        # echo $FILENAME
+        export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
+        post_analysis.py tmp.dat $START $END $COL $TABLECOL $FILE $TIME > $FILENAME
+
+        DAT=$( echo 'tmp-'$FUNC'-'$COL'.dat' | tr '/' '-')
+
+        echo Output log: ./$DAT
+        mv tmp.dat $DAT
+    done
 
 mv whitelist_tmp.txt whitelist.txt
+
+
+# TIME=$(date +%s)
+# ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
+# $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+#   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
+#   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
+#   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
+#   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
+#   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
+#   -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
+# TIME=$(echo "$(date +%s) - $TIME" | bc)
+# printf "Execution time: %d seconds\n" $TIME
+
+# FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
+# export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
+# post_analysis.py tmp.dat 170 305 $COL 4 $FILE $TIME > $FILENAME
+# post_analysis.py tmp.dat 305 485 $COL 5 $FILE $TIME > $FILENAME
+# post_analysis.py tmp.dat 593 1096 $COL 6 $FILE $TIME > $FILENAME
+# post_analysis.py tmp.dat 1096 1244 $COL 7 $FILE $TIME > $FILENAME
+
+# COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
+
+# echo Output log: ./$COL
+# mv tmp.dat $COL
+
+# mv whitelist_tmp.txt whitelist.txt
 
 #SPLITPY="../utils/split.py"
 #$SPLITPY > split.txt

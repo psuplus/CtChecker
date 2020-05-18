@@ -30,5 +30,5 @@ the recommended fix is to
 1. For 10.14: recover the folder by the following package:
 /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
 
-2. For 10.15 and above: creat a symlink for the headers, e.g.,
-sudo ln -s /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/* /usr/local/include/
+2. For 10.15 and above: set the CPATH environment variable in the shell:
+export CPATH=`xcrun --show-sdk-path`/usr/include

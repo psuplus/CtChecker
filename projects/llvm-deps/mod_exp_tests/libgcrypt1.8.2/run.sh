@@ -81,9 +81,11 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
+  -constraint-generation  -debug < $1 2> tmp.dat > /dev/null
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
+
+cat tmp.dat | grep '<:' > constraints.con
 
 FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

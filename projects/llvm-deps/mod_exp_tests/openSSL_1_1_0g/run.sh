@@ -107,10 +107,11 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-        -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
+        -constraint-generation  -debug < $1 2>tmp.dat > /dev/null
         TIME=$(echo "$(date +%s) - $TIME" | bc)
         printf "Execution time: %d seconds\n" $TIME
 
+        cat tmp.dat | grep '<:' > constraints.con
 
         FILENAME=$( echo 'results_with_source-'$FUNC'-'$COL'.txt' | tr '/' '-')
         # echo $FILENAME

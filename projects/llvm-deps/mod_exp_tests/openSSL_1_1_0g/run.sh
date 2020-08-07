@@ -111,7 +111,8 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         TIME=$(echo "$(date +%s) - $TIME" | bc)
         printf "Execution time: %d seconds\n" $TIME
 
-        cat tmp.dat | grep '<:' > constraints.con
+        CONS_FILENAME=$( echo 'constraints-'$FUNC'-'$COL'.con' | tr '/' '-')
+        cat tmp.dat | grep '<:' > $CONS_FILENAME
 
         FILENAME=$( echo 'results_with_source-'$FUNC'-'$COL'.txt' | tr '/' '-')
         # echo $FILENAME

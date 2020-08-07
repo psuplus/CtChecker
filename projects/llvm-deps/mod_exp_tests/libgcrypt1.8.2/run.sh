@@ -85,7 +85,8 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
-cat tmp.dat | grep '<:' > constraints.con
+CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
+cat tmp.dat | grep '<:' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

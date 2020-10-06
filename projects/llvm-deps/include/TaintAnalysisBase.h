@@ -36,6 +36,7 @@ public:
   void loadUntrustFile(std::string filnemae = "untrust.txt");
   void loadTaintUntrustFile(std::string, std::string);
 
+  void untaintAllSink(std::string);
 };
 
 }

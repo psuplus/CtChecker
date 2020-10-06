@@ -96,6 +96,7 @@ Support
 *.spec
 ocaml
 *.llvmbuild
+*.con
 
 #==============================================================================#
 # Adding more files that should be ignored - 3/31/2020

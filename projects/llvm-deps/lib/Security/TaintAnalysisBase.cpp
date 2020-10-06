@@ -89,13 +89,11 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
   std::set<const ConsElem *> elementsToConstrain;
   for (; loc != end; ++loc) {
-    errs() << "??? ";
     (*loc)->dump();
-    // if((*loc)->isNodeCompletelyFolded() || (*loc)->type_begin() ==
-    // (*loc)->type_end()){
-    //  hasOffset = false;
-    //} else
-    if (t_offset >= 0) {
+    if ((*loc)->isNodeCompletelyFolded() ||
+        (*loc)->type_begin() == (*loc)->type_end()) {
+      hasOffset = false;
+    } else if (t_offset >= 0) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
       hasOffset = true;
     }
@@ -140,6 +138,123 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   ifa->constrainAllConsElem(kind, value, elementsToConstrain);
 }
 
+void TaintAnalysisBase::untaintAllSink(std::string kind) {
+  // process the sink functions' arguments
+  for (auto ctxValuePair : ifa->sinkContextValuePairs) {
+    ContextID ctxt;
+    Value *v;
+    int t_offset;
+    std::tie(ctxt, v, t_offset) = ctxValuePair;
+    Value &value = *v;
+
+    errs() << "untaintSink for:\n\t";
+    v->dump();
+    errs() << "at offset: " << t_offset << "\n";
+
+    const std::set<const AbstractLoc *> &locs = ifa->locsForValue(value);
+    const std::set<const AbstractLoc *> &rlocs =
+        ifa->reachableLocsForValue(value);
+    errs() << "locs size : " << locs.size() << "\n";
+    errs() << "rlocs size : " << rlocs.size() << "\n";
+    if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
+      ifa->setUntainted(kind, value);
+    }
+
+    // Heap nodes not returned from locs For value
+    AbstractLocSet relevantLocs{locs.begin(), locs.end()};
+    for (auto &rl : rlocs) {
+      if (rl->isHeapNode()) {
+        relevantLocs.insert(rl);
+      }
+    }
+    errs() << "relevantLocs size : " << relevantLocs.size() << "\n";
+
+    unsigned offset = 0;
+    bool hasOffset = ifa->offsetForValue(value, &offset);
+    unsigned numElements = getNumElements(value);
+    errs() << "It has " << numElements << " elements.\n";
+    errs() << "It has the indexed offset: " << (hasOffset ? "YES" : "NO")
+           << "\n";
+
+    if (!ifa->offset_used) {
+      t_offset = -1; // if offset is disabled ignore offset from taintfile
+      hasOffset = false;
+    }
+
+    std::set<const AbstractLoc *>::const_iterator loc = relevantLocs.begin();
+
+    errs() << relevantLocs.size() << " : " << relevantLocs.size() << "\n";
+    std::set<const ConsElem *> elementsToUntaint;
+    for (; loc != relevantLocs.end(); ++loc) {
+      errs() << "untaintAllSink for:\n\t";
+      (*loc)->dump();
+      if (t_offset >= 0) {
+        offset = fieldIndexToByteOffset(t_offset, &value, *loc);
+        errs() << "offset: " << offset << "\n";
+        hasOffset = true;
+      }
+
+      if (hasOffset) {
+        elementsToUntaint =
+            gatherRelevantConsElems(*loc, offset, numElements, value);
+      } else {
+        for (auto &locs : relevantLocs) {
+          DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
+          for (auto &edge : edges) {
+            const DSNode *n = edge.second.getNode();
+            if (n != NULL) {
+              auto locConstraintsMap = ifa->locConstraintMap.find(n);
+              if (locConstraintsMap != ifa->locConstraintMap.end()) {
+                for (auto &kv : locConstraintsMap->second) {
+                  elementsToUntaint.insert(kv.second);
+                }
+              }
+            }
+          }
+        }
+        auto locConstraintsMap = ifa->locConstraintMap.find(*loc);
+        if (locConstraintsMap != ifa->locConstraintMap.end()) {
+          for (auto &kv : locConstraintsMap->second) {
+            elementsToUntaint.insert(kv.second);
+          }
+        }
+      }
+      errs() << "FOUND " << elementsToUntaint.size()
+             << " elements from the locsForValue\n";
+    }
+
+    errs() << "Number of elements to constrain: " << elementsToUntaint.size()
+           << "\n";
+    for (auto &el : elementsToUntaint) {
+      el->dump(errs());
+      errs() << " : addr " << el << "\n";
+    }
+
+    if (elementsToUntaint.size() == 0) {
+      ifa->setUntainted(kind, value);
+    } else {
+      for (std::set<const ConsElem *>::iterator it = elementsToUntaint.begin(),
+                                                end = elementsToUntaint.end();
+           it != end; ++it) {
+        ifa->kit->addConstraint(kind, *(*it), ifa->kit->lowConstant(),
+                                " ;  [ConsDebugTag-*]  sink location\n");
+        errs() << " ;  [ConsDebugTag-*]  sink location\n";
+      }
+    }
+
+    DenseMap<const Value *, const ConsElem *> valueConsMap =
+        ifa->getOrCreateValueConstraintMap(ctxt);
+    DenseMap<const Value *, const ConsElem *>::iterator vIter =
+        valueConsMap.find(&value);
+    if (vIter != valueConsMap.end()) {
+      const ConsElem *elem = vIter->second;
+      const ConsElem &low = LHConstant::low();
+      LHConstraint c(elem, &low, false);
+      errs() << "  ;  [ConsDebugTag-*]   sink public values\n";
+    }
+  }
+}
+
 std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
     const AbstractLoc *node, unsigned offset, unsigned numElements,
     const Value &val) {
@@ -147,6 +262,8 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
       curElem = ifa->locConstraintMap.find(node);
   std::map<unsigned, const ConsElem *> elemMap;
   std::set<const ConsElem *> relevant;
+  errs() << "curElem == ifa->locConstraintMap.end(): "
+         << (curElem == ifa->locConstraintMap.end() ? "YES" : "NO") << "\n";
   if (curElem == ifa->locConstraintMap.end())
     return relevant;
 
@@ -158,6 +275,13 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
     errs() << "Map size does not match number of elements " << elemMap.size()
            << "\n";
     node->dump();
+
+    // TODO: NEED FURTHER INVESTIGATION
+    // THIS HAS NOT BEEN VERIFIED TO BE CORRECT
+    if (node->isCollapsedNode() && elemMap.size() == 1) {
+      errs() << "node->isCollapsedNode()";
+      relevant.insert(elemMap.begin()->second);
+    }
   }
 
   // Go to other nodes if the type matches & retrieve their elements if exists

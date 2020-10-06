@@ -271,6 +271,9 @@ private:
 
   bool offsetForValue(const Value &value, unsigned *Offset);
 
+  std::set<std::tuple<std::string, int, int>> sinkVariables;
+  std::set<std::tuple<ContextID, Value *, int>> sinkContextValuePairs;
+
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
   DenseMap<const BasicBlock *, std::string> predicateMap;

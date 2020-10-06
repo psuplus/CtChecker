@@ -77,6 +77,46 @@ void Infoflow::doInitialization() {
   // sourceSinkAnalysis = &getAnalysis<>();
   signatureRegistrar = new SignatureRegistrar();
   registerSignatures();
+
+  std::string line;
+  std::ifstream sinklist("sink.txt");
+  while (std::getline(sinklist, line)) {
+    std::tuple<std::string, int, int> ret;
+    // Move any extra whitespace to end
+    std::string::iterator new_end =
+        unique(line.begin(), line.end(), [](const char &x, const char &y) {
+          return x == y and x == ' ';
+        });
+
+    // Remove the extra space
+    line.erase(new_end, line.end());
+
+    // Split up line
+    std::vector<std::string> splits;
+    char delimiter = ' ';
+
+    size_t i = 0;
+    size_t pos = line.find(delimiter);
+
+    while (pos != std::string::npos) {
+      splits.push_back(line.substr(i, pos - i));
+      i = pos + 1;
+      pos = line.find(delimiter, i);
+    }
+    splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
+
+    // Create match/offset pair
+    if (splits.size() == 1) {
+      ret = std::make_tuple(splits[0], -1, -1);
+    } else if (splits.size() == 2) {
+      ret = std::make_tuple(splits[0], std::stoi(splits[1]), -1);
+    } else if (splits.size() == 3) {
+      ret = std::make_tuple(splits[0], std::stoi(splits[1]),
+                            std::stoi(splits[2]));
+    }
+
+    sinkVariables.insert(ret);
+  }
 }
 
 void Infoflow::doFinalization() {
@@ -570,6 +610,9 @@ void Infoflow::processGetElementPtrInstSource(
 
   // If operands are constant taint only that element
   unsigned offset = GEPInstCalculateOffset(gep, locs);
+  if (offset == -1) {
+    return;
+  }
   // errs() << "\nSourceOffset: " << offset << "\n";
 
   // Link Allocation memory location as well incase that is tainted
@@ -679,7 +722,10 @@ unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst *gep,
                                           std::set<const AbstractLoc *> locs) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned offset = 0;
-  if (isa<ArrayType>(T) && gep->getNumIndices() == 2) {
+  if (isa<ArrayType>(T)) {
+    if (!checkGEPOperandsConstant(gep)) {
+      return -1;
+    }
     errs() << "ArrayType:";
     offset = GEPInstCalculateArrayOffset(gep, locs);
   } else if (gep->getNumIndices() == 2) {
@@ -974,7 +1020,7 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
       if (&*ite == V) {
         ret = "Function:";
         ret.append(F->getName());
-        ret.append("Arg:");
+        ret.append("&Arg:");
         ret.append(ite->getName());
         ret.append(delim);
         return ret;
@@ -1387,6 +1433,7 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
       name = stringFromValue(value);
     }
 
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--1\n";
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value));
     summarySourceValueConstraintMap.insert(std::make_pair(&value, &elem));
@@ -1412,9 +1459,14 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
       summarySinkValueConstraintMap.find(&value);
   if (curElem == summarySinkValueConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    StringRef varStr = value.getName();
-    const ConsElem &elem = kit->newVar(value.getName().str() + delim +
-                                       getOriginalLocationConsElem(&value));
+    std::string varStr = value.getName();
+    if (varStr.size() == 0) {
+      raw_string_ostream ss(varStr);
+      ss << value;
+    }
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--2\n";
+    const ConsElem &elem =
+        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
     summarySinkValueConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1447,6 +1499,7 @@ const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
       identifier = stringFromValue(value);
     }
 
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--3\n";
     const ConsElem &elem =
         kit->newVar(identifier + delim + getOriginalLocationConsElem(&value));
     valueMap.insert(std::make_pair(&value, &elem));
@@ -1506,8 +1559,14 @@ Infoflow::getOrCreateVargConsElemSummarySource(const Function &value) {
       summarySourceVargConstraintMap.find(&value);
   if (curElem == summarySourceVargConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    const ConsElem &elem = kit->newVar(value.getName().str() + delim +
-                                       getOriginalLocationConsElem(&value));
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--4\n";
+    std::string varStr = value.getName();
+    if (varStr.size() == 0) {
+      raw_string_ostream ss(varStr);
+      ss << value;
+    }
+    const ConsElem &elem =
+        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
     summarySourceVargConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1531,8 +1590,14 @@ Infoflow::getOrCreateVargConsElemSummarySink(const Function &value) {
       summarySinkVargConstraintMap.find(&value);
   if (curElem == summarySinkVargConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    const ConsElem &elem = kit->newVar(value.getName().str() + delim +
-                                       getOriginalLocationConsElem(&value));
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--5\n";
+    std::string varStr = value.getName();
+    if (varStr.size() == 0) {
+      raw_string_ostream ss(varStr);
+      ss << value;
+    }
+    const ConsElem &elem =
+        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
     summarySinkVargConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1557,8 +1622,14 @@ const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
   DenseMap<const Function *, const ConsElem *>::iterator curElem =
       valueMap.find(&value);
   if (curElem == valueMap.end()) {
-    const ConsElem &elem = kit->newVar(value.getName().str() + delim +
-                                       getOriginalLocationConsElem(&value));
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--6\n";
+    std::string varStr = value.getName();
+    if (varStr.size() == 0) {
+      raw_string_ostream ss(varStr);
+      ss << value;
+    }
+    const ConsElem &elem =
+        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
     valueMap.insert(std::make_pair(&value, &elem));
 
     // Hook up the summaries for non-context sensitive interface
@@ -1621,6 +1692,7 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
            << " constraint variable(s) for node of size ";
     errs() << loc.getSize() << "\n";
     for (unsigned offset = 0; offset < numElements; offset++) {
+      errs() << "In context: " << this->getCurrentContext() << " new_Var--7\n";
       const ConsElem &elem =
           kit->newVar(name + ": elem " + std::to_string(offset) + "::" + delim +
                       getOriginalLocationConsElem(v));
@@ -1640,6 +1712,7 @@ Infoflow::createConsElemFromStruct(const AbstractLoc &loc, StructType *s) {
   const DataLayout &TD = loc.getParentGraph()->getDataLayout();
   const StructLayout *SL = TD.getStructLayout(s);
   std::string name = getCaption(&loc, NULL);
+  errs() << name << "\n";
   int index = 0;
   for (Type::subtype_iterator it = s->element_begin(); it != s->element_end();
        ++it, ++index) {
@@ -1650,8 +1723,11 @@ Infoflow::createConsElemFromStruct(const AbstractLoc &loc, StructType *s) {
     std::string varDesc = name + label;
     std::set<const Value *> vSet = invertedLocConstraintMap[&loc];
     for (const Value *v : vSet) {
+      errs() << "This node contains value: ";
+      v->dump();
       varDesc.append(getOriginalLocationConsElem(v));
     }
+    errs() << "In context: " << this->getCurrentContext() << " new_Var--8\n";
     const ConsElem &elem = kit->newVar(varDesc);
     elemMap.insert(std::make_pair(start, &elem));
   }
@@ -1676,6 +1752,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       for (const Value *v : vSet) {
         desc.append(getOriginalLocationConsElem(v));
       }
+      errs() << "In context: " << this->getCurrentContext() << " new_Var--9\n";
       const ConsElem &elem = kit->newVar(desc);
       locConstraintMap[&loc].insert(std::make_pair(offset, &elem));
     }
@@ -1729,7 +1806,7 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
 
     kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*it).second,
                        " ;  [ConsDebugTag-14]  \n");
-    errs() << " ;  [ConsDebugTag-14]  ";
+    errs() << " ;  [ConsDebugTag-14*]  ";
     errs() << "\n";
     // TODO add debug info
   }
@@ -1938,16 +2015,24 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
   // pc
   imp.addSourceValue(*inst.getParent());
   // operands
+
+  errs() << "===== operandsAndPCtoValue() =====\n";
   for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
        op != end; ++op) {
     exp.addSourceValue(*op->get());
+    errs() << "adding to sourceValue: ";
+    (*op->get()).dump();
   }
   // to value
   exp.addSinkValue(inst);
   imp.addSinkValue(inst);
 
+  errs() << "adding to sinkValue ";
+  (inst).dump();
+
   flows.push_back(exp);
   flows.push_back(imp);
+  errs() << "===== operandsAndPCtoValue() - end =====\n";
 }
 
 void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
@@ -2405,6 +2490,10 @@ void Infoflow::constrainCallInst(const CallInst &inst, bool analyzeCallees,
                                  Flows &flows) {
   // TODO: filter out and handle Intrinsics here instead of deferring
   // to the Signature mechanism...
+
+  errs() << "WORKING ON CALLINST: ";
+  inst.dump();
+
   if (const IntrinsicInst *intr = dyn_cast<IntrinsicInst>(&inst)) {
     return constrainIntrinsic(*intr, flows);
   } else {
@@ -2443,16 +2532,54 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
   // Invoke the analysis on callees, if we're actually generating constraints
   // XXX HACK if we're not doing analysis on callees, we need to add any
   // signature flows here
+
+  errs() << "working on callsite and \n\t" << (analyzeCallees ? "" : "not ")
+         << "analyzing callees\n";
+
   if (analyzeCallees) {
+    const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
+    errs() << "The CallInst is: \n\t";
+    callinst->dump();
+    Function *F = callinst->getCalledFunction();
+
+    for (auto tuple : sinkVariables) {
+      std::string fn_name;
+      int arg_no = -1, t_offset = -1;
+      std::tie(fn_name, arg_no, t_offset) = tuple;
+      if (F->getName().equals(fn_name)) {
+        errs() << "Found function match: " << F->getName() << "\n";
+        User::const_op_iterator op_i = cs.arg_begin();
+        int arg_idx = 0;
+        for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
+          if (arg_no == -1 || arg_no == arg_idx) {
+            Value *value = (*op_i).get();
+            std::tuple<ContextID, Value *, int> valueOffsetPair =
+                std::make_tuple(this->getCurrentContext(), value, t_offset);
+            sinkContextValuePairs.insert(valueOffsetPair);
+            errs() << "inserted: ";
+            value->dump();
+            errs() << "at offset: " << t_offset << "\n";
+          }
+        }
+      }
+    }
+
+    errs() << "============ getCallResult(cs, Unit()) ============\n";
     this->getCallResult(cs, Unit());
+    errs() << "============ getCallResult(cs, Unit()) - end ============\n";
+
   } else if (usesExternalSignature(cs)) {
+    errs() << "usesExternalSignature(cs)\n";
     Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
     flows.insert(flows.end(), recs.begin(), recs.end());
   }
 
+  errs() << "============ invokableCode(cs) ============\n";
   std::set<std::pair<const Function *, const ContextID>> callees =
       this->invokableCode(cs);
+  errs() << "============ invokableCode(cs) - end ============\n";
   // Do constraints for each callee
+  errs() << "callees' size: " << callees.size() << "\n";
   for (std::set<std::pair<const Function *, const ContextID>>::iterator
            callee = callees.begin(),
            end = callees.end();

@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// An analysis for identifying vulnerable branches.
+// A pass to generate information flow constraints.
 //
 //===----------------------------------------------------------------------===//
 
@@ -30,7 +30,7 @@ namespace deps {
 
 static RegisterPass<ConstraintGen>
     X("constraint-generation",
-      "An analysis for identifying vulnerable branches");
+      "A pass to generate information flow constraints.");
 
 char ConstraintGen::ID;
 
@@ -43,7 +43,7 @@ bool ConstraintGen::runOnModule(Module &M) {
   }
 
   // Default loads from taint.txt
-  parser.loadTaintFile();
+  // parser.loadTaintFile();
 
   // Default loads from untrust.txt
   parser.loadUntrustFile();
@@ -53,112 +53,79 @@ bool ConstraintGen::runOnModule(Module &M) {
   while (std::getline(fwhitelist, line)) {
     std::tuple<std::string, int, std::string> match =
         ifa->parseTaintString(line);
-    // ifa->removeConstraint("taint", match);
     ifa->removeConstraint("untrust", match);
   }
 
   parser.untaintAllSink("untrust");
-  // parser.untaintAllSink("taint");
 
-  std::set<std::string> kinds;
-  kinds.insert("taint");
-  InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
-  std::set<const Value *> tainted = soln->getAllTaintValues();
+  // errs() << "\n#--------------Results------------------\n";
+  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F)
+  // { errs() << "Check function match: " << F->getName() << "\n"; if
+  // (sinks.find(F->getName()) != sinks.end()) {
+  //   errs() << "Found function match: " << F->getName() << "\n";
+  //   for (Function::const_arg_iterator arg = F->arg_begin();
+  //        arg != F->arg_end(); ++arg) {
+  //     const Value *v = arg;
 
-  kinds.clear();
-  kinds.insert("untrust");
-  soln = ifa->leastSolution(kinds, false, true);
-  std::set<const Value *> untrusted = soln->getAllTaintValues();
+  //     errs() << "\tChecking value: " << v->getName() << " : " << v << "\n";
+  //     DenseMap<ContextID, DenseMap<const Value *, const ConsElem
+  //     *>>::iterator
+  //         ctxtIter = ifa->valueConstraintMap.begin();
+  //     for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
 
-  // std::set<std::string> sinks;
-  // std::ifstream sinklist("sink.txt");
-  // while (std::getline(sinklist, line)) {
-  //   sinks.insert(line);
+  //       errs() << "\t\tIn context: " << ctxtIter->first << "\n";
+  //       DenseMap<const Value *, const ConsElem *> valueConsMap =
+  //           ctxtIter->second;
+  //       for (auto ii = valueConsMap.begin(); ii != valueConsMap.end();
+  //       ii++) {
+  //         // ii->getFirst()->dump();
+  //         errs() << ii->getFirst() << " : " << ii->getFirst()->getName()
+  //                << "\n";
+  //       }
+  //       errs() << "\t\tContext analysis: " << ctxtIter->first << "\nend\n";
+  //       DenseMap<const Value *, const ConsElem *>::iterator vIter =
+  //           valueConsMap.find(v);
+  //       if (vIter != valueConsMap.end()) {
+  //         const ConsElem *elem = vIter->second;
+  //         const ConsElem &low = LHConstant::low();
+  //         LHConstraint c(elem, &low, false);
+  //         errs() << "  ;  [ConsDebugTag-*]   sink public values\n";
+  //       }
+  //     }
+  //   }
   // }
 
-  // Variables to gather branch statistics
-  unsigned long number_branches = 0;
-  unsigned long tainted_branches = 0;
-  unsigned long number_conditional = 0;
-  // iterating over all branches
-  errs() << "\n#--------------Results------------------\n";
-  for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
-    // errs() << "Check function match: " << F->getName() << "\n";
-    // if (sinks.find(F->getName()) != sinks.end()) {
-    //   errs() << "Found function match: " << F->getName() << "\n";
-    //   for (Function::const_arg_iterator arg = F->arg_begin();
-    //        arg != F->arg_end(); ++arg) {
-    //     const Value *v = arg;
-
-    //     errs() << "\tChecking value: " << v->getName() << " : " << v << "\n";
-    //     DenseMap<ContextID, DenseMap<const Value *, const ConsElem
-    //     *>>::iterator
-    //         ctxtIter = ifa->valueConstraintMap.begin();
-    //     for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
-
-    //       errs() << "\t\tIn context: " << ctxtIter->first << "\n";
-    //       DenseMap<const Value *, const ConsElem *> valueConsMap =
-    //           ctxtIter->second;
-    //       for (auto ii = valueConsMap.begin(); ii != valueConsMap.end();
-    //       ii++) {
-    //         // ii->getFirst()->dump();
-    //         errs() << ii->getFirst() << " : " << ii->getFirst()->getName()
-    //                << "\n";
-    //       }
-    //       errs() << "\t\tContext analysis: " << ctxtIter->first << "\nend\n";
-    //       DenseMap<const Value *, const ConsElem *>::iterator vIter =
-    //           valueConsMap.find(v);
-    //       if (vIter != valueConsMap.end()) {
-    //         const ConsElem *elem = vIter->second;
-    //         const ConsElem &low = LHConstant::low();
-    //         LHConstraint c(elem, &low, false);
-    //         errs() << "  ;  [ConsDebugTag-*]   sink public values\n";
-    //       }
-    //     }
-    //   }
-    // }
-    for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E; ++I)
-      if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
-        const MDLocation *loc = bi->getDebugLoc();
-        number_branches++;
-        if (bi->isConditional())
-          number_conditional++;
-        if (bi->isConditional() && loc) {
-          const Value *v = bi->getCondition();
-          DenseMap<ContextID,
-                   DenseMap<const Value *, const ConsElem *>>::iterator
-              ctxtIter = ifa->valueConstraintMap.begin();
-          for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
-            DenseMap<const Value *, const ConsElem *> valueConsMap =
-                ctxtIter->second;
-            DenseMap<const Value *, const ConsElem *>::iterator vIter =
-                valueConsMap.find(v);
-            if (vIter != valueConsMap.end()) {
-              const ConsElem *elem = vIter->second;
-              const ConsElem &low = LHConstant::low();
-              LHConstraint c(elem, &low, false);
-              errs() << "  ;  [ConsDebugTag-*]   public values\n";
-            }
-          }
-        }
-      }
-  }
-
-  // Dump statistics
-  errs() << "\n#--------------Statistics----------------\n";
-  errs() << ":: Tainted Branches: " << tainted_branches << "\n";
-  errs() << ":: Branch Instructions: " << number_branches << "\n";
-  errs() << ":: Conditional Branches: " << number_conditional << "\n";
-  if (number_branches > 0) {
-    double tainted_percentage =
-        tainted_branches * 1.0 / number_branches * 100.0;
-    errs() << ":: Vulnerable Branches: "
-           << format("%2.2f%% [%d/%d]\n", tainted_branches, number_branches,
-                     tainted_percentage);
-  }
+  //   for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
+  //   ++I)
+  //     if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
+  //       const MDLocation *loc = bi->getDebugLoc();
+  //       number_branches++;
+  //       if (bi->isConditional())
+  //         number_conditional++;
+  //       if (bi->isConditional() && loc) {
+  //         const Value *v = bi->getCondition();
+  //         DenseMap<ContextID,
+  //                  DenseMap<const Value *, const ConsElem *>>::iterator
+  //             ctxtIter = ifa->valueConstraintMap.begin();
+  //         for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
+  //           DenseMap<const Value *, const ConsElem *> valueConsMap =
+  //               ctxtIter->second;
+  //           DenseMap<const Value *, const ConsElem *>::iterator vIter =
+  //               valueConsMap.find(v);
+  //           if (vIter != valueConsMap.end()) {
+  //             const ConsElem *elem = vIter->second;
+  //             const ConsElem &low = LHConstant::low();
+  //             LHConstraint c(elem, &low, false);
+  //             errs() << "  ;  [ConsDebugTag-*]   public values\n";
+  //           }
+  //         }
+  //       }
+  //     }
+  // }
 
   // errs() << "\n#--------------Cache Side Channel------------------\n";
-  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F)
+  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd;
+  // ++F)
   // {
   //   for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
   //   ++I)

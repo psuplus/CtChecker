@@ -51,6 +51,8 @@ LHConstraintKit::~LHConstraintKit() {
 const ConsVar &LHConstraintKit::newVar(const std::string description) {
   LHConsVar *var = new LHConsVar(description);
   vars.push_back(var);
+  llvm::errs() << "A new ConsElem is created for [" << description
+               << "] at address [" << var << "]\n";
   return *var;
 }
 

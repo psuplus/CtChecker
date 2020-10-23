@@ -72,6 +72,24 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       relevantLocs.insert(rl);
     }
   }
+
+#if 0
+  errs() << "\n --------- locs --------- \n";
+  for (auto &l : locs) {
+    l->dump();
+    errs() << " --------- \n";
+  }
+  errs() << " --------- rlocs --------- \n";
+  for (auto &rl : rlocs) {
+    rl->dump();
+    errs() << " --------- \n";
+  }
+  errs() << " locs size : " << locs.size() << "\n";
+  errs() << " rlocs size : " << rlocs.size() << "\n";
+  errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
+  errs() << " --------- end --------- \n\n";
+#endif
+
   unsigned offset = 0;
   // errs() << "Trying to get offset.. for  "<< s << "\n";
   bool hasOffset = ifa->offsetForValue(value, &offset);
@@ -99,9 +117,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
     }
 
     if (hasOffset) {
-      elementsToConstrain =
+      std::set<const ConsElem *> rel =
           gatherRelevantConsElems(*loc, offset, numElements, value);
-
+      elementsToConstrain.insert(rel.begin(), rel.end());
     } else {
       for (auto &locs : relevantLocs) {
         DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
@@ -140,6 +158,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
 void TaintAnalysisBase::untaintAllSink(std::string kind) {
   // process the sink functions' arguments
+  errs() << "\n ========= Untaint Sink Functions ========= \n";
   for (auto ctxValuePair : ifa->sinkContextValuePairs) {
     ContextID ctxt;
     Value *v;
@@ -147,16 +166,14 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     std::tie(ctxt, v, t_offset) = ctxValuePair;
     Value &value = *v;
 
-    errs() << "untaintSink for:\n\t";
+    errs() << "\tstart untainting \n\t";
     v->dump();
-    errs() << "at offset: " << t_offset << "\n";
+    errs() << "\tat offset: " << t_offset << "\n";
 
     const std::set<const AbstractLoc *> &locs = ifa->locsForValue(value);
     const std::set<const AbstractLoc *> &rlocs =
         ifa->reachableLocsForValue(value);
-    errs() << "locs size : " << locs.size() << "\n";
-    errs() << "rlocs size : " << rlocs.size() << "\n";
-    if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
+    if ((locs.size() == 0 && rlocs.size() == 0)) {
       ifa->setUntainted(kind, value);
     }
 
@@ -167,14 +184,30 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
         relevantLocs.insert(rl);
       }
     }
-    errs() << "relevantLocs size : " << relevantLocs.size() << "\n";
+
+#if 1
+    errs() << "\n --------- locs --------- \n";
+    for (auto &l : locs) {
+      l->dump();
+      errs() << " --------- \n";
+    }
+    errs() << " --------- rlocs --------- \n";
+    for (auto &rl : rlocs) {
+      rl->dump();
+      errs() << " --------- \n";
+    }
+    errs() << " locs size : " << locs.size() << "\n";
+    errs() << " rlocs size : " << rlocs.size() << "\n";
+    errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
+    errs() << " --------- end --------- \n\n";
+#endif
 
     unsigned offset = 0;
     bool hasOffset = ifa->offsetForValue(value, &offset);
     unsigned numElements = getNumElements(value);
-    errs() << "It has " << numElements << " elements.\n";
-    errs() << "It has the indexed offset: " << (hasOffset ? "YES" : "NO")
-           << "\n";
+    errs() << "This value has " << numElements << " elements.\n";
+    errs() << "Has offset? " << (hasOffset ? "YES" : "NO")
+           << ", and the offset is: " << offset << "\n";
 
     if (!ifa->offset_used) {
       t_offset = -1; // if offset is disabled ignore offset from taintfile
@@ -182,21 +215,20 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     }
 
     std::set<const AbstractLoc *>::const_iterator loc = relevantLocs.begin();
-
-    errs() << relevantLocs.size() << " : " << relevantLocs.size() << "\n";
     std::set<const ConsElem *> elementsToUntaint;
     for (; loc != relevantLocs.end(); ++loc) {
-      errs() << "untaintAllSink for:\n\t";
+      errs() << "\nUntaint node at:\n";
       (*loc)->dump();
       if (t_offset >= 0) {
         offset = fieldIndexToByteOffset(t_offset, &value, *loc);
-        errs() << "offset: " << offset << "\n";
+        errs() << "\tThe byte offset is: " << offset << "\n";
         hasOffset = true;
       }
 
       if (hasOffset) {
-        elementsToUntaint =
+        std::set<const ConsElem *> rel =
             gatherRelevantConsElems(*loc, offset, numElements, value);
+        elementsToUntaint.insert(rel.begin(), rel.end());
       } else {
         for (auto &locs : relevantLocs) {
           DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
@@ -212,9 +244,9 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
             }
           }
         }
-        auto locConstraintsMap = ifa->locConstraintMap.find(*loc);
-        if (locConstraintsMap != ifa->locConstraintMap.end()) {
-          for (auto &kv : locConstraintsMap->second) {
+        auto offsetConsElemMap = ifa->locConstraintMap.find(*loc);
+        if (offsetConsElemMap != ifa->locConstraintMap.end()) {
+          for (auto &kv : offsetConsElemMap->second) {
             elementsToUntaint.insert(kv.second);
           }
         }
@@ -233,24 +265,13 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     if (elementsToUntaint.size() == 0) {
       ifa->setUntainted(kind, value);
     } else {
-      for (std::set<const ConsElem *>::iterator it = elementsToUntaint.begin(),
-                                                end = elementsToUntaint.end();
-           it != end; ++it) {
-        ifa->kit->addConstraint(kind, *(*it), ifa->kit->lowConstant(),
-                                " ;  [ConsDebugTag-*]  sink location\n");
-        errs() << " ;  [ConsDebugTag-*]  sink location\n";
+      std::string debugTag = " ;  [ConsDebugTag-*]  sink location\n";
+      const ConsElem *lowConstant = &(ifa->kit->lowConstant());
+      std::set<const ConsElem *>::iterator it = elementsToUntaint.begin();
+      for (; it != elementsToUntaint.end(); ++it) {
+        ifa->kit->addConstraint(kind, *(*it), *lowConstant, debugTag);
+        errs() << debugTag;
       }
-    }
-
-    DenseMap<const Value *, const ConsElem *> valueConsMap =
-        ifa->getOrCreateValueConstraintMap(ctxt);
-    DenseMap<const Value *, const ConsElem *>::iterator vIter =
-        valueConsMap.find(&value);
-    if (vIter != valueConsMap.end()) {
-      const ConsElem *elem = vIter->second;
-      const ConsElem &low = LHConstant::low();
-      LHConstraint c(elem, &low, false);
-      errs() << "  ;  [ConsDebugTag-*]   sink public values\n";
     }
   }
 }
@@ -262,25 +283,23 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
       curElem = ifa->locConstraintMap.find(node);
   std::map<unsigned, const ConsElem *> elemMap;
   std::set<const ConsElem *> relevant;
-  errs() << "curElem == ifa->locConstraintMap.end(): "
-         << (curElem == ifa->locConstraintMap.end() ? "YES" : "NO") << "\n";
+
   if (curElem == ifa->locConstraintMap.end())
     return relevant;
 
   elemMap = curElem->second;
 
+  errs() << "Map size [" << elemMap.size() << "] <--> number of elements ["
+         << numElements << "].\n";
   if (numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
   } else {
-    errs() << "Map size does not match number of elements " << elemMap.size()
-           << "\n";
-    node->dump();
-
-    // TODO: NEED FURTHER INVESTIGATION
-    // THIS HAS NOT BEEN VERIFIED TO BE CORRECT
-    if (node->isCollapsedNode() && elemMap.size() == 1) {
-      errs() << "node->isCollapsedNode()";
-      relevant.insert(elemMap.begin()->second);
+    errs() << "Adding ConsElem from elemMap to relevant set: \n";
+    for (auto e : elemMap) {
+      errs() << "\toffset: " << e.first << ", element [";
+      e.second->dump(errs());
+      errs() << "] addr [" << e.second << "] added.\n";
+      relevant.insert(e.second);
     }
   }
 

@@ -123,6 +123,20 @@ void Infoflow::doFinalization() {
   // delete signatureRegistrar;
   // now deleted in destructor, because we need the registrar
   // for computing propagatesTaint
+
+// turn on to print DSGraph for each context
+#if 0
+  DenseSet<DSGraph *> DSGSet;
+  int index = 1;
+  for (auto loc : locConstraintMap) {
+    DSGraph *g = loc.first->getParentGraph();
+    if (DSGSet.find(g) == DSGSet.end()) {
+      std::string filename = "graph-" + std::to_string(index++);
+      g->writeGraphToFile(errs(), filename);
+      DSGSet.insert(g);
+    }
+  }
+#endif
 }
 
 void Infoflow::registerSignatures() {
@@ -1728,6 +1742,7 @@ Infoflow::createConsElemFromStruct(const AbstractLoc &loc, StructType *s) {
       varDesc.append(getOriginalLocationConsElem(v));
     }
     errs() << "In context: " << this->getCurrentContext() << " new_Var--8\n";
+    errs() << "The offset is: " << start << "\n";
     const ConsElem &elem = kit->newVar(varDesc);
     elemMap.insert(std::make_pair(start, &elem));
   }
@@ -1759,19 +1774,19 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
     DSNode::TyMapTy child_loc_types{loc.type_begin(), loc.type_end()};
     DSNode::LinkMapTy links{loc.edge_begin(), loc.edge_end()};
+    errs() << "links.size() = " << links.size() << "\n";
 
     for (auto l = loc.edge_begin(), end = loc.edge_end(); l != end; ++l) {
       const AbstractLoc *node = l->second.getNode();
       if (node != NULL && child_loc_types.size() > 0) {
         unsigned type_set_size = child_loc_types[l->first]->size();
         errs() << "EDGE: ";
-        errs() << "[" << l->first << ": tymap-size " << type_set_size << "]:";
+        errs() << "[" << l->first << ": tymap-size " << type_set_size << "]: ";
         if (type_set_size == 1) {
           Type *sub_type = *child_loc_types[l->first]->begin();
           if (sub_type->isPointerTy()) {
-            Type *sub =
-                sub_type
-                    ->subtypes()[0]; // If the types are overlapping, uh don't
+            // If the types are overlapping, uh don't
+            Type *sub = sub_type->subtypes()[0];
             sub->dump();
             if (StructType *st = dyn_cast<StructType>(sub)) {
               if (locConstraintMap.find(node) == locConstraintMap.end() &&

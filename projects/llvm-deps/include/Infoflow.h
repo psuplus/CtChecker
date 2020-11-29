@@ -35,6 +35,7 @@
 
 #include <deque>
 #include <map>
+#include <regex>
 #include <set>
 #include <tuple>
 #include <utility>
@@ -258,6 +259,8 @@ private:
 
   SignatureRegistrar *signatureRegistrar;
 
+  Flows flowVector;
+
   FlowRecord currentContextFlowRecord(bool implicit) const;
 
   const std::set<const AbstractLoc *> &locsForValue(const Value &value) const;
@@ -272,7 +275,7 @@ private:
   bool offsetForValue(const Value &value, unsigned *Offset);
 
   std::set<std::tuple<std::string, int, int>> sinkVariables;
-  std::set<std::tuple<ContextID, Value *, int>> sinkContextValuePairs;
+  std::set<std::tuple<ContextID, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
@@ -373,6 +376,7 @@ private:
                                        const StructType *);
 
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
+  std::tuple<std::string, int, int> parseSinkString(std::string line);
   static int
   matchValueAndParsedString(const Value &value, std::string kind,
                             std::tuple<std::string, int, std::string> match);

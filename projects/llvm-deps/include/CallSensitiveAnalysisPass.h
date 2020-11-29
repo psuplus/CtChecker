@@ -87,11 +87,14 @@ public:
 
     // Fast-path direct calls
     if (const Function *F = cs.getCalledFunction()) {
-        if (!F->isDeclaration()) {
-          return this->getAnalysisResult(AUnitType(newContext, *F), input);
-        } else {
-          return signatureForExternalCall(cs, input);
-        }
+      if (!F->isDeclaration()) {
+        errs() << "F-implementation\n";
+        return this->getAnalysisResult(AUnitType(newContext, *F), input);
+      } else {
+        errs() << "F-declaration\n";
+        errs() << F->getName() << "\n";
+        return signatureForExternalCall(cs, input);
+      }
     }
 
     // FIXME: Why does this need explicit instantiation?

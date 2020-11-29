@@ -81,40 +81,7 @@ void Infoflow::doInitialization() {
   std::string line;
   std::ifstream sinklist("sink.txt");
   while (std::getline(sinklist, line)) {
-    std::tuple<std::string, int, int> ret;
-    // Move any extra whitespace to end
-    std::string::iterator new_end =
-        unique(line.begin(), line.end(), [](const char &x, const char &y) {
-          return x == y and x == ' ';
-        });
-
-    // Remove the extra space
-    line.erase(new_end, line.end());
-
-    // Split up line
-    std::vector<std::string> splits;
-    char delimiter = ' ';
-
-    size_t i = 0;
-    size_t pos = line.find(delimiter);
-
-    while (pos != std::string::npos) {
-      splits.push_back(line.substr(i, pos - i));
-      i = pos + 1;
-      pos = line.find(delimiter, i);
-    }
-    splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
-
-    // Create match/offset pair
-    if (splits.size() == 1) {
-      ret = std::make_tuple(splits[0], -1, -1);
-    } else if (splits.size() == 2) {
-      ret = std::make_tuple(splits[0], std::stoi(splits[1]), -1);
-    } else if (splits.size() == 3) {
-      ret = std::make_tuple(splits[0], std::stoi(splits[1]),
-                            std::stoi(splits[2]));
-    }
-
+    std::tuple<std::string, int, int> ret = parseSinkString(line);
     sinkVariables.insert(ret);
   }
 }
@@ -237,8 +204,12 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
     for (FlowRecord::value_iterator source = record.source_value_begin(),
                                     end = record.source_value_end();
          source != end; ++source) {
-      // errs() << "Value: " << stringFromValue(**source);
-      // errs() << "\n--$ "; (*source)->dump();
+      // errs() << "Value: ";
+      // if (isa<BasicBlock>(*source))
+      //   errs() << "BB: " << (*source)->getName() << "\n";
+      // else
+      //   (*source)->dump();
+      // errs() << "--$\n";
       const ConsElem *elem =
           &getOrCreateConsElem(record.sourceContext(), **source);
       if (!DepsDropAtSink || !sourceSinkAnalysis->valueIsSink(**source)) {
@@ -451,6 +422,12 @@ void Infoflow::constrainSinkMemoryLocations(const FlowRecord &record,
   bool implicit = record.isImplicit();
 
   std::set<const AbstractLoc *> SinkLocs;
+  // if (&source)
+  //   source.dump(errs());
+  // errs() << "\n";
+  // if (&sinkSource)
+  //   sinkSource.dump(errs());
+  // errs() << "\n";
   constrainDirectSinkLocations(record, SinkLocs, source, sinkSource, regFlow,
                                sinkFlow);
   constrainReachSinkLocations(record, SinkLocs, source, sinkSource, regFlow,
@@ -460,6 +437,7 @@ void Infoflow::constrainSinkMemoryLocations(const FlowRecord &record,
   for (std::set<const AbstractLoc *>::iterator loc = SinkLocs.begin(),
                                                end = SinkLocs.end();
        loc != end; ++loc) {
+    // errs() << "reg: " << regFlow << ", sink: " << sinkFlow << "\n";
     if (regFlow)
       putOrConstrainConsElem(implicit, false, **loc, source);
     if (sinkFlow)
@@ -477,6 +455,11 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
                                   end = record.sink_directptr_end();
        sink != end; ++sink) {
     const std::set<const AbstractLoc *> &locs = locsForValue(**sink);
+    // errs() << "THIS IS SINK: ";
+    // (*sink)->dump();
+    // for (auto loc : locs) {
+    //   loc->dump();
+    // }
     if (isa<GetElementPtrInst>(*sink) && offset_used) {
       errs() << "DSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
       if (regFlow)
@@ -540,6 +523,7 @@ void Infoflow::processGetElementPtrInstSink(
   errs() << "[Sink:] " << stringFromValue(*value) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
+  T->dump();
   unsigned numElements = 0;
   if (isa<ArrayType>(T))
     numElements = GEPInstCalculateNumberElements(gep);
@@ -561,27 +545,36 @@ void Infoflow::processGetElementPtrInstSink(
   bool structTy = false;
   const StructType *s = dyn_cast<StructType>(gep->getSourceElementType());
   if (s != NULL) {
+    s->dump();
     errs() << "::IS STRUCT TY::";
     structTy = true;
   }
   // const Value * allocValue = getAllocationValue(gep);
   AbstractLocSet structPtrLocs = getPointedToAbstractLocs(gep);
+  // errs() << "=locs=\n" << structPtrLocs.size() << "\n";
+  // for (std::set<const AbstractLoc *>::iterator loc = structPtrLocs.begin(),
+  //                                              end = structPtrLocs.end();
+  //      loc != end; ++loc) {
+  //   if (*loc) {
+  //     (*loc)->dump();
+  //   }
+  //   errs() << "=locs=\n";
+  // }
 
   AbstractLocSet toConstrain{locs.begin(), locs.end()};
   toConstrain.insert(structPtrLocs.begin(), structPtrLocs.end());
   for (std::set<const AbstractLoc *>::iterator loc = toConstrain.begin(),
                                                end = toConstrain.end();
        loc != end; ++loc) {
-    if (*loc == NULL) {
-      ++loc;
+    if (*loc) {
+      errs() << "Tainting at offset: " << offset << "\n";
+      (*loc)->dump();
+      // Put additional Copy elements here and reverse the order of the copy
+      if (structTy)
+        putOrConstrainConsElemStruct(implicit, sink, **loc, lub, offset, value);
+
+      putOrConstrainConsElem(implicit, sink, **loc, lub, offset, numElements);
     }
-    errs() << "Tainting at offset: " << offset << "\n";
-
-    // Put additional Copy elements here and reverse the order of the copy
-    if (structTy)
-      putOrConstrainConsElemStruct(implicit, sink, **loc, lub, offset, value);
-
-    putOrConstrainConsElem(implicit, sink, **loc, lub, offset, numElements);
   }
 }
 
@@ -848,16 +841,17 @@ bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst *gep) {
 
 const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input) {
-  std::vector<FlowRecord> flowRecords =
-      signatureRegistrar->process(this->getCurrentContext(), cs);
+  Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
 
   // For each flow record returned by the signature, update the constraint sets
-  for (std::vector<FlowRecord>::iterator rec = flowRecords.begin(),
-                                         rend = flowRecords.end();
-       rec != rend; ++rec) {
-    constrainFlowRecord(*rec);
+  for (Flows::iterator r = recs.begin(), e = recs.end(); r != e; ++r) {
+    if (!(*r).isImplicit()) {
+      (*r).dump();
+      // constrainFlowRecord(*r);
+    }
   }
 
+  flowVector.insert(flowVector.end(), recs.begin(), recs.end());
   return bottomOutput();
 }
 
@@ -1687,11 +1681,18 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
                                    const Value *v, bool force) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator
       curElem = locConstraintMap.find(&loc);
+  errs() << " getOrCreateConsElemTyped() for value: ";
+  if (v) {
+    v->dump();
+  }
   if (curElem == locConstraintMap.end() || force) {
+    errs() << " curElem == locConstraintMap.end() || force\n";
     std::string name = getCaption(&loc, NULL);
-
+    errs() << name << "\n";
+    loc.dump();
     if (v != NULL && !loc.isNodeCompletelyFolded()) {
       const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
+      gep->dump();
       if (StructType *s = dyn_cast<StructType>(gep->getSourceElementType())) {
         locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
         return locConstraintMap[&loc];
@@ -1716,6 +1717,14 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
 
     return locConstraintMap[&loc];
   } else {
+    errs() << " curElem != locConstraintMap.end() && !force\n";
+    errs() << getCaption(&loc, NULL) << "\n";
+    loc.dump();
+    for (auto e : curElem->second) {
+      errs() << e.first << " : ";
+      e.second->dump(errs());
+      errs() << " at addr [" << e.second << "]\n";
+    }
     return (curElem->second);
   }
 }
@@ -1757,19 +1766,58 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
   if (curElem == locConstraintMap.end()) {
     errs() << "Creating ConsElem Map for :";
     loc.dump();
-    std::string name = getCaption(&loc, NULL);
-    unsigned size = 1;
-    // errs() << "Created " << size << " constraint variable(s)...\n";
-    for (unsigned offset = 0; offset < size; offset++) {
-      std::string desc =
-          name + ": elem " + std::to_string(offset) + ":default:||";
-      std::set<const Value *> vSet = invertedLocConstraintMap[&loc];
-      for (const Value *v : vSet) {
-        desc.append(getOriginalLocationConsElem(v));
+
+    // TODO: Is this scalable?
+    //       And, is this safe?
+    bool createFieldSensitiveElementMap = false;
+    StructType *finalType = nullptr;
+
+    DSGraph *G = loc.getParentGraph();
+    DSGraph::node_const_iterator node = G->node_begin();
+    for (; node != G->node_end(); node++) {
+      DSNode::const_edge_iterator edge = node->edge_begin();
+      for (; edge != node->edge_end(); edge++) {
+        if (edge->second.getNode() == &loc) {
+          errs() << "---\n";
+          node->dump();
+          DSNode::TyMapTy types{node->type_begin(), node->type_end()};
+          errs() << "---++---\n";
+          errs() << types[edge->first] << "\n";
+          if (types[edge->first] && types[edge->first]->size() == 1) {
+            Type *t = *types[edge->first]->begin();
+            t->dump();
+            if (t->isPointerTy()) {
+              Type *sub = t->subtypes()[0];
+              sub->dump();
+              if (finalType) {
+                if (dyn_cast<StructType>(sub) != finalType) {
+                  createFieldSensitiveElementMap = false;
+                }
+              } else {
+                if (dyn_cast<StructType>(sub) &&
+                    !dyn_cast<StructType>(sub)->isOpaque()) {
+                  finalType = dyn_cast<StructType>(sub);
+                  createFieldSensitiveElementMap = true;
+                }
+              }
+            }
+          }
+          errs() << "---\n";
+        }
       }
+    }
+
+    if (createFieldSensitiveElementMap) {
+      locConstraintMap[&loc] = createConsElemFromStruct(loc, finalType);
+    } else {
+      std::string desc = getCaption(&loc, NULL) + ": elem 0:default:||";
+      // std::set<const Value *> vSet = invertedLocConstraintMap[&loc];
+      // for (const Value *v : vSet) {
+      //   desc.append(getOriginalLocationConsElem(v));
+      // }
       errs() << "In context: " << this->getCurrentContext() << " new_Var--9\n";
       const ConsElem &elem = kit->newVar(desc);
-      locConstraintMap[&loc].insert(std::make_pair(offset, &elem));
+      locConstraintMap[&loc].insert(std::make_pair(0U, &elem));
     }
 
     DSNode::TyMapTy child_loc_types{loc.type_begin(), loc.type_end()};
@@ -1809,6 +1857,7 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const AbstractLoc &loc,
                                       const ConsElem &lub) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
+  loc.dump();
   for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                       itEnd = elemMap.end();
        it != itEnd; ++it) {
@@ -1832,6 +1881,7 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
                                             const ConsElem &lub,
                                             unsigned offset, const Value *v) {
   unsigned numElements = 0;
+  errs() << " ===== putOrConstrainConsElemStruct =====\n";
   std::map<unsigned, const ConsElem *> elemMap =
       getOrCreateConsElemTyped(loc, numElements, v);
   if (elemMap.size() == 0)
@@ -1853,11 +1903,14 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
       // TODO add debug info
     }
   }
+  errs() << " ===== putOrConstrainConsElemStruct end =====\n";
 }
 void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const AbstractLoc &loc,
                                       const ConsElem &lub, unsigned offset,
                                       unsigned numElements) {
+
+  errs() << " ===== putOrConstrainConsElem =====\n";
   std::map<unsigned, const ConsElem *> elemMap =
       getOrCreateConsElemTyped(loc, numElements);
   loc.dump();
@@ -1887,22 +1940,25 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
       // TODO add debug info
     }
   }
+  errs() << " ===== putOrConstrainConsElem end =====\n";
 }
 
 void Infoflow::generateFunctionConstraints(const Function &f) {
-  std::vector<FlowRecord> flows;
   for (Function::const_iterator bb = f.begin(), end = f.end(); bb != end;
        ++bb) {
     // Build constraints for basic blocks
     // The pc of the entry block will be tainted at any call sites
-    generateBasicBlockConstraints(*bb, flows);
+    generateBasicBlockConstraints(*bb, flowVector);
   }
 
-  for (std::vector<FlowRecord>::iterator flow = flows.begin(),
-                                         flowend = flows.end();
-       flow != flowend; ++flow) {
-    constrainFlowRecord(*flow);
+  for (Flows::iterator flow = flowVector.begin(), end = flowVector.end();
+       flow != end; ++flow) {
+    if (!(*flow).isImplicit()) {
+      (*flow).dump();
+      constrainFlowRecord(*flow);
+    }
   }
+  flowVector.clear();
 }
 
 void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
@@ -1940,6 +1996,8 @@ void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
 
   for (BasicBlock::const_iterator inst = bb.begin(), end = bb.end();
        inst != end; ++inst) {
+    errs() << " +INST+\n";
+    (*inst).dump();
     getInstructionFlowsInternal(*inst, true, flows, "");
   }
 }
@@ -2034,9 +2092,18 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
   errs() << "===== operandsAndPCtoValue() =====\n";
   for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
        op != end; ++op) {
-    exp.addSourceValue(*op->get());
+    Value *v = op->get();
+    exp.addSourceValue(*v);
     errs() << "adding to sourceValue: ";
-    (*op->get()).dump();
+    v->dump();
+    // errs() << "is a pointer type? "
+    //        << (v->getType()->isPointerTy() ? "YES" : "NO") << "\n";
+    // if (isa<CastInst>(inst) && v->getType()->isPointerTy()) {
+    //   errs() << "WE ARE ADDING BITCAST\n";
+    //   exp.addSourceDirectPtr(*v);
+    //   exp.addSinkDirectPtr(*v);
+    //   exp.addSinkDirectPtr(inst);
+    // }
   }
   // to value
   exp.addSinkValue(inst);
@@ -2090,44 +2157,49 @@ Flows Infoflow::getInstructionFlows(const Instruction &inst) {
 void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
                                            bool callees, Flows &flows,
                                            std::string predicate) {
+  Flows temp = Flows(flows.begin(), flows.end());
   if (const AtomicCmpXchgInst *i = dyn_cast<AtomicCmpXchgInst>(&inst)) {
-    return Infoflow::constrainAtomicCmpXchgInst(*i, flows);
+    Infoflow::constrainAtomicCmpXchgInst(*i, flows);
   } else if (const AtomicRMWInst *i = dyn_cast<AtomicRMWInst>(&inst)) {
-    return Infoflow::constrainAtomicRMWInst(*i, flows);
+    Infoflow::constrainAtomicRMWInst(*i, flows);
   } else if (const BinaryOperator *i = dyn_cast<BinaryOperator>(&inst)) {
-    return Infoflow::constrainBinaryOperator(*i, flows);
+    Infoflow::constrainBinaryOperator(*i, flows);
   } else if (const CallInst *i = dyn_cast<CallInst>(&inst)) {
-    return Infoflow::constrainCallInst(*i, callees, flows);
+    Infoflow::constrainCallInst(*i, callees, flows);
   } else if (const CmpInst *i = dyn_cast<CmpInst>(&inst)) {
-    return Infoflow::constrainCmpInst(*i, flows);
+    Infoflow::constrainCmpInst(*i, flows);
   } else if (const ExtractElementInst *i =
                  dyn_cast<ExtractElementInst>(&inst)) {
-    return Infoflow::constrainExtractElementInst(*i, flows);
+    Infoflow::constrainExtractElementInst(*i, flows);
   } else if (const FenceInst *i = dyn_cast<FenceInst>(&inst)) {
-    return Infoflow::constrainFenceInst(*i, flows);
+    Infoflow::constrainFenceInst(*i, flows);
   } else if (const GetElementPtrInst *i = dyn_cast<GetElementPtrInst>(&inst)) {
-    return Infoflow::constrainGetElementPtrInst(*i, flows);
+    Infoflow::constrainGetElementPtrInst(*i, flows);
   } else if (const InsertElementInst *i = dyn_cast<InsertElementInst>(&inst)) {
-    return Infoflow::constrainInsertElementInst(*i, flows);
+    Infoflow::constrainInsertElementInst(*i, flows);
   } else if (const InsertValueInst *i = dyn_cast<InsertValueInst>(&inst)) {
-    return Infoflow::constrainInsertValueInst(*i, flows);
+    Infoflow::constrainInsertValueInst(*i, flows);
   } else if (const LandingPadInst *i = dyn_cast<LandingPadInst>(&inst)) {
-    return Infoflow::constrainLandingPadInst(*i, flows);
+    Infoflow::constrainLandingPadInst(*i, flows);
   } else if (const PHINode *i = dyn_cast<PHINode>(&inst)) {
-    return Infoflow::constrainPHINode(*i, flows);
+    Infoflow::constrainPHINode(*i, flows);
   } else if (const SelectInst *i = dyn_cast<SelectInst>(&inst)) {
-    return Infoflow::constrainSelectInst(*i, flows);
+    Infoflow::constrainSelectInst(*i, flows);
   } else if (const ShuffleVectorInst *i = dyn_cast<ShuffleVectorInst>(&inst)) {
-    return Infoflow::constrainShuffleVectorInst(*i, flows);
+    Infoflow::constrainShuffleVectorInst(*i, flows);
   } else if (const StoreInst *i = dyn_cast<StoreInst>(&inst)) {
-    return Infoflow::constrainStoreInst(*i, flows);
+    Infoflow::constrainStoreInst(*i, flows);
   } else if (const TerminatorInst *i = dyn_cast<TerminatorInst>(&inst)) {
-    return Infoflow::constrainTerminatorInst(*i, callees, flows);
+    Infoflow::constrainTerminatorInst(*i, callees, flows);
   } else if (const UnaryInstruction *i = dyn_cast<UnaryInstruction>(&inst)) {
-    return Infoflow::constrainUnaryInstruction(*i, flows);
+    Infoflow::constrainUnaryInstruction(*i, flows);
   } else {
     assert(false && "Unsupported instruction type!");
   }
+  // errs() << "NEW-FLOWS\n";
+  // for (size_t i = temp.size(); i != flows.size(); i++)
+  // flows.at(i).dump();
+  // errs() << "NEW-FLOWS-END\n\n";
 }
 
 void Infoflow::constrainUnaryInstruction(const UnaryInstruction &inst,
@@ -2557,30 +2629,56 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
     callinst->dump();
     Function *F = callinst->getCalledFunction();
 
-    for (auto tuple : sinkVariables) {
-      std::string fn_name;
-      int arg_no = -1, t_offset = -1;
-      std::tie(fn_name, arg_no, t_offset) = tuple;
-      if (F->getName().equals(fn_name)) {
-        errs() << "Found function match: " << F->getName() << "\n";
-        User::const_op_iterator op_i = cs.arg_begin();
-        int arg_idx = 0;
-        for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
-          if (arg_no == -1 || arg_no == arg_idx) {
-            Value *value = (*op_i).get();
-            std::tuple<ContextID, Value *, int> valueOffsetPair =
-                std::make_tuple(this->getCurrentContext(), value, t_offset);
-            sinkContextValuePairs.insert(valueOffsetPair);
-            errs() << "inserted: ";
-            value->dump();
-            errs() << "at offset: " << t_offset << "\n";
+    if (F) {
+      for (auto tuple : sinkVariables) {
+        std::string fn_name;
+        int arg_no = -1, t_offset = -1;
+        std::tie(fn_name, arg_no, t_offset) = tuple;
+        if (F->getName().size() > 0 && F->getName().equals(fn_name)) {
+          errs() << "Found function match: " << F->getName() << "\n";
+          User::const_op_iterator op_i = cs.arg_begin();
+          int arg_idx = 0;
+          for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
+            if (arg_no == -1 || arg_no == arg_idx) {
+              Value *value = (*op_i).get();
+              std::tuple<ContextID, Value *, int> valueOffsetPair =
+                  std::make_tuple(this->getCurrentContext(), value, t_offset);
+              sinkValueSet.insert(valueOffsetPair);
+              errs() << "inserted: ";
+              value->dump();
+              errs() << "at offset: " << t_offset << "\n";
+            }
           }
+          // return; // TODO: Could this be the ULTIMATE solution?!
         }
       }
     }
 
     errs() << "============ getCallResult(cs, Unit()) ============\n";
     this->getCallResult(cs, Unit());
+    /*
+       This part acts as a pre-filter to
+       the eliminate those CallInst(s) which are
+       impossible for a critical flow to exist
+    */
+   
+    // bool proceed = true;
+    // if (!F || !F->getName().equals("malloc")) {
+    //   proceed = true;
+    // } else {
+    //   User::const_op_iterator arg = cs.arg_begin(), end = cs.arg_end();
+    //   for (; arg != end; arg++) {
+    //     // (*arg).get()->dump();
+    //     // errs() << isa<Constant>((*arg).get()) << "\n";
+    //     if (!isa<Constant>((*arg).get())) {
+    //       proceed = true;
+    //     }
+    //   }
+    // }
+
+    // if (proceed) {
+    //   this->getCallResult(cs, Unit());
+    // }
     errs() << "============ getCallResult(cs, Unit()) - end ============\n";
 
   } else if (usesExternalSignature(cs)) {
@@ -2951,6 +3049,41 @@ Infoflow::parseTaintString(std::string line) {
   return ret;
 }
 
+std::tuple<std::string, int, int> Infoflow::parseSinkString(std::string line) {
+  // Move any extra whitespace to end
+  std::string::iterator new_end =
+      unique(line.begin(), line.end(),
+             [](const char &x, const char &y) { return x == y and x == ' '; });
+
+  // Remove the extra space
+  line.erase(new_end, line.end());
+  line = std::regex_replace(line, std::regex("^ +| +$"), "");
+
+  // Split up line
+  std::vector<std::string> splits;
+  char delimiter = ' ';
+
+  size_t i = 0;
+  size_t pos = line.find(delimiter);
+
+  while (pos != std::string::npos) {
+    splits.push_back(line.substr(i, pos - i));
+    i = pos + 1;
+    pos = line.find(delimiter, i);
+  }
+  splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
+
+  // Create match/offset pair
+  if (splits.size() == 1) {
+    return std::make_tuple(splits[0], -1, -1);
+  } else if (splits.size() == 2) {
+    return std::make_tuple(splits[0], std::stoi(splits[1]), -1);
+  } else if (splits.size() == 3) {
+    return std::make_tuple(splits[0], std::stoi(splits[1]),
+                           std::stoi(splits[2]));
+  }
+}
+
 int Infoflow::matchValueAndParsedString(
     const Value &value, std::string kind,
     std::tuple<std::string, int, std::string> match) {
@@ -3266,23 +3399,27 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
 
   // Get Locations for stack alloc
   AbstractLocSet alloclocs = locsForValue(*v);
-
+  errs() << "\n getPointedToAbstractLocs \n";
   // Check to see if the locs are pointers
   for (auto &l : alloclocs) {
+    l->dump();
     if (l->isNodeCompletelyFolded()) {
       locs.insert(l);
     } else {
       for (auto it = l->type_begin(), end = l->type_end(); it != end; ++it) {
         unsigned link_offset = 0;
+        errs() << (*it).first << " : ";
         for (auto j = it->second->begin(), setend = it->second->end();
              j != setend; ++j) {
           Type *t = *j;
+          t->dump();
           Type *target = t;
           if (t->isPointerTy()) {
             if (t->subtypes().size() == 1) {
               target = t->subtypes()[0];
             }
           }
+          target->dump();
 
           if (target != t) {
             if (l->getSize() > link_offset && l->hasLink(link_offset)) {

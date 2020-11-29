@@ -51,7 +51,7 @@ TaintReachable::process(const ContextID ctxt, const ImmutableCallSite cs) const 
         exp.addSourceReachablePtr(**arg);
         imp.addSourceValue(**arg);
         
-        exp.addSinkReachablePtr(**arg);
+        // exp.addSinkReachablePtr(**arg);
         imp.addSinkReachablePtr(**arg);
       }
   }
@@ -60,6 +60,13 @@ TaintReachable::process(const ContextID ctxt, const ImmutableCallSite cs) const 
   if (!cs->getType()->isVoidTy()) {
     imp.addSinkValue(*cs.getInstruction());
     exp.addSinkValue(*cs.getInstruction());
+
+    // TODO: VERIFY THIS WITH malloc()
+    // malloc had this but we don't
+    if (cs->getType()->isPointerTy()) {
+      imp.addSinkDirectPtr(*cs.getInstruction());
+      exp.addSinkDirectPtr(*cs.getInstruction());
+    }
   }
 
   std::vector<FlowRecord> flows;

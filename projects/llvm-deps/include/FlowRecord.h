@@ -26,6 +26,9 @@
 #include "CallContext.h"
 #include "llvm/IR/Value.h"
 #include "llvm/ADT/SmallPtrSet.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Value.h"
+#include "llvm/Support/raw_ostream.h"
 
 #include <set>
 
@@ -113,6 +116,22 @@ class FlowRecord {
     fun_iterator sink_varg_begin() const { return vargSinks.begin(); }
     fun_iterator sink_varg_end() const { return vargSinks.end(); }
 
+  void dump() {
+    errs() << "++++ Dumping Flow Record ++++ [" << this << "]\n";
+    errs() << "\tSource context: " << sourceCtxt << "\n";
+    errs() << "\tSink context: " << sinkCtxt << "\n";
+    errs() << "\tImplicit flow: " << (implicit ? "Yes" : "No") << "\n";
+    print(valueSources, "Value Sources");
+    print(directPtrSources, "D Sources");
+    print(reachPtrSources, "R Sources");
+    print(valueSinks, "Value Sinks");
+    print(directPtrSinks, "D Sinks");
+    print(reachPtrSinks, "R Sinks");
+    print(vargSources, "Varg Sources");
+    print(vargSinks, "Varg Sinks");
+    errs() << "++++ end ++++\n\n";
+  }
+
   private:
     bool implicit;
     value_set valueSources, directPtrSources, reachPtrSources;
@@ -120,6 +139,28 @@ class FlowRecord {
     fun_set vargSources, vargSinks;
     ContextID sourceCtxt;
     ContextID sinkCtxt;
+    void print(value_set vSet, std::string name) {
+      if (vSet.size()) {
+        errs() << "\t" << name << "\n";
+        for (auto v : vSet) {
+          errs() << "\t  ";
+          if (isa<BasicBlock>(v))
+            errs() << "BB: " << v->getName() << "\n";
+          else
+            v->dump();
+        }
+      }
+    }
+    void print(fun_set fSet, std::string name) {
+      if (fSet.size()) {
+        errs() << name << "\n";
+        fun_iterator i = fSet.begin();
+        fun_iterator e = fSet.end();
+        for (; i != e; i++) {
+          errs() << "Function " << (*i)->getName() << "\n";
+        }
+      }
+    }
 };
 //typedef uintptr_t ContextID;
 }

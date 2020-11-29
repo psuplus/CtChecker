@@ -73,7 +73,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
     }
   }
 
-#if 0
+#if 1
   errs() << "\n --------- locs --------- \n";
   for (auto &l : locs) {
     l->dump();
@@ -94,8 +94,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   // errs() << "Trying to get offset.. for  "<< s << "\n";
   bool hasOffset = ifa->offsetForValue(value, &offset);
   unsigned numElements = getNumElements(value);
-  value.dump();
-  errs() << " has " << numElements << " elements.\n";
+  errs() << "This value has " << numElements << " elements.\n";
+  errs() << "Has offset? " << (hasOffset ? "YES" : "NO")
+         << ", and the offset is: " << offset << "\n";
 
   if (!ifa->offset_used) {
     t_offset = -1; // if offset is disabled ignore offset from taintfile
@@ -110,6 +111,9 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
     (*loc)->dump();
     if ((*loc)->isNodeCompletelyFolded() ||
         (*loc)->type_begin() == (*loc)->type_end()) {
+      // errs() << (*loc)->isNodeCompletelyFolded()
+      //        << " :::: " << ((*loc)->type_begin() == (*loc)->type_end())
+      //        << "\n";
       hasOffset = false;
     } else if (t_offset >= 0) {
       offset = fieldIndexToByteOffset(t_offset, &value, *loc);
@@ -121,6 +125,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
           gatherRelevantConsElems(*loc, offset, numElements, value);
       elementsToConstrain.insert(rel.begin(), rel.end());
     } else {
+      // errs() << "!hasOffset\n";
       for (auto &locs : relevantLocs) {
         DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
         for (auto &edge : edges) {
@@ -159,7 +164,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 void TaintAnalysisBase::untaintAllSink(std::string kind) {
   // process the sink functions' arguments
   errs() << "\n ========= Untaint Sink Functions ========= \n";
-  for (auto ctxValuePair : ifa->sinkContextValuePairs) {
+  for (auto ctxValuePair : ifa->sinkValueSet) {
     ContextID ctxt;
     Value *v;
     int t_offset;
@@ -173,7 +178,10 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     const std::set<const AbstractLoc *> &locs = ifa->locsForValue(value);
     const std::set<const AbstractLoc *> &rlocs =
         ifa->reachableLocsForValue(value);
-    if ((locs.size() == 0 && rlocs.size() == 0)) {
+
+    // TODO: confirm the correctness of the [t_offset < 0] condition
+    // It was removed for a while because we believed it was unnecessary
+    if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
       ifa->setUntainted(kind, value);
     }
 
@@ -214,15 +222,16 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
       hasOffset = false;
     }
 
-    std::set<const AbstractLoc *>::const_iterator loc = relevantLocs.begin();
     std::set<const ConsElem *> elementsToUntaint;
-    for (; loc != relevantLocs.end(); ++loc) {
+    for (auto loc = relevantLocs.begin(); loc != relevantLocs.end(); ++loc) {
       errs() << "\nUntaint node at:\n";
       (*loc)->dump();
       if (t_offset >= 0) {
         offset = fieldIndexToByteOffset(t_offset, &value, *loc);
         errs() << "\tThe byte offset is: " << offset << "\n";
         hasOffset = true;
+      } else {
+        hasOffset = false;
       }
 
       if (hasOffset) {
@@ -288,17 +297,27 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
     return relevant;
 
   elemMap = curElem->second;
+  errs() << "\n\tNODE: ";
+  node->dump();
+
+  errs() << "\tELEMS: \n";
+  for (auto e : elemMap) {
+    errs() << "\toffset: " << e.first << ", element [";
+    e.second->dump(errs());
+    errs() << "] addr [" << e.second << "] added.\n";
+  }
 
   errs() << "Map size [" << elemMap.size() << "] <--> number of elements ["
          << numElements << "].\n";
   if (numElements == elemMap.size()) {
     relevant = ifa->findRelevantConsElem(node, elemMap, offset);
+    return relevant;
   } else {
-    errs() << "Adding ConsElem from elemMap to relevant set: \n";
+    // errs() << "Adding ConsElem from elemMap to relevant set: \n";
     for (auto e : elemMap) {
-      errs() << "\toffset: " << e.first << ", element [";
-      e.second->dump(errs());
-      errs() << "] addr [" << e.second << "] added.\n";
+      // errs() << "\toffset: " << e.first << ", element [";
+      // e.second->dump(errs());
+      // errs() << "] addr [" << e.second << "] added.\n";
       relevant.insert(e.second);
     }
   }

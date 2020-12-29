@@ -19,8 +19,8 @@
 
 #include "CallContext.h"
 #include "CallSensitiveAnalysisPass.h"
-#include "Constraints/LHConsSoln.h"
-#include "Constraints/LHConstraintKit.h"
+#include "Constraints/RLConsSoln.h"
+#include "Constraints/RLConstraintKit.h"
 #include "FPCache.h"
 #include "FlowRecord.h"
 #include "InfoflowSignature.h"
@@ -70,7 +70,7 @@ class Infoflow;
 /// values and locations.
 class InfoflowSolution {
 public:
-  InfoflowSolution(Infoflow &infoflow, ConsSoln *s, const ConsElem &high,
+  InfoflowSolution(Infoflow &infoflow, ConsSoln *s, const ConsElem &top,
                    bool defaultTainted,
                    DenseMap<const Value *, const ConsElem *> &valueMap,
                    DenseMap<const AbstractLoc *,
@@ -78,7 +78,7 @@ public:
                    DenseMap<const Function *, const ConsElem *> &vargMap)
       :
 
-        infoflow(infoflow), soln(s), highConstant(high),
+        infoflow(infoflow), soln(s), topConstant(top),
         defaultTainted(defaultTainted), valueMap(valueMap), locMap(locMap),
         vargMap(vargMap) {}
   ~InfoflowSolution();
@@ -103,7 +103,7 @@ private:
 
   const Infoflow &infoflow;
   ConsSoln *soln;
-  const ConsElem &highConstant;
+  const ConsElem &topConstant;
   bool defaultTainted;
   DenseMap<const Value *, const ConsElem *> &valueMap;
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> &locMap;
@@ -238,12 +238,13 @@ public:
   Flows getInstructionFlows(const Instruction &);
 
   // Solve the given kind using two threads.
-  void solveMT(std::string kind = "default") {
+  void solveMT(std::string kind, Predicate *pred) {
     assert(kit);
-    kit->solveMT(kind);
+    kit->solveMT(kind, pred);
   }
-  std::vector<InfoflowSolution *> solveLeastMT(std::vector<std::string> kinds,
-                                               bool useDefaultSinks);
+  std::vector<InfoflowSolution *>
+  solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
+               Predicate *pred = RLConstraintKit::truePredicate);
 
 private:
   virtual void doInitialization();
@@ -252,7 +253,7 @@ private:
   virtual const Unit bottomOutput() const;
   virtual const Unit runOnContext(const AUnitType unit, const Unit input);
 
-  LHConstraintKit *kit;
+  RLConstraintKit *kit;
 
   PointsToInterface *pti;
   SourceSinkAnalysis *sourceSinkAnalysis;

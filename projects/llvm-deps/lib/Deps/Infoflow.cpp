@@ -65,7 +65,7 @@ Infoflow::Infoflow()
       // user's analysis and a non-negative integer k.
       CallSensitiveAnalysisPass<Unit, Unit, 1, CallerContext>(
           ID, DepsCollapseExtContext, DepsCollapseIndContext),
-      kit(new LHConstraintKit()) {
+      kit(new RLConstraintKit()) {
   offset_used = true;
 }
 
@@ -147,8 +147,8 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
   generateFunctionConstraints(unit.function());
 
   // errs() << "----- Trying to print out kit->vars -----\n";
-  // std::vector<const LHConsVar *> vars = kit->getVars();
-  // for (std::vector<const LHConsVar *>::iterator var = vars.begin(), end =
+  // std::vector<const RLConsVar *> vars = kit->getVars();
+  // for (std::vector<const RLConsVar *>::iterator var = vars.begin(), end =
   // vars.end();
   //  var != end; ++var) {
   //    if((*var)->getDesc() != "")
@@ -157,8 +157,8 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
 
   // kit->getOrCreateConstraintSet(kind)
   // errs() << "----- Trying to print out kit->joins -----\n";
-  // std::set<LHJoin> joins = kit->getJoins();
-  // for (std::set<LHJoin>::iterator join = joins.begin(), end = joins.end();
+  // std::set<RLJoin> joins = kit->getJoins();
+  // for (std::set<RLJoin>::iterator join = joins.begin(), end = joins.end();
   //    join != end; ++join) {
   //      errs() << "--- Elements of one join ---\n";
   //      std::set<const ConsElem *> elems = (*join).elements();
@@ -172,10 +172,10 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
-  std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
+  std::vector<RLConstraint> set = kit->getOrCreateConstraintSet("default");
   /// set contains all constraints, constraints are pairs of ConsElem
   /// can't joint on rhs, only on lhs
-  for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
+  for(std::vector<RLConstraint>::iterator constraint = set.begin(), end = set.end();
       constraint != end; ++constraint) {
     //       /// a constraint contains two ConElem: lhs and rhs.
     //       /// We need to search through valueMap, locMap and vargMap to get the
@@ -869,7 +869,7 @@ bool InfoflowSolution::isTainted(const Value &value) {
       valueMap.find(&value);
   if (entry != valueMap.end()) {
     const ConsElem &elem = *(entry->second);
-    return (soln->subst(elem) == highConstant);
+    return (soln->subst(elem) == topConstant);
   } else {
     DEBUG(errs() << "not in solution: " << value << "\n");
     return defaultTainted;
@@ -904,8 +904,8 @@ const MDLocalVariable *findVarNode(const Value *V, const Function *F) {
   if (V->hasName()) {
     vName = V->getName();
   }
-  // errs() << "\t- looking for value [" << vName << "] in function ["
-  //        << F->getName() << "]\n";
+  errs() << "\t- looking for value [" << vName << "] in function ["
+         << F->getName() << "]\n";
   for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End;
        ++Iter) {
     const Instruction *I = &*Iter;
@@ -1144,7 +1144,7 @@ bool InfoflowSolution::isDirectPtrTainted(const Value &value) {
           entry->second.end();
       for (; it != itEnd; ++it) {
         const ConsElem &elem = *(*it).second;
-        if (soln->subst(elem) == highConstant) {
+        if (soln->subst(elem) == topConstant) {
           return true;
         }
       }
@@ -1171,7 +1171,7 @@ bool InfoflowSolution::isReachPtrTainted(const Value &value) {
           entry->second.end();
       for (; it != itEnd; ++it) {
         const ConsElem &elem = *(*it).second;
-        if (soln->subst(elem) == highConstant) {
+        if (soln->subst(elem) == topConstant) {
           return true;
         }
       }
@@ -1188,7 +1188,7 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
       vargMap.find(&fun);
   if (entry != vargMap.end()) {
     const ConsElem &elem = *(entry->second);
-    return (soln->subst(elem) == highConstant);
+    return (soln->subst(elem) == topConstant);
   } else {
     DEBUG(errs() << "not in solution: varargs of " << fun.getName() << "\n");
     return defaultTainted;
@@ -1204,7 +1204,7 @@ void Infoflow::setUntainted(std::string kind, const Value &value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const ConsElem &current = getOrCreateConsElemSummarySink(value);
-  kit->addConstraint(kind, current, kit->lowConstant(),
+  kit->addConstraint(kind, current, kit->botConstant(),
                      " ;  [ConsDebugTag-1]  \n");
   errs() << " ;  [ConsDebugTag-1]  ";
   getOriginalLocation(&value);
@@ -1213,14 +1213,14 @@ void Infoflow::setUntainted(std::string kind, const Value &value) {
 void Infoflow::setTainted(std::string kind, const Value &value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  putOrConstrainConsElemSummarySource(kind, value, kit->highConstant());
+  putOrConstrainConsElemSummarySource(kind, value, kit->topConstant());
 }
 
 void Infoflow::setVargUntainted(std::string kind, const Function &fun) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const ConsElem &current = getOrCreateVargConsElemSummarySink(fun);
-  kit->addConstraint(kind, current, kit->lowConstant(),
+  kit->addConstraint(kind, current, kit->botConstant(),
                      " ;  [ConsDebugTag-2]  \n");
   errs() << " ;  [ConsDebugTag-2]  ";
   getOriginalLocation(&fun);
@@ -1229,7 +1229,7 @@ void Infoflow::setVargUntainted(std::string kind, const Function &fun) {
 void Infoflow::setVargTainted(std::string kind, const Function &fun) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  putOrConstrainVargConsElemSummarySource(kind, fun, kit->highConstant());
+  putOrConstrainVargConsElemSummarySource(kind, fun, kit->topConstant());
 }
 
 void Infoflow::setDirectPtrUntainted(std::string kind, const Value &value) {
@@ -1244,14 +1244,14 @@ void Infoflow::setDirectPtrUntainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, elem, kit->lowConstant(),
+      kit->addConstraint(kind, elem, kit->botConstant(),
                          " ;  [ConsDebugTag-5]  \n");
       errs() << " ;  [ConsDebugTag-5]  ";
       getOriginalLocation(&value);
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
-    // *(*it).second, kit->lowConstant());
+    // *(*it).second, kit->botConstant());
     // }
   }
 }
@@ -1268,14 +1268,14 @@ void Infoflow::setDirectPtrTainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, kit->highConstant(), elem,
+      kit->addConstraint(kind, kit->topConstant(), elem,
                          " ;  [ConsDebugTag-6]  \n");
       errs() << " ;  [ConsDebugTag-6]  ";
       getOriginalLocation(&value);
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
-    // kit->highConstant(), *(*it).second);
+    // kit->topConstant(), *(*it).second);
     // }
   }
 }
@@ -1292,14 +1292,14 @@ void Infoflow::setReachPtrUntainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, elem, kit->lowConstant(),
+      kit->addConstraint(kind, elem, kit->botConstant(),
                          " ;  [ConsDebugTag-7]  \n");
       errs() << " ;  [ConsDebugTag-7]  ";
       getOriginalLocation(&value);
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
-    // *(*it).second, kit->lowConstant());
+    // *(*it).second, kit->botConstant());
     // }
   }
 }
@@ -1316,14 +1316,14 @@ void Infoflow::setReachPtrTainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, kit->highConstant(), elem,
+      kit->addConstraint(kind, kit->topConstant(), elem,
                          " ;  [ConsDebugTag-8]  \n");
       errs() << " ;  [ConsDebugTag-8]  ";
       getOriginalLocation(&value);
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
-    // kit->highConstant(), *(*it).second);
+    // kit->topConstant(), *(*it).second);
     // }
   }
 }
@@ -1339,8 +1339,8 @@ InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
     kinds.insert("implicit-sinks");
   return new InfoflowSolution(*this,                     // infoflow
                               kit->leastSolution(kinds), // ConsSoln* s
-                              kit->highConstant(), // const ConsElem & high
-                              false,               /* default to untainted */
+                              kit->topConstant(), // const ConsElem & top
+                              false,              /* default to untainted */
                               summarySinkValueConstraintMap, // valueMap
                               locConstraintMap,              // locMap
                               summarySinkVargConstraintMap); // vargMap
@@ -1356,8 +1356,8 @@ InfoflowSolution *Infoflow::greatestSolution(std::set<std::string> kinds,
   }
   return new InfoflowSolution(*this,                        // infoflow
                               kit->greatestSolution(kinds), // ConsSoln* s
-                              kit->highConstant(), // const ConsElem & high
-                              true,                /* default to tainted */
+                              kit->topConstant(), // const ConsElem & top
+                              true,               /* default to tainted */
                               summarySourceValueConstraintMap, // valueMap
                               locConstraintMap,                // locMap
                               summarySourceVargConstraintMap); // vargMap
@@ -3152,7 +3152,7 @@ void Infoflow::getOrCreateLocationValueMap() {
 
 void Infoflow::removeConstraint(
     std::string kind, std::tuple<std::string, int, std::string> match) {
-  // getOrCreateLocationValueMap();
+  getOrCreateLocationValueMap();
   errs() << "Removing values tied to " << std::get<0>(match) << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = summarySourceValueConstraintMap.begin(),
@@ -3307,7 +3307,7 @@ void Infoflow::constrainAllConsElem(
     // it->second->dump(errs());
     if ((it->second) != NULL) {
       // TODO add debug info
-      kit->addConstraint(kind, kit->highConstant(), *(it->second),
+      kit->addConstraint(kind, kit->topConstant(), *(it->second),
                          " ;  [ConsDebugTag-22]  \n");
       errs() << " ;  [ConsDebugTag-22]  ";
       errs() << "\n";
@@ -3321,7 +3321,7 @@ void Infoflow::constrainAllConsElem(std::string kind,
                                             end = elems.end();
        it != end; ++it) {
     //(*it)->dump(errs());
-    kit->addConstraint(kind, kit->highConstant(), *(*it),
+    kit->addConstraint(kind, kit->topConstant(), *(*it),
                        " ;  [ConsDebugTag-19]  \n");
     errs() << " ;  [ConsDebugTag-19]  ";
     errs() << "\n";
@@ -3445,7 +3445,7 @@ void Infoflow::constrainOffsetFromIndex(
       // it->second->dump(errs());
       elem->dump(errs());
       errs() << "\n";
-      kit->addConstraint(kind, kit->highConstant(), *elem,
+      kit->addConstraint(kind, kit->topConstant(), *elem,
                          " ;  [ConsDebugTag-20]  \n");
       errs() << " ;  [ConsDebugTag-20]  ";
       errs() << "\n";
@@ -3460,7 +3460,7 @@ void Infoflow::constrainOffsetFromIndex(
       // elements as the array So just taint that one otherwise taint all
       // elements in the map
       if (elemMap.size() > (unsigned)fieldIdx) {
-        kit->addConstraint(kind, kit->highConstant(), *elem,
+        kit->addConstraint(kind, kit->topConstant(), *elem,
                            " ;  [ConsDebugTag-21]  \n");
         errs() << " ;  [ConsDebugTag-21]  ";
         errs() << "\n";

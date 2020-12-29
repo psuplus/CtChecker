@@ -11,88 +11,126 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Constraints/LHConstraintKit.h"
+#include "Constraints/PredicatedConstraints.h"
+#include "Constraints/RLConstraintKit.h"
 #include "llvm/Support/Casting.h"
 #include <iostream>
 
 using namespace deps;
 
+
 void test(void) {
 
-  LHConstraintKit kit;
+  std::vector<Predicate *> PSet;
+
+  // Test 0
+  PSet.push_back(new Predicate(-1, 5, 'x', 10, 20,'y'));
+  PSet.push_back(new Predicate(2, 6, 'x', 15, 17, 'y')); 
+  PSet.push_back(new Predicate(4, 12, 'x', 20, 30, 'z'));
+
+  // // // Test 1
+  // PSet.push_back(new Predicate(-1, 5, 'x'));
+  // PSet.push_back(new Predicate(2, 7, 'y'));
+
+  // // Test 2
+  // PSet.push_back(new Predicate(-1, 2, 'x'));
+  // PSet.push_back(new Predicate(5, 2, 'x'));
+  // PSet.push_back(new Predicate(1, 6, 'x'));
+
+  // // Test 3
+  // PSet.push_back(new Predicate(-1, 6, 'x'));
+  // PSet.push_back(new Predicate(4, 8, 'x'));
+  // PSet.push_back(new Predicate(0, 5, 'y'));
+  // PSet.push_back(new Predicate(-3, 7, 'y'));
+
+  // // // Test 4
+  // PSet.push_back(new Predicate(P_NEGINF, P_INF, 'x'));
+  // PSet.push_back(new Predicate(P_NEGINF, 5, 'x'));
+  // PSet.push_back(new Predicate(-2, P_INF, 'x'));
+
+  // Testing addinequality function
+  // PSet[0]->addinequality(10,20,'z');
+  // PSet[1]->addinequality(15,17, 'z'); 
+  // PSet[1]->addinequality(1,3, 'y');
+
+
+  RLConstraintKit kit;
 
   const ConsElem &a = kit.newVar("a");
   const ConsElem &b = kit.newVar("b");
-  // const ConsElem & c = kit.newVar("c");
+  const ConsElem &c = kit.newVar("c");
 
-  kit.addConstraint("default", a, b, "");
-  kit.addConstraint("default", a, kit.lowConstant(), "");
-  kit.addConstraint("default", kit.highConstant(), b, "");
+  std::vector<const ConsElem *> elemVec{&a, &b, &c};
 
-  std::set<std::string> kinds;
-  kinds.insert("default");
+  CompartmentSet emptySet{};
+  CompartmentSet cS1{NUCLEAR};
+  CompartmentSet cS2{NUCLEAR, CRYPTO};
+  CompartmentSet cS3{CRYPTO};
+  CompartmentSet cS4{BIO};
 
-  std::cout << "Least solution" << std::endl;
-
-  ConsSoln *soln = kit.leastSolution(kinds);
-
-  delete (soln);
-
-  /*if (soln->subst(a) == kit.lowConstant()) {
-      std::cout << "a : L\n";
-  } else if (soln->subst(a) == kit.highConstant()) {
-      std::cout << "a : H\n";
-  } else {
-      std::cout << "a : ?\n";
+  // Testing kit for least solution
+  if (PSet.size() > 0) {
+    kit.addConstraint("least", kit.constant(RLLevel::LOW, cS1), a, PSet[0]);
+    kit.addConstraint("least", a, b, PSet[0]);
+  }
+  if (PSet.size() > 1) {
+    kit.addConstraint("least", kit.constant(RLLevel::MID, cS4), b, PSet[1]);
+  }
+  if (PSet.size() > 2) {
+    kit.addConstraint("least", kit.constant(RLLevel::MID, cS2), b, PSet[2]);
+    kit.addConstraint("least", b, c, PSet[2]);
   }
 
-  if (soln->subst(b) == kit.lowConstant()) {
-      std::cout << "b : L\n";
-  } else if (soln->subst(b) == kit.highConstant()) {
-      std::cout << "b : H\n";
-  } else {
-      std::cout << "b : ?\n";
+  // Testing kit for greatest solution
+  if (PSet.size() > 0) {
+    kit.addConstraint("greatest", a, kit.constant(RLLevel::LOW, cS3), PSet[0]);
+    kit.addConstraint("greatest", a, b, PSet[0]);
+    kit.addConstraint("greatest", b, kit.constant(RLLevel::MID, cS1), PSet[0]);
+  }
+  if (PSet.size() > 1) {
+    kit.addConstraint("greatest", c, kit.constant(RLLevel::HIGH, cS1), PSet[1]);
+    kit.addConstraint("greatest", c, a, PSet[1]);
+  }
+  if (PSet.size() > 2) {
   }
 
-  if (soln->subst(c) == kit.lowConstant()) {
-      std::cout << "c : L\n";
-  } else if (soln->subst(c) == kit.highConstant()) {
-      std::cout << "c : H\n";
-  } else {
-      std::cout << "c : ?\n";
+  std::set<std::string> kinds{"least"};
+  std::set<std::string> greatest{"greatest"};
+  kit.partitionPredicateSet(PSet);
+
+  llvm::errs() << "\n===== Least solution ====="
+               << "\n";
+
+  for (auto P : PSet) {
+    P->dump();
+    llvm::errs() << "\n";
+    ConsSoln *leastSoln = kit.leastSolution(kinds, P);
+    for (auto elem : elemVec) {
+      llvm::errs() << "\t";
+      elem->dump(llvm::errs());
+      llvm::errs() << ": ";
+      leastSoln->subst(*elem).dump(llvm::errs());
+      llvm::errs() << "\n";
+    }
+    delete leastSoln;
   }
 
-  std::cout << "Greatest solution" << std::endl;
+  llvm::errs() << "\n===== Greatest solution ====="
+               << "\n";
 
-  delete soln;
-
-  soln = kit.greatestSolution(kinds);
-
-  if (soln->subst(a) == kit.lowConstant()) {
-      std::cout << "a : L\n";
-  } else if (soln->subst(a) == kit.highConstant()) {
-      std::cout << "a : H\n";
-  } else {
-      std::cout << "a : ?\n";
+  for (auto P : PSet) {
+    P->dump();
+    llvm::errs() << "\n";
+    ConsSoln *greatestSoln = kit.greatestSolution(greatest, P);
+    for (auto elem : elemVec) {
+      llvm::errs() << "\t";
+      elem->dump(llvm::errs());
+      llvm::errs() << ": ";
+      greatestSoln->subst(*elem).dump(llvm::errs());
+      llvm::errs() << "\n";
+    }
+    delete greatestSoln;
   }
-
-  if (soln->subst(b) == kit.lowConstant()) {
-      std::cout << "b : L\n";
-  } else if (soln->subst(b) == kit.highConstant()) {
-      std::cout << "b : H\n";
-  } else {
-      std::cout << "b : ?\n";
-  }
-
-  if (soln->subst(c) == kit.lowConstant()) {
-      std::cout << "c : L\n";
-  } else if (soln->subst(c) == kit.highConstant()) {
-      std::cout << "c : H\n";
-  } else {
-      std::cout << "c : ?\n";
-  }
-
-  delete soln;*/
 }
 
 int main(void) {

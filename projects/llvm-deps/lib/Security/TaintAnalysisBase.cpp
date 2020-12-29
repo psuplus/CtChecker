@@ -275,10 +275,10 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
       ifa->setUntainted(kind, value);
     } else {
       std::string debugTag = " ;  [ConsDebugTag-*]  sink location\n";
-      const ConsElem *lowConstant = &(ifa->kit->lowConstant());
+      const ConsElem *botConstant = &(ifa->kit->botConstant());
       std::set<const ConsElem *>::iterator it = elementsToUntaint.begin();
       for (; it != elementsToUntaint.end(); ++it) {
-        ifa->kit->addConstraint(kind, *(*it), *lowConstant, debugTag);
+        ifa->kit->addConstraint(kind, *(*it), *botConstant, debugTag);
         errs() << debugTag;
       }
     }

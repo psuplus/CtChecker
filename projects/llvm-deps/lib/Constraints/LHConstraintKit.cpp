@@ -231,8 +231,8 @@ ConsSoln *LHConstraintKit::leastSolution(const std::set<std::string> kinds) {
        kind != end; ++kind) {
     if (!leastSolutions.count(*kind)) {
       lockedConstraintKinds.insert(*kind);
-      leastSolutions[*kind] =
-          new PartialSolution(getOrCreateConstraintSet(*kind), false);
+      leastSolutions[*kind] = nullptr;
+      // new PartialSolution(getOrCreateConstraintSet(*kind), false);
       freeUnneededConstraints(*kind);
     }
     PartialSolution *P = leastSolutions[*kind];
@@ -252,8 +252,8 @@ ConsSoln *LHConstraintKit::greatestSolution(const std::set<std::string> kinds) {
        kind != end; ++kind) {
     if (!greatestSolutions.count(*kind)) {
       lockedConstraintKinds.insert(*kind);
-      greatestSolutions[*kind] =
-          new PartialSolution(getOrCreateConstraintSet(*kind), true);
+      greatestSolutions[*kind] = nullptr;
+      // new PartialSolution(getOrCreateConstraintSet(*kind), true);
       freeUnneededConstraints(*kind);
     }
     PartialSolution *P = greatestSolutions[*kind];

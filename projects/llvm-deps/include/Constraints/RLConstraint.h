@@ -14,7 +14,10 @@
 #ifndef RLCONSTRAINT_H_
 #define RLCONSTRAINT_H_
 
+#include "RLConstraints.h"
+
 #include "llvm/ADT/DenseMap.h"
+#include "llvm/Support/Casting.h"
 
 namespace deps {
 
@@ -74,7 +77,7 @@ private:
   const ConsElem *left;
   const ConsElem *right;
   const Predicate *pred;
-  const bool implicit;
+  bool implicit;
   friend struct llvm::DenseMapInfo<RLConstraint>;
 };
 

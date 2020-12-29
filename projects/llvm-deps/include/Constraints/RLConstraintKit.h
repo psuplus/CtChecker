@@ -8,7 +8,7 @@
 //===----------------------------------------------------------------------===//
 //
 // This file declares a concrete constraint solver for solving constraints
-// over the two level lattice L-H.
+// over the multi-level lattice.
 //
 //===----------------------------------------------------------------------===//
 
@@ -18,7 +18,7 @@
 #include "Constraints/ConstraintKit.h"
 #include "Constraints/PredicatedConstraints.h"
 #include "Constraints/RLConstraint.h"
-#include "Constraints/RLConstraints.h"
+// #include "Constraints/RLConstraints.h"
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/StringMap.h"

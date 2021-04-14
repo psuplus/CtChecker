@@ -46,7 +46,8 @@ public:
   /// Get a reference to the constant "high" element of the lattice
   const ConsElem &topConstant() const;
 
-  const ConsElem &constant(RLLevel l, CompartmentSet cSet) const;
+  const ConsElem &constant(RLLevel l, RLCompartment c) const;
+  const ConsElem &constant(RLLabel) const;
 
   /// Create a new constraint variable
   virtual const ConsVar &newVar(const std::string description);
@@ -63,24 +64,24 @@ public:
   /// Add the constraint lhs <= rhs to the set "kind"
   virtual void addConstraint(const std::string kind, const ConsElem &lhs,
                              const ConsElem &rhs,
-                             Predicate *pred = truePredicate);
+                             const Predicate &pred = truePredicate());
   void addConstraint(const std::string kind, const ConsElem &lhs,
                      const ConsElem &rhs, std::string info,
-                     Predicate *pred = truePredicate);
+                     const Predicate &pred = truePredicate());
   void addConstraint(const std::string kind, const ConsElem &lhs,
                      const ConsElem &rhs, const llvm::Value &value,
-                     Predicate *pred = truePredicate);
+                     const Predicate &pred = truePredicate());
   virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs,
-                                   Predicate *pred = truePredicate);
+                                   const Predicate &pred = truePredicate());
 
   /// Find the lfp of the constraints in the "kinds" sets
   /// Unconstrained variables will be "Low" (caller delete)
   virtual ConsSoln *leastSolution(const std::set<std::string> kinds,
-                                  Predicate *pred = truePredicate);
+                                  const Predicate &pred = truePredicate());
   /// Find the gfp of the constraints in the "kinds" sets
   /// Unconstrained variables will be "High" (caller delete)
   virtual ConsSoln *greatestSolution(const std::set<std::string> kinds,
-                                     Predicate *pred = truePredicate);
+                                     const Predicate &pred = truePredicate());
   /// return the vars and joins
   std::vector<const RLConsVar *> getVars() { return vars; }
   std::set<RLJoin> &getJoins() { return joins; }
@@ -91,23 +92,25 @@ public:
   // Solve the given kinds in parallel (per thread limit)
   std::vector<PartialSolution *> solveLeastMT(std::vector<std::string> kinds,
                                               bool useDefaultSinks,
-                                              Predicate *pred);
-  std::vector<RLConstraint> &getOrCreateConstraintSet(const std::string kind,
-                                                      Predicate *pred);
+                                              const Predicate *pred);
+  std::vector<RLConstraint> &
+  getOrCreateConstraintSet(const std::string kind,
+                           const Predicate &pred = truePredicate());
 
   void copyConstraint(Predicate *src, Predicate *dest);
 
   void partitionPredicateSet(std::vector<Predicate *> &P);
 
-  static Predicate *truePredicate;
+  static const Predicate &truePredicate();
 
 private:
   static RLConstraintKit *singleton;
 
   // "defult" "default-sinks" "implicit" "implicit-sinks"
   // llvm::StringMap<std::vector<RLConstraint>> constraints;
-  std::map<Predicate *, llvm::StringMap<std::vector<RLConstraint>>> constraints;
-  std::map<Predicate *, std::set<std::string>> lockedConstraintKinds;
+  std::map<const Predicate *, llvm::StringMap<std::vector<RLConstraint>>>
+      constraints;
+  std::map<const Predicate *, std::set<std::string>> lockedConstraintKinds;
   // std::map<Predicate *, std::set<std::string>> lockedConstraintKinds;
 
   std::vector<const RLConsVar *> vars;
@@ -116,10 +119,13 @@ private:
   // Cached solutions for each kind
   // llvm::StringMap<PartialSolution *> leastSolutions;
   // llvm::StringMap<PartialSolution *> greatestSolutions;
-  std::map<Predicate *, llvm::StringMap<PartialSolution *>> leastSolutions;
-  std::map<Predicate *, llvm::StringMap<PartialSolution *>> greatestSolutions;
+  std::map<const Predicate *, llvm::StringMap<PartialSolution *>>
+      leastSolutions;
+  std::map<const Predicate *, llvm::StringMap<PartialSolution *>>
+      greatestSolutions;
 
-  void freeUnneededConstraints(std::string kind, Predicate *pred);
+  void freeUnneededConstraints(std::string kind,
+                               const Predicate &pred = truePredicate());
 };
 
 } // namespace deps

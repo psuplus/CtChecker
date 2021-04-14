@@ -55,7 +55,9 @@ private:
   // Solve by propagation
   void propagate();
   // Query VSets of this and all chained solutions
-  RLLabel isChanged(const ConsVar *);
+  bool isChanged(const ConsVar *);
+
+  RLLabel boundLabel(const ConsVar *);
 
   // Member variables:
 
@@ -64,6 +66,8 @@ private:
   PMap P;
   // Set of variables with non-default values
   std::map<RLLabel, VarSet> VSet;
+
+  static std::map<const ConsVar *, RLLabel> VarLabelMap;
 
   // Chained solutions
   std::vector<PartialSolution *> Chained;

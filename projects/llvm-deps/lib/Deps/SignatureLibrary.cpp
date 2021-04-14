@@ -26,70 +26,83 @@
 
 namespace deps {
 
-bool
-TaintReachable::accept(const ContextID ctxt, const ImmutableCallSite cs) const { return true; }
+bool TaintReachable::accept(const ContextID ctxt,
+                            const ImmutableCallSite cs) const {
+  return true;
+}
 
 std::vector<FlowRecord>
-TaintReachable::process(const ContextID ctxt, const ImmutableCallSite cs) const {
-  DEBUG(errs() << "Using taint reachable signature for: " << *cs.getInstruction() << "\n");
-
-  FlowRecord exp(false,ctxt,ctxt);
-  FlowRecord imp(true,ctxt,ctxt);
-
-  // implicit from the pc of the call site and the function pointer
-  imp.addSourceValue(*cs->getParent());
-  imp.addSourceValue(*cs.getCalledValue());
-
-  // Sources and sinks of the args
-  for (ImmutableCallSite::arg_iterator arg = cs.arg_begin(), end = cs.arg_end();
-       arg != end; ++arg) {
-      // every argument's value is a source
-      exp.addSourceValue(**arg);
-      // if the argument is a pointer, everything it reaches is a source
-      // and everything it reaches is a sink
-      if ((*arg)->getType()->isPointerTy()) {
-        exp.addSourceReachablePtr(**arg);
-        imp.addSourceValue(**arg);
-        
-        // exp.addSinkReachablePtr(**arg);
-        imp.addSinkReachablePtr(**arg);
-      }
-  }
-
-  // if the function has a return value it is a sink
-  if (!cs->getType()->isVoidTy()) {
-    imp.addSinkValue(*cs.getInstruction());
-    exp.addSinkValue(*cs.getInstruction());
-
-    // TODO: VERIFY THIS WITH malloc()
-    // malloc had this but we don't
-    if (cs->getType()->isPointerTy()) {
-      imp.addSinkDirectPtr(*cs.getInstruction());
-      exp.addSinkDirectPtr(*cs.getInstruction());
-    }
-  }
+TaintReachable::process(const ContextID ctxt,
+                        const ImmutableCallSite cs) const {
+  DEBUG(errs() << "Using taint reachable signature for: "
+               << *cs.getInstruction() << "\n");
 
   std::vector<FlowRecord> flows;
-  flows.push_back(imp);
-  flows.push_back(exp);
+
+  for (ImmutableCallSite::arg_iterator arg = cs.arg_begin();
+       arg != cs.arg_end(); ++arg) {
+
+    FlowRecord exp(false, ctxt, ctxt);
+    FlowRecord imp(true, ctxt, ctxt);
+
+    // implicit from the pc of the call site and the function pointer
+    imp.addSourceValue(*cs->getParent());
+    imp.addSourceValue(*cs.getCalledValue());
+
+    // every argument's value is a source
+    exp.addSourceValue(**arg);
+    // if the argument is a pointer, everything it reaches is a source
+    if ((*arg)->getType()->isPointerTy()) {
+      exp.addSourceReachablePtr(**arg);
+      imp.addSourceValue(**arg);
+    }
+
+    // Sources and sinks of the args
+    for (ImmutableCallSite::arg_iterator other = cs.arg_begin();
+         other != cs.arg_end(); ++other) {
+      // if the argument is a pointer, everything it reaches is a sink
+      if (other != arg && (*other)->getType()->isPointerTy()) {
+        exp.addSinkReachablePtr(**other);
+        imp.addSinkReachablePtr(**other);
+      }
+    }
+
+    // if the function has a return value it is a sink
+    if (!cs->getType()->isVoidTy()) {
+      imp.addSinkValue(*cs.getInstruction());
+      exp.addSinkValue(*cs.getInstruction());
+      // TODO: VERIFY THIS WITH malloc()
+      // malloc had this but we don't
+      if (cs->getType()->isPointerTy()) {
+        imp.addSinkDirectPtr(*cs.getInstruction());
+        exp.addSinkDirectPtr(*cs.getInstruction());
+      }
+    }
+
+    flows.push_back(imp);
+    flows.push_back(exp);
+  }
   return flows;
 }
 
-bool
-ArgsToRet::accept(const ContextID ctxt, const ImmutableCallSite cs) const { return true; }
+bool ArgsToRet::accept(const ContextID ctxt, const ImmutableCallSite cs) const {
+  return true;
+}
 
-std::vector<FlowRecord>
-ArgsToRet::process(const ContextID ctxt, const ImmutableCallSite cs) const {
-  DEBUG(errs() << "Using ArgsToRet reachable signature for: " << *cs.getInstruction() << "\n");
+std::vector<FlowRecord> ArgsToRet::process(const ContextID ctxt,
+                                           const ImmutableCallSite cs) const {
+  DEBUG(errs() << "Using ArgsToRet reachable signature for: "
+               << *cs.getInstruction() << "\n");
 
   std::vector<FlowRecord> flows;
 
   if (!cs->getType()->isVoidTy()) {
-    FlowRecord exp(false,ctxt,ctxt);
+    FlowRecord exp(false, ctxt, ctxt);
 
     // Sources and sinks of the args
-    for (ImmutableCallSite::arg_iterator arg = cs.arg_begin(), end = cs.arg_end();
-	 arg != end; ++arg) {
+    for (ImmutableCallSite::arg_iterator arg = cs.arg_begin(),
+                                         end = cs.arg_end();
+         arg != end; ++arg) {
       // every argument's value is a source
       exp.addSourceValue(**arg);
     }
@@ -103,28 +116,29 @@ ArgsToRet::process(const ContextID ctxt, const ImmutableCallSite cs) const {
   return flows;
 }
 
+bool NoFlows::accept(const ContextID ctxt, const ImmutableCallSite cs) const {
+  return true;
+}
 
-bool
-NoFlows::accept(const ContextID ctxt, const ImmutableCallSite cs) const { return true; }
-
-std::vector<FlowRecord>
-NoFlows::process(const ContextID ctxt, const ImmutableCallSite cs) const {
+std::vector<FlowRecord> NoFlows::process(const ContextID ctxt,
+                                         const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using no flows signature...\n");
   return std::vector<FlowRecord>();
 }
 
-bool
-OverflowChecks::accept(const ContextID ctxt, const ImmutableCallSite cs) const {
-  const Function * F = cs.getCalledFunction();
+bool OverflowChecks::accept(const ContextID ctxt,
+                            const ImmutableCallSite cs) const {
+  const Function *F = cs.getCalledFunction();
   return F && F->getName().startswith("____jf_check");
 }
 
 std::vector<FlowRecord>
-OverflowChecks::process(const ContextID ctxt, const ImmutableCallSite cs) const {
+OverflowChecks::process(const ContextID ctxt,
+                        const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using OverflowChecks signature...\n");
 
-  FlowRecord exp(false,ctxt,ctxt);
-  FlowRecord imp(true,ctxt,ctxt);
+  FlowRecord exp(false, ctxt, ctxt);
+  FlowRecord imp(true, ctxt, ctxt);
 
   imp.addSourceValue(*cs->getParent());
 
@@ -144,6 +158,6 @@ OverflowChecks::process(const ContextID ctxt, const ImmutableCallSite cs) const 
   return flows;
 }
 
-}
+} // namespace deps
 
 #endif

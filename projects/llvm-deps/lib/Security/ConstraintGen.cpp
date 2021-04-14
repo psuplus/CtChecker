@@ -42,26 +42,30 @@ bool ConstraintGen::runOnModule(Module &M) {
     return false;
   }
 
-  // Default loads from taint.txt
-  // parser.loadTaintFile();
-
-  // Default loads from untrust.txt
-  parser.loadUntrustFile();
+  // Default loads from source.txt
+  parser.loadSourceFile("source-sink", "source.txt");
 
   std::ifstream fwhitelist("whitelist.txt");
   std::string line;
   while (std::getline(fwhitelist, line)) {
     std::tuple<std::string, int, std::string> match =
         ifa->parseTaintString(line);
-    ifa->removeConstraint("untrust", match);
+    auto new_match = std::make_tuple(RLConstant::BotLabel, std::get<0>(match),
+                                     std::get<1>(match), std::get<2>(match));
+    ifa->removeConstraint("source-sink", new_match);
   }
 
-  parser.untaintAllSink("untrust");
+  parser.untaintAllSink("source-sink");
 
+  // Variables to gather branch statistics
+  // unsigned long number_branches = 0;
+  // unsigned long tainted_branches = 0;
+  // unsigned long number_conditional = 0;
   // errs() << "\n#--------------Results------------------\n";
   // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F)
-  // { errs() << "Check function match: " << F->getName() << "\n"; if
-  // (sinks.find(F->getName()) != sinks.end()) {
+  // {
+  //   errs() << "Check function match: " << F->getName() << "\n";
+  // if (sinks.find(F->getName()) != sinks.end()) {
   //   errs() << "Found function match: " << F->getName() << "\n";
   //   for (Function::const_arg_iterator arg = F->arg_begin();
   //        arg != F->arg_end(); ++arg) {
@@ -95,32 +99,32 @@ bool ConstraintGen::runOnModule(Module &M) {
   //   }
   // }
 
-  //   for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-  //   ++I)
-  //     if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
-  //       const MDLocation *loc = bi->getDebugLoc();
-  //       number_branches++;
-  //       if (bi->isConditional())
-  //         number_conditional++;
-  //       if (bi->isConditional() && loc) {
-  //         const Value *v = bi->getCondition();
-  //         DenseMap<ContextID,
-  //                  DenseMap<const Value *, const ConsElem *>>::iterator
-  //             ctxtIter = ifa->valueConstraintMap.begin();
-  //         for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
-  //           DenseMap<const Value *, const ConsElem *> valueConsMap =
-  //               ctxtIter->second;
-  //           DenseMap<const Value *, const ConsElem *>::iterator vIter =
-  //               valueConsMap.find(v);
-  //           if (vIter != valueConsMap.end()) {
-  //             const ConsElem *elem = vIter->second;
-  //             const ConsElem &low = LHConstant::low();
-  //             LHConstraint c(elem, &low, false);
-  //             errs() << "  ;  [ConsDebugTag-*]   public values\n";
-  //           }
+  // for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
+  // ++I)
+  //   if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
+  //     const MDLocation *loc = bi->getDebugLoc();
+  //     number_branches++;
+  //     if (bi->isConditional())
+  //       number_conditional++;
+  //     if (bi->isConditional() && loc) {
+  //       const Value *v = bi->getCondition();
+  //       DenseMap<ContextID,
+  //                DenseMap<const Value *, const ConsElem *>>::iterator
+  //           ctxtIter = ifa->valueConstraintMap.begin();
+  //       for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
+  //         DenseMap<const Value *, const ConsElem *> valueConsMap =
+  //             ctxtIter->second;
+  //         DenseMap<const Value *, const ConsElem *>::iterator vIter =
+  //             valueConsMap.find(v);
+  //         if (vIter != valueConsMap.end()) {
+  //           const ConsElem *elem = vIter->second;
+  //           const ConsElem &low = RLConstant::bot();
+  //           RLConstraint c(elem, &low, &Predicate::TruePred(), false);
+  //           errs() << "  ;  [ConsDebugTag-*]   public values\n";
   //         }
   //       }
   //     }
+  //   }
   // }
 
   // errs() << "\n#--------------Cache Side Channel------------------\n";

@@ -52,7 +52,8 @@ TaintAnalysisBase::getPointerTarget(const AbstractLoc *loc) {
 }
 
 void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
-                                       int t_offset, std::string match_name) {
+                                       int t_offset, std::string match_name,
+                                       RLLabel label) {
 
   std::string s = value.getName();
   errs() << "Trying to constrain " << match_name << " at " << t_offset
@@ -62,7 +63,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       ifa->reachableLocsForValue(value);
   if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
     errs() << "SETTING " << s << " TO BE TAINTED\n";
-    ifa->setTainted(kind, value);
+    ifa->setLabel(kind, value, label, true);
   }
 
   // Heap nodes not returned from locs For value
@@ -158,7 +159,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
     el->dump(errs());
     errs() << " : addr " << el << "\n";
   }
-  ifa->constrainAllConsElem(kind, value, elementsToConstrain);
+  ifa->constrainAllConsElem(kind, value, elementsToConstrain, label);
 }
 
 void TaintAnalysisBase::untaintAllSink(std::string kind) {
@@ -166,9 +167,10 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
   errs() << "\n ========= Untaint Sink Functions ========= \n";
   for (auto ctxValuePair : ifa->sinkValueSet) {
     ContextID ctxt;
+    RLLabel label;
     Value *v;
     int t_offset;
-    std::tie(ctxt, v, t_offset) = ctxValuePair;
+    std::tie(ctxt, label, v, t_offset) = ctxValuePair;
     Value &value = *v;
 
     errs() << "\tstart untainting \n\t";
@@ -182,7 +184,7 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     // TODO: confirm the correctness of the [t_offset < 0] condition
     // It was removed for a while because we believed it was unnecessary
     if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
-      ifa->setUntainted(kind, value);
+      ifa->setLabel(kind, value, label, false);
     }
 
     // Heap nodes not returned from locs For value
@@ -272,13 +274,13 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     }
 
     if (elementsToUntaint.size() == 0) {
-      ifa->setUntainted(kind, value);
+      ifa->setLabel(kind, value, label, false);
     } else {
       std::string debugTag = " ;  [ConsDebugTag-*]  sink location\n";
-      const ConsElem *botConstant = &(ifa->kit->botConstant());
+      const ConsElem *constant = &(ifa->kit->constant(label));
       std::set<const ConsElem *>::iterator it = elementsToUntaint.begin();
       for (; it != elementsToUntaint.end(); ++it) {
-        ifa->kit->addConstraint(kind, *(*it), *botConstant, debugTag);
+        ifa->kit->addConstraint(kind, *(*it), *constant, debugTag);
         errs() << debugTag;
       }
     }
@@ -374,7 +376,8 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 
 /** Taint a Value whose name matches s */
 void TaintAnalysisBase::taintStr(
-    std::string kind, std::tuple<std::string, int, std::string> match) {
+    std::string kind,
+    std::tuple<RLLabel, std::string, int, std::string> match) {
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = ifa->summarySourceValueConstraintMap.begin(),
            end = ifa->summarySourceValueConstraintMap.end();
@@ -383,10 +386,11 @@ void TaintAnalysisBase::taintStr(
 
     // errs() << "Visiting ";
     // value.dump();
+    RLLabel label;
     std::string match_name;
     int t_offset;
     std::string fn_name;
-    std::tie(match_name, t_offset, fn_name) = match;
+    std::tie(label, match_name, t_offset, fn_name) = match;
 
     // Only taint variables defined in taint files if the function matches
     const Function *fn = findEnclosingFunc(&value);
@@ -399,7 +403,7 @@ void TaintAnalysisBase::taintStr(
     // if (function_matches && value.hasName() && value.getName() == match_name)
     // {
     if (Infoflow::matchValueAndParsedString(value, kind, match) > 0) {
-      constrainValue(kind, value, t_offset, match_name);
+      constrainValue(kind, value, t_offset, match_name, label);
     } else {
       std::string s;
       llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
@@ -407,12 +411,54 @@ void TaintAnalysisBase::taintStr(
       ss->str();    // flush stream to s
       // test if the value's content starts with match
       if (s.find(match_name) == 0 && function_matches) {
-        ifa->setTainted(kind, value);
+        ifa->setLabel(kind, value, label, true);
         errs() << "Match Detected for " << s << "\n";
       }
     }
   }
-  errs() << "DONE\n";
+}
+
+void TaintAnalysisBase::labelValue(
+    std::string kind,
+    std::tuple<RLLabel, std::string, int, std::string> match) {
+  for (DenseMap<const Value *, const ConsElem *>::const_iterator
+           entry = ifa->summarySourceValueConstraintMap.begin(),
+           end = ifa->summarySourceValueConstraintMap.end();
+       entry != end; ++entry) {
+    const Value &value = *(entry->first);
+
+    // errs() << "Visiting ";
+    // value.dump();
+    RLLabel label;
+    std::string match_name;
+    int t_offset;
+    std::string fn_name;
+    std::tie(label, match_name, t_offset, fn_name) = match;
+
+    // Only taint variables defined in taint files if the function matches
+    const Function *fn = findEnclosingFunc(&value);
+    bool function_matches = false;
+    if (fn_name.size() == 0 ||
+        (fn && fn->hasName() && fn->getName() == fn_name)) {
+      function_matches = true;
+    }
+
+    // if (function_matches && value.hasName() && value.getName() == match_name)
+    // {
+    if (Infoflow::matchValueAndParsedString(value, kind, match) > 0) {
+      constrainValue(kind, value, t_offset, match_name, label);
+    } else {
+      std::string s;
+      llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
+      *ss << value; // dump value info to ss
+      ss->str();    // flush stream to s
+      // test if the value's content starts with match
+      if (s.find(match_name) == 0 && function_matches) {
+        ifa->setLabel(kind, value, label, true);
+        errs() << "Match Detected for " << s << "\n";
+      }
+    }
+  }
 }
 
 unsigned TaintAnalysisBase::fieldIndexToByteOffset(int index, const Value *v,
@@ -440,10 +486,22 @@ void TaintAnalysisBase::loadTaintUntrustFile(std::string kind,
                                              std::string filename) {
   std::ifstream infile(filename); // read tainted values from txt file
   std::string line;
+  // while (std::getline(infile, line)) {
+  //   std::tuple<std::string, int, std::string> match =
+  //       ifa->parseTaintString(line);
+  //   taintStr(kind, match);
+  // }
+}
+
+void TaintAnalysisBase::loadSourceFile(std::string kind, std::string filename) {
+  std::ifstream infile(filename); // read tainted values from txt file
+  std::string line;
   while (std::getline(infile, line)) {
-    std::tuple<std::string, int, std::string> match =
-        ifa->parseTaintString(line);
-    taintStr(kind, match);
+    std::tuple<RLLabel, std::string, int, std::string> match =
+        ifa->parseSourceString(line);
+    // taintStr(kind, match);
+    errs() << "\n::labeling::\n";
+    labelValue(kind, match);
   }
 }
 

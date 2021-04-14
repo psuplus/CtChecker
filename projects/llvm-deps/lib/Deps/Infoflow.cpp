@@ -78,10 +78,12 @@ void Infoflow::doInitialization() {
   signatureRegistrar = new SignatureRegistrar();
   registerSignatures();
 
+  parseLatticeFile();
+
   std::string line;
   std::ifstream sinklist("sink.txt");
   while (std::getline(sinklist, line)) {
-    std::tuple<std::string, int, int> ret = parseSinkString(line);
+    std::tuple<RLLabel, std::string, int, int> ret = parseSinkString(line);
     sinkVariables.insert(ret);
   }
 }
@@ -869,7 +871,7 @@ bool InfoflowSolution::isTainted(const Value &value) {
       valueMap.find(&value);
   if (entry != valueMap.end()) {
     const ConsElem &elem = *(entry->second);
-    return (soln->subst(elem) == topConstant);
+    return (!(soln->subst(elem) == botConstant));
   } else {
     DEBUG(errs() << "not in solution: " << value << "\n");
     return defaultTainted;
@@ -938,7 +940,7 @@ void Infoflow::getOriginalLocation(const Value *V) {
                << "\n";
         return;
       }
-      errs() << lv->getFilename() << " line " << lv->getLine() << "\n";
+      errs() << lv->getFilename() << " line: " << lv->getLine() << "\n";
       return;
     }
   } else { // try to find the uses of the value
@@ -979,7 +981,7 @@ void Infoflow::getOriginalLocation(const Value *V) {
     errs() << "Unknown location for " << V->getName() << "\n";
     return;
   }
-  errs() << Loc->getFilename() << " line " << std::to_string(Loc->getLine())
+  errs() << Loc->getFilename() << " line: " << std::to_string(Loc->getLine())
          << "\n";
   return;
 }
@@ -1097,7 +1099,7 @@ void InfoflowSolution::getOriginalLocation(const Value *V) {
     errs() << "Unknown location for " << V->getName();
     return;
   }
-  errs() << Loc->getFilename() << " line " << std::to_string(Loc->getLine());
+  errs() << Loc->getFilename() << " line: " << std::to_string(Loc->getLine());
   return;
 }
 
@@ -1199,6 +1201,22 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
 /// Infoflow
 ///////////////////////////////////////////////////////////////////////////////
 bool Infoflow::DropAtSinks() const { return DepsDropAtSink; }
+
+void Infoflow::setLabel(std::string kind, const Value &value, RLLabel label,
+                        bool gte) {
+  assert(kind != "default" && "Cannot add constraints to the default kind");
+  assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
+
+  if (gte)
+    putOrConstrainConsElemSummarySource(kind, value, kit->constant(label));
+  else {
+    const ConsElem &current = getOrCreateConsElemSummarySink(value);
+    kit->addConstraint(kind, current, kit->constant(label),
+                       " ;  [ConsDebugTag-1]  \n");
+    errs() << " ;  [ConsDebugTag-1]  ";
+    getOriginalLocation(&value);
+  }
+}
 
 void Infoflow::setUntainted(std::string kind, const Value &value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
@@ -1339,8 +1357,9 @@ InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
     kinds.insert("implicit-sinks");
   return new InfoflowSolution(*this,                     // infoflow
                               kit->leastSolution(kinds), // ConsSoln* s
-                              kit->topConstant(), // const ConsElem & top
-                              false,              /* default to untainted */
+                              kit->topConstant(),        // const ConsElem & top
+                              kit->botConstant(),
+                              false, /* default to untainted */
                               summarySinkValueConstraintMap, // valueMap
                               locConstraintMap,              // locMap
                               summarySinkVargConstraintMap); // vargMap
@@ -1356,8 +1375,8 @@ InfoflowSolution *Infoflow::greatestSolution(std::set<std::string> kinds,
   }
   return new InfoflowSolution(*this,                        // infoflow
                               kit->greatestSolution(kinds), // ConsSoln* s
-                              kit->topConstant(), // const ConsElem & top
-                              true,               /* default to tainted */
+                              kit->topConstant(),       // const ConsElem & top
+                              kit->botConstant(), true, /* default to tainted */
                               summarySourceValueConstraintMap, // valueMap
                               locConstraintMap,                // locMap
                               summarySourceVargConstraintMap); // vargMap
@@ -1693,6 +1712,7 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
     if (v != NULL && !loc.isNodeCompletelyFolded()) {
       const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
       gep->dump();
+      errs() << "name is: " << v->getName() << "\n";
       if (StructType *s = dyn_cast<StructType>(gep->getSourceElementType())) {
         locConstraintMap[&loc] = createConsElemFromStruct(loc, s);
         return locConstraintMap[&loc];
@@ -2631,9 +2651,10 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
 
     if (F) {
       for (auto tuple : sinkVariables) {
+        RLLabel label;
         std::string fn_name;
         int arg_no = -1, t_offset = -1;
-        std::tie(fn_name, arg_no, t_offset) = tuple;
+        std::tie(label, fn_name, arg_no, t_offset) = tuple;
         if (F->getName().size() > 0 && F->getName().equals(fn_name)) {
           errs() << "Found function match: " << F->getName() << "\n";
           User::const_op_iterator op_i = cs.arg_begin();
@@ -2641,8 +2662,9 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
           for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
             if (arg_no == -1 || arg_no == arg_idx) {
               Value *value = (*op_i).get();
-              std::tuple<ContextID, Value *, int> valueOffsetPair =
-                  std::make_tuple(this->getCurrentContext(), value, t_offset);
+              std::tuple<ContextID, RLLabel, Value *, int> valueOffsetPair =
+                  std::make_tuple(this->getCurrentContext(), label, value,
+                                  t_offset);
               sinkValueSet.insert(valueOffsetPair);
               errs() << "inserted: ";
               value->dump();
@@ -2661,7 +2683,7 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
        the eliminate those CallInst(s) which are
        impossible for a critical flow to exist
     */
-   
+
     // bool proceed = true;
     // if (!F || !F->getName().equals("malloc")) {
     //   proceed = true;
@@ -2719,6 +2741,8 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
   // to callee pc
   pcFlow.addSinkValue(callee.getEntryBlock());
   flows.push_back(pcFlow);
+
+  pcFlow.dump();
 
   errs() << "CALLSITE\n";
   cs->dump();
@@ -3008,6 +3032,52 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   return OS.str();
 }
 
+std::tuple<RLLabel, std::string, int, std::string>
+Infoflow::parseSourceString(std::string line) {
+  std::tuple<RLLabel, std::string, int, std::string> ret;
+  // Move any extra whitespace to end
+  std::string::iterator new_end =
+      unique(line.begin(), line.end(),
+             [](const char &x, const char &y) { return x == y and x == ' '; });
+
+  // Remove the extra space
+  line.erase(new_end, line.end());
+
+  // Delete Trailing White space
+
+  // Split up line
+  std::vector<std::string> splits;
+  char delimiter = ' ';
+
+  size_t i = 0;
+  size_t pos = line.find(delimiter);
+
+  while (pos != std::string::npos) {
+    splits.push_back(line.substr(i, pos - i));
+    i = pos + 1;
+    pos = line.find(delimiter, i);
+  }
+  splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
+
+  // Create match/offset pair
+
+  RLLabel label = RLConstant::parseLabelString(splits[0]);
+
+  RLConstant::constant(label).dump(errs());
+
+  if (splits.size() == 2) {
+    ret = std::make_tuple(label, splits[1], -1, "");
+  } else if (splits.size() == 3 && isdigit(splits[2][0])) {
+    ret = std::make_tuple(label, splits[1], std::stoi(splits[2]), "");
+  } else if (splits.size() == 3) {
+    ret = std::make_tuple(label, splits[1], -1, splits[2]);
+  } else if (splits.size() == 4) {
+    ret = std::make_tuple(label, splits[1], std::stoi(splits[2]), splits[3]);
+  }
+
+  return ret;
+}
+
 std::tuple<std::string, int, std::string>
 Infoflow::parseTaintString(std::string line) {
   std::tuple<std::string, int, std::string> ret;
@@ -3049,7 +3119,8 @@ Infoflow::parseTaintString(std::string line) {
   return ret;
 }
 
-std::tuple<std::string, int, int> Infoflow::parseSinkString(std::string line) {
+std::tuple<RLLabel, std::string, int, int>
+Infoflow::parseSinkString(std::string line) {
   // Move any extra whitespace to end
   std::string::iterator new_end =
       unique(line.begin(), line.end(),
@@ -3073,28 +3144,118 @@ std::tuple<std::string, int, int> Infoflow::parseSinkString(std::string line) {
   }
   splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
 
+  RLLabel label = RLConstant::parseLabelString(splits[0]);
+
   // Create match/offset pair
-  if (splits.size() == 1) {
-    return std::make_tuple(splits[0], -1, -1);
-  } else if (splits.size() == 2) {
-    return std::make_tuple(splits[0], std::stoi(splits[1]), -1);
+  if (splits.size() == 2) {
+    return std::make_tuple(label, splits[1], -1, -1);
   } else if (splits.size() == 3) {
-    return std::make_tuple(splits[0], std::stoi(splits[1]),
-                           std::stoi(splits[2]));
+    return std::make_tuple(label, splits[1], std::stoi(splits[2]), -1);
+  } else if (splits.size() == 4) {
+    return std::make_tuple(label, splits[1], std::stoi(splits[2]),
+                           std::stoi(splits[3]));
   }
+}
+
+void Infoflow::parseLatticeFile() {
+  std::string line;
+  std::ifstream lattice("lattice.txt");
+  errs() << "[LATTICE]\n";
+  while (std::getline(lattice, line)) {
+    errs() << line << "\n";
+    // Move any extra whitespace to end
+    std::string::iterator new_end =
+        unique(line.begin(), line.end(), [](const char &x, const char &y) {
+          return x == y and x == ' ';
+        });
+
+    // Remove the extra space
+    line.erase(new_end, line.end());
+    line = std::regex_replace(line, std::regex("^ +| +$"), "");
+
+    // Split up line
+    std::vector<std::string> splits;
+    char delimiter = ' ';
+
+    size_t i = 0;
+    size_t pos = line.find(delimiter);
+
+    while (pos != std::string::npos) {
+      splits.push_back(line.substr(i, pos - i));
+      i = pos + 1;
+      pos = line.find(delimiter, i);
+    }
+    splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
+    assert(splits.size() > 2 &&
+           "Incompatible input. Check lattice.txt for format issues");
+    if (splits[0] == "C") {
+      std::set<std::string> compartments;
+      for (uint i = 2; i < splits.size(); i++) {
+        compartments.insert(splits[i]);
+      }
+      RLConstant::RLCompartmentMap.insert(
+          std::pair<std::string, std::set<std::string>>(splits[1],
+                                                        compartments));
+    } else if (splits[0] == "L") {
+      std::vector<std::string> levels;
+      for (uint i = 2; i < splits.size(); i++) {
+        auto it = std::find(levels.begin(), levels.end(), splits[i]);
+        assert(it == levels.end() && "Duplicate level names!");
+        levels.push_back(splits[i]);
+      }
+      RLConstant::RLLevelMap.insert(
+          std::pair<std::string, std::vector<std::string>>(splits[1], levels));
+    }
+  }
+
+  errs() << "Levels: [\n";
+  for (auto d : RLConstant::RLLevelMap) {
+    errs() << "\t" << d.first << ": { ";
+    RLConstant::BotLabel.first[d.first] = 0;
+    RLConstant::TopLabel.first[d.first] = d.second.size() - 1;
+    for (auto s : d.second) {
+      errs() << s;
+      if (s != *d.second.rbegin())
+        errs() << " -> ";
+    }
+    errs() << " }\n";
+  }
+  errs() << "]\n";
+
+  errs() << "Compartments: [\n";
+  for (auto d : RLConstant::RLCompartmentMap) {
+    errs() << "\t" << d.first << ": { ";
+    RLConstant::BotLabel.second[d.first] = std::set<std::string>();
+    RLConstant::TopLabel.second[d.first] = d.second;
+    for (auto s : d.second) {
+      errs() << s << (s != *d.second.rbegin() ? ", " : " ");
+    }
+    errs() << "}\n";
+  }
+  errs() << "]\n";
+
+  RLConstant::lockMap();
+
+  RLConstant::bot().dump(errs());
+  errs() << "\n";
+  RLConstant::top().dump(errs());
+  errs() << "\n";
 }
 
 int Infoflow::matchValueAndParsedString(
     const Value &value, std::string kind,
-    std::tuple<std::string, int, std::string> match) {
+    std::tuple<RLLabel, std::string, int, std::string> match) {
+  RLLabel label;
   std::string match_name;
   int t_offset;
   std::string fn_name;
-  std::tie(match_name, t_offset, fn_name) = match;
+  std::tie(label, match_name, t_offset, fn_name) = match;
 
   errs() << "Matching value with parsed string.\n";
 
   const Function *fn = findEnclosingFunc(&value);
+  if (fn)
+    errs() << "\t- found enclosing function: " << fn->getName() << "\n";
   int variable_matches = 0;
   if (fn_name.size() == 0 ||
       (fn && fn->hasName() && fn->getName() == fn_name)) {
@@ -3151,9 +3312,10 @@ void Infoflow::getOrCreateLocationValueMap() {
 }
 
 void Infoflow::removeConstraint(
-    std::string kind, std::tuple<std::string, int, std::string> match) {
+    std::string kind,
+    std::tuple<RLLabel, std::string, int, std::string> match) {
   getOrCreateLocationValueMap();
-  errs() << "Removing values tied to " << std::get<0>(match) << "\n";
+  errs() << "Removing values tied to " << std::get<1>(match) << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = summarySourceValueConstraintMap.begin(),
            end = summarySourceValueConstraintMap.end();
@@ -3167,11 +3329,11 @@ void Infoflow::removeConstraint(
     llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
     *ss << value; // dump value info to ss
     ss->str();    // flush stream to s
-
+    RLLabel label;
     std::string match_name;
     int t_offset;
     std::string fn_name;
-    std::tie(match_name, t_offset, fn_name) = match;
+    std::tie(label, match_name, t_offset, fn_name) = match;
 
     errs() << "The value under examination is: [" << s << "]\n"
            << "\twith offset = [" << t_offset << "], and in the function: ["
@@ -3299,7 +3461,8 @@ void Infoflow::removeConstraint(
 }
 
 void Infoflow::constrainAllConsElem(
-    std::string kind, std::map<unsigned, const ConsElem *> elemMap) {
+    std::string kind, std::map<unsigned, const ConsElem *> elemMap,
+    RLLabel label) {
   errs() << "Tainting all constraint elements from value\n";
   for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                       end = elemMap.end();
@@ -3307,7 +3470,7 @@ void Infoflow::constrainAllConsElem(
     // it->second->dump(errs());
     if ((it->second) != NULL) {
       // TODO add debug info
-      kit->addConstraint(kind, kit->topConstant(), *(it->second),
+      kit->addConstraint(kind, kit->constant(label), *(it->second),
                          " ;  [ConsDebugTag-22]  \n");
       errs() << " ;  [ConsDebugTag-22]  ";
       errs() << "\n";
@@ -3315,13 +3478,14 @@ void Infoflow::constrainAllConsElem(
   }
 }
 void Infoflow::constrainAllConsElem(std::string kind,
-                                    std::set<const ConsElem *> elems) {
+                                    std::set<const ConsElem *> elems,
+                                    RLLabel label) {
   errs() << "Tainting all constraint elements from value\n";
   for (std::set<const ConsElem *>::iterator it = elems.begin(),
                                             end = elems.end();
        it != end; ++it) {
     //(*it)->dump(errs());
-    kit->addConstraint(kind, kit->topConstant(), *(*it),
+    kit->addConstraint(kind, kit->constant(label), *(*it),
                        " ;  [ConsDebugTag-19]  \n");
     errs() << " ;  [ConsDebugTag-19]  ";
     errs() << "\n";
@@ -3329,12 +3493,13 @@ void Infoflow::constrainAllConsElem(std::string kind,
   }
 }
 void Infoflow::constrainAllConsElem(std::string kind, const Value &v,
-                                    std::set<const ConsElem *> elems) {
+                                    std::set<const ConsElem *> elems,
+                                    RLLabel label) {
   errs() << "Tainting all constraint elements from value\n";
   if (elems.size() == 0) {
-    setTainted(kind, v);
+    setLabel(kind, v, label, true);
   } else {
-    constrainAllConsElem(kind, elems);
+    constrainAllConsElem(kind, elems, label);
   }
 }
 
@@ -3436,6 +3601,8 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
 void Infoflow::constrainOffsetFromIndex(
     std::string kind, const AbstractLoc *loc, const Value *v,
     std::map<unsigned, const ConsElem *> elemMap, int fieldIdx) {
+// TODO enable this when fixed
+#if 0
   if (StructType *st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned)fieldIdx, loc);
     errs() << "Index " << fieldIdx << "->" << offset << "\n";
@@ -3451,7 +3618,8 @@ void Infoflow::constrainOffsetFromIndex(
       errs() << "\n";
       // TODO add debug info
     } else {
-      constrainAllConsElem(kind, elemMap);
+      //TODO enable this when fixed
+      // constrainAllConsElem(kind, elemMap);
     }
   } else if (const AllocaInst *al = dyn_cast<AllocaInst>(v)) {
     if (isa<ArrayType>(al->getAllocatedType())) {
@@ -3466,10 +3634,12 @@ void Infoflow::constrainOffsetFromIndex(
         errs() << "\n";
         // TODO add debug info
       } else {
-        constrainAllConsElem(kind, elemMap);
+        //TODO enable this when fixed
+        // constrainAllConsElem(kind, elemMap);
       }
     }
   }
+#endif
 }
 
 void Infoflow::removeConstraintFromIndex(

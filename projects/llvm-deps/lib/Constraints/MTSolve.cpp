@@ -55,7 +55,7 @@ void RLConstraintKit::solveMT(std::string kind, Predicate *pred) {
   PartialSolution *&G = greatestSolutions[pred][kind];
   PartialSolution *&L = leastSolutions[pred][kind];
 
-  Constraints &C = getOrCreateConstraintSet(kind, pred);
+  Constraints &C = getOrCreateConstraintSet(kind, *pred);
 
   SolverThread *TG = SolverThread::spawn(C, true);
   SolverThread *TL = SolverThread::spawn(C, false);
@@ -70,7 +70,7 @@ void RLConstraintKit::solveMT(std::string kind, Predicate *pred) {
   assert(greatestSolutions[pred].count(kind));
 
   // Cleanup
-  freeUnneededConstraints(kind, pred);
+  freeUnneededConstraints(kind, *pred);
 }
 
 struct MergeInfo {
@@ -95,7 +95,7 @@ void *merge(void *arg) {
 
 std::vector<PartialSolution *>
 RLConstraintKit::solveLeastMT(std::vector<std::string> kinds,
-                              bool useDefaultSinks, Predicate *pred) {
+                              bool useDefaultSinks, const Predicate *pred) {
   assert(leastSolutions[pred].count("default"));
 
   PartialSolution *P = leastSolutions[pred]["default"];
@@ -108,7 +108,7 @@ RLConstraintKit::solveLeastMT(std::vector<std::string> kinds,
            "Already solved");
     assert(!leastSolutions[pred].count(*kind));
     leastSolutions[pred][*kind] =
-        new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
+        new PartialSolution(getOrCreateConstraintSet(*kind, *pred), false);
     ToMerge.push_back(new PartialSolution(*leastSolutions[pred][*kind]));
   }
 
@@ -161,17 +161,18 @@ RLConstraintKit::solveLeastMT(std::vector<std::string> kinds,
 
 std::vector<InfoflowSolution *>
 Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
-                       Predicate *pred) {
+                       const Predicate *pred) {
   std::vector<PartialSolution *> PS =
       kit->solveLeastMT(kinds, useDefaultSinks, pred);
 
   std::vector<InfoflowSolution *> Solns;
   for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();
        I != E; ++I) {
-    Solns.push_back(new InfoflowSolution(
-        *this, *I, kit->topConstant(), false, /* default to untainted */
-        summarySinkValueConstraintMap, locConstraintMap,
-        summarySinkVargConstraintMap));
+    Solns.push_back(
+        new InfoflowSolution(*this, *I, kit->topConstant(), kit->botConstant(),
+                             false, /* default to untainted */
+                             summarySinkValueConstraintMap, locConstraintMap,
+                             summarySinkVargConstraintMap));
   }
 
   return Solns;

@@ -23,11 +23,12 @@ namespace deps {
 
 class RLConstant;
 
-enum RLLevel { LOW, MID, HIGH };
-enum RLCompartment { NUCLEAR, CRYPTO, BIO };
-typedef std::set<RLCompartment> CompartmentSet;
-typedef std::pair<RLLevel, CompartmentSet> RLLabel;
-typedef std::map<RLLabel, RLConstant *> RLLabelConstantMap;
+typedef std::map<std::string, std::vector<std::string>> LevelMap;
+typedef std::map<std::string, std::set<std::string>> CompartmentMap;
+typedef std::map<std::string, int> RLLevel;
+typedef CompartmentMap RLCompartment;
+typedef std::pair<RLLevel, RLCompartment> RLLabel;
+typedef std::map<RLLabel, RLConstant *> RLConstantMap;
 
 /// Singleton constants in the lattice
 class RLConstant : public ConsElem {
@@ -35,8 +36,8 @@ public:
   /// Get a reference to the constant (do not delete!)
   static const RLConstant &bot();
   static const RLConstant &top();
-  // static const RLConstant &mid();
-  static const RLConstant &constant(RLLevel level, CompartmentSet compartments);
+
+  static const RLConstant &constant(RLLevel l, RLCompartment c);
   static const RLConstant &constant(RLLabel label);
 
   /// Compare with another constraint element.
@@ -67,18 +68,22 @@ public:
   static inline bool classof(const ConsElem *elem) {
     return elem->type() == DT_RLConstant;
   }
+  static void lockMap() { mapLock = true; }
+  static RLLabel parseLabelString(std::string);
 
-  static const CompartmentSet EmptySet;
-  static const CompartmentSet CompleteSet;
+  static CompartmentMap RLCompartmentMap;
+  static LevelMap RLLevelMap;
+  static RLLabel TopLabel;
+  static RLLabel BotLabel;
 
 protected:
-  RLConstant(RLLevel level, CompartmentSet cSet);
-  RLConstant(RLLabel label);
-  RLConstant &operator=(const RLConstant &);
+  RLConstant(RLLevel l, RLCompartment c);
   const RLLevel level;
-  const CompartmentSet compartmentSet;
+  const RLCompartment compartment;
+  static RLConstantMap constants;
 
-  static RLLabelConstantMap labelConstants;
+private:
+  static bool mapLock;
 };
 
 /// Concrete implementation of constraint variables for use with
@@ -112,6 +117,7 @@ private:
   RLConsVar(const RLConsVar &);
   RLConsVar &operator=(const RLConsVar &);
   const std::string desc;
+  std::string replaced;
 };
 
 /// Constraint element representing the join of L-H lattice elements.

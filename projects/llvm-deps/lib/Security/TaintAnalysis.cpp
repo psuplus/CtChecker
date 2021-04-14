@@ -14,9 +14,9 @@
 #include "TaintAnalysis.h"
 #include "Infoflow.h"
 #include "llvm/IR/Function.h"
-#include "llvm/IR/Module.h"
-#include "llvm/IR/IntrinsicInst.h"
 #include "llvm/IR/InstIterator.h"
+#include "llvm/IR/IntrinsicInst.h"
+#include "llvm/IR/Module.h"
 #include "llvm/Support/raw_ostream.h"
 #include <fstream>
 
@@ -26,33 +26,33 @@
 
 namespace deps {
 
-static RegisterPass<TaintAnalysis>
-X("taintanalysis", "A simple taint analysis");
+static RegisterPass<TaintAnalysis> X("taintanalysis",
+                                     "A simple taint analysis");
 
 char TaintAnalysis::ID;
 
-
-bool 
-TaintAnalysis::runOnModule(Module &M) {
+bool TaintAnalysis::runOnModule(Module &M) {
   ifa = &getAnalysis<Infoflow>();
-  if (!ifa) { errs() << "No instance\n"; return false;}
+  if (!ifa) {
+    errs() << "No instance\n";
+    return false;
+  }
   parser.setInfoflow(ifa);
-
 
   parser.loadTaintUntrustFile("test", "taint.txt");
 
-  std::ifstream whitelistFile("whitelist.txt");
-  std::string line;
-  while (std::getline(whitelistFile, line)) {
-    std::tuple<std::string, int, std::string> match = ifa->parseTaintString(line);
-    ifa->removeConstraint("taint", match);
-  }
+  // std::ifstream whitelistFile("whitelist.txt");
+  // std::string line;
+  // while (std::getline(whitelistFile, line)) {
+  //   std::tuple<std::string, int, std::string> match =
+  //   ifa->parseTaintString(line); ifa->removeConstraint("taint", match);
+  // }
 
   std::set<std::string> kinds;
   kinds.insert("test");
 
   errs() << "Least solution with explicit constraints\n";
-  InfoflowSolution* soln = ifa->leastSolution(kinds, false, true);
+  InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
   soln->allTainted();
 
   errs() << "Least solution with implicit contraints\n";
@@ -67,4 +67,4 @@ TaintAnalysis::runOnModule(Module &M) {
   return false;
 }
 
-}
+} // namespace deps

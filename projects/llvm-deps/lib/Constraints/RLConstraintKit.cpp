@@ -20,6 +20,7 @@
 #include <iostream>
 
 #include "llvm/ADT/Statistic.h"
+#include "llvm/IR/DebugInfo.h"
 #include "llvm/Support/Casting.h"
 
 namespace deps {
@@ -27,7 +28,7 @@ namespace deps {
 STATISTIC(explicitRLConstraints, "Number of explicit flow constraints");
 STATISTIC(implicitRLConstraints, "Number of implicit flow constraints");
 
-typedef std::map<Predicate *, llvm::StringMap<PartialSolution *>>
+typedef std::map<const Predicate *, llvm::StringMap<PartialSolution *>>
     PartialSolutionMap;
 
 RLConstraintKit::RLConstraintKit() {}
@@ -70,9 +71,16 @@ const ConsElem &RLConstraintKit::topConstant() const {
   return RLConstant::top();
 }
 
-const ConsElem &RLConstraintKit::constant(RLLevel l,
-                                          CompartmentSet cSet) const {
-  return RLConstant::constant(l, cSet);
+const ConsElem &RLConstraintKit::constant(RLLevel l, RLCompartment c) const {
+  return RLConstant::constant(l, c);
+}
+
+const ConsElem &RLConstraintKit::constant(RLLabel label) const {
+  return RLConstant::constant(label);
+}
+
+const Predicate &RLConstraintKit::truePredicate() {
+  return Predicate::TruePred();
 }
 
 const ConsElem &RLConstraintKit::upperBound(const ConsElem &e1,
@@ -104,20 +112,20 @@ const ConsElem &RLConstraintKit::upperBound(std::set<const ConsElem *> elems) {
 
 std::vector<RLConstraint> &
 RLConstraintKit::getOrCreateConstraintSet(const std::string kind,
-                                          Predicate *pred) {
+                                          const Predicate &pred) {
   // return constraints.lookup(kind).getValue();
   // return constraints.insert(constraints.Create(kind))->getValue();
   // if (constraints.find(pred) != constraints.end()) {
   //   return constraints[pred][kind];
   // }
-  return constraints[pred][kind];
+  return constraints[&pred][kind];
 }
 
 void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs, std::string info,
-                                    Predicate *pred) {
-  if (lockedConstraintKinds[pred].find(kind) !=
-      lockedConstraintKinds[pred].end()) {
+                                    const Predicate &pred) {
+  if (lockedConstraintKinds[&pred].find(kind) !=
+      lockedConstraintKinds[&pred].end()) {
     assert(false && "Have already started solving this kind and cannot add "
                     "more constraints.");
   }
@@ -140,32 +148,34 @@ void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
     for (std::set<const ConsElem *>::iterator elem = elems.begin(),
                                               end = elems.end();
          elem != end; ++elem) {
-      const RLConstraint c(**elem, rhs, *pred, implicit);
+      const RLConstraint c(**elem, rhs, pred, implicit);
       set.push_back(c);
       if (elems.size() > 1) {
         llvm::errs() << info;
       }
     }
   } else {
-    RLConstraint c(lhs, rhs, *pred, implicit);
+    RLConstraint c(lhs, rhs, pred, implicit);
     set.push_back(c);
   }
 }
 
 void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs,
-                                    const llvm::Value &value, Predicate *pred) {
+                                    const llvm::Value &value,
+                                    const Predicate &pred) {
   addConstraint(kind, lhs, rhs, "", pred);
 }
 
 void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
-                                    const ConsElem &rhs, Predicate *pred) {
+                                    const ConsElem &rhs,
+                                    const Predicate &pred) {
   addConstraint(kind, lhs, rhs, "", pred);
 }
 
 void RLConstraintKit::removeConstraintRHS(const std::string kind,
                                           const ConsElem &rhs,
-                                          Predicate *pred) {
+                                          const Predicate &pred) {
   if (kind == "default")
     explicitRLConstraints--;
   if (kind == "implicit")
@@ -211,17 +221,17 @@ void RLConstraintKit::removeConstraintRHS(const std::string kind,
 }
 
 ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
-                                         Predicate *pred) {
+                                         const Predicate &pred) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
        kind != end; ++kind) {
-    if (!leastSolutions[pred].count(*kind)) {
-      lockedConstraintKinds[pred].insert(*kind);
-      leastSolutions[pred][*kind] =
+    if (!leastSolutions[&pred].count(*kind)) {
+      lockedConstraintKinds[&pred].insert(*kind);
+      leastSolutions[&pred][*kind] =
           new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
       freeUnneededConstraints(*kind, pred);
     }
-    PartialSolution *P = leastSolutions[pred][*kind];
+    PartialSolution *P = leastSolutions[&pred][*kind];
 
     if (!PS)
       PS = new PartialSolution(*P);
@@ -233,17 +243,17 @@ ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
 }
 
 ConsSoln *RLConstraintKit::greatestSolution(const std::set<std::string> kinds,
-                                            Predicate *pred) {
+                                            const Predicate &pred) {
   PartialSolution *PS = NULL;
   for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
        kind != end; ++kind) {
-    if (!greatestSolutions[pred].count(*kind)) {
-      lockedConstraintKinds[pred].insert(*kind);
-      greatestSolutions[pred][*kind] =
+    if (!greatestSolutions[&pred].count(*kind)) {
+      lockedConstraintKinds[&pred].insert(*kind);
+      greatestSolutions[&pred][*kind] =
           new PartialSolution(getOrCreateConstraintSet(*kind, pred), true);
       freeUnneededConstraints(*kind, pred);
     }
-    PartialSolution *P = greatestSolutions[pred][*kind];
+    PartialSolution *P = greatestSolutions[&pred][*kind];
 
     if (!PS)
       PS = new PartialSolution(*P);
@@ -255,11 +265,12 @@ ConsSoln *RLConstraintKit::greatestSolution(const std::set<std::string> kinds,
 }
 
 void RLConstraintKit::freeUnneededConstraints(std::string kind,
-                                              Predicate *pred) {
+                                              const Predicate &pred) {
   // If we have the two kinds of PartialSolutions already generated
   // for this kind, then we no longer need the original constraints
-  if (lockedConstraintKinds[pred].count(kind) &&
-      leastSolutions[pred].count(kind) && greatestSolutions[pred].count(kind)) {
+  if (lockedConstraintKinds[&pred].count(kind) &&
+      leastSolutions[&pred].count(kind) &&
+      greatestSolutions[&pred].count(kind)) {
     // Clear out the constraints for this kind!
     getOrCreateConstraintSet(kind, pred).clear();
   }
@@ -270,9 +281,9 @@ void RLConstraintKit::copyConstraint(Predicate *src, Predicate *dest) {
            constraints[src].begin();
        i != constraints[src].end(); ++i) {
     std::vector<RLConstraint> &tempvector =
-        getOrCreateConstraintSet(i->first(), dest);
+        getOrCreateConstraintSet(i->first(), *dest);
     std::vector<RLConstraint> &tempvector2 =
-        getOrCreateConstraintSet(i->first(), src);
+        getOrCreateConstraintSet(i->first(), *src);
     for (auto j : tempvector2) {
       RLConstraint temp(j);
       tempvector.push_back(temp);

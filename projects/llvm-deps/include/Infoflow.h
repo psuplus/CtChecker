@@ -71,14 +71,14 @@ class Infoflow;
 class InfoflowSolution {
 public:
   InfoflowSolution(Infoflow &infoflow, ConsSoln *s, const ConsElem &top,
-                   bool defaultTainted,
+                   const ConsElem &bot, bool defaultTainted,
                    DenseMap<const Value *, const ConsElem *> &valueMap,
                    DenseMap<const AbstractLoc *,
                             std::map<unsigned, const ConsElem *>> &locMap,
                    DenseMap<const Function *, const ConsElem *> &vargMap)
       :
 
-        infoflow(infoflow), soln(s), topConstant(top),
+        infoflow(infoflow), soln(s), topConstant(top), botConstant(bot),
         defaultTainted(defaultTainted), valueMap(valueMap), locMap(locMap),
         vargMap(vargMap) {}
   ~InfoflowSolution();
@@ -104,6 +104,7 @@ private:
   const Infoflow &infoflow;
   ConsSoln *soln;
   const ConsElem &topConstant;
+  const ConsElem &botConstant;
   bool defaultTainted;
   DenseMap<const Value *, const ConsElem *> &valueMap;
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> &locMap;
@@ -181,6 +182,7 @@ public:
   /// solving for an information flow solution, the user
   /// may specify a set of constraints to include.
 
+  void setLabel(std::string, const Value &, RLLabel, bool);
   /// Adds the constraint "TAINTED <= VALUE" to the given kind
   void setUntainted(std::string, const Value &);
   /// Adds the constraint "VALUE <= UNTAINTED" to the given kind
@@ -244,7 +246,7 @@ public:
   }
   std::vector<InfoflowSolution *>
   solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
-               Predicate *pred = RLConstraintKit::truePredicate);
+               const Predicate *pred = &RLConstraintKit::truePredicate());
 
 private:
   virtual void doInitialization();
@@ -275,8 +277,8 @@ private:
 
   bool offsetForValue(const Value &value, unsigned *Offset);
 
-  std::set<std::tuple<std::string, int, int>> sinkVariables;
-  std::set<std::tuple<ContextID, Value *, int>> sinkValueSet;
+  std::set<std::tuple<RLLabel, std::string, int, int>> sinkVariables;
+  std::set<std::tuple<ContextID, RLLabel, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
@@ -376,23 +378,28 @@ private:
                                        const ConsElem &, unsigned,
                                        const StructType *);
 
+  std::tuple<RLLabel, std::string, int, std::string>
+  parseSourceString(std::string line);
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
-  std::tuple<std::string, int, int> parseSinkString(std::string line);
-  static int
-  matchValueAndParsedString(const Value &value, std::string kind,
-                            std::tuple<std::string, int, std::string> match);
+  std::tuple<RLLabel, std::string, int, int> parseSinkString(std::string line);
+  void parseLatticeFile();
+  static int matchValueAndParsedString(
+      const Value &value, std::string kind,
+      std::tuple<RLLabel, std::string, int, std::string> match);
   void getOrCreateLocationValueMap();
   void removeConstraint(std::string kind, std::string match);
-  void removeConstraint(std::string kind,
-                        std::tuple<std::string, int, std::string> match);
+  void
+  removeConstraint(std::string kind,
+                   std::tuple<RLLabel, std::string, int, std::string> match);
   void removeConstraintFromIndex(std::string, const AbstractLoc *,
                                  const Value *,
                                  std::map<unsigned, const ConsElem *>, int);
   void constrainAllConsElem(std::string kind,
-                            std::map<unsigned, const ConsElem *>);
-  void constrainAllConsElem(std::string kind, std::set<const ConsElem *>);
+                            std::map<unsigned, const ConsElem *>, RLLabel);
+  void constrainAllConsElem(std::string kind, std::set<const ConsElem *>,
+                            RLLabel);
   void constrainAllConsElem(std::string kind, const Value &,
-                            std::set<const ConsElem *>);
+                            std::set<const ConsElem *>, RLLabel);
   void constrainOffsetFromIndex(std::string, const AbstractLoc *, const Value *,
                                 std::map<unsigned, const ConsElem *>, int);
 

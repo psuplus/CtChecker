@@ -19,51 +19,42 @@
 
 using namespace deps;
 using namespace llvm;
-/// propogate, initialize function - modify and RLconstant function.
-// Helper function
-// static const RLConstant &levelToRLC(RLLevel l, CompartmentSet cSet) {
-//   return RLConstant::constant(l, cSet);
-// }
 
-RLLabel PartialSolution::isChanged(const ConsVar *V) {
-  RLLabel label;
+std::map<const ConsVar *, RLLabel> PartialSolution::VarLabelMap;
 
-  if (initial) {
-    label = make_pair(RLLevel::HIGH, RLConstant::CompleteSet);
-  } else {
-    label = make_pair(RLLevel::LOW, RLConstant::EmptySet);
-  }
+RLLabel PartialSolution::boundLabel(const ConsVar *V) {
+  RLLabel label = initial ? RLConstant::TopLabel : RLConstant::BotLabel;
 
-  for (auto ps : Chained) {
-    if (initial) {
-      for (auto set : ps->VSet) {
-        if (set.second.count(V)) {
+  for (auto ps : Chained)
+    for (auto set : ps->VSet)
+      if (set.second.count(V)) {
+        if (initial) {
           label = RLConstant::lowerBoundLabel(set.first, label);
-        }
-      }
-      return label;
-    } else {
-      for (auto set : ps->VSet) {
-        if (set.second.count(V)) {
+        } else {
           label = RLConstant::upperBoundLabel(set.first, label);
         }
       }
-      return label;
-    }
-  }
+
   return label;
+}
+
+bool PartialSolution::isChanged(const ConsVar *V) {
+  if (VarLabelMap.find(V) == VarLabelMap.end())
+    return true;
+  return VarLabelMap.at(V) != boundLabel(V);
 }
 
 /* This function evaluates the argument E (which could be a RLConsVar,
  * RLConstant or RLJoin) into a RLConstant ptr which is returned. */
 
-const RLConstant &PartialSolution::subst(
-    const ConsElem
-        &E) { // This is an element of any inherited class of ConsElem
+const RLConstant &PartialSolution::subst(const ConsElem &E) {
+  // This is an element of any inherited class of ConsElem
   // If this is a variable, look it up in VSet:
-  if (const RLConsVar *V = dyn_cast<RLConsVar>(&E))
-    return RLConstant::constant(isChanged(V));
 
+  if (const RLConsVar *V = dyn_cast<RLConsVar>(&E)) {
+    // V->dump(errs() << "\n");
+    return RLConstant::constant(boundLabel(V));
+  }
   // If this is already a constant, return it
   if (const RLConstant *RLC = dyn_cast<RLConstant>(&E))
     return *RLC;
@@ -153,9 +144,7 @@ void PartialSolution::initialize(
   for (Constraints::iterator I = C.begin(), E = C.end(); I != E; ++I) {
     vars.clear();
     targets.clear();
-    const ConsElem &From =
-        initial ? I->rhs() : I->lhs(); // lhs() / rhs() is a function which
-                                       // returns 'left' / 'right' refereNmces.
+    const ConsElem &From = initial ? I->rhs() : I->lhs();
     const ConsElem &To = initial ? I->lhs() : I->rhs();
     // a <= b
     From.variables(vars); // a -> vars ; b -> targets
@@ -175,7 +164,12 @@ void PartialSolution::initialize(
     }                     // P(a) <- P(a) U {b}
 
     // Initialize varset:
-    VSet[subst(From).label()].insert(targets.begin(), targets.end());
+    RLLabel label = subst(From).label();
+    VSet[label].insert(targets.begin(), targets.end());
+    for (auto t : targets) {
+      VarLabelMap.insert(std::make_pair(t, label));
+    }
+
     // if (initial) {
     //   if (subst(From).leq(RLConstant::bot())) {
     //     // A <= B, 'B' is low
@@ -199,58 +193,100 @@ void PartialSolution::initialize(
     // }
   }
 }
-// a <= b, MID <= a;
-// LOW -> {} , MID -> {a} ; P[a] = {b}
 
 void PartialSolution::propagate() {
-  std::map<RLLabel, std::deque<const ConsVar *>> workList;
-  // {{LOW, {}}, {MID, {}}, {HIGH, {}}};
-
   assert(!Chained.empty());
   assert(std::find(Chained.begin(), Chained.end(), this) != Chained.end());
 
   // Enqueue all known changed variables
+  std::deque<const ConsVar *> worklist;
   for (auto ps : Chained) {
     for (auto set : ps->VSet) {
-      workList[set.first].insert(workList[set.first].end(), set.second.begin(),
-                                 set.second.end());
-    } // Worklist: LOW -> {} , MID -> {a}
+      worklist.insert(worklist.end(), set.second.begin(), set.second.end());
+    }
   }
 
   // Compute transitive closure of the non-default variables,
   // using all propagation maps in PMaps.
-  for (auto listPair : workList) {
-    std::deque<const ConsVar *> list = listPair.second;
-    while (!list.empty()) {
-      // Dequeue variable
-      const ConsVar *V = list.front(); // V = a
-      list.pop_front();
+  while (!worklist.empty()) {
+    // Dequeue variable
+    const ConsVar *V = worklist.front();
+    worklist.pop_front();
 
-      for (auto PS : Chained) {
-        PMap::iterator I = PS->P.find(V);
-        if (I == PS->P.end())
-          continue; // Not in map
+    for (auto PS : Chained) {
+      PMap::iterator I = PS->P.find(V);
+      if (I == PS->P.end())
+        continue; // Not in map
 
-        std::vector<const ConsVar *> &Updates = I->second; // Updates = {b}
-        // For each such variable...
-        for (const ConsVar *cv : Updates) {
-          // If we haven't changed it already, add it to the worklist:
-          RLLabel vLabel = isChanged(cv);
-          if (initial) {
-            if (RLConstant::constant(listPair.first)
-                    .leq(RLConstant::constant(vLabel))) {
-              VSet[listPair.first].insert(cv);
-              list.push_back(cv);
-            }
-          } else {
-            if (RLConstant::constant(vLabel).leq(
-                    RLConstant::constant(listPair.first))) {
-              VSet[listPair.first].insert(cv);
-              list.push_back(cv);
-            }
-          }
+      std::vector<const ConsVar *> &Updates = I->second;
+      // For each such variable...
+      for (const ConsVar *cv : Updates) {
+        // If we haven't changed it already, add it to the worklist:
+        // RLLabel vLabel = boundLabel(cv);
+        if (!subst(*I->first).leq(subst(*cv))) {
+          VSet[subst(*I->first).label()].insert(cv);
+          worklist.push_back(cv);
+          VarLabelMap[cv] = subst(*I->first).label();
         }
       }
     }
   }
+
+  // std::map<RLLabel, std::deque<const ConsVar *>> workListMap;
+
+  // assert(!Chained.empty());
+  // assert(std::find(Chained.begin(), Chained.end(), this) != Chained.end());
+
+  // // Enqueue all known changed variables
+  // for (auto ps : Chained) {
+  //   for (auto set : ps->VSet) {
+  //     workListMap[set.first].insert(workListMap[set.first].end(),
+  //                                   set.second.begin(), set.second.end());
+  //   }
+  // }
+
+  // // Compute transitive closure of the non-default variables,
+  // // using all propagation maps in PMaps.
+  // llvm::errs() << "Start propagate:\n";
+  // for (auto listPair : workListMap) {
+  //   RLConstant::constant(listPair.first).dump(llvm::errs());
+  //   std::deque<const ConsVar *> worklist = listPair.second;
+  //   llvm::errs() << "\nsize:" << worklist.size() << "\n";
+
+  //   while (!worklist.empty()) {
+  //     llvm::errs() << "\nsize:" << worklist.size() << "\n";
+  //     // Dequeue variable
+  //     const ConsVar *V = worklist.front();
+  //     V->dump(llvm::errs());
+  //     worklist.pop_front();
+
+  //     for (auto PS : Chained) {
+  //       PMap::iterator I = PS->P.find(V);
+  //       if (I == PS->P.end())
+  //         continue; // Not in map
+
+  //       std::vector<const ConsVar *> &Updates = I->second;
+  //       // For each such variable...
+  //       for (const ConsVar *cv : Updates) {
+  //         // If we haven't changed it already, add it to the worklist:
+  //         RLLabel vLabel = isChanged(cv);
+  //         if (initial) {
+  //           if (RLConstant::constant(listPair.first)
+  //                   .leq(RLConstant::constant(vLabel)) &&
+  //               vLabel != listPair.first) {
+  //             VSet[listPair.first].insert(cv);
+  //             worklist.push_back(cv);
+  //           }
+  //         } else {
+  //           if (RLConstant::constant(vLabel).leq(
+  //                   RLConstant::constant(listPair.first)) &&
+  //               vLabel != listPair.first) {
+  //             VSet[listPair.first].insert(cv);
+  //             worklist.push_back(cv);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 }

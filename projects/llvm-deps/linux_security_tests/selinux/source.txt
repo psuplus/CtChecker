@@ -1,0 +1,2 @@
+[source:kernel,value:dynamic][purpose:{subject}] cred -1 file_has_perm
+[source:mediator,value:dynamic][purpose:{operation}] av -1 file_has_perm

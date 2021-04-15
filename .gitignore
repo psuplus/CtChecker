@@ -106,7 +106,12 @@ results_with_source*.txt
 /projects/llvm-deps/mod_exp_tests/results/
 /projects/llvm-deps/mod_exp_tests/results-*/
 .vscode/
-!tomoyo*.ll
-!tomoyo*.bc
 *.dot
 projects/llvm-deps/processing_tools/g.pdf
+
+#==============================================================================#
+# Need some new exceptions for LSM tests - 4/15/2021
+#==============================================================================#
+!/projects/llvm-deps/linux_security_tests/tomoyo/bitcode/*.bc
+!/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
+!/projects/llvm-deps/linux_security_tests/selinux/*.bc

@@ -1,0 +1,2 @@
+[source:input,value:dynamic][purpose:{operation,object}] tomoyo_check_acl 0 3
+[source:input,value:dynamic][purpose:{subject}] tomoyo_check_acl 0 2

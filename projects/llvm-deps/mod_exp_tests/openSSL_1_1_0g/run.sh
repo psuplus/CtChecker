@@ -18,7 +18,7 @@ if [ $2 = true ] ; then
                 COL+="/WL"
         fi
 else
-        : > whitelist.txt
+        : > whitelist_tmp.txt
 fi
 
 if git branch -a | grep -q '* master'; then
@@ -46,8 +46,11 @@ if [ $4 = true ] ; then
         fi
 fi
 
-echo "$COL"
-echo "$MEM2REG"
+if [ "$COL" = "" ] ; then
+        COL="Base"
+fi
+echo "Running with flags: $COL"
+# echo "$MEM2REG"
 
 CPPFLAGS=
 LLVMLIBS=
@@ -69,13 +72,11 @@ make $1
 for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
     do
         FN="BN_mod_exp_"$FUNC
-        echo $FN
-        echo 'p 0 '$FN > taint.txt
-        echo 'p 0 '$FN > untrust.txt
+        echo '[secret:private][] p 0 '$FN > source.txt
         echo $FN > entry.txt
-        # cat taint.txt
-        # cat untrust.txt
-        # cat entry.txt
+        
+        echo $FN
+        cat source.txt
         
         if [ $FUNC == "recp" ]; then
             echo "recp"
@@ -107,7 +108,7 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-        -constraint-generation  -debug < $1 2>tmp.dat > /dev/null
+        -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
         TIME=$(echo "$(date +%s) - $TIME" | bc)
         printf "Execution time: %d seconds\n" $TIME
 
@@ -125,8 +126,7 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         mv tmp.dat $DAT
     done
 
-mv whitelist_tmp.txt whitelist.txt
-
+rm whitelist_tmp.txt
 
 # TIME=$(date +%s)
 # ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc

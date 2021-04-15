@@ -1,8 +1,9 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 struct KeyS {
-  int *k0;
-  int *k1;
+  int k0;
+  int k1;
 };
 
 struct Data {
@@ -10,20 +11,32 @@ struct Data {
   int *f1;
 };
 
-void regular_func(struct Data *a2);
-void regular_func(struct Data *a2) { return; }
+int regular_func(struct KeyS *a2, int a1);
+int regular_func(struct KeyS *a2, int a1) { return a2->k1; }
 
-int foo(struct KeyS *key) {
+int foo(struct KeyS *key, struct KeyS *notkey, int x) {
   int i = 2;
 
   struct Data *dataStruct = malloc(sizeof(struct Data));
   dataStruct->f0 = key;
   dataStruct->f1 = &i;
 
-  // if (dataStruct->f0) {
-  //   ;
+  if (regular_func(key, i)) {
+    printf("hello\n");
+  }
+
+  if (regular_func(notkey, i)) {
+    printf("hello\n");
+  }
+
+  // regular_func(key, &x);
+  // if (x) {
+  //   printf("x\n");
   // }
-  regular_func(dataStruct);
+
+  // if (key) {
+  //   printf("hello\n");
+  // }
 
   return 0;
 }

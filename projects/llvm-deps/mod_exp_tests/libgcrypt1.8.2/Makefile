@@ -29,5 +29,5 @@ all: full
 full.bc: $(FULL_SRC)
 	$(LD) $(LDFLAGS)  $^ -o $@
 
-%.bc: %.c
+%.bc: mpi/%.c
 	$(CC) $(CFLAGS) -o $@ -c $<

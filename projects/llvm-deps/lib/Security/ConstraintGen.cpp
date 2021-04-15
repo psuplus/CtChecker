@@ -45,7 +45,7 @@ bool ConstraintGen::runOnModule(Module &M) {
   // Default loads from source.txt
   parser.loadSourceFile("source-sink", "source.txt");
 
-  std::ifstream fwhitelist("whitelist.txt");
+  std::ifstream fwhitelist("whitelist_tmp.txt");
   std::string line;
   while (std::getline(fwhitelist, line)) {
     std::tuple<std::string, int, std::string> match =

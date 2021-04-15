@@ -18,7 +18,7 @@ if [ $2 = true ] ; then
                 COL+="/WL"
         fi
 else
-        : > whitelist.txt
+        : > whitelist_tmp.txt
 fi
 
 if git branch -a | grep -q '* master'; then
@@ -50,6 +50,10 @@ START=27
 END=37
 FILE="i32_tmont.c"
 
+
+if [ "$COL" = "" ] ; then
+        COL="Base"
+fi
 echo "Running with flags: $COL"
 # echo "$MEM2REG"
 
@@ -66,7 +70,7 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -constraint-generation  -debug < $1 2> tmp.dat > /dev/null
+  -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
@@ -82,4 +86,4 @@ COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 echo Output log: ./$COL
 mv tmp.dat $COL
 
-mv whitelist_tmp.txt whitelist.txt
+rm whitelist_tmp.txt

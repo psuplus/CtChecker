@@ -39,13 +39,13 @@ execute_test()
 
     # flags: $2 $3 [white_list] [flow_sensitivity] [source]
     if [ $5 = true ] ; then 
-        $2 $3 false false $5    # FS/SRC
-        $2 $3 false true $5     # FS/Fls/SRC
+        # $2 $3 false false $5    # FS/SRC
+        # $2 $3 false true $5     # FS/Fls/SRC
         $2 $3 true false $5     # WL/FS/SRC
         $2 $3 true true $5      # WL/FS/FlS/SRC
     else 
         $2 $3 false false $5    # FS
-        $2 $3 false true $5     # FS/Fls
+        # $2 $3 false true $5     # FS/Fls
         $2 $3 true false $5     # WL/FS
         $2 $3 true true $5      # WL/FS/FlS
     fi
@@ -105,8 +105,8 @@ main()
     make
     cd $CUR
 
-    full_library_tests
     min_library_tests
+    full_library_tests
     # ct_verif_tests
 }
 

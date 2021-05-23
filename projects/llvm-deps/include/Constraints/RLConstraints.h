@@ -68,7 +68,10 @@ public:
   static inline bool classof(const ConsElem *elem) {
     return elem->type() == DT_RLConstant;
   }
-  static void lockMap() { mapLock = true; }
+
+  static void lockLattice() { latticeLock = true; }
+  static bool isLatticeLocked() { return latticeLock; }
+  static void dump_lattice(llvm::raw_ostream &o);
   static RLLabel parseLabelString(std::string);
 
   static CompartmentMap RLCompartmentMap;
@@ -83,7 +86,7 @@ protected:
   static RLConstantMap constants;
 
 private:
-  static bool mapLock;
+  static bool latticeLock;
 };
 
 /// Concrete implementation of constraint variables for use with

@@ -22,7 +22,7 @@ LevelMap RLConstant::RLLevelMap;
 RLConstantMap RLConstant::constants;
 RLLabel RLConstant::TopLabel;
 RLLabel RLConstant::BotLabel;
-bool RLConstant::mapLock = false;
+bool RLConstant::latticeLock = false;
 
 RLConstant::RLConstant(RLLevel l, RLCompartment c) : level(l), compartment(c) {}
 
@@ -118,7 +118,7 @@ const RLLabel RLConstant::label() const {
 }
 
 void RLConstant::dump(llvm::raw_ostream &o) const {
-  assert(mapLock && "Lattice should be created and locked already!");
+  assert(latticeLock && "Lattice should be created and locked already!");
   o << "CONST[";
   for (auto l : level) {
     o << l.first << ":" << l.second << "("
@@ -134,6 +134,35 @@ void RLConstant::dump(llvm::raw_ostream &o) const {
     o << "}" << ((compartment.rbegin()->first != c.first) ? "," : "");
   }
   o << "]";
+}
+
+void RLConstant::dump_lattice(llvm::raw_ostream &o) {
+  assert(latticeLock && "Lattice should be created and locked already!");
+  o << "Levels: [\n";
+  for (auto d : RLConstant::RLLevelMap) {
+    o << "\t" << d.first << ": { ";
+    RLConstant::BotLabel.first[d.first] = 0;
+    RLConstant::TopLabel.first[d.first] = d.second.size() - 1;
+    for (auto s : d.second) {
+      o << s;
+      if (s != *d.second.rbegin())
+        o << " -> ";
+    }
+    o << " }\n";
+  }
+  o << "]\n";
+
+  o << "Compartments: [\n";
+  for (auto d : RLConstant::RLCompartmentMap) {
+    o << "\t" << d.first << ": { ";
+    RLConstant::BotLabel.second[d.first] = std::set<std::string>();
+    RLConstant::TopLabel.second[d.first] = d.second;
+    for (auto s : d.second) {
+      o << s << (s != *d.second.rbegin() ? ", " : " ");
+    }
+    o << "}\n";
+  }
+  o << "]\n";
 }
 
 RLLabel RLConstant::parseLabelString(std::string line) {

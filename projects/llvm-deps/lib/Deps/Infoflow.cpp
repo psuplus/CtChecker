@@ -80,8 +80,6 @@ void Infoflow::doInitialization() {
 
   readConfiguration();
 
-  parseLatticeFile();
-
   std::string line;
   std::ifstream sinklist("sink.txt");
   while (std::getline(sinklist, line)) {
@@ -3140,6 +3138,34 @@ void Infoflow::readConfiguration() {
       assert(e.is_string());
     }
   }
+
+  // Read lattice
+  assert(config.contains("lattice"));
+  json lattice = config.at("lattice");
+  assert(lattice.contains("levels") && lattice.contains("compartments"));
+  for (json level : lattice.at("levels")) {
+    std::vector<std::string> levels;
+    for (std::string l : level.at("level")) {
+      auto it = std::find(levels.begin(), levels.end(), l);
+      assert(it == levels.end() && "Duplicate level names!");
+      levels.push_back(l);
+    }
+    RLConstant::RLLevelMap.insert(
+        std::pair<std::string, std::vector<std::string>>(level.at("name"),
+                                                         levels));
+  }
+  for (json set : lattice.at("compartments")) {
+    std::set<std::string> compartments;
+    for (std::string e : set.at("set")) {
+      compartments.insert(e);
+    }
+    RLConstant::RLCompartmentMap.insert(
+        std::pair<std::string, std::set<std::string>>(set.at("name"),
+                                                      compartments));
+  }
+
+  RLConstant::lockLattice();
+  RLConstant::dump_lattice(errs());
 }
 
 void Infoflow::parseLatticeFile() {
@@ -3219,7 +3245,7 @@ void Infoflow::parseLatticeFile() {
   }
   errs() << "]\n";
 
-  RLConstant::lockMap();
+  RLConstant::lockLattice();
 
   RLConstant::bot().dump(errs());
   errs() << "\n";

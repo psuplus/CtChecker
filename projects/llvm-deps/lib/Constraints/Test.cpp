@@ -133,7 +133,7 @@ void test(void) {
   }
   llvm::errs() << "]\n";
 
-  RLConstant::lockMap();
+  RLConstant::lockLattice();
 
   RLConstant::bot().dump(llvm::errs());
   llvm::errs() << "\n";

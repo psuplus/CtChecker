@@ -1,0 +1,15 @@
+{
+    "function_mode": {
+        "default_mode": 1,
+        "functions": []
+    },
+    "lattice": {
+        "levels": [],
+        "compartments": []
+    },
+    "source": {},
+    "sink": {},
+    "entry": [
+        "foo"
+    ]
+}

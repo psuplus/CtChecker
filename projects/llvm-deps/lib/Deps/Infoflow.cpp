@@ -78,6 +78,8 @@ void Infoflow::doInitialization() {
   signatureRegistrar = new SignatureRegistrar();
   registerSignatures();
 
+  readConfiguration();
+
   parseLatticeFile();
 
   std::string line;
@@ -128,21 +130,21 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
   DEBUG(errs() << "Running on " << unit.function().getName() << " in context [";
         CM.getContextFor(unit.context()).dump(); errs() << "]\n");
 
-  // start only from entry functions, if "entry.txt" is specified
+  // start only from entry functions, if entry is specified in config
   bool needAnalysis = true;
   if (unit.context() == DefaultID) { // top-level function
-    std::ifstream fentry("entry.txt");
-    if (fentry.good()) {    // file exists
+    if (config.contains("entry")) {
       needAnalysis = false; // ignore if there is no match
-      std::string line;
-      while (std::getline(fentry, line)) {
-        if (unit.function().getName() == line) {
+      std::list<std::string> entries = config.at("entry");
+      for (auto e : entries) {
+        if (unit.function().getName() == e) {
           needAnalysis = true;
           break;
         }
       }
     }
   }
+
   if (!needAnalysis)
     return Unit();
 
@@ -618,10 +620,7 @@ void Infoflow::processGetElementPtrInstSource(
   }
 
   // If operands are constant taint only that element
-  unsigned offset = GEPInstCalculateOffset(gep, locs);
-  if (offset == -1) {
-    return;
-  }
+  unsigned int offset = GEPInstCalculateOffset(gep, locs);
   // errs() << "\nSourceOffset: " << offset << "\n";
 
   // Link Allocation memory location as well incase that is tainted
@@ -3123,6 +3122,23 @@ Infoflow::parseSinkString(std::string line) {
   } else if (splits.size() == 4) {
     return std::make_tuple(label, splits[1], std::stoi(splits[2]),
                            std::stoi(splits[3]));
+  }
+}
+
+void Infoflow::readConfiguration() {
+  // Read the config.json file and store it
+  DEBUG(errs() << "\n[CONFIG] Start reading configuration file...\n");
+  std::ifstream i("config.json");
+  i >> config;
+  DEBUG(errs() << config.dump(4) << "\n\n");
+
+  // Sanity check: entry
+  if (config.contains("entry")) {
+    assert(config.at("entry").is_array());
+    std::list<json> entries = config.at("entry");
+    for (auto e : entries) {
+      assert(e.is_string());
+    }
   }
 }
 

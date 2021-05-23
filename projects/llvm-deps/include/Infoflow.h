@@ -33,12 +33,16 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
 
+#include "json.hpp"
+
 #include <deque>
 #include <map>
 #include <regex>
 #include <set>
 #include <tuple>
 #include <utility>
+
+using json = nlohmann::json;
 
 namespace deps {
 
@@ -134,6 +138,7 @@ public:
   typedef FlowRecord::value_set value_set;
   static char ID;
   bool offset_used;
+  json config;
   Infoflow();
   virtual ~Infoflow() {
     delete kit;
@@ -383,6 +388,7 @@ private:
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
   std::tuple<RLLabel, std::string, int, int> parseSinkString(std::string line);
   void parseLatticeFile();
+  void readConfiguration();
   static int matchValueAndParsedString(
       const Value &value, std::string kind,
       std::tuple<RLLabel, std::string, int, std::string> match);

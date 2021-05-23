@@ -1,1 +1,1 @@
-regular_func 0 0
+[secret:private][] regular_func 0 0

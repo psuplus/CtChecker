@@ -2731,8 +2731,8 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
                                const ImmutableCallSite &cs, Flows &flows) {
   const ContextID callerContext = this->getCurrentContext();
 
-  // 1) pc of function should be at least as high as current pc + function
-  // pointer
+  // 1) pc of function should be at least
+  // as high as current pc + function pointer
   FlowRecord pcFlow = FlowRecord(true, callerContext, calleeContext);
   // caller pc
   pcFlow.addSourceValue(*cs->getParent());
@@ -2744,19 +2744,6 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
 
   pcFlow.dump();
 
-  errs() << "CALLSITE\n";
-  cs->dump();
-  errs() << "SOURCE\n";
-  for (FlowRecord::value_iterator ii = pcFlow.source_value_begin();
-       ii != pcFlow.source_value_end(); ii++) {
-    (*ii)->dump();
-  }
-  errs() << "SINK\n";
-  for (FlowRecord::value_iterator ii = pcFlow.sink_value_begin();
-       ii != pcFlow.sink_value_end(); ii++) {
-    (*ii)->dump();
-  }
-
   // 2) levels of params should be as high as corresponding args
   unsigned int numArgs = cs.arg_size();
   unsigned int numParams = callee.arg_size();
@@ -2767,45 +2754,27 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
   assert((callee.isVarArg() || numArgs == numParams) &&
          "function called with the wrong number of arguments");
 
-  // The level of each non-vararg param should be as high as the corresponding
-  // argument
-  Function::const_arg_iterator param = callee.arg_begin();
-  for (unsigned int i = 0; i < numParams; i++) {
-    FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
-    argFlow.addSourceValue(*cs.getArgument(i));
-    argFlow.addSinkValue(*param);
-    flows.push_back(argFlow);
+  // The level of each non-vararg param should be
+  // as high as the corresponding argument
+  Function::const_arg_iterator formal = callee.arg_begin();
+  for (unsigned int i = 0; i < numParams; i++, ++formal) {
+    // Only create a flow when the parameter
+    // being passed is not a pointer
+    if (!(*formal).getType()->isPointerTy()) {
+      const Value &actual = *cs.getArgument(i);
+      FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
+      argFlow.addSourceValue(actual);
+      argFlow.addSinkValue(*formal);
+      flows.push_back(argFlow);
 
-    errs() << "CALLSITE\n";
-    cs->dump();
-    errs() << "SOURCE\n";
-    for (FlowRecord::value_iterator ii = argFlow.source_value_begin();
-         ii != argFlow.source_value_end(); ii++) {
-      (*ii)->dump();
-      const Value *value = (*ii);
-      const std::set<const AbstractLoc *> &locs = locsForValue(*value);
-      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
-                                                         end = locs.end();
-           loc != end; ++loc) {
-        (*loc)->dump();
-      }
+      argFlow.dump();
     }
-    errs() << "SINK\n";
-    for (FlowRecord::value_iterator ii = argFlow.sink_value_begin();
-         ii != argFlow.sink_value_end(); ii++) {
-      (*ii)->dump();
-      const Value *value = (*ii);
-      const std::set<const AbstractLoc *> &locs = locsForValue(*value);
-      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
-                                                         end = locs.end();
-           loc != end; ++loc) {
-        (*loc)->dump();
-      }
-    }
-    ++param;
   }
+
   // The remaining arguments provide a bound on the vararg structure
   if (numArgs > numParams) {
+    // TODO: this probably should also be changed to accomodate the above
+    // changes on the parameter flow of whether it's a pointer
     FlowRecord varargFlow = FlowRecord(false, callerContext, calleeContext);
     for (unsigned int i = numParams; i < numArgs; i++) {
       varargFlow.addSourceValue(*cs.getArgument(i));
@@ -2835,8 +2804,8 @@ void Infoflow::constrainReturnInst(const ReturnInst &inst, Flows &flows) {
   }
 }
 
-// TODO: Revisit and understand this instruction. Something to do with exception
-// handling.
+// TODO: Revisit and understand this instruction.
+// Something to do with exception handling.
 void Infoflow::constrainLandingPadInst(const LandingPadInst &inst,
                                        Flows &flows) {
   return operandsAndPCtoValue(inst, flows);

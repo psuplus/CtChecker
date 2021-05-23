@@ -106,6 +106,7 @@ results_with_source*.txt
 /projects/llvm-deps/mod_exp_tests/results/
 /projects/llvm-deps/mod_exp_tests/results-*/
 .vscode/
+.idea/
 *.dot
 projects/llvm-deps/processing_tools/g.pdf
 

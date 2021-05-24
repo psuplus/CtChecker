@@ -42,8 +42,7 @@ bool ConstraintGen::runOnModule(Module &M) {
     return false;
   }
 
-  // Default loads from source.txt
-  parser.loadSourceFile("source-sink", "source.txt");
+  parser.labelValue("source-sink", ifa->sourceVariables, true);
 
   std::ifstream fwhitelist("whitelist_tmp.txt");
   std::string line;

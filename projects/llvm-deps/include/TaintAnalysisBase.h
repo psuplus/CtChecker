@@ -8,18 +8,13 @@ using namespace llvm;
 namespace deps {
 
 class Infoflow;
+class ConfigVariable;
 
 class TaintAnalysisBase {
 private:
   Infoflow *ifa;
 
 protected:
-  void taintStr(std::string,
-                std::tuple<RLLabel, std::string, int, std::string>);
-
-  void labelValue(std::string,
-                  std::tuple<RLLabel, std::string, int, std::string>);
-
   bool hasPointerTarget(const AbstractLoc *loc);
 
   std::map<unsigned, const ConsElem *> getPointerTarget(const AbstractLoc *loc);
@@ -39,10 +34,7 @@ protected:
 public:
   void setInfoflow(Infoflow *flow) { ifa = flow; }
 
-  void loadTaintFile(std::string filename = "taint.txt");
-  void loadUntrustFile(std::string filnemae = "untrust.txt");
-  void loadTaintUntrustFile(std::string, std::string);
-  void loadSourceFile(std::string, std::string);
+  void labelValue(std::string, std::vector<ConfigVariable>, bool);
 
   void untaintAllSink(std::string);
 };

@@ -25,17 +25,28 @@
 #include "FlowRecord.h"
 #include "InfoflowSignature.h"
 #include "PointsToInterface.h"
+#include "SignatureLibrary.h"
 #include "SourceSinkAnalysis.h"
 #include "TaintAnalysisBase.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Analysis/PostDominators.h"
+#include "llvm/IR/DebugInfo.h"
+#include "llvm/IR/DebugInfoMetadata.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Support/CommandLine.h"
+#include "llvm/Support/Debug.h"
 
 #include "json.hpp"
 
 #include <deque>
+#include <fstream>
+#include <iterator>
 #include <map>
 #include <regex>
 #include <set>
@@ -65,6 +76,24 @@ public:
   static char ID;
   PDTCache() : FPCache<PostDominatorTree>(ID) {}
   virtual const char *getPassName() const { return "PostDom Cache"; }
+};
+
+enum class ConfigVariableType { Argument, Variable };
+
+class ConfigVariable {
+public:
+  std::string function;
+  ConfigVariableType type;
+  std::string name;
+  int number;
+  int index;
+  RLLabel label;
+
+  ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
+                 int num, int idx, RLLabel label)
+      : function(fn), type(ty), name(name), number(num), index(idx),
+        label(label) {}
+  ~ConfigVariable(){};
 };
 
 class Infoflow;
@@ -134,6 +163,7 @@ class Infoflow
 public:
   typedef std::set<const AbstractLoc *> AbsLocSet;
   typedef std::set<const ConsElem *> ConsElemSet;
+  typedef DenseMap<const Value *, const ConsElem *> ValueConsElemMap;
   typedef FlowRecord::value_iterator value_iterator;
   typedef FlowRecord::value_set value_set;
   static char ID;
@@ -271,9 +301,8 @@ private:
 
   FlowRecord currentContextFlowRecord(bool implicit) const;
 
-  const std::set<const AbstractLoc *> &locsForValue(const Value &value) const;
-  const std::set<const AbstractLoc *> &
-  reachableLocsForValue(const Value &value) const;
+  const AbsLocSet &locsForValue(const Value &value) const;
+  const AbsLocSet &reachableLocsForValue(const Value &value) const;
 
   const std::set<const AbstractHandle *> &
   HandlesForValue(const Value &value) const;
@@ -282,26 +311,29 @@ private:
 
   bool offsetForValue(const Value &value, unsigned *Offset);
 
-  std::set<std::tuple<RLLabel, std::string, int, int>> sinkVariables;
+  const Function *findEnclosingFunc(const Value *V) const;
+  const MDLocation *findVar(const Value *V, const Function *F) const;
+  const MDLocalVariable *findVarNode(const Value *V, const Function *F) const;
+
+  std::vector<ConfigVariable> sinkVariables;
+  std::vector<ConfigVariable> sourceVariables;
   std::set<std::tuple<ContextID, RLLabel, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
   DenseMap<const BasicBlock *, std::string> predicateMap;
-  DenseMap<ContextID, DenseMap<const Value *, const ConsElem *>>
-      valueConstraintMap;
+  DenseMap<ContextID, ValueConsElemMap> valueConstraintMap;
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>
       locConstraintMap;
   DenseMap<ContextID, DenseMap<const Function *, const ConsElem *>>
       vargConstraintMap;
 
-  DenseMap<const Value *, const ConsElem *> summarySinkValueConstraintMap;
-  DenseMap<const Value *, const ConsElem *> summarySourceValueConstraintMap;
+  ValueConsElemMap summarySinkValueConstraintMap;
+  ValueConsElemMap summarySourceValueConstraintMap;
   DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
   DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;
 
-  DenseMap<const Value *, const ConsElem *> &
-  getOrCreateValueConstraintMap(const ContextID);
+  ValueConsElemMap &getOrCreateValueConstraintMap(const ContextID);
   DenseMap<const Function *, const ConsElem *> &
   getOrCreateVargConstraintMap(const ContextID);
 
@@ -386,10 +418,10 @@ private:
   std::tuple<RLLabel, std::string, int, std::string>
   parseSourceString(std::string line);
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
-  std::tuple<RLLabel, std::string, int, int> parseSinkString(std::string line);
-  void parseLatticeFile();
   void readConfiguration();
-  static int matchValueAndParsedString(
+  ConfigVariable parseConfigVariable(json v);
+
+  int matchValueAndParsedString(
       const Value &value, std::string kind,
       std::tuple<RLLabel, std::string, int, std::string> match);
   void getOrCreateLocationValueMap();

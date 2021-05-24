@@ -16,11 +16,11 @@
 
 #include "Infoflow.h"
 #include "TaintAnalysisBase.h"
-#include "llvm/Pass.h"
 #include "llvm/IR/CallSite.h"
+#include "llvm/Pass.h"
 
-#include <string>
 #include <set>
+#include <string>
 
 using namespace llvm;
 
@@ -39,14 +39,11 @@ public:
     AU.setPreservesAll();
   }
 
-
 private:
   Infoflow *ifa;
   TaintAnalysisBase parser;
-
-  void taintStr (std::string kind, std::string match);
 };
 
-}
+} // namespace deps
 
 #endif

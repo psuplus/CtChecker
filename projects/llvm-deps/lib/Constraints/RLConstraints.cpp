@@ -118,7 +118,7 @@ const RLLabel RLConstant::label() const {
 }
 
 void RLConstant::dump(llvm::raw_ostream &o) const {
-  assert(latticeLock && "Lattice should be created and locked already!");
+  assert(isLatticeLocked() && "Lattice should be created and locked already!");
   o << "CONST[";
   for (auto l : level) {
     o << l.first << ":" << l.second << "("
@@ -137,7 +137,7 @@ void RLConstant::dump(llvm::raw_ostream &o) const {
 }
 
 void RLConstant::dump_lattice(llvm::raw_ostream &o) {
-  assert(latticeLock && "Lattice should be created and locked already!");
+  assert(isLatticeLocked() && "Lattice should be created and locked already!");
   o << "Levels: [\n";
   for (auto d : RLConstant::RLLevelMap) {
     o << "\t" << d.first << ": { ";

@@ -374,88 +374,57 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
   return relevant;
 }
 
-/** Taint a Value whose name matches s */
-void TaintAnalysisBase::taintStr(
-    std::string kind,
-    std::tuple<RLLabel, std::string, int, std::string> match) {
+void TaintAnalysisBase::labelValue(std::string kind,
+                                   std::vector<ConfigVariable> vars, bool gte) {
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = ifa->summarySourceValueConstraintMap.begin(),
            end = ifa->summarySourceValueConstraintMap.end();
        entry != end; ++entry) {
     const Value &value = *(entry->first);
 
-    // errs() << "Visiting ";
-    // value.dump();
-    RLLabel label;
-    std::string match_name;
-    int t_offset;
-    std::string fn_name;
-    std::tie(label, match_name, t_offset, fn_name) = match;
-
-    // Only taint variables defined in taint files if the function matches
-    const Function *fn = findEnclosingFunc(&value);
-    bool function_matches = false;
-    if (fn_name.size() == 0 ||
-        (fn && fn->hasName() && fn->getName() == fn_name)) {
-      function_matches = true;
-    }
-
-    // if (function_matches && value.hasName() && value.getName() == match_name)
-    // {
-    if (Infoflow::matchValueAndParsedString(value, kind, match) > 0) {
-      constrainValue(kind, value, t_offset, match_name, label);
-    } else {
-      std::string s;
-      llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
-      *ss << value; // dump value info to ss
-      ss->str();    // flush stream to s
-      // test if the value's content starts with match
-      if (s.find(match_name) == 0 && function_matches) {
-        ifa->setLabel(kind, value, label, true);
-        errs() << "Match Detected for " << s << "\n";
+    for (auto var : vars) {
+      // Only taint variables defined in taint files if the function matches
+      const Function *fn = findEnclosingFunc(&value);
+      bool function_matches = false;
+      if (var.function.size() == 0 ||
+          (fn && fn->hasName() && fn->getName() == var.function)) {
+        function_matches = true;
       }
-    }
-  }
-}
 
-void TaintAnalysisBase::labelValue(
-    std::string kind,
-    std::tuple<RLLabel, std::string, int, std::string> match) {
-  for (DenseMap<const Value *, const ConsElem *>::const_iterator
-           entry = ifa->summarySourceValueConstraintMap.begin(),
-           end = ifa->summarySourceValueConstraintMap.end();
-       entry != end; ++entry) {
-    const Value &value = *(entry->first);
+      if (function_matches) {
+        bool variable_matches = false;
+        errs() << "Matching value with config variable within function ["
+               << fn->getName() << "]\n";
+        const MDLocalVariable *local_var = ifa->findVarNode(&value, fn);
+        if (local_var &&
+            (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+          errs() << "\t- Variable has name [" << local_var->getName() << "]\n";
+          if (local_var->getName() == var.name) {
+            variable_matches = true;
+            errs() << "\t- Found a local variable match\n\n";
+          }
+        }
+        if (value.hasName()) {
+          errs() << "\t- Value has the name [" << value.getName() << "]\n";
+          if (value.getName() == var.name) {
+            variable_matches = true;
+            errs() << "\t- Found a value name match\n\n";
+          }
+        }
 
-    // errs() << "Visiting ";
-    // value.dump();
-    RLLabel label;
-    std::string match_name;
-    int t_offset;
-    std::string fn_name;
-    std::tie(label, match_name, t_offset, fn_name) = match;
-
-    // Only taint variables defined in taint files if the function matches
-    const Function *fn = findEnclosingFunc(&value);
-    bool function_matches = false;
-    if (fn_name.size() == 0 ||
-        (fn && fn->hasName() && fn->getName() == fn_name)) {
-      function_matches = true;
-    }
-
-    // if (function_matches && value.hasName() && value.getName() == match_name)
-    // {
-    if (Infoflow::matchValueAndParsedString(value, kind, match) > 0) {
-      constrainValue(kind, value, t_offset, match_name, label);
-    } else {
-      std::string s;
-      llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
-      *ss << value; // dump value info to ss
-      ss->str();    // flush stream to s
-      // test if the value's content starts with match
-      if (s.find(match_name) == 0 && function_matches) {
-        ifa->setLabel(kind, value, label, true);
-        errs() << "Match Detected for " << s << "\n";
+        if (variable_matches) {
+          constrainValue(kind, value, var.index, var.name, var.label);
+        } else {
+          std::string s;
+          llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
+          *ss << value;
+          ss->str();
+          // test if the value's content starts with match
+          if (s.find(var.name) == 0 && function_matches) {
+            ifa->setLabel(kind, value, var.label, gte);
+            errs() << "Match Detected for " << s << "\n";
+          }
+        }
       }
     }
   }
@@ -472,37 +441,6 @@ unsigned TaintAnalysisBase::fieldIndexToByteOffset(int index, const Value *v,
     }
   }
   return offset;
-}
-
-void TaintAnalysisBase::loadTaintFile(std::string filename) {
-  loadTaintUntrustFile("taint", filename);
-}
-
-void TaintAnalysisBase::loadUntrustFile(std::string filename) {
-  loadTaintUntrustFile("untrust", filename);
-}
-
-void TaintAnalysisBase::loadTaintUntrustFile(std::string kind,
-                                             std::string filename) {
-  std::ifstream infile(filename); // read tainted values from txt file
-  std::string line;
-  // while (std::getline(infile, line)) {
-  //   std::tuple<std::string, int, std::string> match =
-  //       ifa->parseTaintString(line);
-  //   taintStr(kind, match);
-  // }
-}
-
-void TaintAnalysisBase::loadSourceFile(std::string kind, std::string filename) {
-  std::ifstream infile(filename); // read tainted values from txt file
-  std::string line;
-  while (std::getline(infile, line)) {
-    std::tuple<RLLabel, std::string, int, std::string> match =
-        ifa->parseSourceString(line);
-    // taintStr(kind, match);
-    errs() << "\n::labeling::\n";
-    labelValue(kind, match);
-  }
 }
 
 unsigned TaintAnalysisBase::getNumElements(const Value &value) {

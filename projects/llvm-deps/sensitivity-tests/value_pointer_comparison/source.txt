@@ -1,1 +1,0 @@
-[secret:private][] key 0 foo

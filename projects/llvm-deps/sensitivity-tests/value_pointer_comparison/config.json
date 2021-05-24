@@ -15,8 +15,30 @@
         ],
         "compartments": []
     },
-    "source": {},
-    "sink": {},
+    "source": [
+        {
+            "function": "foo",
+            "type": "variable",
+            "name": "key",
+            "index": 1,
+            "l": {
+                "secret": "private"
+            },
+            "c": {}
+        }
+    ],
+    "sink": [
+        {
+            "function": "regular_func",
+            "type": "argument",
+            "number": 0,
+            "index": 0,
+            "l": {
+                "secret": "private"
+            },
+            "c": {}
+        }
+    ],
     "entry": [
         "foo"
     ]

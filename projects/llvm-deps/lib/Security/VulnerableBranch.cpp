@@ -42,7 +42,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
   }
 
   // Default loads from source.txt
-  parser.loadSourceFile("source-sink", "source.txt");
+  parser.labelValue("source-sink", ifa->sourceVariables, true);
 
   std::ifstream fwhitelist("whitelist_tmp.txt");
   std::string line;
@@ -65,6 +65,35 @@ bool VulnerableBranch::runOnModule(Module &M) {
        i != tainted.end(); i++) {
     (*i)->dump();
   }
+
+  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F)
+  // {
+  //   for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
+  //        ++I) {
+  //     if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
+  //       const MDLocation *loc = bi->getDebugLoc();
+  //       if (bi->isConditional() && loc) {
+  //         const Value *v = bi->getCondition();
+  //         DenseMap<ContextID,
+  //                  DenseMap<const Value *, const ConsElem *>>::iterator
+  //             ctxtIter = ifa->valueConstraintMap.begin();
+  //         for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
+  //           DenseMap<const Value *, const ConsElem *> valueConsMap =
+  //               ctxtIter->second;
+  //           DenseMap<const Value *, const ConsElem *>::iterator vIter =
+  //               valueConsMap.find(v);
+  //           if (vIter != valueConsMap.end()) {
+  //             const ConsElem *elem = vIter->second;
+  //             const ConsElem &low = RLConstant::bot();
+  //             errs() << "\n";
+  //             RLConstraint c(elem, &low, &Predicate::TruePred(), false);
+  //             errs() << "  ;  [ConsDebugTag-*]   public values\n";
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   /**
      std::set<const Value*> vul;

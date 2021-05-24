@@ -39,8 +39,6 @@ bool TaintAnalysis::runOnModule(Module &M) {
   }
   parser.setInfoflow(ifa);
 
-  parser.loadTaintUntrustFile("test", "taint.txt");
-
   // std::ifstream whitelistFile("whitelist.txt");
   // std::string line;
   // while (std::getline(whitelistFile, line)) {

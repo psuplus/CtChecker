@@ -19,18 +19,6 @@
 #define DEBUG_TYPE "deps"
 
 #include "Infoflow.h"
-#include "SignatureLibrary.h"
-
-#include "llvm/IR/DebugInfo.h"
-#include "llvm/IR/DebugInfoMetadata.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/InstIterator.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Module.h"
-#include "llvm/Support/CommandLine.h"
-#include "llvm/Support/Debug.h"
-#include <fstream>
-#include <iterator>
 
 namespace deps {
 
@@ -79,13 +67,6 @@ void Infoflow::doInitialization() {
   registerSignatures();
 
   readConfiguration();
-
-  std::string line;
-  std::ifstream sinklist("sink.txt");
-  while (std::getline(sinklist, line)) {
-    std::tuple<RLLabel, std::string, int, int> ret = parseSinkString(line);
-    sinkVariables.insert(ret);
-  }
 }
 
 void Infoflow::doFinalization() {
@@ -875,7 +856,7 @@ bool InfoflowSolution::isTainted(const Value &value) {
   }
 }
 
-const Function *findEnclosingFunc(const Value *V) {
+const Function *Infoflow::findEnclosingFunc(const Value *V) const {
   if (const Argument *Arg = dyn_cast<Argument>(V)) {
     return Arg->getParent();
   }
@@ -885,7 +866,7 @@ const Function *findEnclosingFunc(const Value *V) {
   return NULL;
 }
 
-const MDLocation *findVar(const Value *V, const Function *F) {
+const MDLocation *Infoflow::findVar(const Value *V, const Function *F) const {
   for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End;
        ++Iter) {
     const Instruction *I = &*Iter;
@@ -898,7 +879,8 @@ const MDLocation *findVar(const Value *V, const Function *F) {
   return NULL;
 }
 
-const MDLocalVariable *findVarNode(const Value *V, const Function *F) {
+const MDLocalVariable *Infoflow::findVarNode(const Value *V,
+                                             const Function *F) const {
   StringRef vName;
   if (V->hasName()) {
     vName = V->getName();
@@ -1072,7 +1054,7 @@ void InfoflowSolution::getOriginalLocation(const Value *V) {
   if (const Instruction *I = dyn_cast<Instruction>(V)) {
     Loc = I->getDebugLoc();
   } else { // try to find the uses of the value
-    const Function *F = findEnclosingFunc(V);
+    const Function *F = infoflow.findEnclosingFunc(V);
     if (!F) {
       errs() << "Unknown location";
       return;
@@ -1089,7 +1071,7 @@ void InfoflowSolution::getOriginalLocation(const Value *V) {
     }
 
     // search in all instructions
-    Loc = findVar(V, F);
+    Loc = infoflow.findVar(V, F);
   }
 
   if (!Loc) {
@@ -2647,25 +2629,21 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
     Function *F = callinst->getCalledFunction();
 
     if (F) {
-      for (auto tuple : sinkVariables) {
-        RLLabel label;
-        std::string fn_name;
-        int arg_no = -1, t_offset = -1;
-        std::tie(label, fn_name, arg_no, t_offset) = tuple;
-        if (F->getName().size() > 0 && F->getName().equals(fn_name)) {
+      for (auto var : sinkVariables) {
+        if (F->getName().size() > 0 && F->getName().equals(var.function)) {
           errs() << "Found function match: " << F->getName() << "\n";
           User::const_op_iterator op_i = cs.arg_begin();
           int arg_idx = 0;
           for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
-            if (arg_no == -1 || arg_no == arg_idx) {
+            if (var.number == -1 || var.number == arg_idx) {
               Value *value = (*op_i).get();
               std::tuple<ContextID, RLLabel, Value *, int> valueOffsetPair =
-                  std::make_tuple(this->getCurrentContext(), label, value,
-                                  t_offset);
+                  std::make_tuple(this->getCurrentContext(), var.label, value,
+                                  var.index);
               sinkValueSet.insert(valueOffsetPair);
               errs() << "inserted: ";
               value->dump();
-              errs() << "at offset: " << t_offset << "\n";
+              errs() << "at offset: " << var.index << "\n";
             }
           }
           // return; // TODO: Could this be the ULTIMATE solution?!
@@ -2998,52 +2976,6 @@ std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
   return OS.str();
 }
 
-std::tuple<RLLabel, std::string, int, std::string>
-Infoflow::parseSourceString(std::string line) {
-  std::tuple<RLLabel, std::string, int, std::string> ret;
-  // Move any extra whitespace to end
-  std::string::iterator new_end =
-      unique(line.begin(), line.end(),
-             [](const char &x, const char &y) { return x == y and x == ' '; });
-
-  // Remove the extra space
-  line.erase(new_end, line.end());
-
-  // Delete Trailing White space
-
-  // Split up line
-  std::vector<std::string> splits;
-  char delimiter = ' ';
-
-  size_t i = 0;
-  size_t pos = line.find(delimiter);
-
-  while (pos != std::string::npos) {
-    splits.push_back(line.substr(i, pos - i));
-    i = pos + 1;
-    pos = line.find(delimiter, i);
-  }
-  splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
-
-  // Create match/offset pair
-
-  RLLabel label = RLConstant::parseLabelString(splits[0]);
-
-  RLConstant::constant(label).dump(errs());
-
-  if (splits.size() == 2) {
-    ret = std::make_tuple(label, splits[1], -1, "");
-  } else if (splits.size() == 3 && isdigit(splits[2][0])) {
-    ret = std::make_tuple(label, splits[1], std::stoi(splits[2]), "");
-  } else if (splits.size() == 3) {
-    ret = std::make_tuple(label, splits[1], -1, splits[2]);
-  } else if (splits.size() == 4) {
-    ret = std::make_tuple(label, splits[1], std::stoi(splits[2]), splits[3]);
-  }
-
-  return ret;
-}
-
 std::tuple<std::string, int, std::string>
 Infoflow::parseTaintString(std::string line) {
   std::tuple<std::string, int, std::string> ret;
@@ -3083,44 +3015,6 @@ Infoflow::parseTaintString(std::string line) {
   }
 
   return ret;
-}
-
-std::tuple<RLLabel, std::string, int, int>
-Infoflow::parseSinkString(std::string line) {
-  // Move any extra whitespace to end
-  std::string::iterator new_end =
-      unique(line.begin(), line.end(),
-             [](const char &x, const char &y) { return x == y and x == ' '; });
-
-  // Remove the extra space
-  line.erase(new_end, line.end());
-  line = std::regex_replace(line, std::regex("^ +| +$"), "");
-
-  // Split up line
-  std::vector<std::string> splits;
-  char delimiter = ' ';
-
-  size_t i = 0;
-  size_t pos = line.find(delimiter);
-
-  while (pos != std::string::npos) {
-    splits.push_back(line.substr(i, pos - i));
-    i = pos + 1;
-    pos = line.find(delimiter, i);
-  }
-  splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
-
-  RLLabel label = RLConstant::parseLabelString(splits[0]);
-
-  // Create match/offset pair
-  if (splits.size() == 2) {
-    return std::make_tuple(label, splits[1], -1, -1);
-  } else if (splits.size() == 3) {
-    return std::make_tuple(label, splits[1], std::stoi(splits[2]), -1);
-  } else if (splits.size() == 4) {
-    return std::make_tuple(label, splits[1], std::stoi(splits[2]),
-                           std::stoi(splits[3]));
-  }
 }
 
 void Infoflow::readConfiguration() {
@@ -3166,91 +3060,47 @@ void Infoflow::readConfiguration() {
 
   RLConstant::lockLattice();
   RLConstant::dump_lattice(errs());
+
+  // Read source & sink
+  assert(config.contains("source"));
+  for (json source : config.at("source")) {
+    sourceVariables.push_back(parseConfigVariable(source));
+  }
+  assert(config.contains("sink"));
+  for (json sink : config.at("sink")) {
+    sinkVariables.push_back(parseConfigVariable(sink));
+  }
 }
 
-void Infoflow::parseLatticeFile() {
-  std::string line;
-  std::ifstream lattice("lattice.txt");
-  errs() << "[LATTICE]\n";
-  while (std::getline(lattice, line)) {
-    errs() << line << "\n";
-    // Move any extra whitespace to end
-    std::string::iterator new_end =
-        unique(line.begin(), line.end(), [](const char &x, const char &y) {
-          return x == y and x == ' ';
-        });
+ConfigVariable Infoflow::parseConfigVariable(json v) {
+  std::string fn = v.contains("function") ? v.at("function") : "";
+  ConfigVariableType ty = v.at("type") == "argument"
+                              ? ConfigVariableType::Argument
+                              : ConfigVariableType::Variable;
+  std::string name = v.contains("name") ? v.at("name") : "";
+  int num = v.contains("number") ? (int)v.at("number") : 0;
+  int idx = v.contains("index") ? (int)v.at("index") : -1;
 
-    // Remove the extra space
-    line.erase(new_end, line.end());
-    line = std::regex_replace(line, std::regex("^ +| +$"), "");
-
-    // Split up line
-    std::vector<std::string> splits;
-    char delimiter = ' ';
-
-    size_t i = 0;
-    size_t pos = line.find(delimiter);
-
-    while (pos != std::string::npos) {
-      splits.push_back(line.substr(i, pos - i));
-      i = pos + 1;
-      pos = line.find(delimiter, i);
-    }
-    splits.push_back(line.substr(i, std::min(pos, line.size()) - i + 1));
-    assert(splits.size() > 2 &&
-           "Incompatible input. Check lattice.txt for format issues");
-    if (splits[0] == "C") {
-      std::set<std::string> compartments;
-      for (uint i = 2; i < splits.size(); i++) {
-        compartments.insert(splits[i]);
-      }
-      RLConstant::RLCompartmentMap.insert(
-          std::pair<std::string, std::set<std::string>>(splits[1],
-                                                        compartments));
-    } else if (splits[0] == "L") {
-      std::vector<std::string> levels;
-      for (uint i = 2; i < splits.size(); i++) {
-        auto it = std::find(levels.begin(), levels.end(), splits[i]);
-        assert(it == levels.end() && "Duplicate level names!");
-        levels.push_back(splits[i]);
-      }
-      RLConstant::RLLevelMap.insert(
-          std::pair<std::string, std::vector<std::string>>(splits[1], levels));
-    }
+  RLLevel level;
+  std::unordered_map<std::string, std::string> lmap = v.at("l");
+  for (auto l : lmap) {
+    auto v = RLConstant::RLLevelMap.at(l.first);
+    auto it = find(v.begin(), v.end(), l.second);
+    assert(it != v.end());
+    int index = it - v.begin();
+    level.insert(std::make_pair(l.first, index));
   }
-
-  errs() << "Levels: [\n";
-  for (auto d : RLConstant::RLLevelMap) {
-    errs() << "\t" << d.first << ": { ";
-    RLConstant::BotLabel.first[d.first] = 0;
-    RLConstant::TopLabel.first[d.first] = d.second.size() - 1;
-    for (auto s : d.second) {
-      errs() << s;
-      if (s != *d.second.rbegin())
-        errs() << " -> ";
+  RLCompartment compartment;
+  std::unordered_map<std::string, std::list<std::string>> cmap = v.at("c");
+  for (auto c : cmap) {
+    std::set<std::string> set;
+    for (auto e : c.second) {
+      set.insert(e);
     }
-    errs() << " }\n";
+    compartment.insert(std::make_pair(c.first, set));
   }
-  errs() << "]\n";
-
-  errs() << "Compartments: [\n";
-  for (auto d : RLConstant::RLCompartmentMap) {
-    errs() << "\t" << d.first << ": { ";
-    RLConstant::BotLabel.second[d.first] = std::set<std::string>();
-    RLConstant::TopLabel.second[d.first] = d.second;
-    for (auto s : d.second) {
-      errs() << s << (s != *d.second.rbegin() ? ", " : " ");
-    }
-    errs() << "}\n";
-  }
-  errs() << "]\n";
-
-  RLConstant::lockLattice();
-
-  RLConstant::bot().dump(errs());
-  errs() << "\n";
-  RLConstant::top().dump(errs());
-  errs() << "\n";
+  RLLabel label(level, compartment);
+  return ConfigVariable(fn, ty, name, num, idx, label);
 }
 
 int Infoflow::matchValueAndParsedString(

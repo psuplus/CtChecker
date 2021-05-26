@@ -241,6 +241,7 @@ RLConsVar::RLConsVar(const std::string description) : desc(description) {
   std::replace(replaced.begin(), replaced.end(), ']', '_');
   std::replace(replaced.begin(), replaced.end(), ';', '_');
   std::replace(replaced.begin(), replaced.end(), '\n', '_');
+  std::replace(replaced.begin(), replaced.end(), '"', '_');
   size_t delimCount = 0;
   for (char c : replaced) {
     if (c == '|') {

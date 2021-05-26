@@ -42,7 +42,7 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 
-#include "json.hpp"
+#include "JSON/json.hpp"
 
 #include <deque>
 #include <fstream>
@@ -50,6 +50,8 @@
 #include <map>
 #include <regex>
 #include <set>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <tuple>
 #include <utility>
 
@@ -415,8 +417,6 @@ private:
                                        const ConsElem &, unsigned,
                                        const StructType *);
 
-  std::tuple<RLLabel, std::string, int, std::string>
-  parseSourceString(std::string line);
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
   void readConfiguration();
   ConfigVariable parseConfigVariable(json v);

@@ -77,11 +77,12 @@ void Infoflow::doFinalization() {
 // turn on to print DSGraph for each context
 #if 0
   DenseSet<DSGraph *> DSGSet;
+  mkdir("graph", 0644);
   int index = 1;
   for (auto loc : locConstraintMap) {
     DSGraph *g = loc.first->getParentGraph();
     if (DSGSet.find(g) == DSGSet.end()) {
-      std::string filename = "graph-" + std::to_string(index++);
+      std::string filename = "graph/" + g->getFunctionNames();
       g->writeGraphToFile(errs(), filename);
       DSGSet.insert(g);
     }

@@ -116,3 +116,4 @@ projects/llvm-deps/processing_tools/g.pdf
 !/projects/llvm-deps/linux_security_tests/tomoyo/bitcode/*.bc
 !/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
+projects/llvm-deps/processing_tools/*.pdf

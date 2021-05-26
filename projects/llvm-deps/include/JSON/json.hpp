@@ -5195,9 +5195,9 @@ std::size_t hash(const BasicJsonType& j)
             return seed;
         }
 
-        default:                   // LCOV_EXCL_LINE
-            JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
-            return 0;              // LCOV_EXCL_LINE
+        // default:                   // LCOV_EXCL_LINE
+        //     JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+        //     return 0;              // LCOV_EXCL_LINE
     }
 }
 
@@ -6511,9 +6511,9 @@ class lexer_base
             case token_type::literal_or_value:
                 return "'[', '{', or a literal";
             // LCOV_EXCL_START
-            default: // catch non-enum values
-                return "unknown token";
-                // LCOV_EXCL_STOP
+            // default: // catch non-enum values
+            //     return "unknown token";
+            //     // LCOV_EXCL_STOP
         }
     }
 };
@@ -8935,9 +8935,9 @@ class binary_reader
                         return parse_cbor_internal(true, tag_handler);
                     }
 
-                    default:                 // LCOV_EXCL_LINE
-                        JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
-                        return false;        // LCOV_EXCL_LINE
+                    // default:                 // LCOV_EXCL_LINE
+                    //     JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+                    //     return false;        // LCOV_EXCL_LINE
                 }
             }
 
@@ -16300,8 +16300,8 @@ class serializer
                 return;
             }
 
-            default:            // LCOV_EXCL_LINE
-                JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+            // default:            // LCOV_EXCL_LINE
+            //     JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
         }
     }
 
@@ -16502,8 +16502,8 @@ class serializer
                             break;
                         }
 
-                        default:            // LCOV_EXCL_LINE
-                            JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+                        // default:            // LCOV_EXCL_LINE
+                        //     JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
                     }
                     break;
                 }
@@ -16566,8 +16566,8 @@ class serializer
                     break;
                 }
 
-                default:            // LCOV_EXCL_LINE
-                    JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
+                // default:            // LCOV_EXCL_LINE
+                //     JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
             }
         }
     }

@@ -3163,8 +3163,6 @@ void Infoflow::getOrCreateLocationValueMap() {
       for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin();
            loc != locs.end(); ++loc) {
         (*loc)->dump();
-        DenseMap<const AbstractLoc *, std::set<const Value *>>::iterator
-            setIter = invertedLocConstraintMap.find(*loc);
         invertedLocConstraintMap[*loc].insert(&value);
         // errs() << "VVVVALUE" << invertedLocConstraintMap[*loc].size() <<
         // "\n";

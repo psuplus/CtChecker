@@ -34,7 +34,7 @@ TEST_OBJDIR := @testobjdir@
 
 # All of the code should additionally look inside the pool allocation source
 # code for include files
-SC_FLAGS = -DSAFECODE -I$(POOLALLOC_SRCDIR)/include -I$(POOLALLOC_OBJDIR)/include -Wall -fexceptions
+SC_FLAGS = -DSAFECODE -I$(POOLALLOC_SRCDIR)/include -I$(POOLALLOC_OBJDIR)/include -Wall -fexceptions -std=c++17
 CFLAGS   += $(SC_FLAGS)
 CPPFLAGS += $(SC_FLAGS)
 CXXFLAGS += $(SC_FLAGS) -Wno-deprecated -Wno-overloaded-virtual

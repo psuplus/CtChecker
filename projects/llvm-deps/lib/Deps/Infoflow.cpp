@@ -75,10 +75,11 @@ void Infoflow::doFinalization() {
   // for computing propagatesTaint
 
 // turn on to print DSGraph for each context
+// note std::filesystem requires c++17
 #if 0
   DenseSet<DSGraph *> DSGSet;
-  mkdir("graph", 0644);
-  int index = 1;
+  std::filesystem::remove_all("graph-output");
+  std::filesystem::create_directory("graph-output");
   for (auto loc : locConstraintMap) {
     DSGraph *g = loc.first->getParentGraph();
     if (DSGSet.find(g) == DSGSet.end()) {

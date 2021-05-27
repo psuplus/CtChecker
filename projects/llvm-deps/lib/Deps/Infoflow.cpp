@@ -63,10 +63,11 @@ void Infoflow::doInitialization() {
   // CHANGE
   sourceSinkAnalysis = &getAnalysis<SourceSinkAnalysis>();
   // sourceSinkAnalysis = &getAnalysis<>();
-  signatureRegistrar = new SignatureRegistrar();
-  registerSignatures();
 
   readConfiguration();
+
+  signatureRegistrar = new SignatureRegistrar(config.at("signature_mode"));
+  registerSignatures();
 }
 
 void Infoflow::doFinalization() {
@@ -98,7 +99,7 @@ void Infoflow::registerSignatures() {
   // For now, if we don't know the call don't bother with this.
   // It's expensive for the crazy amount of external calls to various
   // libraries that one encounters, and we don't have time to fix that.
-  RegisterSignature<TaintReachable> TaintReachable(*signatureRegistrar);
+  RegisterSignature<TaintByConfig> TaintByConfig(*signatureRegistrar);
   // RegisterSignature<ArgsToRet> ArgsToRet(*signatureRegistrar);
 }
 

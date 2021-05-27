@@ -16,24 +16,25 @@
 //===----------------------------------------------------------------------===//
 
 #include "InfoflowSignature.h"
-#include "FlowRecord.h"
 
 namespace deps {
 
 using namespace llvm;
 
-SignatureRegistrar::SignatureRegistrar() { }
+SignatureRegistrar::SignatureRegistrar(json config) : config(config) {}
 
 SignatureRegistrar::~SignatureRegistrar() {
-  for (sig_iterator sig = sigs.begin(), end = sigs.end();
-        sig != end; ++sig) {
-    delete(*sig);
+  for (sig_iterator sig = sigs.begin(), end = sigs.end(); sig != end; ++sig) {
+    delete (*sig);
   }
 }
 
-void
-SignatureRegistrar::registerSignature(const SigInfo si) {
-  sigs.push_back(si.makeSignature());
+void SignatureRegistrar::registerSignature(const SigInfo si) {
+  Signature *sig = si.makeSignature();
+  if (TaintByConfig *tSig = dyn_cast<TaintByConfig>(sig)) {
+    tSig->config = config;
+  }
+  sigs.push_back(sig);
 }
 
 std::vector<FlowRecord>
@@ -47,4 +48,4 @@ SignatureRegistrar::process(const ContextID ctxt, const ImmutableCallSite cs) {
   return std::vector<FlowRecord>();
 }
 
-}
+} // namespace deps

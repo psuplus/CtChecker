@@ -15,11 +15,41 @@
 #ifndef SIGNATURELIBRARY_H_
 #define SIGNATURELIBRARY_H_
 
+#include "FlowRecord.h"
 #include "InfoflowSignature.h"
+
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Instruction.h"
+#include "llvm/IR/IntrinsicInst.h"
+#include "llvm/Support/Debug.h"
+#include "llvm/Support/raw_ostream.h"
 
 namespace deps {
 
 using namespace llvm;
+
+enum SignatureTaintMode {
+  STM_NoFlow,
+  STM_ArgToRet,
+  STM_ArgToRetAndOther,
+  STM_ArgToAllReachable,
+  STM_Custom = -1
+};
+
+class TaintByConfig : public Signature {
+public:
+  virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const;
+
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const { return ST_TaintByConfig; }
+  static inline bool classof(const TaintByConfig *sig) { return true; }
+  static inline bool classof(const Signature *sig) {
+    return sig->type() == ST_TaintByConfig;
+  }
+  json config;
+};
 
 /// Description: A conservative signature that taints all reachable sinks with
 ///   all reachable sources (ignoring that callees may be memory-unsafe).
@@ -33,7 +63,15 @@ using namespace llvm;
 class TaintReachable : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const;
+
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const { return ST_TaintReachable; }
+  static inline bool classof(const TaintReachable *sig) { return true; }
+  static inline bool classof(const Signature *sig) {
+    return sig->type() == ST_TaintReachable;
+  }
 };
 
 /// Description: A dummy signature that assumes no information flows happen
@@ -44,26 +82,50 @@ public:
 class NoFlows : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const;
+
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const { return ST_NoFlows; }
+  static inline bool classof(const TaintReachable *sig) { return true; }
+  static inline bool classof(const Signature *sig) {
+    return sig->type() == ST_NoFlows;
+  }
 };
 
 class ArgsToRet : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
-};
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const;
 
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const { return ST_ArgsToRet; }
+  static inline bool classof(const TaintReachable *sig) { return true; }
+  static inline bool classof(const Signature *sig) {
+    return sig->type() == ST_ArgsToRet;
+  }
+};
 
 // StdLib - Signature generation for StdLib calls
 struct CallSummary;
-class StdLib: public Signature {
-  std::vector<const CallSummary*> Calls;
+class StdLib : public Signature {
+  std::vector<const CallSummary *> Calls;
   void initCalls();
-  bool findEntry(const ImmutableCallSite cs, const CallSummary *& S) const;
+  bool findEntry(const ImmutableCallSite cs, const CallSummary *&S) const;
+
 public:
   StdLib() : Signature() { initCalls(); }
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const;
+
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const { return ST_StdLib; }
+  static inline bool classof(const TaintReachable *sig) { return true; }
+  static inline bool classof(const Signature *sig) {
+    return sig->type() == ST_StdLib;
+  }
 };
 
 // OverflowChecks
@@ -73,9 +135,17 @@ public:
 class OverflowChecks : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const;
+
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const { return ST_OverflowChecks; }
+  static inline bool classof(const TaintReachable *sig) { return true; }
+  static inline bool classof(const Signature *sig) {
+    return sig->type() == ST_OverflowChecks;
+  }
 };
 
-}
+} // namespace deps
 
 #endif /* SIGNATURELIBRARY_H_ */

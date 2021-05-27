@@ -1,45 +1,59 @@
 {
-    "function_mode": {
-        "default_mode": 1,
-        "functions": []
-    },
-    "lattice": {
-        "levels": [
-            {
-                "name": "secret",
-                "level": [
-                    "public",
-                    "private"
-                ]
-            }
-        ],
-        "compartments": []
-    },
-    "source": [
-        {
-            "function": "foo",
-            "type": "variable",
-            "name": "key",
-            "index": 1,
-            "l": {
-                "secret": "private"
-            },
-            "c": {}
-        }
-    ],
-    "sink": [
-        {
-            "function": "regular_func",
-            "type": "argument",
-            "number": 0,
-            "index": 0,
-            "l": {
-                "secret": "private"
-            },
-            "c": {}
-        }
-    ],
-    "entry": [
-        "foo"
+  "signature_mode": {
+    "default": 1,
+    "custom": [
+      {
+        "name": "f_name",
+        "mode": 0
+      },
+      {
+        "name": "regular_func",
+        "mode": -1,
+        "flows": [
+          {
+            "arg": 0,
+            "dest": 1
+          },
+          {
+            "arg": 1,
+            "dest": -1
+          }
+        ]
+      }
     ]
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "foo",
+      "type": "variable",
+      "name": "pkey",
+      "index": 2,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [
+    {
+      "function": "regular_func",
+      "type": "argument",
+      "number": 0,
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "entry": ["foo"]
 }

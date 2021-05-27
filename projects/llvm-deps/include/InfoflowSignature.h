@@ -19,12 +19,28 @@
 #define INFOFLOWSIGNATURE_H_
 
 #include "CallContext.h"
+#include "FlowRecord.h"
+#include "SignatureLibrary.h"
+
+#include "JSON/json.hpp"
+
 #include <set>
 #include <vector>
+
+using json = nlohmann::json;
 
 namespace deps {
 
 using namespace llvm;
+
+enum SignatureType {
+  ST_TaintByConfig,
+  ST_TaintReachable,
+  ST_NoFlows,
+  ST_ArgsToRet,
+  ST_StdLib,
+  ST_OverflowChecks
+};
 
 class FlowRecord;
 
@@ -34,11 +50,16 @@ public:
   /// Accept should return true if this signature is valid for the given call
   /// site and false otherwise. If a signature accepts a call site, it's
   /// result may be used as a summary for the given call.
-  virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const = 0;
+  virtual bool accept(const ContextID ctxt,
+                      const ImmutableCallSite cs) const = 0;
   /// Process takes as input an llvm call site and returns a FlowRecord
   /// summarizing the information flows that occur as a result of the call.
   /// Process may only be invoked if the signature accepted the call site.
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const = 0;
+  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+                                          const ImmutableCallSite cs) const = 0;
+
+  /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
+  virtual SignatureType type() const = 0;
 
   virtual ~Signature() {}
 };
@@ -50,19 +71,22 @@ struct SigInfo;
 class SignatureRegistrar {
 public:
   typedef std::vector<const Signature *>::iterator sig_iterator;
-  SignatureRegistrar();
+  SignatureRegistrar(json config);
   ~SignatureRegistrar();
   /// Do not call directly. Used by RegisterSignature to register
   /// new signature types.
-  void registerSignature(const SigInfo si);
+  void registerSignature(const SigInfo);
 
   /// For a given call site, returns a summary of the information flows
   /// that may occur as a result of the call.
   /// Currently uses the first signature to accept the call, in order
   /// of signature registration.
-  std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs);
+  std::vector<FlowRecord> process(const ContextID ctxt,
+                                  const ImmutableCallSite cs);
+
 private:
   std::vector<const Signature *> sigs;
+  json config;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,29 +96,28 @@ private:
 /// A helper structure for quickly registering signatures.
 struct SigInfo {
 public:
-  typedef Signature* (*SigCtor_t)();
-  SigInfo(const SigCtor_t ctor) : ctor(ctor) { }
+  typedef Signature *(*SigCtor_t)();
+  SigInfo(const SigCtor_t ctor) : ctor(ctor) {}
   Signature *makeSignature() const { return ctor(); }
+
 private:
   const SigCtor_t ctor;
 };
 
 /// A helper template
-template<class sig>
-Signature *callDefaultCtor() { return new sig(); }
+template <class sig> Signature *callDefaultCtor() { return new sig(); }
 
 /// Based on LLVM's RegisterPass template.
 /// To register a signature of class MySignature with theRegistrar, invoke:
 /// RegisterSignature<MySignature> TMP(theRegistrar);
 /// where TMP is a fresh TMP variable.
-template<class signature>
-struct RegisterSignature : SigInfo {
-    RegisterSignature(SignatureRegistrar & registrar)
-    : SigInfo(SigInfo::SigCtor_t(callDefaultCtor<signature>)) {
+template <class signature> struct RegisterSignature : SigInfo {
+  RegisterSignature(SignatureRegistrar &registrar)
+      : SigInfo(SigInfo::SigCtor_t(callDefaultCtor<signature>)) {
     registrar.registerSignature(*this);
   }
 };
 
-}
+} // namespace deps
 
 #endif /* INFOFLOWSIGNATURE_H_ */

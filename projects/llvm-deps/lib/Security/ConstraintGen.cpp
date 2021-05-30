@@ -92,7 +92,7 @@ bool ConstraintGen::runOnModule(Module &M) {
   //         const ConsElem *elem = vIter->second;
   //         const ConsElem &low = LHConstant::low();
   //         LHConstraint c(elem, &low, false);
-  //         errs() << "  ;  [ConsDebugTag-*]   sink public values\n";
+  //         errs() << "  ;  [ConsDebugTag-*]   sink public values";
   //       }
   //     }
   //   }
@@ -119,7 +119,7 @@ bool ConstraintGen::runOnModule(Module &M) {
   //           const ConsElem *elem = vIter->second;
   //           const ConsElem &low = RLConstant::bot();
   //           RLConstraint c(elem, &low, &Predicate::TruePred(), false);
-  //           errs() << "  ;  [ConsDebugTag-*]   public values\n";
+  //           errs() << "  ;  [ConsDebugTag-*]   public values";
   //         }
   //       }
   //     }

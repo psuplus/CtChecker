@@ -276,7 +276,7 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     if (elementsToUntaint.size() == 0) {
       ifa->setLabel(kind, value, label, false);
     } else {
-      std::string debugTag = " ;  [ConsDebugTag-*]  sink location\n";
+      std::string debugTag = " ;  [ConsDebugTag-*]  sink location";
       const ConsElem *constant = &(ifa->kit->constant(label));
       std::set<const ConsElem *>::iterator it = elementsToUntaint.begin();
       for (; it != elementsToUntaint.end(); ++it) {
@@ -312,7 +312,7 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
   errs() << "Map size [" << elemMap.size() << "] <--> number of elements ["
          << numElements << "].\n";
   if (numElements == elemMap.size()) {
-    relevant = ifa->findRelevantConsElem(node, elemMap, offset);
+    relevant = ifa->findRelevantConsElem(node, elemMap, &val, offset);
     return relevant;
   } else {
     // errs() << "Adding ConsElem from elemMap to relevant set: \n";

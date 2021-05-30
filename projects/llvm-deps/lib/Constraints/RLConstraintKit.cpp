@@ -145,17 +145,12 @@ void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
 
   if (const RLJoin *left = llvm::dyn_cast<RLJoin>(&lhs)) {
     std::set<const ConsElem *> elems = left->elements();
-    for (std::set<const ConsElem *>::iterator elem = elems.begin(),
-                                              end = elems.end();
-         elem != end; ++elem) {
-      const RLConstraint c(**elem, rhs, pred, implicit);
+    for (auto elem = elems.begin(); elem != elems.end(); ++elem) {
+      const RLConstraint c(**elem, rhs, pred, implicit, info);
       set.push_back(c);
-      if (elems.size() > 1) {
-        llvm::errs() << info;
-      }
     }
   } else {
-    RLConstraint c(lhs, rhs, pred, implicit);
+    RLConstraint c(lhs, rhs, pred, implicit, info);
     set.push_back(c);
   }
 }

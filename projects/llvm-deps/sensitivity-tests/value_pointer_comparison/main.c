@@ -1,5 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+
+struct st {
+  int a;
+  int b;
+};
 
 struct KeyS {
   int k0;
@@ -10,46 +15,99 @@ struct KeyS {
       int f1;
     } s0;
     struct {
-      int f0;
+      int *f0;
       int f1;
       int f2;
     } s1;
   } u;
 };
 
-// struct Data {
-//   struct KeyS *f0;
-//   int *f1;
-// };
+union UU {
+  struct {
+    int *f0;
+    int f1;
+  } s0;
+  struct {
+    int *f0;
+    int f1;
+    int f2;
+  } s1;
+  int f5;
+} u;
 
-int regular_func(struct KeyS *a2, int a1);
-// int regular_func(struct KeyS *a2, int a1) {
-//   a2->k0 = 1;
-//   a2->u.s1.f1 = a1;
-//   return a2->u.s1.f2;
-// }
+union b {
+  int a;
+  char c;
+  long l;
+  struct {
+    long l;
+    int i;
+    char c;
+  } s;
+};
 
-int foo(struct KeyS *pkey, struct KeyS *notkey, int x) {
-  // int i = 2;
+struct Data {
+  struct KeyS *f0;
+  int *f1;
+};
 
+int regular_func(struct KeyS *, int);
+int regular_func(struct KeyS *a1, int a2) {
+  a1->k0 = 1;
+  a1->u.s0.f1 = a2;
+  return a1->u.s0.f1;
+}
+
+int foo(int x, union UU *uu, struct KeyS *key) {
   // struct Data *dataStruct = malloc(sizeof(struct Data));
   // dataStruct->f0 = key;
   // dataStruct->f1 = &i;
 
-  if (regular_func(pkey, x)) {
+  int *ptr = &x;
+  int val = x;
+
+  struct st s;
+  s.a = x;
+
+  union b bb;
+  bb.a = x;
+
+  char cc = bb.c;
+  long ll = bb.l;
+
+  if (cc) {
   }
 
-  if (notkey->k0) {
+  if (bb.c) {
   }
 
-  if (x) {
+  if (bb.s.l) {
   }
 
-  if (pkey->k0) {
+  if (bb.s.i) {
   }
 
-  // if (key->k0) {
-  // }
+  union UU u;
+  u.s0.f1 = x;
+  if (u.s1.f1) {
+  }
+
+  if (u.s1.f2) {
+  }
+
+  struct KeyS aa;
+  aa.u.s0.f1 = x;
+  if (aa.u.s1.f1) {
+  }
+
+  if (regular_func(key, x) >= 1) {
+  }
+
+  if (key->k0) {
+  }
+
+  if (key->u.s0.f0) {
+  }
 
   // if (regular_func(notkey, i)) {
   //   printf("hello\n");
@@ -67,4 +125,4 @@ int foo(struct KeyS *pkey, struct KeyS *notkey, int x) {
   return 0;
 }
 
-int main(void) { return 0; }
+// int main(void) { return 0; }

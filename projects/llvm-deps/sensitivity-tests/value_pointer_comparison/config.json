@@ -1,26 +1,7 @@
 {
   "signature_mode": {
     "default": 1,
-    "custom": [
-      {
-        "name": "f_name",
-        "mode": 0
-      },
-      {
-        "name": "regular_func",
-        "mode": -1,
-        "flows": [
-          {
-            "arg": 0,
-            "dest": 1
-          },
-          {
-            "arg": 1,
-            "dest": -1
-          }
-        ]
-      }
-    ]
+    "custom": []
   },
   "lattice": {
     "levels": [
@@ -35,8 +16,8 @@
     {
       "function": "foo",
       "type": "variable",
-      "name": "pkey",
-      "index": 2,
+      "name": "x",
+      "index": -1,
       "l": {
         "secret": "private"
       },

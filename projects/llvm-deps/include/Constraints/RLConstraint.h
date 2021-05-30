@@ -26,64 +26,65 @@ class Predicate;
 
 class RLConstraint {
 private:
-  void printCosntraint(const ConsElem &lhs, const ConsElem &rhs,
-                       const Predicate &pred) {
+  void printCosntraint() {
     // llvm::errs() << "pred: " << &pred << "\n";
     // if (&pred) {
     //   pred.dump();
     //   llvm::errs() << "iter\n";
     // }
-    if (llvm::isa<RLConstant>(&lhs)) {
+    if (llvm::isa<RLConstant>(left)) {
       std::string constant;
       llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(constant);
-      lhs.dump(*ss);
+      left->dump(*ss);
       ss->str();
       llvm::errs() << constant;
     } else {
-      llvm::errs() << "CE" << &lhs; // address
+      llvm::errs() << "CE" << left; // address
       llvm::errs() << "[";
-      lhs.dump(llvm::errs()); // description
+      left->dump(llvm::errs()); // description
       llvm::errs() << "]";
     }
     llvm::errs() << " <: ";
-    if (llvm::isa<RLConstant>(&rhs)) {
+    if (llvm::isa<RLConstant>(right)) {
       std::string constant;
       llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(constant);
-      rhs.dump(*ss);
+      right->dump(*ss);
       ss->str();
       llvm::errs() << constant;
     } else {
-      llvm::errs() << "CE" << &rhs;
+      llvm::errs() << "CE" << right;
       llvm::errs() << "[";
-      rhs.dump(llvm::errs());
+      right->dump(llvm::errs());
       llvm::errs() << "]";
     }
+    llvm::errs() << info << "\n";
   }
 
 public:
   RLConstraint(const ConsElem &lhs, const ConsElem &rhs, const Predicate &pred,
-               bool implicit)
-      : left(&lhs), right(&rhs), pred(&pred), implicit(implicit) {
+               bool implicit, std::string info)
+      : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), info(info) {
     if (!implicit)
-      printCosntraint(lhs, rhs, pred);
+      printCosntraint();
   }
   RLConstraint(const ConsElem *lhs, const ConsElem *rhs, const Predicate *pred,
-               bool implicit)
-      : left(lhs), right(rhs), pred(pred), implicit(implicit) {
+               bool implicit, std::string info)
+      : left(lhs), right(rhs), pred(pred), implicit(implicit), info(info) {
     if (!implicit)
-      printCosntraint(*lhs, *rhs, *pred);
+      printCosntraint();
   }
   const ConsElem &lhs() const { return *left; }
   const ConsElem &rhs() const { return *right; }
   const Predicate &predicate() const { return *pred; }
 
-  void dump() { printCosntraint(lhs(), rhs(), predicate()); }
+  void dump() { printCosntraint(); }
 
 private:
   const ConsElem *left;
   const ConsElem *right;
   const Predicate *pred;
   bool implicit;
+  std::string info;
   friend struct llvm::DenseMapInfo<RLConstraint>;
 };
 

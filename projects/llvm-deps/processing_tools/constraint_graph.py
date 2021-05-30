@@ -43,7 +43,6 @@ def main():
             conSet = set()
             for line in f:
                 line = re.split(r" +<: +| +;.*", line)
-                print(line)
                 if line[0].startswith(constStr):
                     ceStr = re.split(r"\[|\]", line[1])
                     CE1 = CE('"' + line[0] + '"')

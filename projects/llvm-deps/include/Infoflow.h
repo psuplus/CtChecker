@@ -41,6 +41,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
+#include "llvm/Support/Format.h"
 
 #include "JSON/json.hpp"
 
@@ -169,9 +170,12 @@ public:
   typedef DenseMap<const Value *, const ConsElem *> ValueConsElemMap;
   typedef FlowRecord::value_iterator value_iterator;
   typedef FlowRecord::value_set value_set;
+  typedef std::vector<FlowRecord> Flows;
+
   static char ID;
   bool offset_used;
   json config;
+
   Infoflow();
   virtual ~Infoflow() {
     delete kit;
@@ -259,7 +263,7 @@ public:
   /// are considered UNTAINTED.
   ///
   /// Once a solution is requested for a given kind, no further
-  /// constriants may be added to that kind.
+  /// constraints may be added to that kind.
   InfoflowSolution *leastSolution(std::set<std::string> kinds, bool implicit,
                                   bool sinks);
 
@@ -270,11 +274,10 @@ public:
   /// are considered TAINTED.
   ///
   /// Once a solution is requested for a given kind, no further
-  /// constriants may be added to that kind.
+  /// constraints may be added to that kind.
   InfoflowSolution *greatestSolution(std::set<std::string> kinds,
                                      bool implicit);
 
-  typedef std::vector<FlowRecord> Flows;
   Flows getInstructionFlows(const Instruction &);
 
   // Solve the given kind using two threads.
@@ -297,7 +300,6 @@ private:
 
   PointsToInterface *pti;
   SourceSinkAnalysis *sourceSinkAnalysis;
-
   SignatureRegistrar *signatureRegistrar;
 
   Flows flowVector;
@@ -382,9 +384,9 @@ private:
   void processGetElementPtrInstSource(const Value *,
                                       std::set<const ConsElem *> &,
                                       std::set<const AbstractLoc *>, bool);
-  std::set<const ConsElem *>
-  findRelevantConsElem(const AbstractLoc *,
-                       std::map<unsigned, const ConsElem *>, unsigned);
+  ConsElemSet findRelevantConsElem(const AbstractLoc *,
+                                   std::map<unsigned, const ConsElem *>,
+                                   const Value *, unsigned);
 
   const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
   void putOrConstrainConsElem(bool imp, bool sink, const ContextID,
@@ -400,8 +402,9 @@ private:
   std::map<unsigned, const ConsElem *>
   getOrCreateConsElemTyped(const AbstractLoc &, unsigned, const Value *v = NULL,
                            bool force = false);
-  std::map<unsigned, const ConsElem *>
-  createConsElemFromStruct(const AbstractLoc &, StructType *);
+  void createConsElemFromStruct(const AbstractLoc &, StructType *,
+                                std::map<unsigned, const ConsElem *> &,
+                                unsigned);
 
   std::map<unsigned, const ConsElem *>
   getOrCreateConsElemCollapsedStruct(const AbstractLoc &, const StructType *);
@@ -410,7 +413,8 @@ private:
   void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &,
                               const ConsElem &);
   void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &,
-                              const ConsElem &, unsigned offset, unsigned);
+                              const ConsElem &, unsigned offset, const Value *,
+                              unsigned);
   void putOrConstrainConsElemStruct(bool, bool, const AbstractLoc &,
                                     const ConsElem &, unsigned,
                                     const Value *v = NULL);

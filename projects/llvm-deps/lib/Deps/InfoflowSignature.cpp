@@ -16,6 +16,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "InfoflowSignature.h"
+#include "SignatureLibrary.h"
 
 namespace deps {
 

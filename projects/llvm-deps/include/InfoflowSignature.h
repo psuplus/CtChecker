@@ -20,7 +20,6 @@
 
 #include "CallContext.h"
 #include "FlowRecord.h"
-#include "SignatureLibrary.h"
 
 #include "JSON/json.hpp"
 

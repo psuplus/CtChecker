@@ -65,6 +65,8 @@ using namespace llvm;
 /// be analyzed once per context.
 class Unit {
 public:
+  Unit(){};
+  ~Unit(){};
   const Unit &operator=(const Unit &u) { return u; }
   bool operator<=(const Unit &) const { return true; }
   bool operator==(const Unit &) const { return true; }

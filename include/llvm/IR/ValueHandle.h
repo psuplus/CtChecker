@@ -145,6 +145,9 @@ public:
   WeakVH(const WeakVH &RHS)
     : ValueHandleBase(Weak, RHS) {}
 
+  const WeakVH &operator=(const WeakVH &vh) { return vh; }
+  WeakVH &operator=(WeakVH &vh) { return vh; }
+
   Value *operator=(Value *RHS) {
     return ValueHandleBase::operator=(RHS);
   }

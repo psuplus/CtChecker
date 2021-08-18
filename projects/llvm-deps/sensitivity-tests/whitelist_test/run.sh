@@ -29,7 +29,10 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < test.bc > /dev/null
+  -vulnerablebranch  -debug < test.bc 2> tmp.dat > /dev/null
+
+CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
+cat tmp.dat | grep '<:' > $CONS_FILENAME
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

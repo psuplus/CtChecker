@@ -42,3 +42,6 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
 
 #./welcome
 
+
+CONS_FILENAME=$( echo 'constraints.con' | tr '/' '-')
+cat tmp.dat | grep '<:' > $CONS_FILENAME

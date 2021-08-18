@@ -12,7 +12,7 @@ LLVMLIBS=
 LDFLAGS=
 LEVEL="../../../.."
 
-export CPATH       	   += ${PWD}/lib:${PWD}/include:${PWD}/include/internal:${PWD}/include/openssl:${PWD}/v4_4_mont_recp
+# export CPATH       	   += ${PWD}/lib:${PWD}/include:${PWD}/include/internal:${PWD}/include/openssl:${PWD}/v4_4_mont_recp
 
 # if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
 #CPPFLAGS=`llvm-config --cppflags`
@@ -22,7 +22,7 @@ export CPATH       	   += ${PWD}/lib:${PWD}/include:${PWD}/include/internal:${PW
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 $LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c -I/${PWD}/include main.c -o test.bc
-#$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
+$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.c
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
@@ -44,3 +44,6 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
 
 #./welcome
 
+
+CONS_FILENAME=$( echo 'constraints.con' | tr '/' '-')
+cat tmp.dat | grep '<:' > $CONS_FILENAME

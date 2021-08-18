@@ -1,0 +1,29 @@
+{
+  "signature_mode": {
+    "default": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "argument_gap",
+      "type": "variable",
+      "name": "n",
+      "index": 2,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "entry": ["argument_gap"]
+}

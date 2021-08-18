@@ -23,7 +23,8 @@ $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o test.bc -c main.c
 $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.c
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt \
+  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
@@ -42,3 +43,6 @@ $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/
 
 #./welcome
 
+
+CONS_FILENAME=$( echo 'constraints.con' | tr '/' '-')
+cat tmp.dat | grep '<:' > $CONS_FILENAME

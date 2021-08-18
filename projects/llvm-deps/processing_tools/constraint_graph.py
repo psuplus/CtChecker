@@ -70,9 +70,9 @@ def main():
         tmp_file.write("}")
         tmp_file.close()
 
-    os.system("dot -Tpdf tmp.dot -o g.pdf")
+    os.system("dot -Tsvg tmp.dot -o g.svg")
     # os.system('open g.pdf')
-    os.system("wslview g.pdf")
+    os.system("wslview g.svg")
 
 
 if __name__ == "__main__":

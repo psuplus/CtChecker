@@ -97,6 +97,7 @@ Support
 ocaml
 *.llvmbuild
 *.con
+*.dat
 
 #==============================================================================#
 # Adding more files that should be ignored - 3/31/2020
@@ -108,7 +109,6 @@ results_with_source*.txt
 .vscode/
 .idea/
 *.dot
-projects/llvm-deps/processing_tools/g.pdf
 
 #==============================================================================#
 # Need some new exceptions for LSM tests - 4/15/2021
@@ -117,3 +117,4 @@ projects/llvm-deps/processing_tools/g.pdf
 !/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
 projects/llvm-deps/processing_tools/*.pdf
+projects/llvm-deps/processing_tools/*.svg

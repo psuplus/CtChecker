@@ -56,8 +56,12 @@ echo "Running with flags: $COL"
 
 LEVEL="../../../.."
 
+# $LEVEL/Debug+Asserts/bin/llvm-as dixutils.ll
+# $LEVEL/Debug+Asserts/bin/llvm-as resource.ll
+$LEVEL/Debug+Asserts/bin/llvm-as dixutils4.ll -o $1
 
-$LEVEL/Debug+Asserts/bin/llvm-dis $1 
+# $LEVEL/Debug+Asserts/bin/llvm-link dixutils.bc resource.bc -o $1
+# $LEVEL/Debug+Asserts/bin/llvm-dis $1 
 # $LEVEL/Debug+Asserts/bin/clang -isystem inlcude -I include -O0 -g -emit-llvm -S mpi/mpi-pow.c
 
 

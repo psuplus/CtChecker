@@ -40,12 +40,12 @@ execute_test()
     # flags: $2 $3 [white_list] [flow_sensitivity] [source]
     if [ $5 = true ] ; then 
         # $2 $3 false false $5    # FS/SRC
-        # $2 $3 false true $5     # FS/Fls/SRC
+        # $2 $3 false true $5     # FS/FlS/SRC
         $2 $3 true false $5     # WL/FS/SRC
         $2 $3 true true $5      # WL/FS/FlS/SRC
     else 
         $2 $3 false false $5    # FS
-        # $2 $3 false true $5     # FS/Fls
+        # $2 $3 false true $5     # FS/FlS
         $2 $3 true false $5     # WL/FS
         $2 $3 true true $5      # WL/FS/FlS
     fi
@@ -56,18 +56,20 @@ execute_test()
 
 full_library_tests()
 {
+    printf "\n==== Running full library tests ====\n"
     execute_test "BearSSL0.5" "./run.sh" "testall.bc" $OUT_FULL_DIR true
-    execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
-    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
     execute_test "mbedtls2.9.0" "./run.sh" "test2.bc" $OUT_FULL_DIR true
+    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
 }
 
 min_library_tests()
 {
+    printf "\n==== Running min library tests ====\n"
     execute_test "BearSSL0.5" "./run.sh" "test2.bc" $OUT_MIN_DIR false
-    execute_test "openSSL_1_1_0g" "./run.sh" "test1.bc" $OUT_MIN_DIR false
-    execute_test "libgcrypt1.8.2" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
     execute_test "mbedtls2.9.0" "./run.sh" "test1.bc" $OUT_MIN_DIR false
+    execute_test "libgcrypt1.8.2" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
+    execute_test "openSSL_1_1_0g" "./run.sh" "test1.bc" $OUT_MIN_DIR false
 }
 
 ct_verif_tests()

@@ -1,0 +1,29 @@
+{
+  "signature_mode": {
+    "default": 2,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "BN_mod_exp_mont_word",
+      "type": "variable",
+      "name": "p",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "entry": ["BN_mod_exp_mont_word"]
+}

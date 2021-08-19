@@ -1,0 +1,29 @@
+{
+  "signature_mode": {
+    "default": 2,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "_gcry_mpi_powm",
+      "type": "variable",
+      "name": "expo",
+      "index": 4,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "entry": ["_gcry_mpi_powm"]
+}

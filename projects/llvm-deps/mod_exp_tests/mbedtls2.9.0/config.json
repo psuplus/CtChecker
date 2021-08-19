@@ -1,0 +1,29 @@
+{
+  "signature_mode": {
+    "default": 2,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "mbedtls_mpi_exp_mod",
+      "type": "variable",
+      "name": "E",
+      "index": 2,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "entry": ["mbedtls_mpi_exp_mod"]
+}

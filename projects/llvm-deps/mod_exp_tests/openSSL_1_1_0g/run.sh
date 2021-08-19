@@ -72,11 +72,8 @@ make $1
 for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
     do
         FN="BN_mod_exp_"$FUNC
-        echo '[secret:private][] p 0 '$FN > source.txt
-        echo $FN > entry.txt
-        
         echo $FN
-        cat source.txt
+        sed -i -r "s/BN_mod_exp[A-Za-z_]*/$FN/g" "config.json"
         
         if [ $FUNC == "recp" ]; then
             echo "recp"

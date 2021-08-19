@@ -1,1 +1,0 @@
-expo 4 _gcry_mpi_powm

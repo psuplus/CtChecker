@@ -1,2 +1,0 @@
-[source:input,value:dynamic][purpose:{object}] r 3 tomoyo_path_permission
-[source:input,value:dynamic][purpose:{subject}] r 2 tomoyo_path_permission

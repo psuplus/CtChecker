@@ -31,24 +31,25 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
 
   std::vector<FlowRecord> flows;
 
-  SignatureTaintMode taintMode = config.at("default");
+  SignatureFlowDirection directionMode = config.at("direction");
+  SignatureFlowPointer pointerMode = config.at("pointer");
   json customFlows;
   for (json f : config.at("custom")) {
     std::string name = f.at("name");
     const Function *F = cs.getCalledFunction();
     if (F && F->getName() == name) {
-      taintMode = f.at("mode");
-      if (taintMode == STM_Custom)
+      directionMode = f.at("mode");
+      if (directionMode == SFD_Custom)
         customFlows = f.at("flows");
       break;
     }
   }
 
-  switch (taintMode) {
-  case STM_NoFlow:
+  switch (directionMode) {
+  case SFD_NoFlow:
     break;
 
-  case STM_Custom:
+  case SFD_Custom:
     for (json flowJSON : customFlows) {
       int idx = 0;
       int argIdx = flowJSON.at("arg");
@@ -66,7 +67,11 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
 
           exp.addSourceValue(**arg);
           if ((*arg)->getType()->isPointerTy()) {
-            exp.addSourceDirectPtr(**arg);
+            if (pointerMode == SFP_DirectPointer) {
+              exp.addSourceDirectPtr(**arg);
+            } else {
+              exp.addSourceReachablePtr(**arg);
+            }
             imp.addSourceValue(**arg);
           }
 
@@ -75,8 +80,13 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
               imp.addSinkValue(*cs.getInstruction());
               exp.addSinkValue(*cs.getInstruction());
               if (cs->getType()->isPointerTy()) {
-                imp.addSinkDirectPtr(*cs.getInstruction());
-                exp.addSinkDirectPtr(*cs.getInstruction());
+                if (pointerMode == SFP_DirectPointer) {
+                  imp.addSinkDirectPtr(*cs.getInstruction());
+                  exp.addSinkDirectPtr(*cs.getInstruction());
+                } else {
+                  exp.addSinkReachablePtr(*cs.getInstruction());
+                  imp.addSinkReachablePtr(*cs.getInstruction());
+                }
               }
             }
           } else {
@@ -89,10 +99,15 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
                 // but do need make flows transitive,
                 // e.g., arg1 -> arg2 -> ret
                 // Same for the counterpart in the default case
-                exp.addSinkValue(**other);
                 if ((*other)->getType()->isPointerTy()) {
-                  exp.addSinkDirectPtr(**other);
-                  imp.addSinkDirectPtr(**other);
+                  exp.addSinkValue(**other);
+                  if (pointerMode == SFP_DirectPointer) {
+                    exp.addSinkDirectPtr(**other);
+                    imp.addSinkDirectPtr(**other);
+                  } else {
+                    exp.addSinkReachablePtr(**other);
+                    imp.addSinkReachablePtr(**other);
+                  }
                 }
                 break;
               }
@@ -119,36 +134,47 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
 
       // every argument's value is a source
       exp.addSourceValue(**arg);
-      // if argument is pointer, everything it DIRECTLY POINTS TO is source
+      // if argument is pointer, everything it POINTS TO is source
       if ((*arg)->getType()->isPointerTy()) {
-        exp.addSourceDirectPtr(**arg);
+        if (pointerMode == SFP_DirectPointer) {
+          exp.addSourceDirectPtr(**arg);
+        } else {
+          exp.addSourceReachablePtr(**arg);
+        }
         imp.addSourceValue(**arg);
       }
 
       // Sources and sinks of the args
-      // MODE: >= STM_ArgToRetAndOther
-      if (taintMode >= STM_ArgToRetAndOther) {
+      // MODE: >= SFD_ArgToRetAndOther
+      if (directionMode >= SFD_ArgToRetAndOther) {
         for (ImmutableCallSite::arg_iterator other = cs.arg_begin();
              other != cs.arg_end(); ++other) {
-          // if argument is pointer, everything it DIRECTLY POINTS TO is sink
-          if (other != arg || taintMode == STM_ArgToAllReachable) {
-            exp.addSinkValue(**other);
+          // if argument is pointer, everything it POINTS TO is sink
+          if ((other != arg || directionMode == SFD_ArgToAllReachable) &&
+              !isa<Constant>(other->get())) {
             if ((*other)->getType()->isPointerTy()) {
-              exp.addSinkDirectPtr(**other);
-              imp.addSinkDirectPtr(**other);
+              exp.addSinkValue(**other);
+              if (pointerMode == SFP_DirectPointer) {
+                exp.addSinkDirectPtr(**other);
+                imp.addSinkDirectPtr(**other);
+              } else {
+                exp.addSinkReachablePtr(**other);
+                imp.addSinkReachablePtr(**other);
+              }
             }
           }
         }
       }
 
       // if the function has a return value it is a sink
-      // MODE: STM_ArgToRet
+      // MODE: SFD_ArgToRet
       if (!cs->getType()->isVoidTy()) {
         imp.addSinkValue(*cs.getInstruction());
         exp.addSinkValue(*cs.getInstruction());
         // TODO: VERIFY THIS WITH malloc()
         // malloc had this but we don't
         if (cs->getType()->isPointerTy()) {
+          // TODO: Also using pointer mode at this location?
           imp.addSinkDirectPtr(*cs.getInstruction());
           exp.addSinkDirectPtr(*cs.getInstruction());
         }

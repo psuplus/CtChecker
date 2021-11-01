@@ -24,9 +24,9 @@
   },
   "source": [
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_check_open_permission",
       "type": "variable",
-      "name": "path1",
+      "name": "path",
       "index": -1,
       "l": {
         "source": "input",
@@ -35,31 +35,20 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_check_open_permission",
       "type": "variable",
-      "name": "path2",
+      "name": "flag",
       "index": -1,
       "l": {
         "source": "input",
-        "value": "dynamic"
-      },
-      "c": { "purpose": ["object"] }
-    },
-    {
-      "function": "tomoyo_path2_perm",
-      "type": "variable",
-      "name": "operation",
-      "index": -1,
-      "l": {
-        "source": "input",
-        "value": "dynamic"
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "tomoyo_domain",
+      "function": "tomoyo_check_open_permission",
       "type": "variable",
-      "name": "security",
+      "name": "domain",
       "index": -1,
       "l": {
         "source": "external",
@@ -108,11 +97,11 @@
       "number": 0,
       "index": 5,
       "l": {
-        "source": "input",
-        "value": "dynamic"
+        "source": "mediator",
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     }
   ],
-  "entry": ["tomoyo_path2_perm"]
+  "entry": ["tomoyo_check_open_permission"]
 }

@@ -102,6 +102,10 @@ ct_verif_tests()
 
 main()
 {
+    cd $PROJ_DIR/../poolalloc/
+    pwd
+    make
+    cd -
     cd $PROJ_DIR
     pwd
     make

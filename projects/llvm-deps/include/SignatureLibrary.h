@@ -28,13 +28,15 @@ namespace deps {
 
 using namespace llvm;
 
-enum SignatureTaintMode {
-  STM_NoFlow,
-  STM_ArgToRet,
-  STM_ArgToRetAndOther,
-  STM_ArgToAllReachable,
-  STM_Custom = -1
+enum SignatureFlowDirection {
+  SFD_NoFlow,
+  SFD_ArgToRet,
+  SFD_ArgToRetAndOther,
+  SFD_ArgToAllReachable,
+  SFD_Custom = -1
 };
+
+enum SignatureFlowPointer { SFP_DirectPointer, SFP_ReachablePointer };
 
 class TaintByConfig : public Signature {
 public:

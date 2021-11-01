@@ -24,9 +24,9 @@
   },
   "source": [
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_socket_connect_permission",
       "type": "variable",
-      "name": "path1",
+      "name": "sock",
       "index": -1,
       "l": {
         "source": "input",
@@ -35,9 +35,9 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_socket_connect_permission",
       "type": "variable",
-      "name": "path2",
+      "name": "addr",
       "index": -1,
       "l": {
         "source": "input",
@@ -46,10 +46,10 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_socket_connect_permission",
       "type": "variable",
-      "name": "operation",
-      "index": -1,
+      "name": "address",
+      "index": 1,
       "l": {
         "source": "input",
         "value": "dynamic"
@@ -57,9 +57,9 @@
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "tomoyo_domain",
+      "function": "get_current",
       "type": "variable",
-      "name": "security",
+      "name": "current_task",
       "index": -1,
       "l": {
         "source": "external",
@@ -95,17 +95,6 @@
       "function": "tomoyo_check_acl",
       "type": "argument",
       "number": 0,
-      "index": 4,
-      "l": {
-        "source": "input",
-        "value": "dynamic"
-      },
-      "c": { "purpose": ["object"] }
-    },
-    {
-      "function": "tomoyo_check_acl",
-      "type": "argument",
-      "number": 0,
       "index": 5,
       "l": {
         "source": "input",
@@ -114,5 +103,5 @@
       "c": { "purpose": ["operation"] }
     }
   ],
-  "entry": ["tomoyo_path2_perm"]
+  "entry": ["tomoyo_socket_connect_permission"]
 }

@@ -26,6 +26,7 @@
 #include "llvm/ADT/EquivalenceClasses.h"
 #include "llvm/ADT/DenseSet.h"
 
+#include <list>
 #include <map>
 
 namespace llvm {
@@ -102,6 +103,17 @@ protected:
     : ModulePass(id), TD(0), GraphSource(0), printname(name), GlobalsGraph(0) {  
     // For now, the graphs are owned by this pass
     DSGraphsStolen = false;
+  }
+
+  std::list<std::string> EntryFuctions;
+
+  bool acceptAsEntryFunction(const Function *F) {
+    if (EntryFuctions.empty() || !F->hasName())
+      return true;
+    if (std::find(EntryFuctions.begin(), EntryFuctions.end(), F->getName()) !=
+        EntryFuctions.end())
+      return true;
+    return false;
   }
 
 public:

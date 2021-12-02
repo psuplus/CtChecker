@@ -22,6 +22,7 @@
 #include "llvm/ADT/SmallSet.h"
 
 #include <deque>
+#include <filesystem>
 
 namespace llvm {
 
@@ -58,6 +59,31 @@ void DSNodeEquivs::buildDSNodeEquivs(Module &M) {
 
   // Ensure all nodes from the globals graph are in an equivalence class.
   addNodesFromGraph(TDDS.getGlobalsGraph());
+
+#if 1
+  std::string dirName = "graph-output";
+  DenseSet<DSGraph *> DSGSet;
+  std::filesystem::remove_all(dirName);
+  std::filesystem::create_directory(dirName);
+
+  FuncIt = M.begin(), FuncItEnd = M.end();
+  for (Module::iterator FuncIt = M.begin(); FuncIt != FuncItEnd; ++FuncIt) {
+    if (TDDS.hasDSGraph(*FuncIt)) {
+      DSGraph *g = TDDS.getDSGraph(*FuncIt);
+      if (g && DSGSet.find(g) == DSGSet.end()) {
+        std::string filename = dirName + "/" + g->getFunctionNames();
+        g->writeGraphToFile(errs(), filename);
+        DSGSet.insert(g);
+      }
+    }
+  }
+  DSGraph *g = TDDS.getGlobalsGraph();
+  if (g && DSGSet.find(g) == DSGSet.end()) {
+    std::string filename = dirName + "/" + g->getFunctionNames();
+    g->writeGraphToFile(errs(), filename);
+    DSGSet.insert(g);
+  }
+#endif
 }
 
 // Add nodes from the given graph into the equivalence classes.
@@ -264,6 +290,9 @@ const DSNode *DSNodeEquivs::getMemberForValue(const Value *V, unsigned* offset) 
       //
       if (const Instruction *I = dyn_cast<Instruction>(TheUser)) {
         const Function *Parent = I->getParent()->getParent();
+        if (!TDDS.hasDSGraph(*Parent)) {
+          continue;
+        }
         NHForV = &TDDS.getDSGraph(*Parent)->getNodeForValue(V);
         break;
       } else if (isa<GlobalValue>(TheUser)) {

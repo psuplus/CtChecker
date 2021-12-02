@@ -23,6 +23,9 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/FormattedStream.h"
 
+#include "json/json.hpp"
+#include <fstream>
+
 using namespace llvm;
 
 namespace {
@@ -46,6 +49,17 @@ char BUDataStructures::ID;
 // program.
 //
 bool BUDataStructures::runOnModule(Module &M) {
+
+  std::ifstream i("config.json");
+  nlohmann::json config;
+  i >> config;
+
+  if (config.contains("entry")) {
+    assert(config.at("entry").is_array());
+    std::list<std::string> tmp = config.at("entry");
+    EntryFuctions = tmp;
+  }
+
   init(&getAnalysis<StdLibDataStructures>(), true, true, false, false );
 
   return runOnModuleInternal(M);
@@ -64,7 +78,7 @@ bool BUDataStructures::runOnModuleInternal(Module& M) {
   // for their DSGraphs, and we want to have them if asked.
   //
   for (Module::iterator F = M.begin(); F != M.end(); ++F) {
-    if (!(F->isDeclaration())){
+    if (!(F->isDeclaration()) && acceptAsEntryFunction(F)) {
       getOrCreateGraph(F);
     }
   }
@@ -100,7 +114,7 @@ bool BUDataStructures::runOnModuleInternal(Module& M) {
   // BU can be reflected. This is specifically needed for correct call graph
   //
   for (Module::iterator F = M.begin(); F != M.end(); ++F) {
-    if (!(F->isDeclaration())){
+    if (!(F->isDeclaration()) && acceptAsEntryFunction(F)) {
       DSGraph *Graph  = getOrCreateGraph(F);
       cloneGlobalsInto(Graph, DSGraph::DontCloneCallNodes |
                         DSGraph::DontCloneAuxCallNodes);
@@ -115,7 +129,7 @@ bool BUDataStructures::runOnModuleInternal(Module& M) {
 
   // Once the correct flags have been calculated. Update the callgraph.
   for (Module::iterator F = M.begin(); F != M.end(); ++F) {
-    if (!(F->isDeclaration())){
+    if (!(F->isDeclaration()) && acceptAsEntryFunction(F)) {
       DSGraph *Graph = getOrCreateGraph(F);
       Graph->buildCompleteCallGraph(callgraph,
                                     GlobalFunctionList, filterCallees);
@@ -277,7 +291,7 @@ BUDataStructures::postOrderInline (Module & M) {
       // propogte information calculated 
       // from the globals graph to the other graphs.
       for (Module::iterator F = M.begin(); F != M.end(); ++F) {
-        if (!(F->isDeclaration())){
+        if (!(F->isDeclaration()) && acceptAsEntryFunction(F)){
           DSGraph *Graph  = getDSGraph(*F);
           cloneGlobalsInto(Graph, DSGraph::DontCloneCallNodes |
                            DSGraph::DontCloneAuxCallNodes);
@@ -432,7 +446,7 @@ BUDataStructures::calculateGraphs (const Function *F,
   //
   // If this is a new SCC, process it now.
   //
-  if (Stack.back() == F) {           // Special case the single "SCC" case here.
+  if (Stack.back() == F && acceptAsEntryFunction(F)) {           // Special case the single "SCC" case here.
     DEBUG(errs() << "Visiting single node SCC #: " << MyID << " fn: "
 	  << F->getName() << "\n");
     Stack.pop_back();

@@ -23,6 +23,10 @@
 #include "llvm/Support/FormattedStream.h"
 #include "llvm/Support/Timer.h"
 #include "llvm/ADT/Statistic.h"
+
+#include "json/json.hpp"
+#include <fstream>
+
 using namespace llvm;
 
 #define TIME_REGION(VARNAME, DESC)
@@ -73,6 +77,16 @@ void TDDataStructures::markReachableFunctionsExternallyAccessible(DSNode *N,
 // program.
 //
 bool TDDataStructures::runOnModule(Module &M) {
+
+  std::ifstream i("config.json");
+  nlohmann::json config;
+  i >> config;
+
+  if (config.contains("entry")) {
+    assert(config.at("entry").is_array());
+    std::list<std::string> tmp = config.at("entry");
+    EntryFuctions = tmp;
+  }
 
   init(useEQBU ? &getAnalysis<EquivBUDataStructures>()
        : &getAnalysis<BUDataStructures>(),
@@ -130,7 +144,7 @@ bool TDDataStructures::runOnModule(Module &M) {
 
   // Next calculate the graphs for each unreachable function...
   for (Module::iterator I = M.begin(), E = M.end(); I != E; ++I)
-    if (!I->isDeclaration())
+    if (!I->isDeclaration() && acceptAsEntryFunction(I))
       ComputePostOrder(*I, VisitedGraph, PostOrder);
 
   VisitedGraph.clear();   // Release memory!
@@ -162,7 +176,7 @@ bool TDDataStructures::runOnModule(Module &M) {
   // in the globals graph.
   VisitedGraph.clear();
   for (Module::iterator F = M.begin(); F != M.end(); ++F) {
-    if (!(F->isDeclaration())){
+    if (!(F->isDeclaration()) && acceptAsEntryFunction(F)) {
       DSGraph *Graph  = getOrCreateGraph(F);
       if (!VisitedGraph.insert(Graph).second) continue;
 

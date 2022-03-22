@@ -14,6 +14,10 @@
 
 #define DEBUG_TYPE "dsnodeequivs"
 
+#ifndef GRAPH_OUT
+#define GRAPH_OUT 1
+#endif
+
 #include "assistDS/DSNodeEquivs.h"
 
 #include "llvm/IR/Constants.h"
@@ -60,7 +64,7 @@ void DSNodeEquivs::buildDSNodeEquivs(Module &M) {
   // Ensure all nodes from the globals graph are in an equivalence class.
   addNodesFromGraph(TDDS.getGlobalsGraph());
 
-#if 1
+#if GRAPH_OUT
   std::string dirName = "graph-output";
   DenseSet<DSGraph *> DSGSet;
   std::filesystem::remove_all(dirName);

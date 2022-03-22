@@ -74,23 +74,6 @@ void Infoflow::doFinalization() {
   // delete signatureRegistrar;
   // now deleted in destructor, because we need the registrar
   // for computing propagatesTaint
-
-// turn on to print DSGraph for each context
-// note std::filesystem requires c++17
-#if 0
-  std::string dirName = "graph-output";
-  DenseSet<DSGraph *> DSGSet;
-  std::filesystem::remove_all(dirName);
-  std::filesystem::create_directory(dirName);
-  for (auto loc : locConstraintMap) {
-    DSGraph *g = loc.first->getParentGraph();
-    if (DSGSet.find(g) == DSGSet.end()) {
-      std::string filename = dirName + "/" + g->getFunctionNames();
-      g->writeGraphToFile(errs(), filename);
-      DSGSet.insert(g);
-    }
-  }
-#endif
 }
 
 void Infoflow::registerSignatures() {

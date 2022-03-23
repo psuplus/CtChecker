@@ -26,7 +26,7 @@ class Predicate;
 
 class RLConstraint {
 private:
-  void printCosntraint() {
+  void printCosntraint(std::string delim = " => ") {
     // llvm::errs() << "pred: " << &pred << "\n";
     // if (&pred) {
     //   pred.dump();
@@ -44,7 +44,7 @@ private:
       left->dump(llvm::errs()); // description
       llvm::errs() << "]";
     }
-    llvm::errs() << " <: ";
+    llvm::errs() << delim;
     if (llvm::isa<RLConstant>(right)) {
       std::string constant;
       llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(constant);
@@ -64,20 +64,20 @@ public:
   RLConstraint(const ConsElem &lhs, const ConsElem &rhs, const Predicate &pred,
                bool implicit, std::string info)
       : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), info(info) {
-    if (!implicit)
-      printCosntraint();
+    // if (!implicit)
+    printCosntraint();
   }
   RLConstraint(const ConsElem *lhs, const ConsElem *rhs, const Predicate *pred,
                bool implicit, std::string info)
       : left(lhs), right(rhs), pred(pred), implicit(implicit), info(info) {
-    if (!implicit)
-      printCosntraint();
+    // if (!implicit)
+    printCosntraint();
   }
   const ConsElem &lhs() const { return *left; }
   const ConsElem &rhs() const { return *right; }
   const Predicate &predicate() const { return *pred; }
 
-  void dump() { printCosntraint(); }
+  void dump(std::string delim = " <: ") { printCosntraint(delim); }
 
 private:
   const ConsElem *left;

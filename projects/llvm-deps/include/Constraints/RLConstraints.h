@@ -94,7 +94,7 @@ private:
 class RLConsVar : public ConsVar {
 public:
   /// Create a new variable with description
-  RLConsVar(const std::string desc);
+  RLConsVar(const std::string desc, const std::string meta);
   /// Compare two elements for constraint satisfaction
   virtual bool leq(const ConsElem &elem) const;
   /// Returns the singleton set containing this variable
@@ -115,11 +115,13 @@ public:
   }
 
   const std::string getDesc() const { return desc; }
+  const std::string getMeta() const { return meta; }
 
 private:
   RLConsVar(const RLConsVar &);
   RLConsVar &operator=(const RLConsVar &);
   const std::string desc;
+  const std::string meta;
   std::string replaced;
 };
 
@@ -153,7 +155,6 @@ public:
 
 private:
   const std::set<const ConsElem *> elems;
-  RLJoin &operator=(const RLJoin &);
 };
 
 } // namespace deps

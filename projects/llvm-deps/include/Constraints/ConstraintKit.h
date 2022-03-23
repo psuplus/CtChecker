@@ -57,7 +57,7 @@ public:
 class ConstraintKit {
 public:
   /// Create a new constraint variable
-  virtual const ConsVar &newVar(const std::string) = 0;
+  virtual const ConsVar &newVar(const std::string, const std::string = "") = 0;
   /// Create a new constraint element by taking the upper bound of two
   /// existing elements
   virtual const ConsElem &upperBound(const ConsElem &, const ConsElem &) = 0;

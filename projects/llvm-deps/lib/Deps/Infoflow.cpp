@@ -1476,7 +1476,8 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
 
     errs() << "In context: " << this->getCurrentContext() << " new_Var--1\n";
     const ConsElem &elem =
-        kit->newVar(name + delim + getOriginalLocationConsElem(&value));
+        kit->newVar(name + delim + getOriginalLocationConsElem(&value) + delim +
+                    "*SummSource*");
     summarySourceValueConstraintMap.insert(std::make_pair(&value, &elem));
     getOrCreateLocationValueMap();
     return elem;
@@ -1506,7 +1507,8 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
     }
     errs() << "In context: " << this->getCurrentContext() << " new_Var--2\n";
     const ConsElem &elem =
-        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
+        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value) +
+                    delim + "*SummSink*");
     summarySinkValueConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1792,13 +1794,18 @@ void Infoflow::createConsElemFromStruct(
     } else {
       std::string varDesc =
           name + "[" + std::to_string(start) + "," + std::to_string(end) + "];";
+      std::string varMeta;
+      std::string tmpDesc = varDesc;
       std::set<const Value *> vSet = invertedLocConstraintMap[&loc];
+      if (vSet.size() > 1) {
+        varMeta.append(delim + "*MultipleSource*");
+      }
       for (const Value *v : vSet) {
         errs() << "This node contains value: ";
         v->dump();
-        varDesc.append(getOriginalLocationConsElem(v));
+        varMeta.append(getOriginalLocationConsElem(v));
       }
-      const ConsElem &elem = kit->newVar(varDesc);
+      const ConsElem &elem = kit->newVar(varDesc, varMeta);
       DEBUG(errs() << "\t\toffset " << format_decimal(start, 3) << ": ["
                    << varDesc << "]\n";);
       elemMap[start] = &elem;

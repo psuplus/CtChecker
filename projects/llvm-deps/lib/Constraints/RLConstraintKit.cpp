@@ -57,8 +57,9 @@ RLConstraintKit::~RLConstraintKit() {
   }
 }
 
-const ConsVar &RLConstraintKit::newVar(const std::string description) {
-  RLConsVar *var = new RLConsVar(description);
+const ConsVar &RLConstraintKit::newVar(const std::string description,
+                                       const std::string metainfo) {
+  RLConsVar *var = new RLConsVar(description, metainfo);
   vars.push_back(var);
   return *var;
 }
@@ -176,57 +177,36 @@ void RLConstraintKit::removeConstraintRHS(const std::string kind,
   if (kind == "implicit")
     implicitRLConstraints--;
 
-  std::vector<RLConstraint> &set = getOrCreateConstraintSet("default", pred);
+  std::vector<RLConstraint> &set = getOrCreateConstraintSet(kind, pred);
 
   assert(!llvm::isa<RLJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
   llvm::errs() << "Size of vector " << set.size() << "\n";
-  std::vector<RLConstraint>::iterator vIt = set.begin();
-  std::vector<RLConstraint>::iterator vEnd = set.end();
-  llvm::errs() << "Constraint to find ";
-
-  std::string rhsText;
-  std::string consText;
-  llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(rhsText);
-  llvm::raw_string_ostream *ss2 = new llvm::raw_string_ostream(consText);
-  rhs.dump(*ss);
-  ss->str();
-
-  llvm::errs() << rhsText;
+  llvm::errs() << "Constraint element to find ";
+  rhs.dump(llvm::errs());
   llvm::errs() << "\n";
 
-  for (; vIt != vEnd;) {
-    consText = "";
-    RLConstraint c = *vIt;
-    const ConsElem &constraintRight = c.rhs();
-    constraintRight.dump(*ss2);
-    ss2->str();
+  for (auto vIt = set.begin(); vIt != set.end(); vIt++) {
+    const ConsElem &constraintRight = (*vIt).rhs();
     if (&rhs == &constraintRight) {
       llvm::errs() << "Constraint erased: ";
-      llvm::errs() << consText << "\n";
-      set.erase(vIt);
-    } else {
-      ++vIt;
+      (*vIt).dump(" => ");
+      set.erase(vIt--);
     }
-    vEnd = set.end();
   }
-
-  delete ss;
-  delete ss2;
 }
 
 ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
                                          const Predicate &pred) {
   PartialSolution *PS = NULL;
-  for (std::set<std::string>::iterator kind = kinds.begin(), end = kinds.end();
-       kind != end; ++kind) {
-    if (!leastSolutions[&pred].count(*kind)) {
-      lockedConstraintKinds[&pred].insert(*kind);
-      leastSolutions[&pred][*kind] =
-          new PartialSolution(getOrCreateConstraintSet(*kind, pred), false);
-      freeUnneededConstraints(*kind, pred);
+  for (auto kind : kinds) {
+    if (!leastSolutions[&pred].count(kind)) {
+      lockedConstraintKinds[&pred].insert(kind);
+      leastSolutions[&pred][kind] =
+          new PartialSolution(getOrCreateConstraintSet(kind, pred), false);
+      freeUnneededConstraints(kind, pred);
     }
-    PartialSolution *P = leastSolutions[&pred][*kind];
+    PartialSolution *P = leastSolutions[&pred][kind];
 
     if (!PS)
       PS = new PartialSolution(*P);

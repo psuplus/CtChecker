@@ -231,23 +231,12 @@ bool RLConstant::operator==(const ConsElem &elem) const {
   }
 }
 
-RLConsVar::RLConsVar(const std::string description) : desc(description) {
-  replaced = desc;
-  std::replace(replaced.begin(), replaced.end(), ' ', '_');
-  std::replace(replaced.begin(), replaced.end(), '=', '_');
-  std::replace(replaced.begin(), replaced.end(), '@', '_');
-  std::replace(replaced.begin(), replaced.end(), '\\', '_');
-  std::replace(replaced.begin(), replaced.end(), '[', '_');
-  std::replace(replaced.begin(), replaced.end(), ']', '_');
-  std::replace(replaced.begin(), replaced.end(), ';', '_');
-  std::replace(replaced.begin(), replaced.end(), '\n', '_');
-  std::replace(replaced.begin(), replaced.end(), '"', '_');
-  size_t delimCount = 0;
-  for (char c : replaced) {
-    if (c == '|') {
-      delimCount++;
-    }
-  }
+RLConsVar::RLConsVar(const std::string description, const std::string metainfo)
+    : desc(description), meta(metainfo) {
+  std::regex re("[ =@\\\\[\\];\n\"\\{\\}~]+");
+  replaced = std::regex_replace(desc, re, "_");
+  replaced.append(std::regex_replace(meta, re, "_"));
+  size_t delimCount = std::count(replaced.begin(), replaced.end(), '|');
   while (delimCount < 2) {
     delimCount++;
     replaced.append("|");

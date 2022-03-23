@@ -50,7 +50,8 @@ public:
   const ConsElem &constant(RLLabel) const;
 
   /// Create a new constraint variable
-  virtual const ConsVar &newVar(const std::string description);
+  virtual const ConsVar &newVar(const std::string description,
+                                const std::string metainfo = "");
   /// Create a new constraint element by taking the upper bound of two
   /// existing elements
   virtual const ConsElem &upperBound(const ConsElem &e1, const ConsElem &e2);

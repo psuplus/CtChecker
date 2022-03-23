@@ -685,7 +685,7 @@ void Infoflow::processGetElementPtrInstSource(
     // constraint elements to the sourceSet
     // Collapsed nodes contain no type info, so also taint all elems
     std::set<const ConsElem *> sourceElems =
-        findRelevantConsElem(loc, elemMap, source, offset);
+        findRelevantConsElem(loc, elemMap, offset, source);
     sourceElems.insert(parentElems.begin(), parentElems.end());
     for (auto s : sourceElems) {
       errs() << "CONSTRAINING: ";

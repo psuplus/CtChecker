@@ -380,9 +380,19 @@ private:
   void processGetElementPtrInstSource(const Value *,
                                       std::set<const ConsElem *> &,
                                       std::set<const AbstractLoc *>, bool);
+
   ConsElemSet findRelevantConsElem(const AbstractLoc *,
                                    std::map<unsigned, const ConsElem *>,
-                                   const Value *, unsigned);
+                                   unsigned, Type *);
+  ConsElemSet findRelevantConsElem(const AbstractLoc *,
+                                   std::map<unsigned, const ConsElem *>,
+                                   unsigned, const Value *);
+  ConsElemSet findRelevantConsElem(const AbstractLoc *,
+                                   std::map<unsigned, const ConsElem *>,
+                                   unsigned, unsigned);
+  ConsElemSet findRelevantConsElem(const AbstractLoc *,
+                                   std::map<unsigned, const ConsElem *>,
+                                   unsigned, unsigned, const Value *, Type *);
 
   const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
   void putOrConstrainConsElem(bool imp, bool sink, const ContextID,

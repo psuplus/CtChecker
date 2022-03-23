@@ -680,22 +680,61 @@ void Infoflow::processGetElementPtrInstSource(
 Infoflow::ConsElemSet
 Infoflow::findRelevantConsElem(const AbstractLoc *node,
                                std::map<unsigned, const ConsElem *> elemMap,
-                               const Value *value, unsigned offset) {
+                               unsigned offset, Type *type) {
+  return findRelevantConsElem(node, elemMap, offset, 0, nullptr, type);
+}
+
+Infoflow::ConsElemSet
+Infoflow::findRelevantConsElem(const AbstractLoc *node,
+                               std::map<unsigned, const ConsElem *> elemMap,
+                               unsigned offset, const Value *value) {
+  return findRelevantConsElem(node, elemMap, offset, 0, value, nullptr);
+}
+
+Infoflow::ConsElemSet
+Infoflow::findRelevantConsElem(const AbstractLoc *node,
+                               std::map<unsigned, const ConsElem *> elemMap,
+                               unsigned offset, unsigned span) {
+  return findRelevantConsElem(node, elemMap, offset, span, nullptr, nullptr);
+}
+
+Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
+    const AbstractLoc *node, std::map<unsigned, const ConsElem *> elemMap,
+    unsigned offset, unsigned span, const Value *value, Type *type) {
+
+  assert((span || value || type) && "One of them must not be null!");
 
   std::set<const ConsElem *> elements;
   errs() << "Trying to find element at offset " << offset << "\n";
-  // FIXIT: This part may need to be further verified
-  if (node->isNodeCompletelyFolded()) {
+  // TODO: This part needs to be further verified!
+  if (node->isNodeCompletelyFolded() && elemMap.size() == 1) {
+    // if (node->isNodeCompletelyFolded()) {
     // All elements are relevant
     for (auto it = elemMap.begin(); it != elemMap.end(); ++it) {
       elements.insert(it->second);
     }
   } else if (elemMap.find(offset) != elemMap.end()) {
+    if (span == 0) {
+      bool isArray = false;
     const DataLayout &TD = node->getParentGraph()->getDataLayout();
-    Type *t = value->getType();
-    if (PointerType *pt = dyn_cast<PointerType>(t))
-      t = pt->getPointerElementType();
-    unsigned span = TD.getTypeStoreSize(t);
+      if (!type) {
+        type = value->getType();
+        if (const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value)) {
+          Type *T =
+              cast<PointerType>(gep->getPointerOperandType())->getElementType();
+          if (isa<ArrayType>(T))
+            isArray = true;
+        }
+        type->dump();
+        if (PointerType *pt = dyn_cast<PointerType>(type))
+          type = pt->getPointerElementType();
+      }
+      if (isArray)
+        span = 1;
+      else
+        span = TD.getTypeStoreSize(type);
+    }
+    errs() << "span [" << span << "]\n";
     auto e = elemMap.find(offset);
     while (e != elemMap.end() && e->first < offset + span) {
       elements.insert(e->second);

@@ -411,6 +411,8 @@ private:
   void createConsElemFromStruct(const AbstractLoc &, StructType *,
                                 std::map<unsigned, const ConsElem *> &,
                                 unsigned);
+  void createConsElemFromArray(const AbstractLoc &, ArrayType *,
+                               std::map<unsigned, const ConsElem *> &);
 
   std::map<unsigned, const ConsElem *>
   getOrCreateConsElemCollapsedStruct(const AbstractLoc &, const StructType *);

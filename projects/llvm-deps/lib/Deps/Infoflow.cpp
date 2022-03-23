@@ -44,7 +44,6 @@ std::string delim = "|";
 static RegisterPass<Infoflow>
     X("infoflow", "Compute information flow constraints", true, true);
 
-
 Infoflow::Infoflow()
     : // The parameters to the template are an input and output type for the
       // user's analysis and a non-negative integer k.
@@ -1784,6 +1783,10 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
       if (StructType *s = dyn_cast<StructType>(gep->getSourceElementType())) {
         createConsElemFromStruct(loc, s, locConstraintMap[&loc], 0);
         return locConstraintMap[&loc];
+      } else if (ArrayType *a =
+                     dyn_cast<ArrayType>(gep->getSourceElementType())) {
+        // TODO: add array processing.
+        numElements = GEPInstCalculateNumberElements(gep);
       } else if (numElements == 0) {
         numElements = 1;
       }
@@ -1866,6 +1869,14 @@ void Infoflow::createConsElemFromStruct(
       elemMap[start] = &elem;
     }
   }
+}
+
+void Infoflow::createConsElemFromArray(
+    const AbstractLoc &loc, ArrayType *a,
+    std::map<unsigned, const ConsElem *> &elemMap) {
+  DEBUG(errs() << "Creating ConsElem Map for array: \n"; loc.dump(););
+  std::string name = getCaption(&loc, NULL);
+  a->dump();
 }
 
 std::map<unsigned, const ConsElem *>

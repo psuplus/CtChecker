@@ -121,8 +121,78 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
     }
 
     if (hasOffset) {
-      std::set<const ConsElem *> rel =
-          gatherRelevantConsElems(*loc, offset, numElements, value);
+      errs() << "Has offset [" << offset << "]\n";
+      std::set<const ConsElem *> rel;
+
+#if HOTSPOT
+      if (ifa->invertedLocConstraintMap.find(*loc) !=
+              ifa->invertedLocConstraintMap.end() &&
+          ifa->invertedLocConstraintMap[*loc].size() > 1) {
+        auto VSet = ifa->invertedLocConstraintMap[*loc];
+
+        // for (auto p : ifa->summarySourceValueConstraintMap) {
+        //   errs() << "\nv - ce pair: ";
+        //   p.getFirst()->dump();
+        //   errs() << " === ";
+        //   p.getSecond()->dump(errs());
+        // }
+
+        // errs() << " \n-----------++----------\n ";
+        // for (auto p : ifa->summarySinkValueConstraintMap) {
+        //   errs() << "\nv - ce pair: ";
+        //   p.getFirst()->dump();
+        //   errs() << " === ";
+        //   p.getSecond()->dump(errs());
+        // }
+
+        if (VSet.size() > 1) {
+          auto elem = ifa->getOrCreateConsElem(**loc).at(offset);
+          if (auto varElem = dyn_cast<RLConsVar>(elem)) {
+            for (auto v : VSet) {
+              v->dump();
+              bool caught = false;
+              for (auto ctxt : ifa->valueConstraintMap) {
+                auto sourceElem = ctxt.getSecond().find(v);
+                if (sourceElem != ctxt.getSecond().end()) {
+                  (*sourceElem).getSecond()->dump(errs() << "this CE:");
+                  errs() << "\n";
+                  ifa->kit->addConstraint(
+                      ifa->kindFromImplicitSink(false, false),
+                      *(*sourceElem).getSecond(), *elem,
+                      " ;  [ConsDebugTag-23]");
+                  if (v == &value) {
+                    rel.insert((*sourceElem).getSecond());
+                  }
+                  caught = true;
+                }
+              }
+              if (!caught) {
+                std::string varMeta = ifa->getOriginalLocationConsElem(v);
+                const ConsElem &singleElem =
+                    ifa->kit->newVar(varElem->getDesc(), varMeta);
+                ifa->kit->addConstraint(ifa->kindFromImplicitSink(false, false),
+                                        singleElem, *elem,
+                                        " ;  [ConsDebugTag-24]");
+                if (v == &value) {
+                  rel.insert(&singleElem);
+                }
+              }
+            }
+          }
+        }
+      } else {
+#endif
+        rel = gatherRelevantConsElems(*loc, offset, span, numElements, t_offset,
+                                      value, true);
+#if HOTSPOT
+      }
+#endif
+
+      errs() << "REL: \n";
+      for (auto e : rel) {
+        e->dump(errs() << "");
+        errs() << "\n";
+      }
       elementsToConstrain.insert(rel.begin(), rel.end());
     } else {
       errs() << "No offset.\n";

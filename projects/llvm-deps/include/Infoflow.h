@@ -22,7 +22,6 @@
 #include "CallSensitiveAnalysisPass.h"
 #include "Constraints/RLConsSoln.h"
 #include "Constraints/RLConstraintKit.h"
-#include "FPCache.h"
 #include "FlowRecord.h"
 #include "InfoflowSignature.h"
 #include "PointsToInterface.h"
@@ -74,13 +73,6 @@ public:
   bool operator==(const Unit &) const { return true; }
   bool operator!=(const Unit &) const { return false; }
   const Unit upperBound(const Unit &u) const { return u; }
-};
-
-class PDTCache : public FPCache<PostDominatorTree> {
-public:
-  static char ID;
-  PDTCache() : FPCache<PostDominatorTree>(ID) {}
-  virtual const char *getPassName() const { return "PostDom Cache"; }
 };
 
 enum class ConfigVariableType { Argument, Variable };
@@ -189,7 +181,7 @@ public:
     CallSensitiveAnalysisPass<Unit, Unit, 1, CallerContext>::getAnalysisUsage(
         AU);
     AU.addRequired<SourceSinkAnalysis>();
-    AU.addRequired<PDTCache>();
+    AU.addRequired<PostDominatorTree>();
     AU.addRequired<PointsToInterface>();
     AU.setPreservesAll();
   }

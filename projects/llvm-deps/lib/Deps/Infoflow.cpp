@@ -39,14 +39,11 @@ static cl::opt<bool>
 typedef Infoflow::Flows Flows;
 
 char Infoflow::ID = 42;
-char PDTCache::ID = 0;
 std::string delim = "|";
 
 static RegisterPass<Infoflow>
     X("infoflow", "Compute information flow constraints", true, true);
 
-static RegisterPass<PDTCache> Y("pdtcache", "Cache PostDom Analysis Results",
-                                true, true);
 
 Infoflow::Infoflow()
     : // The parameters to the template are an input and output type for the
@@ -2192,8 +2189,9 @@ void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
     workqueue.push_back(term.getSuccessor(i));
   }
 
-  PostDominatorTree &pdt =
-      getAnalysis<PDTCache>().get(term.getParent()->getParent());
+  Function &F = const_cast<Function &>(*(term.getParent()->getParent()));
+  if (!F.isDeclaration()) {
+    PostDominatorTree &pdt = getAnalysis<PostDominatorTree>(F);
 
   while (!workqueue.empty()) {
     const BasicBlock *cur = workqueue.front();
@@ -2207,6 +2205,7 @@ void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
       for (unsigned i = 0, end = t->getNumSuccessors(); i < end; ++i) {
         if (visited.find(cur) == visited.end()) {
           workqueue.push_back(t->getSuccessor(i));
+          }
         }
       }
     }

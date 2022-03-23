@@ -108,11 +108,11 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   errs() << "=====\n";
   for (; loc != end; ++loc) {
     (*loc)->dump();
-    if ((*loc)->isNodeCompletelyFolded() ||
-        (*loc)->type_begin() == (*loc)->type_end()) {
-      // errs() << (*loc)->isNodeCompletelyFolded()
-      //        << " :::: " << ((*loc)->type_begin() == (*loc)->type_end())
-      //        << "\n";
+    std::map<unsigned, const ConsElem *> elemMap =
+        ifa->getOrCreateConsElem(**loc);
+    if (((*loc)->isNodeCompletelyFolded() ||
+         (*loc)->type_begin() == (*loc)->type_end()) &&
+        elemMap.size() <= 1) {
       hasOffset = false;
     } else if (t_offset >= 0) {
       fieldIndexToByteOffset(t_offset, &value, *loc, &offset, &span);
@@ -231,7 +231,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   ifa->constrainAllConsElem(kind, value, elementsToConstrain, label);
 }
 
-void TaintAnalysisBase::untaintAllSink(std::string kind) {
+void TaintAnalysisBase::labelSink(std::string kind) {
   // process the sink functions' arguments
   errs() << "\n ========= Labeling Sink Functions ========= \n";
   for (auto ctxValuePair : ifa->sinkValueSet) {
@@ -296,6 +296,17 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     for (auto loc = relevantLocs.begin(); loc != relevantLocs.end(); ++loc) {
       errs() << "\nUntaint node at:\n";
       (*loc)->dump();
+      DSNode::TyMapTy allFields{(*loc)->type_begin(), (*loc)->type_end()};
+      v->getType()->dump();
+
+      for (auto &ty : allFields) {
+        errs() << "offset: " << ty.first << " ";
+        const svset<llvm::Type *> *types = ty.second;
+        for (auto i = types->begin(); i != types->end(); i++) {
+          (*i)->dump();
+        }
+      }
+
       if (t_offset >= 0) {
         fieldIndexToByteOffset(t_offset, &value, *loc, &offset, &span);
         errs() << "\tThe byte offset is: " << offset << "\n";
@@ -305,8 +316,8 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
       }
 
       if (hasOffset) {
-        std::set<const ConsElem *> rel =
-            gatherRelevantConsElems(*loc, offset, numElements, value);
+        std::set<const ConsElem *> rel = gatherRelevantConsElems(
+            *loc, offset, span, numElements, t_offset, value, false);
         elementsToUntaint.insert(rel.begin(), rel.end());
       } else {
         for (auto &locs : relevantLocs) {
@@ -346,18 +357,18 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     } else {
       std::string debugTag = " ;  [ConsDebugTag-*]  sink location";
       const ConsElem *constant = &(ifa->kit->constant(label));
-      std::set<const ConsElem *>::iterator it = elementsToUntaint.begin();
-      for (; it != elementsToUntaint.end(); ++it) {
-        ifa->kit->addConstraint(kind, *(*it), *constant, debugTag);
-        errs() << debugTag;
+      for (auto e : elementsToUntaint) {
+        ifa->kit->addConstraint(kind, *e, *constant, debugTag);
       }
     }
   }
 }
 
+// TODO: work with two different versions based on
+// tainting source or labeling sink [bool tainting]
 std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
-    const AbstractLoc *node, unsigned offset, unsigned numElements,
-    const Value &val) {
+    const AbstractLoc *node, unsigned offset, unsigned span,
+    unsigned numElements, unsigned index, const Value &val, bool tainting) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator
       curElem = ifa->locConstraintMap.find(node);
   std::map<unsigned, const ConsElem *> elemMap;
@@ -377,12 +388,31 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 
   errs() << "Map size [" << elemMap.size() << "] <--> Number of elements ["
          << numElements << "]\n";
-    for (auto e : elemMap) {
-      // errs() << "\toffset: " << e.first << ", element [";
-      // e.second->dump(errs());
-      // errs() << "] addr [" << e.second << "] added.\n";
-      relevant.insert(e.second);
+  if (elemMap.size() >= numElements) {
+    if (span > 0) {
+      return ifa->findRelevantConsElem(node, elemMap, offset, span);
     }
+    Type *type = val.getType();
+    if (PointerType *pt = dyn_cast<PointerType>(type)) {
+      type = pt->getPointerElementType();
+    }
+    if (type->isStructTy()) {
+      StructType *st = dyn_cast<StructType>(type);
+      st->dump();
+      errs() << "idx: " << index << "\n";
+      if (index == UINT_MAX) {
+        for (auto e : elemMap) {
+          relevant.insert(e.second);
+        }
+      } else {
+        st->getStructElementType(index)->dump();
+        relevant = ifa->findRelevantConsElem(node, elemMap, offset,
+                                             st->getStructElementType(index));
+      }
+    } else {
+      relevant = ifa->findRelevantConsElem(node, elemMap, offset, &val);
+    }
+    return relevant;
   }
 
   // Go to other nodes if the type matches & retrieve their elements if exists
@@ -426,8 +456,8 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
     }
 
     for (auto &l : childLocs) {
-      std::set<const ConsElem *> childElems =
-          gatherRelevantConsElems(l, offset, numElements, val);
+      std::set<const ConsElem *> childElems = gatherRelevantConsElems(
+          l, offset, span, numElements, index, val, tainting);
       relevant.insert(childElems.begin(), childElems.end());
     }
   }
@@ -437,39 +467,48 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 
 void TaintAnalysisBase::labelValue(std::string kind,
                                    std::vector<ConfigVariable> vars, bool gte) {
-  for (DenseMap<const Value *, const ConsElem *>::const_iterator
-           entry = ifa->summarySourceValueConstraintMap.begin(),
-           end = ifa->summarySourceValueConstraintMap.end();
-       entry != end; ++entry) {
-    const Value &value = *(entry->first);
+  for (auto var : vars) {
+    for (DenseMap<const Value *, const ConsElem *>::const_iterator
+             entry = ifa->summarySourceValueConstraintMap.begin(),
+             end = ifa->summarySourceValueConstraintMap.end();
+         entry != end; ++entry) {
+      const Value &value = *(entry->first);
 
-    for (auto var : vars) {
       // Only taint variables defined in taint files if the function matches
       const Function *fn = findEnclosingFunc(&value);
       bool function_matches = false;
-      if (var.function.size() == 0 ||
-          (fn && fn->hasName() && fn->getName() == var.function)) {
+      if (var.function.size() == 0) {
+        function_matches = true;
+      } else if (fn && fn->hasName() && fn->getName() == var.function) {
         function_matches = true;
       }
 
       if (function_matches) {
         bool variable_matches = false;
-        errs() << "Matching value with config variable within function ["
-               << fn->getName() << "]\n";
-        const MDLocalVariable *local_var = ifa->findVarNode(&value, fn);
-        if (local_var &&
-            (local_var->getTag() == 257 || local_var->getTag() == 256)) {
-          errs() << "\t- Variable has name [" << local_var->getName() << "]\n";
-          if (local_var->getName() == var.name) {
-            variable_matches = true;
-            errs() << "\t- Found a local variable match\n\n";
-          }
-        }
         if (value.hasName()) {
-          errs() << "\t- Value has the name [" << value.getName() << "]\n";
           if (value.getName() == var.name) {
             variable_matches = true;
+            errs() << "- Lookup: " << var.function << " : " << var.name << "\n";
+            errs() << "Matching value with config variable within function ["
+                   << (fn ? fn->getName() : "GLOBAL") << "]\n";
+            errs() << "\t- Value has the name [" << value.getName() << "]\n";
             errs() << "\t- Found a value name match\n\n";
+          }
+        }
+        if (!variable_matches && fn) {
+          const MDLocalVariable *local_var = ifa->findVarNode(&value, fn);
+          if (local_var &&
+              (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+            if (local_var->getName() == var.name) {
+              variable_matches = true;
+              errs() << "- Lookup: " << var.function << " : " << var.name
+                     << "\n";
+              errs() << "Matching value with config variable within function ["
+                     << fn->getName() << "]\n";
+              errs() << "\t- Variable has name [" << local_var->getName()
+                     << "]\n";
+              errs() << "\t- Found a local variable match\n\n";
+            }
           }
         }
 

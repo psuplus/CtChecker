@@ -29,14 +29,15 @@ protected:
 
   std::set<const ConsElem *> gatherRelevantConsElems(const AbstractLoc *,
                                                      unsigned, unsigned,
-                                                     const Value &);
+                                                     unsigned, unsigned,
+                                                     const Value &, bool);
 
 public:
   void setInfoflow(Infoflow *flow) { ifa = flow; }
 
   void labelValue(std::string, std::vector<ConfigVariable>, bool);
 
-  void untaintAllSink(std::string);
+  void labelSink(std::string);
 };
 
 } // namespace deps

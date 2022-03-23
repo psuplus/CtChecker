@@ -655,11 +655,12 @@ void Infoflow::processGetElementPtrInstSource(
   // Link Allocation memory location as well incase that is tainted
   const Value *allocation = getAllocationValue(gep);
   AbstractLocSet structptrLocs = getPointedToAbstractLocs(allocation);
+  // TODO: Why using structptrLocs.begin()?
   const AbstractLoc *node = *(structptrLocs.begin());
   ConsElemSet parentElems;
   if (locConstraintMap.find(node) != locConstraintMap.end()) {
     ConsElemSet pElems =
-        findRelevantConsElem(node, locConstraintMap[node], source, offset);
+        findRelevantConsElem(node, locConstraintMap[node], offset, source);
     parentElems.insert(pElems.begin(), pElems.end());
   }
 
@@ -2078,7 +2079,7 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
     }
   } else {
     std::set<const ConsElem *> elems =
-        findRelevantConsElem(&loc, elemMap, value, offset);
+        findRelevantConsElem(&loc, elemMap, offset, value);
     for (std::set<const ConsElem *>::iterator i = elems.begin();
          i != elems.end(); ++i) {
       kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*i),
@@ -3652,7 +3653,7 @@ void Infoflow::removeConstraintFromIndex(
   if (StructType *st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned)fieldIdx, loc);
     std::set<const ConsElem *> elems =
-        findRelevantConsElem(loc, elemMap, v, offset);
+        findRelevantConsElem(loc, elemMap, offset, v);
     for (std::set<const ConsElem *>::iterator i = elems.begin();
          i != elems.end(); ++i)
       kit->removeConstraintRHS(kind, **i);

@@ -44,7 +44,7 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/Format.h"
 
-#include "JSON/json.hpp"
+#include "json/json.hpp"
 
 #include <deque>
 #include <filesystem>

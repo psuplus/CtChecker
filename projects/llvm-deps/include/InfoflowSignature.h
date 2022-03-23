@@ -21,7 +21,7 @@
 #include "CallContext.h"
 #include "FlowRecord.h"
 
-#include "JSON/json.hpp"
+#include "json/json.hpp"
 
 #include <set>
 #include <vector>

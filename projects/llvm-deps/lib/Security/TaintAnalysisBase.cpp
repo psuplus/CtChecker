@@ -56,11 +56,11 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
                                        RLLabel label) {
 
   std::string s = value.getName();
-  errs() << "Trying to constrain " << match_name << " at " << t_offset
-         << " for value : " << s << "\n";
-  const std::set<const AbstractLoc *> &locs = ifa->locsForValue(value);
-  const std::set<const AbstractLoc *> &rlocs =
-      ifa->reachableLocsForValue(value);
+  errs() << "Trying to constrain [" << match_name << "] at offset [" << t_offset
+         << "] for value : ";
+  value.dump();
+  const AbstractLocSet &locs = ifa->locsForValue(value);
+  const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
   if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
     errs() << "SETTING " << s << " TO BE TAINTED\n";
     ifa->setLabel(kind, value, label, true);
@@ -96,18 +96,17 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   bool hasOffset = ifa->offsetForValue(value, &offset);
   unsigned numElements = getNumElements(value);
   errs() << "This value has " << numElements << " elements.\n";
-  errs() << "Has offset? " << (hasOffset ? "YES" : "NO")
-         << ", and the offset is: " << offset << "\n";
 
   if (!ifa->offset_used) {
     t_offset = -1; // if offset is disabled ignore offset from taintfile
     hasOffset = false;
   }
 
-  std::set<const AbstractLoc *>::const_iterator loc = relevantLocs.begin();
-  std::set<const AbstractLoc *>::const_iterator end = relevantLocs.end();
+  AbstractLocSet::const_iterator loc = relevantLocs.begin();
+  AbstractLocSet::const_iterator end = relevantLocs.end();
 
   std::set<const ConsElem *> elementsToConstrain;
+  errs() << "=====\n";
   for (; loc != end; ++loc) {
     (*loc)->dump();
     if ((*loc)->isNodeCompletelyFolded() ||
@@ -126,7 +125,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
           gatherRelevantConsElems(*loc, offset, numElements, value);
       elementsToConstrain.insert(rel.begin(), rel.end());
     } else {
-      // errs() << "!hasOffset\n";
+      errs() << "No offset.\n";
       for (auto &locs : relevantLocs) {
         DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
         for (auto &edge : edges) {
@@ -151,6 +150,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
     errs() << "FOUND " << elementsToConstrain.size()
            << " elements from the locsForValue\n";
+    errs() << "=====\n";
   }
 
   errs() << "Number of elements to constrain: " << elementsToConstrain.size()
@@ -164,7 +164,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
 void TaintAnalysisBase::untaintAllSink(std::string kind) {
   // process the sink functions' arguments
-  errs() << "\n ========= Untaint Sink Functions ========= \n";
+  errs() << "\n ========= Labeling Sink Functions ========= \n";
   for (auto ctxValuePair : ifa->sinkValueSet) {
     ContextID ctxt;
     RLLabel label;
@@ -173,13 +173,12 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     std::tie(ctxt, label, v, t_offset) = ctxValuePair;
     Value &value = *v;
 
-    errs() << "\tstart untainting \n\t";
+    errs() << "\tLabeling \n\t";
     v->dump();
     errs() << "\tat offset: " << t_offset << "\n";
 
-    const std::set<const AbstractLoc *> &locs = ifa->locsForValue(value);
-    const std::set<const AbstractLoc *> &rlocs =
-        ifa->reachableLocsForValue(value);
+    const AbstractLocSet &locs = ifa->locsForValue(value);
+    const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
 
     // TODO: confirm the correctness of the [t_offset < 0] condition
     // It was removed for a while because we believed it was unnecessary
@@ -187,7 +186,7 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
       ifa->setLabel(kind, value, label, false);
     }
 
-    // Heap nodes not returned from locs For value
+    // Heap nodes not returned from locsForValue(v)
     AbstractLocSet relevantLocs{locs.begin(), locs.end()};
     for (auto &rl : rlocs) {
       if (rl->isHeapNode()) {
@@ -268,9 +267,9 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
 
     errs() << "Number of elements to constrain: " << elementsToUntaint.size()
            << "\n";
-    for (auto &el : elementsToUntaint) {
+    for (auto el : elementsToUntaint) {
       el->dump(errs());
-      errs() << " : addr " << el << "\n";
+      errs() << "\n";
     }
 
     if (elementsToUntaint.size() == 0) {
@@ -299,23 +298,16 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
     return relevant;
 
   elemMap = curElem->second;
-  errs() << "\n\tNODE: ";
-  node->dump();
 
-  errs() << "\tELEMS: \n";
+  errs() << "\tConsElemMap: \n";
   for (auto e : elemMap) {
     errs() << "\toffset: " << e.first << ", element [";
     e.second->dump(errs());
     errs() << "] addr [" << e.second << "] added.\n";
   }
 
-  errs() << "Map size [" << elemMap.size() << "] <--> number of elements ["
-         << numElements << "].\n";
-  if (numElements == elemMap.size()) {
-    relevant = ifa->findRelevantConsElem(node, elemMap, &val, offset);
-    return relevant;
-  } else {
-    // errs() << "Adding ConsElem from elemMap to relevant set: \n";
+  errs() << "Map size [" << elemMap.size() << "] <--> Number of elements ["
+         << numElements << "]\n";
     for (auto e : elemMap) {
       // errs() << "\toffset: " << e.first << ", element [";
       // e.second->dump(errs());
@@ -327,7 +319,7 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
   // Go to other nodes if the type matches & retrieve their elements if exists
   if (hasPointerTarget(node)) {
     bool all_children = true;
-    std::set<const AbstractLoc *> childLocs;
+    AbstractLocSet childLocs;
     Type *t = val.getType();
     if (isa<AllocaInst>(&val)) {
       t = t->getContainedType(0);

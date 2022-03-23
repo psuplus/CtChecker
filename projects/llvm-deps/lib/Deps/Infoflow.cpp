@@ -3286,26 +3286,12 @@ int Infoflow::matchValueAndParsedString(const Value &value, std::string kind,
 }
 
 void Infoflow::getOrCreateLocationValueMap() {
-  errs() << "getOrCreateLocationValueMap\n";
-
-  // TODO: THIS IS PROBLEMATIC - FIXIT
-  if (invertedLocConstraintMap.size() > 0) {
-    return;
-  }
-
-  for (DenseMap<const Value *, const ConsElem *>::const_iterator entry =
-           summarySourceValueConstraintMap.begin();
-       entry != summarySourceValueConstraintMap.end(); ++entry) {
-    const Value &value = *(entry->first);
+  for (auto entry : summarySourceValueConstraintMap) {
+    const Value &value = *entry.first;
     if (!isa<BasicBlock>(value)) {
       const std::set<const AbstractLoc *> &locs = locsForValue(value);
-      for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin();
-           loc != locs.end(); ++loc) {
-        (*loc)->dump();
-        invertedLocConstraintMap[*loc].insert(&value);
-        // errs() << "VVVVALUE" << invertedLocConstraintMap[*loc].size() <<
-        // "\n";
-        value.dump();
+      for (auto loc : locs) {
+        invertedLocConstraintMap[loc].insert(&value);
       }
     }
   }

@@ -18,6 +18,8 @@
 #define INFOFLOW_H
 
 #define IMPLICIT 1
+#define HOTSPOT 0
+
 #include "CallContext.h"
 #include "CallSensitiveAnalysisPass.h"
 #include "Constraints/RLConsSoln.h"

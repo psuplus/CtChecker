@@ -591,7 +591,10 @@ void Infoflow::processGetElementPtrInstSink(
             }
           }
         }
-        createConsElemFromStruct(*loc, s, locConstraintMap[loc], 0);
+        // TODO: Fix with a getOrCreate function for consistency
+        if (locConstraintMap.find(loc) == locConstraintMap.end()) {
+          createConsElemFromStruct(*loc, s, locConstraintMap[loc], 0);
+        }
       }
     }
   }

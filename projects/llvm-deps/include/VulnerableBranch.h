@@ -16,8 +16,8 @@
 
 #include "Infoflow.h"
 #include "TaintAnalysisBase.h"
-#include "llvm/Pass.h"
 #include "llvm/IR/CallSite.h"
+#include "llvm/Pass.h"
 
 #include <algorithm>
 #include <fstream>
@@ -43,13 +43,11 @@ public:
     AU.setPreservesAll();
   }
 
-
 private:
   Infoflow *ifa;
   TaintAnalysisBase parser;
-
 };
 
-}
+} // namespace deps
 
 #endif

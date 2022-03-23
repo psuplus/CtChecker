@@ -48,7 +48,17 @@ bool ConstraintGen::runOnModule(Module &M) {
     ifa->removeConstraint("default", whitelist);
   }
 
-  parser.untaintAllSink("source-sink");
+  parser.labelSink("source-sink");
+
+  std::set<std::string> kinds{"source-sink", "default", "default-sink",
+                              "implicit"};
+  errs() << "\n---- Constraints BEGIN ----\n";
+  for (auto kind : kinds) {
+    errs() << kind << ":\n";
+    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
+      cons.dump();
+  }
+  errs() << "---- Constraints END ----\n\n";
 
   // Variables to gather branch statistics
   // unsigned long number_branches = 0;

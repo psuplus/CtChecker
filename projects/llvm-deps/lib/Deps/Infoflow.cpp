@@ -872,7 +872,6 @@ const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
   for (Flows::iterator r = recs.begin(), e = recs.end(); r != e; ++r) {
     if (!(*r).isImplicit()) {
       (*r).dump();
-      // constrainFlowRecord(*r);
     }
   }
 
@@ -2019,7 +2018,7 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
 
   for (Flows::iterator flow = flowVector.begin(), end = flowVector.end();
        flow != end; ++flow) {
-    if (!(*flow).isImplicit()) {
+    if (!(*flow).isImplicit() || IMPLICIT) {
       (*flow).dump();
       constrainFlowRecord(*flow);
     }
@@ -3399,6 +3398,7 @@ void Infoflow::constrainAllConsElem(
     }
   }
 }
+
 void Infoflow::constrainAllConsElem(std::string kind,
                                     std::set<const ConsElem *> elems,
                                     RLLabel label) {
@@ -3406,12 +3406,12 @@ void Infoflow::constrainAllConsElem(std::string kind,
   for (std::set<const ConsElem *>::iterator it = elems.begin(),
                                             end = elems.end();
        it != end; ++it) {
-    //(*it)->dump(errs());
     kit->addConstraint(kind, kit->constant(label), *(*it),
                        " ;  [ConsDebugTag-19]");
     // TODO add debug info
   }
 }
+
 void Infoflow::constrainAllConsElem(std::string kind, const Value &v,
                                     std::set<const ConsElem *> elems,
                                     RLLabel label) {
@@ -3573,6 +3573,7 @@ void Infoflow::removeConstraintFromIndex(
       kit->removeConstraintRHS(kind, **i);
   }
 }
+
 const ConsElem *
 findConsElemAtOffset(std::map<unsigned, const ConsElem *> elemMap,
                      unsigned offset) {

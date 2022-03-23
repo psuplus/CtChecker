@@ -41,7 +41,6 @@ bool VulnerableBranch::runOnModule(Module &M) {
     return false;
   }
 
-  // Default loads from source.txt
   parser.labelValue("source-sink", ifa->sourceVariables, true);
 
   for (auto whitelist : ifa->whitelistVariables) {
@@ -54,12 +53,6 @@ bool VulnerableBranch::runOnModule(Module &M) {
   InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value *> tainted = soln->getAllTaintValues();
 
-  errs() << "\n---- taint ----\n";
-  for (std::set<const Value *>::iterator i = tainted.begin();
-       i != tainted.end(); i++) {
-    (*i)->dump();
-  }
-
   // Create constraints for Derivation Solver
   for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
     for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
@@ -68,20 +61,17 @@ bool VulnerableBranch::runOnModule(Module &M) {
         const MDLocation *loc = bi->getDebugLoc();
         if (bi->isConditional() && loc) {
           const Value *v = bi->getCondition();
-          DenseMap<ContextID,
-                   DenseMap<const Value *, const ConsElem *>>::iterator
-              ctxtIter = ifa->valueConstraintMap.begin();
-          for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
+          for (auto ctxtIter : ifa->valueConstraintMap) {
             DenseMap<const Value *, const ConsElem *> valueConsMap =
-                ctxtIter->second;
+                ctxtIter.second;
             DenseMap<const Value *, const ConsElem *>::iterator vIter =
                 valueConsMap.find(v);
             if (vIter != valueConsMap.end()) {
               const ConsElem *elem = vIter->second;
               const ConsElem &low = RLConstant::bot();
-              errs() << "\n";
               RLConstraint c(elem, &low, &Predicate::TruePred(), false,
                              "  ;  [ConsDebugTag-*]   conditional branch");
+              ifa->kit->getOrCreateConstraintSet("source-sink").push_back(c);
             }
           }
         }
@@ -89,14 +79,20 @@ bool VulnerableBranch::runOnModule(Module &M) {
     }
   }
 
-  /**
-     std::set<const Value*> vul;
-     std::set_intersection(tainted.begin(), tainted.end(), untrusted.begin(),
-     untrusted.end(), std::inserter(vul, vul.end())); for(std::set<const
-     Value*>::iterator it=vul.begin(); it != vul.end(); it++) {
-     soln->getOriginalLocation(*it);
-     errs() << "\n";
-     }*/
+  errs() << "\n---- Tainted Values BEGIN ----\n";
+  for (auto i : tainted) {
+    i->dump();
+  }
+  errs() << "---- Tainted Values END ----\n\n";
+
+  errs() << "\n---- Constraints BEGIN ----\n";
+  kinds.insert({"default", "default-sink"});
+  for (auto kind : kinds) {
+    errs() << kind << ":\n";
+    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
+      cons.dump();
+  }
+  errs() << "---- Constraints END ----\n\n";
 
   // Variables to gather branch statistics
   unsigned long number_branches = 0;

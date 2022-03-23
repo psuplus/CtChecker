@@ -327,31 +327,31 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
           bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
               "union.") &&
           offset_used) {
-      errs() << "DSOURCE BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
-      const BitCastInst *bit = dyn_cast<BitCastInst>(v);
-      if (bit->getDestTy()->isPointerTy() &&
-          !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
-        bit->getDestTy()->getPointerElementType()->dump();
-        for (auto loc : locs) {
-          std::map<unsigned, const ConsElem *> elemMap;
-          elemMap = getOrCreateConsElemTyped(*loc, 0, v);
-          if (elemMap.size() == 1 && !loc->isArrayNode() &&
-              !loc->isNodeCompletelyFolded()) {
-            if (loc->isHeapNode()) {
-              elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+        errs() << "DSOURCE BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
+        const BitCastInst *bit = dyn_cast<BitCastInst>(v);
+        if (bit->getDestTy()->isPointerTy() &&
+            !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
+          bit->getDestTy()->getPointerElementType()->dump();
+          for (auto loc : locs) {
+            std::map<unsigned, const ConsElem *> elemMap;
+            elemMap = getOrCreateConsElemTyped(*loc, 0, v);
+            if (elemMap.size() == 1 && !loc->isArrayNode() &&
+                !loc->isNodeCompletelyFolded()) {
+              if (loc->isHeapNode()) {
+                elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+              }
+            }
+            elems = findRelevantConsElem(loc, elemMap, 0, v);
+            for (auto s : elems) {
+              errs() << "BITCAST SOURCE: ";
+              s->dump(errs());
+              errs() << s << "\n";
             }
           }
-          elems = findRelevantConsElem(loc, elemMap, v, 0);
-          for (auto s : elems) {
-            errs() << "BITCAST SOURCE: ";
-            s->dump(errs());
-            errs() << s << "\n";
-          }
         }
+      } else {
+        locations.insert(locs.begin(), locs.end());
       }
-    } else {
-      locations.insert(locs.begin(), locs.end());
-    }
     } else {
       locations.insert(locs.begin(), locs.end());
     }
@@ -453,35 +453,35 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
           bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
               "union.") &&
           offset_used) {
-      const Value *v = *sink;
+        const Value *v = *sink;
         // FIXIT: Should probably also be reflected in
         // constrainReachSinkLocations
-      errs() << "DSINK BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
-      if (bit->getDestTy()->isPointerTy() &&
-          !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
-        bit->getDestTy()->getPointerElementType()->dump();
-        for (auto loc : locs) {
-          std::map<unsigned, const ConsElem *> elemMap;
-          elemMap = getOrCreateConsElemTyped(*loc, 0, v);
-          if (elemMap.size() == 1 && !loc->isArrayNode() &&
-              !loc->isNodeCompletelyFolded()) {
-            if (loc->isHeapNode()) {
-              elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+        errs() << "DSINK BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
+        if (bit->getDestTy()->isPointerTy() &&
+            !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
+          bit->getDestTy()->getPointerElementType()->dump();
+          for (auto loc : locs) {
+            std::map<unsigned, const ConsElem *> elemMap;
+            elemMap = getOrCreateConsElemTyped(*loc, 0, v);
+            if (elemMap.size() == 1 && !loc->isArrayNode() &&
+                !loc->isNodeCompletelyFolded()) {
+              if (loc->isHeapNode()) {
+                elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+              }
             }
-          }
-          ConsElemSet elems = findRelevantConsElem(loc, elemMap, v, 0);
-          for (auto e : elems) {
-            errs() << "BITCAST CONSTRAINING: ";
-            e->dump(errs());
-            errs() << e << "\n";
+            ConsElemSet elems = findRelevantConsElem(loc, elemMap, 0, v);
+            for (auto e : elems) {
+              errs() << "BITCAST CONSTRAINING: ";
+              e->dump(errs());
+              errs() << e << "\n";
               kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
                                  source, *e, " ;  [ConsDebugTag-15]");
+            }
           }
         }
+      } else {
+        SinkLocs.insert(locs.begin(), locs.end());
       }
-    } else {
-      SinkLocs.insert(locs.begin(), locs.end());
-    }
     } else {
       SinkLocs.insert(locs.begin(), locs.end());
     }
@@ -736,7 +736,7 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
   } else if (elemMap.find(offset) != elemMap.end()) {
     if (span == 0) {
       bool isArray = false;
-    const DataLayout &TD = node->getParentGraph()->getDataLayout();
+      const DataLayout &TD = node->getParentGraph()->getDataLayout();
       if (!type) {
         type = value->getType();
         if (const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value)) {
@@ -2281,18 +2281,18 @@ void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
   if (!F.isDeclaration()) {
     PostDominatorTree &pdt = getAnalysis<PostDominatorTree>(F);
 
-  while (!workqueue.empty()) {
-    const BasicBlock *cur = workqueue.front();
-    workqueue.pop_front();
-    visited.insert(cur);
+    while (!workqueue.empty()) {
+      const BasicBlock *cur = workqueue.front();
+      workqueue.pop_front();
+      visited.insert(cur);
 
-    if (!pdt.dominates(cur, bb)) {
-      rec.addSinkValue(*cur);
+      if (!pdt.dominates(cur, bb)) {
+        rec.addSinkValue(*cur);
 
-      const TerminatorInst *t = cur->getTerminator();
-      for (unsigned i = 0, end = t->getNumSuccessors(); i < end; ++i) {
-        if (visited.find(cur) == visited.end()) {
-          workqueue.push_back(t->getSuccessor(i));
+        const TerminatorInst *t = cur->getTerminator();
+        for (unsigned i = 0, end = t->getNumSuccessors(); i < end; ++i) {
+          if (visited.find(cur) == visited.end()) {
+            workqueue.push_back(t->getSuccessor(i));
           }
         }
       }
@@ -3251,7 +3251,7 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
       v.contains("type")
           ? (v.at("type") == "argument" ? ConfigVariableType::Argument
                                         : ConfigVariableType::Variable)
-                              : ConfigVariableType::Variable;
+          : ConfigVariableType::Variable;
   std::string name = v.contains("name") ? v.at("name") : "";
   int num = v.contains("number") ? (int)v.at("number") : 0;
   int idx = v.contains("index") ? (int)v.at("index") : -1;
@@ -3259,21 +3259,21 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
   RLLevel level;
   RLCompartment compartment;
   if (v.contains("l") && v.contains("c")) {
-  std::unordered_map<std::string, std::string> lmap = v.at("l");
-  for (auto l : lmap) {
-    auto v = RLConstant::RLLevelMap.at(l.first);
-    auto it = find(v.begin(), v.end(), l.second);
-    assert(it != v.end());
-    int index = it - v.begin();
-    level.insert(std::make_pair(l.first, index));
-  }
-  std::unordered_map<std::string, std::list<std::string>> cmap = v.at("c");
-  for (auto c : cmap) {
-    std::set<std::string> set;
-    for (auto e : c.second) {
-      set.insert(e);
+    std::unordered_map<std::string, std::string> lmap = v.at("l");
+    for (auto l : lmap) {
+      auto v = RLConstant::RLLevelMap.at(l.first);
+      auto it = find(v.begin(), v.end(), l.second);
+      assert(it != v.end());
+      int index = it - v.begin();
+      level.insert(std::make_pair(l.first, index));
     }
-    compartment.insert(std::make_pair(c.first, set));
+    std::unordered_map<std::string, std::list<std::string>> cmap = v.at("c");
+    for (auto c : cmap) {
+      std::set<std::string> set;
+      for (auto e : c.second) {
+        set.insert(e);
+      }
+      compartment.insert(std::make_pair(c.first, set));
     }
   }
   RLLabel label(level, compartment);

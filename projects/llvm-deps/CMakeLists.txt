@@ -6,10 +6,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 set(SOURCE_FILES
     include/Constraints/ConstraintKit.h
     include/Constraints/DepsTypes.h
-    include/Constraints/LHConsSoln.h
-    include/Constraints/LHConstraint.h
-    include/Constraints/LHConstraintKit.h
-    include/Constraints/LHConstraints.h
+    include/Constraints/RLConsSoln.h
+    include/Constraints/RLConstraint.h
+    include/Constraints/RLConstraintKit.h
+    include/Constraints/RLConstraints.h
     include/Constraints/PartialSolution.h
     include/Constraints/SolverThread.h
     include/CallContext.h
@@ -23,9 +23,9 @@ set(SOURCE_FILES
     include/SignatureLibrary.h
     include/Slice.h
     include/SourceSinkAnalysis.h
-    lib/Constraints/LHConsSoln.cpp
-    lib/Constraints/LHConstraintKit.cpp
-    lib/Constraints/LHConstraints.cpp
+    lib/Constraints/RLConsSoln.cpp
+    lib/Constraints/RLConstraintKit.cpp
+    lib/Constraints/RLConstraints.cpp
     lib/Constraints/MTSolve.cpp
     lib/Constraints/PartialSolution.cpp
     lib/Constraints/Test.cpp

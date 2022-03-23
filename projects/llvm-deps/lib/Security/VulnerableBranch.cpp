@@ -121,6 +121,26 @@ bool VulnerableBranch::runOnModule(Module &M) {
       }
   }
 
+  errs() << "#--------------Array Indices------------------\n";
+  for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
+    for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
+         ++I) {
+      if (const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&*I)) {
+        if (ArrayType *a = dyn_cast<ArrayType>(gep->getSourceElementType())) {
+          const MDLocation *loc = gep->getDebugLoc();
+          // get the index value and lookup in the tainted set
+          const Value *v = gep->getOperand(2);
+          if (!isa<Constant>(v) && tainted.find(v) != tainted.end()) {
+            errs() << loc->getFilename() << " at "
+                   << std::to_string(loc->getLine()) << "\n";
+            gep->dump();
+            gep->getOperand(2)->dump();
+          }
+        }
+      }
+    }
+  }
+
   // Dump statistics
   errs() << "#--------------Statistics----------------\n";
   errs() << ":: Tainted Branches: " << tainted_branches << "\n";

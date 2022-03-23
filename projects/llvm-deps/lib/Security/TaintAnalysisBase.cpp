@@ -91,8 +91,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   errs() << " --------- end --------- \n\n";
 #endif
 
-  unsigned offset = 0;
-  // errs() << "Trying to get offset.. for  "<< s << "\n";
+  unsigned offset = 0, span = 0;
   bool hasOffset = ifa->offsetForValue(value, &offset);
   unsigned numElements = getNumElements(value);
   errs() << "This value has " << numElements << " elements.\n";
@@ -116,7 +115,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       //        << "\n";
       hasOffset = false;
     } else if (t_offset >= 0) {
-      offset = fieldIndexToByteOffset(t_offset, &value, *loc);
+      fieldIndexToByteOffset(t_offset, &value, *loc, &offset, &span);
       hasOffset = true;
     }
 
@@ -281,7 +280,7 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
     errs() << " --------- end --------- \n\n";
 #endif
 
-    unsigned offset = 0;
+    unsigned offset = 0, span = 0;
     bool hasOffset = ifa->offsetForValue(value, &offset);
     unsigned numElements = getNumElements(value);
     errs() << "This value has " << numElements << " elements.\n";
@@ -298,7 +297,7 @@ void TaintAnalysisBase::untaintAllSink(std::string kind) {
       errs() << "\nUntaint node at:\n";
       (*loc)->dump();
       if (t_offset >= 0) {
-        offset = fieldIndexToByteOffset(t_offset, &value, *loc);
+        fieldIndexToByteOffset(t_offset, &value, *loc, &offset, &span);
         errs() << "\tThe byte offset is: " << offset << "\n";
         hasOffset = true;
       } else {
@@ -492,17 +491,104 @@ void TaintAnalysisBase::labelValue(std::string kind,
   }
 }
 
-unsigned TaintAnalysisBase::fieldIndexToByteOffset(int index, const Value *v,
-                                                   const AbstractLoc *loc) {
-  unsigned offset = 0;
+void TaintAnalysisBase::fieldIndexToByteOffset(int index, const Value *v,
+                                               const AbstractLoc *loc,
+                                               unsigned *offset,
+                                               unsigned *span) {
   if (StructType *st = convertValueToStructType(v)) {
-    offset = ifa->findOffsetFromFieldIndex(st, index, loc);
+    int nestedIndex = 0;
+
+#if 1 // FLATTEN UNION
+    int topIndex = 0;
+    Type *dest = nullptr;
+    for (auto subTy : st->subtypes()) {
+      if (subTy->isStructTy() && subTy->getStructName().startswith("union.")) {
+        subTy->dump();
+        errs() << "Testing inst\n";
+        v->dump();
+        const Instruction *inst = dyn_cast_or_null<Instruction>(v);
+        if (!inst && isa<Argument>(v)) {
+          const Argument *arg = dyn_cast<Argument>(v);
+          inst = &arg->getParent()->front().front();
+        }
+        if (inst) {
+          errs() << "Confirming inst\n";
+          inst = &inst->getParent()->front();
+          bool foundBitCast = false, firstBBSearch = true;
+          std::list<const BasicBlock *> bbs;
+          std::set<const BasicBlock *> searched;
+          bbs.push_back(inst->getParent());
+          while (!foundBitCast && !bbs.empty()) {
+            if (!firstBBSearch) {
+              inst = &bbs.front()->front();
+            }
+            searched.insert(bbs.front());
+            bbs.pop_front();
+            for (auto bb : predecessors(inst->getParent())) {
+              if (!searched.count(bb)) {
+                bbs.push_back(bb);
+              }
+            }
+            for (auto bb : successors(inst->getParent())) {
+              if (!searched.count(bb)) {
+                bbs.push_back(bb);
+              }
+            }
+            firstBBSearch = false;
+            std::list<const Instruction *> instList{inst};
+            while (!instList.empty()) {
+              auto curr = instList.front();
+              instList.pop_front();
+              // curr->dump();
+              if (const BitCastInst *bit = dyn_cast<BitCastInst>(curr)) {
+                if (bit->getSrcTy() == subTy ||
+                    bit->getSrcTy() == subTy->getPointerTo()) {
+                  dest = bit->getDestTy();
+                  if (dest->isPointerTy())
+                    dest = dest->getPointerElementType();
+                  dest->dump();
+                  int numContainedTypes = dest->getNumContainedTypes();
+                  errs() << numContainedTypes << " Contained Types\n";
+                  if (index > topIndex + numContainedTypes) {
+                    index = index - numContainedTypes + 1;
+                  } else {
+                    nestedIndex = index - topIndex;
+                    index = topIndex;
+                  }
+                  bbs.clear();
+                  foundBitCast = true;
+                  break;
+                }
+              }
+              if (curr != &curr->getParent()->back()) {
+                instList.push_back(curr->getNextNode());
+              }
+            }
+          }
+        }
+      }
+      if (index <= topIndex)
+        break;
+      topIndex++;
+    }
+#endif
+
+    *offset = ifa->findOffsetFromFieldIndex(st, index, loc);
+
+#if 1 // FLATTEN UNION
+    if (nestedIndex >= 0 && dest && dest->isStructTy()) {
+      *offset += ifa->findOffsetFromFieldIndex(dyn_cast<StructType>(dest),
+                                               nestedIndex, loc);
+      const DataLayout &TD = (*loc).getParentGraph()->getDataLayout();
+      *span = TD.getTypeStoreSize(dest->getStructElementType(nestedIndex));
+    }
+#endif
   } else if (const AllocaInst *al = dyn_cast<AllocaInst>(v)) {
     if (isa<ArrayType>(al->getAllocatedType())) {
-      offset = index;
+      *offset = index;
     }
   }
-  return offset;
+  return;
 }
 
 unsigned TaintAnalysisBase::getNumElements(const Value &value) {

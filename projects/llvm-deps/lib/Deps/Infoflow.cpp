@@ -319,7 +319,14 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
     if (isa<GetElementPtrInst>(v) && offset_used) {
       errs() << "DSOURCEGEP INSTRUCTION " << stringFromValue(*v) << "\n";
       processGetElementPtrInstSource(v, elems, locs, implicit);
-    } else if (isa<BitCastInst>(v) && offset_used) {
+    } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(v)) {
+      bit->getSrcTy()->dump();
+      if (bit->getSrcTy()->isPointerTy() &&
+          !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
+          bit->getSrcTy()->getPointerElementType()->isStructTy() &&
+          bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
+              "union.") &&
+          offset_used) {
       errs() << "DSOURCE BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
       const BitCastInst *bit = dyn_cast<BitCastInst>(v);
       if (bit->getDestTy()->isPointerTy() &&
@@ -342,6 +349,9 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
           }
         }
       }
+    } else {
+      locations.insert(locs.begin(), locs.end());
+    }
     } else {
       locations.insert(locs.begin(), locs.end());
     }
@@ -435,11 +445,18 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
         processGetElementPtrInstSink(*sink, implicit, false, source, locs);
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
-    } else if (isa<BitCastInst>(*sink) && offset_used) {
-      // FIXIT: Should probably also be reflected in constrainReachSinkLocations
+    } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(*sink)) {
+      bit->getSrcTy()->dump();
+      if (bit->getSrcTy()->isPointerTy() &&
+          !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
+          bit->getSrcTy()->getPointerElementType()->isStructTy() &&
+          bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
+              "union.") &&
+          offset_used) {
       const Value *v = *sink;
+        // FIXIT: Should probably also be reflected in
+        // constrainReachSinkLocations
       errs() << "DSINK BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
-      const BitCastInst *bit = dyn_cast<BitCastInst>(v);
       if (bit->getDestTy()->isPointerTy() &&
           !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
         bit->getDestTy()->getPointerElementType()->dump();
@@ -457,11 +474,14 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
             errs() << "BITCAST CONSTRAINING: ";
             e->dump(errs());
             errs() << e << "\n";
-            kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow), source,
-                               *e, " ;  [ConsDebugTag-15]");
+              kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
+                                 source, *e, " ;  [ConsDebugTag-15]");
           }
         }
       }
+    } else {
+      SinkLocs.insert(locs.begin(), locs.end());
+    }
     } else {
       SinkLocs.insert(locs.begin(), locs.end());
     }
@@ -519,7 +539,6 @@ void Infoflow::processGetElementPtrInstSink(
   errs() << "[Sink:] " << stringFromValue(*value) << "\n";
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
-  T->dump();
   unsigned numElements = 0;
   if (isa<ArrayType>(T))
     numElements = GEPInstCalculateNumberElements(gep);
@@ -541,8 +560,6 @@ void Infoflow::processGetElementPtrInstSink(
   bool structTy = false;
   StructType *s = dyn_cast<StructType>(gep->getSourceElementType());
   if (s != NULL) {
-    s->dump();
-    errs() << "::IS STRUCT TY::";
     structTy = true;
   }
   AbstractLocSet structPtrLocs = getPointedToAbstractLocs(gep);
@@ -1804,8 +1821,6 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
                       getOriginalLocationConsElem(v));
       locConstraintMap[&loc].insert(std::make_pair(offset, &elem));
     }
-    // locConstraintMap.insert(std::make_pair(&loc, &elem));
-
     return locConstraintMap[&loc];
   } else {
     errs() << "Already created: ";
@@ -1829,7 +1844,9 @@ void Infoflow::createConsElemFromStruct(
   const StructLayout *SL = TD.getStructLayout(s);
   std::string name = getCaption(&loc, NULL);
   // FIXIT: This part may need to be further verified
-  if (s && s->getName().startswith("union.")) {
+  bool unionType = s && s->hasName() && s->getName().startswith("union.");
+  bool rawType = s && !s->hasName();
+  if (unionType || rawType) {
     unsigned end = baseOffset + TD.getTypeStoreSize(s);
     for (; baseOffset < end; ++baseOffset) {
       std::string varDesc = name + "[" + std::to_string(baseOffset) + "," +
@@ -1972,7 +1989,6 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
     }
     return locConstraintMap[&loc];
   } else {
-    errs() << "the curElemMap is \n";
     for (auto e : curElem->second) {
       e.second->dump(errs() << format_decimal(e.first, 3) << ": ");
       errs() << "\n";
@@ -2029,12 +2045,10 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
                          " ;  [ConsDebugTag-15]");
       e++;
     }
-    // TODO add debug info
   } else {
     for (auto &kv : elemMap) {
       kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
                          *(kv.second), " ;  [ConsDebugTag-16]");
-      // TODO add debug info
     }
   }
   errs() << " ===== putOrConstrainConsElemStruct end =====\n";
@@ -2048,7 +2062,7 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
 
   errs() << " ===== putOrConstrainConsElem =====\n";
   std::map<unsigned, const ConsElem *> elemMap =
-      getOrCreateConsElemTyped(loc, numElements);
+      getOrCreateConsElemTyped(loc, numElements, value);
   loc.dump();
   if (elemMap.size() == 0)
     return;
@@ -2830,8 +2844,8 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
            callee = callees.begin(),
            end = callees.end();
        callee != end; ++callee) {
-    errs() << "%%%% function: ";
-    (*callee).first->dump();
+    // errs() << "%%%% function: ";
+    // (*callee).first->dump();
     // (*callee).second->dump();
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
@@ -2869,9 +2883,13 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
   // as high as the corresponding argument
   Function::const_arg_iterator formal = callee.arg_begin();
   for (unsigned int i = 0; i < numParams; i++, ++formal) {
+    /* TOOD: This condition check was added for tomoyo overapproximation,
+       but later found to be unsound for cryptolibs. Removing for the time
+       being. Needs further justification & modification. */
+
     // Only create a flow when the parameter
     // being passed is not a pointer
-    if (!(*formal).getType()->isPointerTy()) {
+    // if (!(*formal).getType()->isPointerTy()) {
       const Value &actual = *cs.getArgument(i);
       FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
       argFlow.addSourceValue(actual);
@@ -2879,7 +2897,7 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
       flows.push_back(argFlow);
 
       argFlow.dump();
-    }
+    // }
   }
 
   // The remaining arguments provide a bound on the vararg structure
@@ -3551,6 +3569,8 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
     if (l->isNodeCompletelyFolded()) {
       locs.insert(l);
     } else {
+// FIXIT: This segment needs fix. The logics does not seem right.
+#if 0
       for (auto it = l->type_begin(); it != l->type_end(); ++it) {
         unsigned link_offset = 0;
         errs() << (*it).first << " : ";
@@ -3572,6 +3592,12 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
             }
           }
         }
+      }
+#endif
+      const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
+      if (gep) {
+        Type *type = gep->getPointerOperand()->getType();
+        type->dump();
       }
     }
   }

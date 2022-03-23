@@ -3147,14 +3147,18 @@ void Infoflow::readConfiguration() {
 
 ConfigVariable Infoflow::parseConfigVariable(json v) {
   std::string fn = v.contains("function") ? v.at("function") : "";
-  ConfigVariableType ty = v.at("type") == "argument"
-                              ? ConfigVariableType::Argument
+  ConfigVariableType ty =
+      v.contains("type")
+          ? (v.at("type") == "argument" ? ConfigVariableType::Argument
+                                        : ConfigVariableType::Variable)
                               : ConfigVariableType::Variable;
   std::string name = v.contains("name") ? v.at("name") : "";
   int num = v.contains("number") ? (int)v.at("number") : 0;
   int idx = v.contains("index") ? (int)v.at("index") : -1;
 
   RLLevel level;
+  RLCompartment compartment;
+  if (v.contains("l") && v.contains("c")) {
   std::unordered_map<std::string, std::string> lmap = v.at("l");
   for (auto l : lmap) {
     auto v = RLConstant::RLLevelMap.at(l.first);
@@ -3163,7 +3167,6 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
     int index = it - v.begin();
     level.insert(std::make_pair(l.first, index));
   }
-  RLCompartment compartment;
   std::unordered_map<std::string, std::list<std::string>> cmap = v.at("c");
   for (auto c : cmap) {
     std::set<std::string> set;
@@ -3171,6 +3174,7 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
       set.insert(e);
     }
     compartment.insert(std::make_pair(c.first, set));
+    }
   }
   RLLabel label(level, compartment);
   return ConfigVariable(fn, ty, name, num, idx, label);

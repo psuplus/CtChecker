@@ -1,3 +1,0 @@
-base_u_size
-rsize
-max_size

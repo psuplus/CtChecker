@@ -7,11 +7,8 @@ OUT_DIR=results
 OUT_FULL_DIR=$OUT_DIR/full
 OUT_MIN_DIR=$OUT_DIR/min
 mkdir -p $OUT_FULL_DIR
-# mkdir -p $OUT_FULL_DIR/raw
 mkdir -p $OUT_MIN_DIR
-# mkdir -p $OUT_MIN_DIR/raw
 
-#
 rm_file_if_exists()
 {
     if [ -f $1 ]; then
@@ -21,7 +18,6 @@ rm_file_if_exists()
 
 pool_results()
 {
-    # mkdir -p ${2}/${1}
     mkdir -p ${2}/${1}/raw
     mv ${1}/results_with_source*.txt ${2}/${1}
     mv ${1}/constraints*.con ${2}/${1}
@@ -41,11 +37,13 @@ execute_test()
     if [ $5 = true ] ; then 
         # $2 $3 false false $5    # FS/SRC
         # $2 $3 false true $5     # FS/FlS/SRC
+        
         $2 $3 true false $5     # WL/FS/SRC
         $2 $3 true true $5      # WL/FS/FlS/SRC
     else 
-        $2 $3 false false $5    # FS
         # $2 $3 false true $5     # FS/FlS
+        
+        $2 $3 false false $5    # FS
         $2 $3 true false $5     # WL/FS
         $2 $3 true true $5      # WL/FS/FlS
     fi

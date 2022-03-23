@@ -21,13 +21,25 @@ FULL_LIB+=mpi/mpi-scan.c
 FULL_LIB+=mpi/mpiutil.c
 
 FULL_SRC=$(FULL_LIB:.c=.bc)
+
+MIN_LIB+=mpi/mpi-pow.c
+MIN_LIB+=mpi/mpiutil.c
+MIN_SRC=$(MIN_LIB:.c=.bc)
+
 CFLAGS= -isystem include -O0 -emit-llvm -g
 LDFLAGS=
 
-all: full
+all: full min
 
 full.bc: $(FULL_SRC)
 	$(LD) $(LDFLAGS)  $^ -o $@
 
+min.bc: $(MIN_SRC)
+	$(LD) $(LDFLAGS)  $^ -o $@
+
 %.bc: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+clean:
+	$(RM) *.bc
+	$(RM) mpi/*.bc

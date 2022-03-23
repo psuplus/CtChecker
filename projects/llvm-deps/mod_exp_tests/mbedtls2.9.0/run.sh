@@ -11,15 +11,15 @@ COL=""
 MEM2REG=""
 
 
-cp whitelist.txt whitelist_tmp.txt
 if [ $2 = true ] ; then
         if [ "$COL" = "" ] ; then
                 COL+="WL"
         else
                 COL+="/WL"
         fi
+        sed -i -r "s/\"using_whitelist\": false/\"using_whitelist\": true/g" "config.json"
 else
-        : > whitelist_tmp.txt
+        sed -i -r "s/\"using_whitelist\": true/\"using_whitelist\": false/g" "config.json"
 fi
 
 if git branch -a | grep -q '* master'; then
@@ -58,25 +58,15 @@ if [ "$COL" = "" ] ; then
         COL="Base"
 fi
 echo "Running with flags: $COL"
-# echo "$MEM2REG"
 
 CPPFLAGS=
 LLVMLIBS=
 LDFLAGS=
 LEVEL="../../../.."
 
-
-# if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
-#CPPFLAGS=`llvm-config --cppflags`
-#LLVMLIBS=`llvm-config --libs`
-#LDFLAGS=`llvm-config --ldflags`
-
-## compile the instrumentation module to bitcode
-## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 make $1
 
 TIME=$(date +%s)
-## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
@@ -98,16 +88,3 @@ COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 
 echo Output log: ./$COL
 mv tmp.dat $COL
-
-rm whitelist_tmp.txt
-## link instrumentation module
-#llvm-link welcome.bc sample.bc -o welcome.linked.bc
-
-## compile to native object file
-#llc -filetype=obj welcome.linked.bc -o=welcome.o
-
-## generate native executable
-#g++ welcome.o $LLVMLIBS $LDFLAGS -o welcome
-
-#./welcome
-

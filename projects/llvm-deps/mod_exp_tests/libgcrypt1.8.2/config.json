@@ -26,5 +26,11 @@
     }
   ],
   "sink": [],
+  "using_whitelist": true,
+  "whitelist": [
+    { "name": "base_u_size" },
+    { "name": "rsize" },
+    { "name": "max_size" }
+  ],
   "entry": ["_gcry_mpi_powm"]
 }

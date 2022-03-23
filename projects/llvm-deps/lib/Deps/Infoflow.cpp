@@ -1069,14 +1069,31 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
       if (!lv) {
         return delim; // "no_local_var";
       }
-      ret = lv->getFilename();
-      ret.append(delim);
-      ret.append(std::to_string(lv->getLine()));
+      ret = delim;
+      ret.append(lv->getFilename());
+      ret.append(delim + std::to_string(lv->getLine()));
       return ret;
+    } else {
+      if (const LoadInst *load = dyn_cast<LoadInst>(I)) {
+        load->getOperand(0)->dump();
+        if (const GetElementPtrInst *gep =
+                dyn_cast<GetElementPtrInst>(load->getOperand(0))) {
+          gep->getOperand(0)->dump();
+          if (const Argument *arg = dyn_cast<Argument>(gep->getOperand(0))) {
+            ret.append(delim + "*LoadInst*");
+          }
+        }
+      }
+      // return ret;
     }
   } else { // try to find the uses of the value
+    // errs() << "dumping V: ";
+    // V->dump();
     const Function *F = findEnclosingFunc(V);
     if (!F) {
+      if (isa<Constant>(V)) {
+        return delim + "*Constant*";
+      }
       return delim; // "no_enclose_func";
     }
 
@@ -1085,11 +1102,13 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
                                                     end = F->arg_end();
          ite != end; ++ite) {
       if (&*ite == V) {
-        ret = "Function:";
+        ret = delim;
+        ret.append("Function::");
         ret.append(F->getName());
-        ret.append("&Arg:");
+        ret.append("&Arg::");
         ret.append(ite->getName());
-        ret.append(delim);
+        ret.append("::");
+        errs() << ret << "\n";
         return ret;
       }
     }
@@ -1114,8 +1133,9 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
     return ret;
   }
   // errs() << Loc->getFilename() << delim << std::to_string(Loc->getLine());
-  ret = Loc->getFilename();
   ret.append(delim);
+  ret.append(Loc->getFilename());
+  ret.append(",");
   ret.append(std::to_string(Loc->getLine()));
   return ret;
 }

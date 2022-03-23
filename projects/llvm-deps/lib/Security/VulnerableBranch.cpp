@@ -44,14 +44,8 @@ bool VulnerableBranch::runOnModule(Module &M) {
   // Default loads from source.txt
   parser.labelValue("source-sink", ifa->sourceVariables, true);
 
-  std::ifstream fwhitelist("whitelist_tmp.txt");
-  std::string line;
-  while (std::getline(fwhitelist, line)) {
-    std::tuple<std::string, int, std::string> match =
-        ifa->parseTaintString(line);
-    auto new_match = std::make_tuple(RLConstant::BotLabel, std::get<0>(match),
-                                     std::get<1>(match), std::get<2>(match));
-    ifa->removeConstraint("source-sink", new_match);
+  for (auto whitelist : ifa->whitelistVariables) {
+    ifa->removeConstraint("default", whitelist);
   }
 
   std::set<std::string> kinds;

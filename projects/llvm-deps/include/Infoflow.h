@@ -322,6 +322,7 @@ private:
 
   std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> sourceVariables;
+  std::vector<ConfigVariable> whitelistVariables;
   std::set<std::tuple<ContextID, RLLabel, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
@@ -426,14 +427,9 @@ private:
   void readConfiguration();
   ConfigVariable parseConfigVariable(json v);
 
-  int matchValueAndParsedString(
-      const Value &value, std::string kind,
-      std::tuple<RLLabel, std::string, int, std::string> match);
+  int matchValueAndParsedString(const Value &, std::string, ConfigVariable);
   void getOrCreateLocationValueMap();
-  void removeConstraint(std::string kind, std::string match);
-  void
-  removeConstraint(std::string kind,
-                   std::tuple<RLLabel, std::string, int, std::string> match);
+  void removeConstraint(std::string, ConfigVariable);
   void removeConstraintFromIndex(std::string, const AbstractLoc *,
                                  const Value *,
                                  std::map<unsigned, const ConsElem *>, int);

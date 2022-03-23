@@ -3131,6 +3131,13 @@ void Infoflow::readConfiguration() {
   for (json sink : config.at("sink")) {
     sinkVariables.push_back(parseConfigVariable(sink));
   }
+  assert(config.contains("using_whitelist"));
+  if (config.at("using_whitelist")) {
+    assert(config.contains("whitelist"));
+    for (json whitelist : config.at("whitelist")) {
+      whitelistVariables.push_back(parseConfigVariable(whitelist));
+    }
+  }
 }
 
 ConfigVariable Infoflow::parseConfigVariable(json v) {
@@ -3164,23 +3171,15 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
   return ConfigVariable(fn, ty, name, num, idx, label);
 }
 
-int Infoflow::matchValueAndParsedString(
-    const Value &value, std::string kind,
-    std::tuple<RLLabel, std::string, int, std::string> match) {
-  RLLabel label;
-  std::string match_name;
-  int t_offset;
-  std::string fn_name;
-  std::tie(label, match_name, t_offset, fn_name) = match;
-
+int Infoflow::matchValueAndParsedString(const Value &value, std::string kind,
+                                        ConfigVariable var) {
   errs() << "Matching value with parsed string.\n";
-
   const Function *fn = findEnclosingFunc(&value);
   if (fn)
     errs() << "\t- found enclosing function: " << fn->getName() << "\n";
   int variable_matches = 0;
-  if (fn_name.size() == 0 ||
-      (fn && fn->hasName() && fn->getName() == fn_name)) {
+  if (var.function.size() == 0 ||
+      (fn && fn->hasName() && fn->getName() == var.function)) {
     errs() << "\t- function matched\n";
     const MDLocalVariable *local_var;
     if (fn) {
@@ -3190,14 +3189,14 @@ int Infoflow::matchValueAndParsedString(
         (local_var->getTag() == 257 || local_var->getTag() == 256)) {
       errs() << "\t- local_var has the name: [" << local_var->getName()
              << "]\n";
-      if (local_var->getName() == match_name) {
+      if (local_var->getName() == var.name) {
         variable_matches |= 1;
         errs() << "\t- Found a local variable match\n\n";
       }
     }
     if (value.hasName()) {
       errs() << "\t- value has the name: [" << value.getName() << "]\n";
-      if (value.getName() == match_name) {
+      if (value.getName() == var.name) {
         variable_matches |= 2;
         errs() << "\t- Found a value name match\n\n";
       }
@@ -3233,11 +3232,9 @@ void Infoflow::getOrCreateLocationValueMap() {
   }
 }
 
-void Infoflow::removeConstraint(
-    std::string kind,
-    std::tuple<RLLabel, std::string, int, std::string> match) {
+void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
   getOrCreateLocationValueMap();
-  errs() << "Removing values tied to " << std::get<1>(match) << "\n";
+  errs() << "Removing values tied to " << whitelist.name << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = summarySourceValueConstraintMap.begin(),
            end = summarySourceValueConstraintMap.end();
@@ -3247,15 +3244,14 @@ void Infoflow::removeConstraint(
 
     const Value &value = *(entry->first);
 
+    std::string match_name = whitelist.name;
+    int t_offset = whitelist.index;
+    std::string fn_name = whitelist.function;
+
     std::string s;
     llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
     *ss << value; // dump value info to ss
     ss->str();    // flush stream to s
-    RLLabel label;
-    std::string match_name;
-    int t_offset;
-    std::string fn_name;
-    std::tie(label, match_name, t_offset, fn_name) = match;
 
     errs() << "The value under examination is: [" << s << "]\n"
            << "\twith offset = [" << t_offset << "], and in the function: ["
@@ -3270,9 +3266,9 @@ void Infoflow::removeConstraint(
 
     bool remove_reg = true, remove_mem = true;
     // if(function_matches && value.hasName() && value.getName() ==
-    // match_name)
+    // whitelist.name)
     // {
-    if (matchValueAndParsedString(value, kind, match)) {
+    if (matchValueAndParsedString(value, kind, whitelist)) {
       // Removing constraints in the registers, i.e., valueConstraintMap
       if (remove_reg) {
         errs() << "Removing constraint from valueConstraintMap\n";
@@ -3303,7 +3299,7 @@ void Infoflow::removeConstraint(
       // from the value
       if (remove_mem) {
         const std::set<const AbstractLoc *> &locs = locsForValue(value);
-        errs() << "--" << match_name << " : " << value
+        errs() << "--" << whitelist.name << " : " << value
                << ", t_offset: " << t_offset << ", locs: " << locs.size()
                << "\n";
         for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
@@ -3363,15 +3359,13 @@ void Infoflow::removeConstraint(
                  it != itEnd; ++it) {
               const ConsElem *e = it->second;
 
-              errs() << "------"
-                     << " conselem addr"
-                     << " : " << e << "\n";
+              errs() << "------ conselem addr: " << e << "\n";
               kit->removeConstraintRHS(kind, *e);
             }
           }
         }
       }
-    } else if (s.find(match_name) == 0) {
+    } else if (s.find(whitelist.name) == 0) {
       errs() << "Removing constraint with a no match: ";
       const ConsElem &elem = *(entry->second);
       elem.dump(errs());

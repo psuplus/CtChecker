@@ -39,12 +39,9 @@ bool TaintAnalysis::runOnModule(Module &M) {
   }
   parser.setInfoflow(ifa);
 
-  // std::ifstream whitelistFile("whitelist.txt");
-  // std::string line;
-  // while (std::getline(whitelistFile, line)) {
-  //   std::tuple<std::string, int, std::string> match =
-  //   ifa->parseTaintString(line); ifa->removeConstraint("taint", match);
-  // }
+  for (auto whitelist : ifa->whitelistVariables) {
+    ifa->removeConstraint("default", whitelist);
+  }
 
   std::set<std::string> kinds;
   kinds.insert("test");

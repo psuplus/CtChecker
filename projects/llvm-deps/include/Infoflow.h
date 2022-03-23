@@ -150,6 +150,7 @@ private:
 
 class TaintAnalysis;
 class VulnerableBranch;
+class VulnerableInst;
 class ConstraintGen;
 
 /// A constraint-based, context-sensitive, interprocedural information
@@ -161,6 +162,7 @@ class Infoflow
   friend class InfoflowSolution;
   friend class TaintAnalysis;
   friend class VulnerableBranch;
+  friend class VulnerableInst;
   friend class ConstraintGen;
   friend class TaintAnalysisBase;
 

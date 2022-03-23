@@ -17,6 +17,7 @@
 #ifndef INFOFLOW_H
 #define INFOFLOW_H
 
+#define IMPLICIT 1
 #include "CallContext.h"
 #include "CallSensitiveAnalysisPass.h"
 #include "Constraints/RLConsSoln.h"

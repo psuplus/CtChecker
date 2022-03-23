@@ -2778,28 +2778,36 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
     const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
     errs() << "The CallInst is: \n\t";
     callinst->dump();
-    Function *F = callinst->getCalledFunction();
 
-    if (F) {
-      for (auto var : sinkVariables) {
-        if (F->getName().size() > 0 && F->getName().equals(var.function)) {
-          errs() << "Found function match: " << F->getName() << "\n";
-          User::const_op_iterator op_i = cs.arg_begin();
-          int arg_idx = 0;
-          for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
-            if (var.number == -1 || var.number == arg_idx) {
-              Value *value = (*op_i).get();
-              std::tuple<ContextID, RLLabel, Value *, int> valueOffsetPair =
-                  std::make_tuple(this->getCurrentContext(), var.label, value,
-                                  var.index);
-              sinkValueSet.insert(valueOffsetPair);
-              errs() << "inserted: ";
-              value->dump();
-              errs() << "at offset: " << var.index << "\n";
-            }
+    StringRef fName;
+
+    if (callinst->getCalledFunction() &&
+        callinst->getCalledFunction()->hasName()) {
+      fName = callinst->getCalledFunction()->getName();
+    } else if (auto F = dyn_cast<Function>(
+                   callinst->getCalledValue()->stripPointerCasts())) {
+      fName = F->getName();
+    }
+
+    errs() << "Fname: " << fName << "\n";
+    for (auto var : sinkVariables) {
+      if (fName.size() > 0 && fName.equals(var.function)) {
+        errs() << "Found function match: " << fName << "\n";
+        User::const_op_iterator op_i = cs.arg_begin();
+        int arg_idx = 0;
+        for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
+          if (var.number == -1 || var.number == arg_idx) {
+            Value *value = (*op_i).get();
+            std::tuple<ContextID, RLLabel, Value *, int> valueOffsetPair =
+                std::make_tuple(this->getCurrentContext(), var.label, value,
+                                var.index);
+            sinkValueSet.insert(valueOffsetPair);
+            errs() << "inserted: ";
+            value->dump();
+            errs() << "at offset: " << var.index << "\n";
           }
-          // return; // TODO: Could this be the ULTIMATE solution?!
         }
+        // return; // TODO: Could this be the ULTIMATE solution?!
       }
     }
 
@@ -2891,13 +2899,13 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
     // Only create a flow when the parameter
     // being passed is not a pointer
     // if (!(*formal).getType()->isPointerTy()) {
-      const Value &actual = *cs.getArgument(i);
-      FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
-      argFlow.addSourceValue(actual);
-      argFlow.addSinkValue(*formal);
-      flows.push_back(argFlow);
+    const Value &actual = *cs.getArgument(i);
+    FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
+    argFlow.addSourceValue(actual);
+    argFlow.addSinkValue(*formal);
+    flows.push_back(argFlow);
 
-      argFlow.dump();
+    argFlow.dump();
     // }
   }
 

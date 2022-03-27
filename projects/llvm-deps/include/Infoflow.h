@@ -144,6 +144,7 @@ private:
 };
 
 class TaintAnalysis;
+class ImplicitFunction;
 class VulnerableBranch;
 class VulnerableInst;
 class ConstraintGen;
@@ -156,6 +157,7 @@ class Infoflow
     : public CallSensitiveAnalysisPass<Unit, Unit, 1, CallerContext> {
   friend class InfoflowSolution;
   friend class TaintAnalysis;
+  friend class ImplicitFunction;
   friend class VulnerableBranch;
   friend class VulnerableInst;
   friend class ConstraintGen;

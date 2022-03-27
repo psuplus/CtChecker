@@ -15,9 +15,8 @@
   },
   "source": [
     {
-      "function": "main",
       "type": "variable",
-      "name": "pk",
+      "name": "key",
       "index": -1,
       "l": {
         "secret": "private"
@@ -28,5 +27,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["main"]
+  "entry": ["foo"]
 }

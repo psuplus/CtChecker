@@ -54,21 +54,23 @@ fi
 
 echo "Running with flags: $COL"
 
-LEVEL="../../../.."
+LEVEL="../../.."
 
-$LEVEL/Debug+Asserts/bin/llvm-link dixutils.bc resource.bc -o $1
+# $LEVEL/Debug+Asserts/bin/llvm-link dixutils.bc resource.bc -o $1
+$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o $1 -c main.c
+$LEVEL/Debug+Asserts/bin/opt -mem2reg $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis $1 
 
 
 TIME=$(date +%s)
 
-$LEVEL/Debug+Asserts/bin/opt -stats $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -stats -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -constraint-generation  -debug < $1 2> tmp.dat > /dev/null
+  -implicit-function  -debug < $1 2> tmp.dat > /dev/null
 
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME

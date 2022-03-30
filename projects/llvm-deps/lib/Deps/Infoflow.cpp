@@ -802,13 +802,13 @@ unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst *gep,
                                           std::set<const AbstractLoc *> locs) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned offset = 0;
-  if (isa<ArrayType>(T)) {
+  if (isa<ArrayType>(T) || gep->getNumIndices() == 1) {
     if (!checkGEPOperandsConstant(gep)) {
       return -1;
     }
     errs() << "ArrayType:";
     offset = GEPInstCalculateArrayOffset(gep, locs);
-  } else if (gep->getNumIndices() == 2) {
+  } else if (isa<StructType>(T)) {
     errs() << "StructType:";
     offset = GEPInstCalculateStructOffset(gep, locs);
   } else {
@@ -1917,7 +1917,6 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
     DSGraph *G = loc.getParentGraph();
     for (auto node = G->node_begin(); node != G->node_end(); node++) {
-      node->dump();
       DSNode::const_edge_iterator edge = node->edge_begin();
       for (; edge != node->edge_end(); edge++) {
         if (edge->second.getNode() == &loc) {

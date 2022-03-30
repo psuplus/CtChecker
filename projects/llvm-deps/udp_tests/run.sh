@@ -7,7 +7,7 @@ else
         EXT="so"
 fi
 
-cd ../../
+cd ../
 pwd
 make
 cd -
@@ -56,8 +56,10 @@ echo "Running with flags: $COL"
 
 LEVEL="../../.."
 
-# $LEVEL/Debug+Asserts/bin/llvm-link dixutils.bc resource.bc -o $1
-$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o $1 -c main.c
+
+
+$LEVEL/Debug+Asserts/bin/llvm-link udp.bc route.bc -o $1
+#$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -o $1 -c main.c
 $LEVEL/Debug+Asserts/bin/opt -mem2reg $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis $1 
 

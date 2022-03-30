@@ -16,7 +16,7 @@
   "source": [
     {
       "type": "variable",
-      "name": "key",
+      "name": "udp_table",
       "index": -1,
       "l": {
         "secret": "private"
@@ -27,5 +27,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["foo"]
+  "entry": ["udp_init"]
 }

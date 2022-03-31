@@ -2502,15 +2502,19 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
 /// successors that do not post-dominate the current instruction.
 void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
   // Only additional flow for conditional branch
-  if (!inst.isConditional())
-    return;
+  // if (!inst.isConditional())
+  //   return;
 
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
   flow.addSourceValue(*inst.getParent());
   // cond
-  flow.addSourceValue(*inst.getCondition());
-  constrainConditionalSuccessors(inst, flow);
+  if (inst.isConditional()) {
+    flow.addSourceValue(*inst.getCondition());
+    constrainConditionalSuccessors(inst, flow);
+  } else {
+    flow.addSinkValue(*inst.getOperand(0));
+  }
 
   flows.push_back(flow);
 }

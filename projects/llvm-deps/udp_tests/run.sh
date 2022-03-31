@@ -66,7 +66,8 @@ $LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 TIME=$(date +%s)
 
-$LEVEL/Debug+Asserts/bin/opt -stats -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -stats \
+  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

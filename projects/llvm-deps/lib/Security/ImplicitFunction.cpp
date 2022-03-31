@@ -76,29 +76,18 @@ bool ImplicitFunction::runOnModule(Module &M) {
   errs() << "---- Constraints END ----\n\n";
 
   errs() << "#------------------Results------------------#\n";
-  // for (auto fIter = M.begin(); fIter != M.end(); ++fIter) {
-  //   auto &F = *fIter;
-  //   if (!F.isDeclaration()) {
-  //     auto &BB = *(F.begin());
-  //     auto V = dyn_cast<Value>(&BB);
-  //     if (tainted.find(V) != tainted.end()) {
-  //       errs() << "Function [" << F.getName()
-  //              << "] is called under a sensitive branch.\n";
-  //     }
-  //   }
-  // }
-  // errs() << "\n";
-
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {
     for (const_inst_iterator I = inst_begin(*F); I != inst_end(*F); ++I) {
       if (const CallInst *callInst = dyn_cast<CallInst>(&*I)) {
         if (const MDLocation *loc = callInst->getDebugLoc()) {
-          if (auto callee = callInst->getCalledFunction()) {
-            // errs() << "caller: ";
-            // callInst->dump();
-
-            // errs() << "callee: ";
-            // callee->dump();
+          const Function *callee = callInst->getCalledFunction();
+          if (const ConstantExpr *CExpr =
+                  dyn_cast<ConstantExpr>(callInst->getCalledValue())) {
+            if (CExpr->getOpcode() == Instruction::BitCast &&
+                isa<Function>(CExpr->getOperand(0)))
+              callee = cast<Function>(CExpr->getOperand(0));
+          }
+          if (callee) {
             if (!callee->isDeclaration()) {
               auto &BB = *(callee->begin());
               auto V = dyn_cast<Value>(&BB);

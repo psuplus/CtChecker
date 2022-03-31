@@ -16,7 +16,7 @@
   "source": [
     {
       "type": "variable",
-      "name": "udp_table",
+      "name": "udptable",
       "index": -1,
       "l": {
         "secret": "private"
@@ -27,5 +27,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["udp_init"]
+  "entry": ["__udp4_lib_err"]
 }

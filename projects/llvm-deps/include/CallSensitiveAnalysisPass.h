@@ -86,7 +86,14 @@ public:
     ContextID newContext = updateContext(this->getCurrentContext(), cs);
 
     // Fast-path direct calls
-    if (const Function *F = cs.getCalledFunction()) {
+    const Function *F = cs.getCalledFunction();
+    if (const ConstantExpr *CExpr =
+            dyn_cast<ConstantExpr>(cs.getCalledValue())) {
+      if (CExpr->getOpcode() == Instruction::BitCast &&
+          isa<Function>(CExpr->getOperand(0)))
+        F = cast<Function>(CExpr->getOperand(0));
+    }
+    if (F) {
       if (!F->isDeclaration()) {
         errs() << "F-implementation\n";
         return this->getAnalysisResult(AUnitType(newContext, *F), input);
@@ -194,7 +201,14 @@ public:
       collapseExt ? updateIndirectContext(this->getCurrentContext(), cs) : newContext;
 
     // Fast-path direct calls
-    if (const Function *F = cs.getCalledFunction()) {
+    const Function *F = cs.getCalledFunction();
+    if (const ConstantExpr *CExpr =
+            dyn_cast<ConstantExpr>(cs.getCalledValue())) {
+      if (CExpr->getOpcode() == Instruction::BitCast &&
+          isa<Function>(CExpr->getOperand(0)))
+        F = cast<Function>(CExpr->getOperand(0));
+    }
+    if (F) {
       std::set<std::pair<const Function*, const ContextID> > single;
       if (!F->isDeclaration())
         single.insert(std::pair<const Function *, const ContextID>(F,newContext));

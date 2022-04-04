@@ -146,6 +146,8 @@ class FlowRecord {
           errs() << "\t  ";
           if (isa<BasicBlock>(v))
             errs() << "BB: " << v->getName() << "\n";
+        if (isa<Function>(v))
+          errs() << "Function: " << v->getName() << "\n";
           else
             v->dump();
         }

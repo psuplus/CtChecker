@@ -79,23 +79,26 @@ bool ImplicitFunction::runOnModule(Module &M) {
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {
     for (const_inst_iterator I = inst_begin(*F); I != inst_end(*F); ++I) {
       if (const CallInst *callInst = dyn_cast<CallInst>(&*I)) {
-        if (const MDLocation *loc = callInst->getDebugLoc()) {
-          const Function *callee = callInst->getCalledFunction();
-          if (const ConstantExpr *CExpr =
-                  dyn_cast<ConstantExpr>(callInst->getCalledValue())) {
-            if (CExpr->getOpcode() == Instruction::BitCast &&
-                isa<Function>(CExpr->getOperand(0)))
-              callee = cast<Function>(CExpr->getOperand(0));
-          }
-          if (callee) {
-            if (!callee->isDeclaration()) {
-              auto &BB = *(callee->begin());
-              auto V = dyn_cast<Value>(&BB);
-              if (tainted.find(V) != tainted.end()) {
-                errs() << loc->getFilename() << " at line "
-                       << std::to_string(loc->getLine())
-                       << "\t\t called function [" << callee->getName()
-                       << "]\n";
+        auto parent = callInst->getParent();
+        if (tainted.find(parent) != tainted.end()) {
+          if (const MDLocation *loc = callInst->getDebugLoc()) {
+            const Function *callee = callInst->getCalledFunction();
+            if (const ConstantExpr *CExpr =
+                    dyn_cast<ConstantExpr>(callInst->getCalledValue())) {
+              if (CExpr->getOpcode() == Instruction::BitCast &&
+                  isa<Function>(CExpr->getOperand(0)))
+                callee = cast<Function>(CExpr->getOperand(0));
+            }
+            if (callee) {
+              if (!callee->isDeclaration()) {
+                auto &BB = *(callee->begin());
+                auto V = dyn_cast<Value>(&BB);
+                if (tainted.find(V) != tainted.end()) {
+                  errs() << loc->getFilename() << " at line "
+                         << std::to_string(loc->getLine())
+                         << "\t\t called function [" << callee->getName()
+                         << "]\n";
+                }
               }
             }
           }

@@ -4,6 +4,7 @@
     "pointer": 0,
     "custom": []
   },
+  "implicit_mode": 1,
   "lattice": {
     "levels": [
       {

@@ -2502,8 +2502,14 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
 /// successors that do not post-dominate the current instruction.
 void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
   // Only additional flow for conditional branch
-  // if (!inst.isConditional())
-  //   return;
+  bool fullImplicit = false;
+  if (config.contains("implicit_mode") &&
+      config.at("implicit_mode") == ImplicitFlowMode_Full) {
+    fullImplicit = true;
+  }
+
+  if (!inst.isConditional() && !fullImplicit)
+    return;
 
   FlowRecord flow = currentContextFlowRecord(true);
   // pc

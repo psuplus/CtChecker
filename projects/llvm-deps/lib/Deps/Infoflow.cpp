@@ -14,7 +14,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-// CHANGE
 #ifndef DEBUG_TYPE
 #define DEBUG_TYPE "deps"
 
@@ -89,7 +88,8 @@ const Unit Infoflow::bottomOutput() const { return Unit(); }
 
 const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
                                   const Unit input) {
-  DEBUG(errs() << "Running on " << unit.function().getName() << " in context [";
+  DEBUG(errs() << "Running on [" << unit.function().getName()
+               << "] in context [";
         CM.getContextFor(unit.context()).dump(); errs() << "]\n");
 
   // start only from entry functions, if entry is specified in config
@@ -317,21 +317,22 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
   for (auto v : values) {
     const std::set<const AbstractLoc *> &locs = locsForValue(*v);
     if (isa<GetElementPtrInst>(v) && offset_used) {
-      errs() << "DSOURCEGEP INSTRUCTION " << stringFromValue(*v) << "\n";
+      DEBUG(errs() << "DSOURCEGEP INSTRUCTION " << stringFromValue(*v) << "\n");
       processGetElementPtrInstSource(v, elems, locs, implicit);
     } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(v)) {
-      bit->getSrcTy()->dump();
+      DEBUG(bit->getSrcTy()->dump());
       if (bit->getSrcTy()->isPointerTy() &&
           !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
           bit->getSrcTy()->getPointerElementType()->isStructTy() &&
           bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
               "union.") &&
           offset_used) {
-        errs() << "DSOURCE BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
+        DEBUG(errs() << "DSOURCE BITCAST INSTRUCTION " << stringFromValue(*v)
+                     << "\n");
         const BitCastInst *bit = dyn_cast<BitCastInst>(v);
         if (bit->getDestTy()->isPointerTy() &&
             !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
-          bit->getDestTy()->getPointerElementType()->dump();
+          DEBUG(bit->getDestTy()->getPointerElementType()->dump());
           for (auto loc : locs) {
             std::map<unsigned, const ConsElem *> elemMap;
             elemMap = getOrCreateConsElemTyped(*loc, 0, v);
@@ -343,9 +344,8 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
             }
             elems = findRelevantConsElem(loc, elemMap, 0, v);
             for (auto s : elems) {
-              errs() << "BITCAST SOURCE: ";
-              s->dump(errs());
-              errs() << s << "\n";
+              DEBUG(errs() << "BITCAST SOURCE: "; s->dump(errs());
+                    errs() << s << "\n";);
             }
           }
         }
@@ -440,7 +440,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
        sink != record.sink_directptr_end(); ++sink) {
     const std::set<const AbstractLoc *> &locs = locsForValue(**sink);
     if (isa<GetElementPtrInst>(*sink) && offset_used) {
-      errs() << "DSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "DSINKGEP INSTRUCTION "
+                                               << stringFromValue(**sink)
+                                               << "\n";);
       if (regFlow)
         processGetElementPtrInstSink(*sink, implicit, false, source, locs);
       if (sinkFlow)
@@ -536,7 +538,8 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
 void Infoflow::processGetElementPtrInstSink(
     const Value *value, bool implicit, bool sink, const ConsElem &lub,
     std::set<const AbstractLoc *> locs) {
-  errs() << "[Sink:] " << stringFromValue(*value) << "\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "[Sink:] " << stringFromValue(*value) << "\n";);
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -601,8 +604,9 @@ void Infoflow::processGetElementPtrInstSink(
 
   for (auto loc : toConstrain) {
     if (loc) {
-      errs() << "Tainting at offset: " << offset << "\n";
-      loc->dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      errs() << "Tainting at offset: " << offset << "\n";
+                      loc->dump(););
       // Put additional Copy elements here and reverse the order of the copy
       if (structTy)
         putOrConstrainConsElemStruct(implicit, sink, *loc, lub, offset, value);
@@ -623,7 +627,8 @@ void Infoflow::processGetElementPtrInstSource(
     const Value *source, std::set<const ConsElem *> &sourceSet,
     std::set<const AbstractLoc *> locs, bool implicit) {
   // get ConsElem from Value
-  errs() << "[Source:] " << stringFromValue(*source) << "\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "[Source:] " << stringFromValue(*source) << "\n";);
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -668,7 +673,6 @@ void Infoflow::processGetElementPtrInstSource(
   }
 
   for (auto loc : locs) {
-    loc->dump();
     std::map<unsigned, const ConsElem *> elemMap;
     elemMap = getOrCreateConsElemTyped(*loc, numElements, source);
 
@@ -688,9 +692,8 @@ void Infoflow::processGetElementPtrInstSource(
         findRelevantConsElem(loc, elemMap, offset, source);
     sourceElems.insert(parentElems.begin(), parentElems.end());
     for (auto s : sourceElems) {
-      errs() << "CONSTRAINING: ";
-      s->dump(errs());
-      errs() << s << "\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "CONSTRAINING: ";
+                      s->dump(errs()); errs() << s << "\n";);
       sourceSet.insert(s);
     }
   }
@@ -725,7 +728,9 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
   assert((span || value || type) && "One of them must not be null!");
 
   std::set<const ConsElem *> elements;
-  errs() << "Trying to find element at offset " << offset << "\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs()
+                                        << "Trying to find element at offset "
+                                        << offset << "\n";);
   // TODO: This part needs to be further verified!
   if (node->isNodeCompletelyFolded() && elemMap.size() == 1) {
     // if (node->isNodeCompletelyFolded()) {
@@ -745,7 +750,7 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
           if (isa<ArrayType>(T))
             isArray = true;
         }
-        type->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, type->dump(););
         if (PointerType *pt = dyn_cast<PointerType>(type))
           type = pt->getPointerElementType();
       }
@@ -754,7 +759,7 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
       else
         span = TD.getTypeStoreSize(type);
     }
-    errs() << "span [" << span << "]\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "span [" << span << "]\n";);
     auto e = elemMap.find(offset);
     while (e != elemMap.end() && e->first < offset + span) {
       elements.insert(e->second);
@@ -802,14 +807,15 @@ unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst *gep,
                                           std::set<const AbstractLoc *> locs) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned offset = 0;
-  if (isa<ArrayType>(T) || gep->getNumIndices() == 1) {
-    if (!checkGEPOperandsConstant(gep)) {
-      return -1;
-    }
-    errs() << "ArrayType:";
+
+  if (!checkGEPOperandsConstant(gep))
+    return offset;
+
+  if (isa<ArrayType>(T) && gep->getNumIndices() == 2) {
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "ArrayType:";);
     offset = GEPInstCalculateArrayOffset(gep, locs);
-  } else if (isa<StructType>(T)) {
-    errs() << "StructType:";
+  } else if (gep->getNumIndices() == 2) {
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "StructType:";);
     offset = GEPInstCalculateStructOffset(gep, locs);
   } else {
     ConstantInt *ptrIdx = dyn_cast<ConstantInt>(gep->getOperand(1));
@@ -922,15 +928,6 @@ bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst *gep) {
 const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input) {
   Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
-
-  // For each flow record returned by the signature, update the constraint
-  // sets
-  for (Flows::iterator r = recs.begin(), e = recs.end(); r != e; ++r) {
-    if (!(*r).isImplicit()) {
-      (*r).dump();
-    }
-  }
-
   flowVector.insert(flowVector.end(), recs.begin(), recs.end());
   return bottomOutput();
 }
@@ -1002,7 +999,8 @@ const MDLocalVariable *Infoflow::findVarNode(const Value *V,
 void Infoflow::getOriginalLocation(const Value *V) {
   // Global var?
   if (const GlobalVariable *glb = dyn_cast<GlobalVariable>(V)) {
-    errs() << "Global var: " << glb->getName() << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Global var: " << glb->getName() << "\n";);
     return;
   }
 
@@ -1013,18 +1011,18 @@ void Infoflow::getOriginalLocation(const Value *V) {
     if (!Loc) {
       const MDLocalVariable *lv = findVarNode(V, I->getParent()->getParent());
       if (!lv) {
-        errs() << "Unknown local variable"
-               << "\n";
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs()
+                                              << "Unknown local variable\n";);
         return;
       }
-      errs() << lv->getFilename() << " line: " << lv->getLine() << "\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << lv->getFilename() << " line: "
+                                               << lv->getLine() << "\n";);
       return;
     }
   } else { // try to find the uses of the value
     const Function *F = findEnclosingFunc(V);
     if (!F) {
-      errs() << "Unknown location"
-             << "\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Unknown location\n";);
       return;
     }
 
@@ -1033,8 +1031,9 @@ void Infoflow::getOriginalLocation(const Value *V) {
                                                     end = F->arg_end();
          ite != end; ++ite) {
       if (&*ite == V) {
-        errs() << "Function " << F->getName() << " Arg: " << ite->getName()
-               << "\n";
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Function " << F->getName()
+                                                 << " Arg: " << ite->getName()
+                                                 << "\n";);
         return;
       }
     }
@@ -1044,22 +1043,24 @@ void Infoflow::getOriginalLocation(const Value *V) {
     if (!Loc) {
       const MDLocalVariable *lv = findVarNode(V, F);
       if (!lv) {
-        errs() << "Unknown local variable"
-               << "\n";
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Unknown local variable"
+                                                 << "\n";);
         return;
       }
-      errs() << "Local variable: ";
-      lv->dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Local variable: ";
+                      lv->dump(););
       return;
     }
   }
 
   if (!Loc) {
-    errs() << "Unknown location for " << V->getName() << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Unknown location for " << V->getName() << "\n";);
     return;
   }
-  errs() << Loc->getFilename() << " line: " << std::to_string(Loc->getLine())
-         << "\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << Loc->getFilename() << " line: "
+                                           << std::to_string(Loc->getLine())
+                                           << "\n";);
   return;
 }
 
@@ -1082,8 +1083,7 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
   // Instruction?
   if (const Instruction *I = dyn_cast<Instruction>(V)) {
     Loc = I->getDebugLoc();
-    errs() << "dumping inst: ";
-    I->dump();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "dumping inst: "; I->dump(););
     if (!Loc) {
       const MDLocalVariable *lv = findVarNode(V, I->getParent()->getParent());
       if (!lv) {
@@ -1095,10 +1095,10 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
       return ret;
     } else {
       if (const LoadInst *load = dyn_cast<LoadInst>(I)) {
-        load->getOperand(0)->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, load->getOperand(0)->dump(););
         if (const GetElementPtrInst *gep =
                 dyn_cast<GetElementPtrInst>(load->getOperand(0))) {
-          gep->getOperand(0)->dump();
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, gep->getOperand(0)->dump(););
           if (const Argument *arg = dyn_cast<Argument>(gep->getOperand(0))) {
             ret.append(delim + "*LoadInst*");
           }
@@ -1128,7 +1128,6 @@ std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
         ret.append("&Arg::");
         ret.append(ite->getName());
         ret.append("::");
-        errs() << ret << "\n";
         return ret;
       }
     }
@@ -1549,7 +1548,9 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
       name = stringFromValue(value);
     }
 
-    errs() << "In context: " << this->getCurrentContext() << " new_Var--1\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                    errs() << "In context: " << this->getCurrentContext()
+                           << " new_Var--1\n";);
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value) + delim +
                     "*SummSource*");
@@ -1580,7 +1581,9 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
       raw_string_ostream ss(varStr);
       ss << value;
     }
-    errs() << "In context: " << this->getCurrentContext() << " new_Var--2\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                    errs() << "In context: " << this->getCurrentContext()
+                           << " new_Var--2\n";);
     const ConsElem &elem =
         kit->newVar(varStr + delim + getOriginalLocationConsElem(&value) +
                     delim + "*SummSink*");
@@ -1596,7 +1599,6 @@ void Infoflow::putOrConstrainConsElemSummarySink(std::string kind,
                                                  const ConsElem &lub) {
   // errs() << "Adding a constraint...\n";
   const ConsElem &current = getOrCreateConsElemSummarySink(value);
-  value.dump();
   kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-8]");
   getOriginalLocation(&value);
 }
@@ -1614,8 +1616,9 @@ const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
     } else {
       identifier = stringFromValue(value);
     }
-
-    errs() << "In context: " << this->getCurrentContext() << " new_Var--3\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                    errs() << "In context: " << this->getCurrentContext()
+                           << " new_Var--3\n";);
     const ConsElem &elem =
         kit->newVar(identifier + delim + getOriginalLocationConsElem(&value));
     valueMap.insert(std::make_pair(&value, &elem));
@@ -1636,7 +1639,6 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
   const ConsElem &current = getOrCreateConsElem(ctxt, value);
   // FIXIT: This part may need to be further verified
   if (auto gep = dyn_cast<GetElementPtrInst>(&value)) {
-    gep->dump();
     AbstractLocSet locs = locsForValue(value);
     for (auto loc : locs) {
       getOrCreateConsElemTyped(*loc, 0, &value);
@@ -1680,7 +1682,9 @@ Infoflow::getOrCreateVargConsElemSummarySource(const Function &value) {
       summarySourceVargConstraintMap.find(&value);
   if (curElem == summarySourceVargConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    errs() << "In context: " << this->getCurrentContext() << " new_Var--4\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                    errs() << "In context: " << this->getCurrentContext()
+                           << " new_Var--4\n";);
     std::string varStr = value.getName();
     if (varStr.size() == 0) {
       raw_string_ostream ss(varStr);
@@ -1710,7 +1714,9 @@ Infoflow::getOrCreateVargConsElemSummarySink(const Function &value) {
       summarySinkVargConstraintMap.find(&value);
   if (curElem == summarySinkVargConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    errs() << "In context: " << this->getCurrentContext() << " new_Var--5\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                    errs() << "In context: " << this->getCurrentContext()
+                           << " new_Var--5\n";);
     std::string varStr = value.getName();
     if (varStr.size() == 0) {
       raw_string_ostream ss(varStr);
@@ -1741,7 +1747,9 @@ const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
   DenseMap<const Function *, const ConsElem *>::iterator curElem =
       valueMap.find(&value);
   if (curElem == valueMap.end()) {
-    errs() << "In context: " << this->getCurrentContext() << " new_Var--6\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                    errs() << "In context: " << this->getCurrentContext()
+                           << " new_Var--6\n";);
     std::string varStr = value.getName();
     if (varStr.size() == 0) {
       raw_string_ostream ss(varStr);
@@ -1789,13 +1797,11 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
                                    const Value *v, bool force) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator
       curElem = locConstraintMap.find(&loc);
-
-  errs() << "GetOrCreateConsElemTyped";
-  if (v) {
-    errs() << " for value: ";
-    v->dump();
-  }
-  errs() << "\n";
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_DEBUG, errs() << "GetOrCreateConsElemTyped"; if (v) {
+        errs() << " for value: ";
+        v->dump();
+      } errs() << "\n";);
 
   if (curElem == locConstraintMap.end() || force) {
     std::string name = getCaption(&loc, NULL);
@@ -1815,11 +1821,14 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
       numElements = 1;
     }
 
-    errs() << "Created " << numElements
-           << " constraint variable(s) for node of size ";
-    errs() << loc.getSize() << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Created " << numElements
+                           << " constraint variable(s) for node of size ";
+                    errs() << loc.getSize() << "\n";);
     for (unsigned offset = 0; offset < numElements; offset++) {
-      errs() << "In context: " << this->getCurrentContext() << " new_Var--7\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                      errs() << "In context: " << this->getCurrentContext()
+                             << " new_Var--7\n";);
       const ConsElem &elem =
           kit->newVar(name + ": elem " + std::to_string(offset) + "::" + delim +
                       getOriginalLocationConsElem(v));
@@ -1827,8 +1836,8 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
     }
     return locConstraintMap[&loc];
   } else {
-    errs() << "Already created: ";
-    errs() << getCaption(&loc, NULL) << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Already created: ";
+                    errs() << getCaption(&loc, NULL) << "\n";);
     return (curElem->second);
   }
 }
@@ -1880,8 +1889,9 @@ void Infoflow::createConsElemFromStruct(
         varMeta.append(delim + "*MultipleSource*");
       }
       for (const Value *v : vSet) {
-        errs() << "This node contains value: ";
-        v->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs()
+                                              << "This node contains value: ";
+                        v->dump(););
         varMeta.append(getOriginalLocationConsElem(v));
       }
       const ConsElem &elem = kit->newVar(varDesc, varMeta);
@@ -1906,9 +1916,8 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>::iterator
       curElem = locConstraintMap.find(&loc);
   if (curElem == locConstraintMap.end()) {
-    errs() << "Creating ConsElem Map for :";
-    loc.dump();
-    errs() << "---\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Creating ConsElem Map for :";
+                    loc.dump(); errs() << "---\n";);
 
     // TODO: Is this scalable?
     //       And, is this safe?
@@ -1920,17 +1929,16 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       DSNode::const_edge_iterator edge = node->edge_begin();
       for (; edge != node->edge_end(); edge++) {
         if (edge->second.getNode() == &loc) {
-          errs() << "\t";
-          node->dump();
           DSNode::TyMapTy types{node->type_begin(), node->type_end()};
-          errs() << "---++---\n";
-          errs() << types[edge->first] << "\n";
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "\t"; node->dump();
+                          errs() << "---++---\n";
+                          errs() << types[edge->first] << "\n";);
           if (types[edge->first] && types[edge->first]->size() == 1) {
             Type *t = *types[edge->first]->begin();
-            t->dump();
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, t->dump(););
             if (t->isPointerTy()) {
               Type *sub = t->subtypes()[0];
-              sub->dump();
+              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, sub->dump(););
               if (finalType) {
                 if (dyn_cast<StructType>(sub) != finalType) {
                   createFieldSensitiveElementMap = false;
@@ -1944,7 +1952,6 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
               }
             }
           }
-          errs() << "---\n";
         }
       }
     }
@@ -1958,15 +1965,18 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       //   desc.append(getOriginalLocationConsElem(v));
       // }
       const ConsElem &elem = kit->newVar(desc);
-      elem.dump(errs() << "In context [" << this->getCurrentContext()
-                       << "] created ConsElem [");
-      errs() << "] new_Var--9\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
+                      elem.dump(errs()
+                                << "In context [" << this->getCurrentContext()
+                                << "] created ConsElem [");
+                      errs() << "] new_Var--9\n";);
       locConstraintMap[&loc].insert(std::make_pair(0U, &elem));
     }
 
     DSNode::TyMapTy child_loc_types{loc.type_begin(), loc.type_end()};
     DSNode::LinkMapTy links{loc.edge_begin(), loc.edge_end()};
-    errs() << "links.size() = " << links.size() << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "links.size() = " << links.size() << "\n";);
 
     for (auto l = loc.edge_begin(), end = loc.edge_end(); l != end; ++l) {
       const AbstractLoc *node = l->second.getNode();
@@ -1992,10 +2002,12 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
     }
     return locConstraintMap[&loc];
   } else {
-    for (auto e : curElem->second) {
-      e.second->dump(errs() << format_decimal(e.first, 3) << ": ");
-      errs() << "\n";
-    }
+    DEBUG_WITH_TYPE(
+        DEBUG_TYPE_DEBUG, for (auto e
+                               : curElem->second) {
+          e.second->dump(errs() << format_decimal(e.first, 3) << ": ");
+          errs() << "\n";
+        });
     return (curElem->second);
   }
 }
@@ -2004,17 +2016,14 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const AbstractLoc &loc,
                                       const ConsElem &lub) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
-  loc.dump();
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, loc.dump(););
   for (auto it = elemMap.begin(); it != elemMap.end(); ++it) {
-    errs() << "Creating memlink: ";
-    lub.dump(errs());
-    errs() << ":<->:";
-    it->second->dump(errs());
-    errs() << it->second << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Creating memlink: ";
+                    lub.dump(errs()); errs() << ":<->:";
+                    it->second->dump(errs()); errs() << it->second << "\n";);
 
     kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*it).second,
                        " ;  [ConsDebugTag-14]");
-    // TODO add debug info
   }
 }
 
@@ -2023,7 +2032,6 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
                                             const ConsElem &lub,
                                             unsigned offset, const Value *v) {
   unsigned numElements = 0;
-  errs() << " ===== putOrConstrainConsElemStruct =====\n";
   std::map<unsigned, const ConsElem *> elemMap =
       getOrCreateConsElemTyped(loc, numElements, v);
   if (elemMap.size() == 0)
@@ -2035,7 +2043,7 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
   if (PointerType *pt = dyn_cast<PointerType>(v->getType()))
     t = pt->getPointerElementType();
   unsigned span = TD.getTypeStoreSize(t);
-  errs() << "this is the size: " << span << "\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "span size [" << span << "]\n";);
 
   // NOTE: This can be further made more precise with finding the range-based
   // elements, without the head match, but has a potential of missing some
@@ -2054,7 +2062,6 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
                          *(kv.second), " ;  [ConsDebugTag-16]");
     }
   }
-  errs() << " ===== putOrConstrainConsElemStruct end =====\n";
 }
 
 void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
@@ -2077,7 +2084,6 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
       DEBUG(errs() << "Adding " << elemMap.size() << " elements\n");
       kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
                          *(*it).second, " ;  [ConsDebugTag-17]");
-      // TODO add debug info
     }
   } else {
     std::set<const ConsElem *> elems =
@@ -2086,7 +2092,6 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
          i != elems.end(); ++i) {
       kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*i),
                          " ;  [ConsDebugTag-18]");
-      // TODO add debug info
     }
   }
   errs() << " ===== putOrConstrainConsElem end =====\n";
@@ -2103,7 +2108,7 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
   for (Flows::iterator flow = flowVector.begin(), end = flowVector.end();
        flow != end; ++flow) {
     if (!(*flow).isImplicit() || IMPLICIT) {
-      (*flow).dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_FLOW, (*flow).dump(););
       constrainFlowRecord(*flow);
     }
   }
@@ -2145,8 +2150,7 @@ void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
 
   for (BasicBlock::const_iterator inst = bb.begin(), end = bb.end();
        inst != end; ++inst) {
-    errs() << " +INST+\n";
-    (*inst).dump();
+    DEBUG(errs() << " +INST+\n"; (*inst).dump(););
     getInstructionFlowsInternal(*inst, true, flows, "");
   }
 }
@@ -2237,33 +2241,17 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
   // pc
   imp.addSourceValue(*inst.getParent());
   // operands
-
-  errs() << "===== operandsAndPCtoValue() =====\n";
   for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
        op != end; ++op) {
     Value *v = op->get();
     exp.addSourceValue(*v);
-    errs() << "adding to sourceValue: ";
-    v->dump();
-    // errs() << "is a pointer type? "
-    //        << (v->getType()->isPointerTy() ? "YES" : "NO") << "\n";
-    // if (isa<CastInst>(inst) && v->getType()->isPointerTy()) {
-    //   errs() << "WE ARE ADDING BITCAST\n";
-    //   exp.addSourceDirectPtr(*v);
-    //   exp.addSinkDirectPtr(*v);
-    //   exp.addSinkDirectPtr(inst);
-    // }
   }
   // to value
   exp.addSinkValue(inst);
   imp.addSinkValue(inst);
 
-  errs() << "adding to sinkValue ";
-  (inst).dump();
-
   flows.push_back(exp);
   flows.push_back(imp);
-  errs() << "===== operandsAndPCtoValue() - end =====\n";
 }
 
 void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
@@ -2740,9 +2728,8 @@ void Infoflow::constrainCallInst(const CallInst &inst, bool analyzeCallees,
                                  Flows &flows) {
   // TODO: filter out and handle Intrinsics here instead of deferring
   // to the Signature mechanism...
-
-  errs() << "WORKING ON CALLINST: ";
-  inst.dump();
+  DEBUG_WITH_TYPE(DEBUG_TYPE_CALLINST, errs() << "Working on CallInst: ";
+                  inst.dump(););
 
   if (const IntrinsicInst *intr = dyn_cast<IntrinsicInst>(&inst)) {
     return constrainIntrinsic(*intr, flows);
@@ -2783,13 +2770,14 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
   // XXX HACK if we're not doing analysis on callees, we need to add any
   // signature flows here
 
-  errs() << "working on callsite and \n\t" << (analyzeCallees ? "" : "not ")
-         << "analyzing callees\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "working on callsite and \n\t"
+                                           << (analyzeCallees ? "" : "not ")
+                                           << "analyzing callees\n";);
 
   if (analyzeCallees) {
     const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
-    errs() << "The CallInst is: \n\t";
-    callinst->dump();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "The CallInst is: \n\t";
+                    callinst->dump(););
 
     StringRef fName;
 
@@ -2801,7 +2789,7 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
       fName = F->getName();
     }
 
-    errs() << "Fname: " << fName << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Fname: " << fName << "\n";);
     for (auto var : sinkVariables) {
       if (fName.size() > 0 && fName.equals(var.function)) {
         errs() << "Found function match: " << fName << "\n";
@@ -2823,44 +2811,30 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
       }
     }
 
-    errs() << "============ getCallResult(cs, Unit()) ============\n";
+    DEBUG_WITH_TYPE(
+        DEBUG_TYPE_DEBUG,
+        errs() << "============ getCallResult(cs, Unit()) ============\n";);
     this->getCallResult(cs, Unit());
-    /*
-       This part acts as a pre-filter to
-       the eliminate those CallInst(s) which are
-       impossible for a critical flow to exist
-    */
-
-    // bool proceed = true;
-    // if (!F || !F->getName().equals("malloc")) {
-    //   proceed = true;
-    // } else {
-    //   User::const_op_iterator arg = cs.arg_begin(), end = cs.arg_end();
-    //   for (; arg != end; arg++) {
-    //     // (*arg).get()->dump();
-    //     // errs() << isa<Constant>((*arg).get()) << "\n";
-    //     if (!isa<Constant>((*arg).get())) {
-    //       proceed = true;
-    //     }
-    //   }
-    // }
-
-    // if (proceed) {
-    //   this->getCallResult(cs, Unit());
-    // }
-    errs() << "============ getCallResult(cs, Unit()) - end ============\n";
+    DEBUG_WITH_TYPE(
+        DEBUG_TYPE_DEBUG,
+        errs()
+            << "============ getCallResult(cs, Unit()) - end ============\n";);
   } else if (usesExternalSignature(cs)) {
-    errs() << "usesExternalSignature(cs)\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "usesExternalSignature(cs)\n";);
     Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
     flows.insert(flows.end(), recs.begin(), recs.end());
   }
 
-  errs() << "============ invokableCode(cs) ============\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "============ invokableCode(cs) ============\n";);
   std::set<std::pair<const Function *, const ContextID>> callees =
       this->invokableCode(cs);
-  errs() << "============ invokableCode(cs) - end ============\n";
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_DEBUG,
+      errs() << "============ invokableCode(cs) - end ============\n";);
   // Do constraints for each callee
-  errs() << "callees' size: " << callees.size() << "\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "callees' size: " << callees.size() << "\n";);
   for (std::set<std::pair<const Function *, const ContextID>>::iterator
            callee = callees.begin(),
            end = callees.end();
@@ -2887,8 +2861,6 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
   // to callee pc
   pcFlow.addSinkValue(callee.getEntryBlock());
   flows.push_back(pcFlow);
-
-  pcFlow.dump();
 
   // 2) levels of params should be as high as corresponding args
   unsigned int numArgs = cs.arg_size();
@@ -2917,7 +2889,6 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
     argFlow.addSinkValue(*formal);
     flows.push_back(argFlow);
 
-    argFlow.dump();
     // }
   }
 
@@ -3222,6 +3193,8 @@ void Infoflow::readConfiguration() {
     RLConstant::RLLevelMap.insert(
         std::pair<std::string, std::vector<std::string>>(level.at("name"),
                                                          levels));
+    RLConstant::BotLabel.first[level.at("name")] = 0;
+    RLConstant::TopLabel.first[level.at("name")] = levels.size() - 1;
   }
   for (json set : lattice.at("compartments")) {
     std::set<std::string> compartments;
@@ -3231,10 +3204,13 @@ void Infoflow::readConfiguration() {
     RLConstant::RLCompartmentMap.insert(
         std::pair<std::string, std::set<std::string>>(set.at("name"),
                                                       compartments));
+
+    RLConstant::BotLabel.second[set.at("name")] = std::set<std::string>();
+    RLConstant::TopLabel.second[set.at("name")] = compartments;
   }
 
   RLConstant::lockLattice();
-  RLConstant::dump_lattice(errs());
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, RLConstant::dump_lattice(errs());;);
 
   // Read source & sink
   assert(config.contains("source"));
@@ -3484,13 +3460,11 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
 void Infoflow::constrainAllConsElem(
     std::string kind, std::map<unsigned, const ConsElem *> elemMap,
     RLLabel label) {
-  errs() << "Tainting all constraint elements from value\n";
   for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                       end = elemMap.end();
        it != end; ++it) {
     // it->second->dump(errs());
     if ((it->second) != NULL) {
-      // TODO add debug info
       kit->addConstraint(kind, kit->constant(label), *(it->second),
                          " ;  [ConsDebugTag-22]");
     }
@@ -3500,20 +3474,17 @@ void Infoflow::constrainAllConsElem(
 void Infoflow::constrainAllConsElem(std::string kind,
                                     std::set<const ConsElem *> elems,
                                     RLLabel label) {
-  errs() << "Tainting all constraint elements from value\n";
   for (std::set<const ConsElem *>::iterator it = elems.begin(),
                                             end = elems.end();
        it != end; ++it) {
     kit->addConstraint(kind, kit->constant(label), *(*it),
                        " ;  [ConsDebugTag-19]");
-    // TODO add debug info
   }
 }
 
 void Infoflow::constrainAllConsElem(std::string kind, const Value &v,
                                     std::set<const ConsElem *> elems,
                                     RLLabel label) {
-  errs() << "Tainting all constraint elements from value\n";
   if (elems.size() == 0) {
     setLabel(kind, v, label, true);
   } else {
@@ -3550,17 +3521,16 @@ const Value *getAllocationValue(const GetElementPtrInst *gep) {
   const Value *lastValue = v;
   while (v != NULL && !isa<AllocaInst>(v)) {
     if (const LoadInst *li = dyn_cast<LoadInst>(v)) {
-      errs() << " allocation intermediate: ";
-      v->dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << " allocation intermediate: ";
+                      v->dump(););
       v = li->getPointerOperand();
-      errs() << "=>";
-      v->dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "=>"; v->dump(););
     } else if (const GetElementPtrInst *g = dyn_cast<GetElementPtrInst>(v)) {
-      errs() << " allocation intermediate: ";
-      v->dump();
+
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << " allocation intermediate: ";
+                      v->dump(););
       v = g->getPointerOperand();
-      errs() << "=>";
-      v->dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "=>"; v->dump(););
     } else {
       lastValue = v;
       v = NULL;
@@ -3569,8 +3539,7 @@ const Value *getAllocationValue(const GetElementPtrInst *gep) {
   if (v == NULL)
     v = lastValue;
   else {
-    errs() << "FINAL: ";
-    v->dump();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "FINAL: "; v->dump(););
   }
 
   return v;
@@ -3583,10 +3552,11 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
 
   // Get Locations for stack alloc
   AbstractLocSet alloclocs = locsForValue(*v);
-  errs() << "\n getPointedToAbstractLocs \n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs()
+                                        << "\n getPointedToAbstractLocs \n";);
   // Check to see if the locs are pointers
   for (auto &l : alloclocs) {
-    l->dump();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, l->dump(););
     if (l->isNodeCompletelyFolded()) {
       locs.insert(l);
     } else {
@@ -3641,7 +3611,6 @@ void Infoflow::constrainOffsetFromIndex(
       errs() << "\n";
       kit->addConstraint(kind, kit->topConstant(), *elem,
                          " ;  [ConsDebugTag-20]");
-      // TODO add debug info
     } else {
       //TODO enable this when fixed
       // constrainAllConsElem(kind, elemMap);
@@ -3655,7 +3624,6 @@ void Infoflow::constrainOffsetFromIndex(
       if (elemMap.size() > (unsigned)fieldIdx) {
         kit->addConstraint(kind, kit->topConstant(), *elem,
                            " ;  [ConsDebugTag-21]");
-        // TODO add debug info
       } else {
         //TODO enable this when fixed
         // constrainAllConsElem(kind, elemMap);
@@ -3668,8 +3636,10 @@ void Infoflow::constrainOffsetFromIndex(
 void Infoflow::removeConstraintFromIndex(
     std::string kind, const AbstractLoc *loc, const Value *v,
     std::map<unsigned, const ConsElem *> elemMap, int fieldIdx) {
-  DEBUG(errs() << "Looking for field " << fieldIdx << " in ");
-  v->dump();
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "Looking for field " << fieldIdx << " in ";
+                  v->dump(););
+
   if (StructType *st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned)fieldIdx, loc);
     std::set<const ConsElem *> elems =

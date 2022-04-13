@@ -15,8 +15,13 @@
 #ifndef CONSTRAINTKIT_H_
 #define CONSTRAINTKIT_H_
 
+#ifndef DEBUG_TYPE_CONSTRAINT
+#define DEBUG_TYPE_CONSTRAINT "constraint"
+#endif
+
 #include "Constraints/DepsTypes.h"
 #include "Constraints/PredicatedConstraints.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/raw_ostream.h"
 #include <set>
 #include <string>

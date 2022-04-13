@@ -66,14 +66,14 @@ $LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 TIME=$(date +%s)
 
-$LEVEL/Debug+Asserts/bin/opt -stats \
+$LEVEL/Debug+Asserts/bin/opt -stats -time-passes \
   -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -implicit-function  -debug < $1 2> tmp.dat > /dev/null
+  -implicit-function < $1 2> tmp.dat > /dev/null
 
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME

@@ -65,13 +65,13 @@ public:
                bool implicit, std::string info)
       : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), info(info) {
     // if (!implicit)
-    printCosntraint();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   RLConstraint(const ConsElem *lhs, const ConsElem *rhs, const Predicate *pred,
                bool implicit, std::string info)
       : left(lhs), right(rhs), pred(pred), implicit(implicit), info(info) {
     // if (!implicit)
-    printCosntraint();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   const ConsElem &lhs() const { return *left; }
   const ConsElem &rhs() const { return *right; }

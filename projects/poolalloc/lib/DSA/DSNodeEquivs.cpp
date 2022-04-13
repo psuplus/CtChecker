@@ -13,10 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 #define DEBUG_TYPE "dsnodeequivs"
-
-#ifndef GRAPH_OUT
-#define GRAPH_OUT 1
-#endif
+#define GRAPH_OUT 0
 
 #include "assistDS/DSNodeEquivs.h"
 

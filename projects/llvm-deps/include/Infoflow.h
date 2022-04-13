@@ -17,9 +17,6 @@
 #ifndef INFOFLOW_H
 #define INFOFLOW_H
 
-#define IMPLICIT 1
-#define HOTSPOT 0
-
 #include "CallContext.h"
 #include "CallSensitiveAnalysisPass.h"
 #include "Constraints/RLConsSoln.h"
@@ -58,6 +55,18 @@
 #include <utility>
 
 using json = nlohmann::json;
+
+#ifndef DEBUG_TYPE_CONSTRAINT
+#define DEBUG_TYPE_CONSTRAINT "constraint"
+#endif
+#define DEBUG_TYPE_CALLINST "callinst"
+#define DEBUG_TYPE_METAINFO "meta"
+#define DEBUG_TYPE_FLOW "flow"
+#define DEBUG_TYPE_DEBUG "debug"
+#define DEBUG_TYPE_PROFILE "profile"
+
+#define IMPLICIT 1
+#define HOTSPOT 0
 
 namespace deps {
 

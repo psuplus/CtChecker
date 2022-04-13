@@ -807,14 +807,15 @@ unsigned Infoflow::GEPInstCalculateOffset(const GetElementPtrInst *gep,
                                           std::set<const AbstractLoc *> locs) {
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned offset = 0;
-  if (isa<ArrayType>(T) || gep->getNumIndices() == 1) {
-    if (!checkGEPOperandsConstant(gep)) {
-      return -1;
-    }
-    errs() << "ArrayType:";
+
+  if (!checkGEPOperandsConstant(gep))
+    return offset;
+
+  if (isa<ArrayType>(T) && gep->getNumIndices() == 2) {
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "ArrayType:";);
     offset = GEPInstCalculateArrayOffset(gep, locs);
-  } else if (isa<StructType>(T)) {
-    errs() << "StructType:";
+  } else if (gep->getNumIndices() == 2) {
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "StructType:";);
     offset = GEPInstCalculateStructOffset(gep, locs);
   } else {
     ConstantInt *ptrIdx = dyn_cast<ConstantInt>(gep->getOperand(1));

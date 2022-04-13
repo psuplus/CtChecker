@@ -141,8 +141,6 @@ void RLConstant::dump_lattice(llvm::raw_ostream &o) {
   o << "Levels: [\n";
   for (auto d : RLConstant::RLLevelMap) {
     o << "\t" << d.first << ": { ";
-    RLConstant::BotLabel.first[d.first] = 0;
-    RLConstant::TopLabel.first[d.first] = d.second.size() - 1;
     for (auto s : d.second) {
       o << s;
       if (s != *d.second.rbegin())
@@ -155,8 +153,6 @@ void RLConstant::dump_lattice(llvm::raw_ostream &o) {
   o << "Compartments: [\n";
   for (auto d : RLConstant::RLCompartmentMap) {
     o << "\t" << d.first << ": { ";
-    RLConstant::BotLabel.second[d.first] = std::set<std::string>();
-    RLConstant::TopLabel.second[d.first] = d.second;
     for (auto s : d.second) {
       o << s << (s != *d.second.rbegin() ? ", " : " ");
     }

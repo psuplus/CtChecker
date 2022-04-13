@@ -56,13 +56,15 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
                                        RLLabel label) {
 
   std::string s = value.getName();
-  errs() << "Trying to constrain [" << match_name << "] at offset [" << t_offset
-         << "] for value : ";
-  value.dump();
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Trying to constrain ["
+                                           << match_name << "] at offset ["
+                                           << t_offset << "] for value : ";
+                  value.dump(););
   const AbstractLocSet &locs = ifa->locsForValue(value);
   const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
   if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
-    errs() << "SETTING " << s << " TO BE TAINTED\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "SETTING " << s << " TO BE TAINTED\n";);
     ifa->setLabel(kind, value, label, true);
   }
 
@@ -73,28 +75,29 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       relevantLocs.insert(rl);
     }
   }
-
-#if 1
-  errs() << "\n --------- locs --------- \n";
-  for (auto &l : locs) {
-    l->dump();
-    errs() << " --------- \n";
-  }
-  errs() << " --------- rlocs --------- \n";
-  for (auto &rl : rlocs) {
-    rl->dump();
-    errs() << " --------- \n";
-  }
-  errs() << " locs size : " << locs.size() << "\n";
-  errs() << " rlocs size : " << rlocs.size() << "\n";
-  errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
-  errs() << " --------- end --------- \n\n";
-#endif
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_DEBUG, errs() << "\n --------- locs --------- \n";
+      for (auto &l
+           : locs) {
+        l->dump();
+        errs() << " --------- \n";
+      } errs()
+      << " --------- rlocs --------- \n";
+      for (auto &rl
+           : rlocs) {
+        rl->dump();
+        errs() << " --------- \n";
+      } errs()
+      << " locs size : " << locs.size() << "\n";
+      errs() << " rlocs size : " << rlocs.size() << "\n";
+      errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
+      errs() << " --------- end --------- \n\n";);
 
   unsigned offset = 0, span = 0;
   bool hasOffset = ifa->offsetForValue(value, &offset);
   unsigned numElements = getNumElements(value);
-  errs() << "This value has " << numElements << " elements.\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "This value has " << numElements
+                                           << " elements.\n";);
 
   if (!ifa->offset_used) {
     t_offset = -1; // if offset is disabled ignore offset from taintfile
@@ -105,9 +108,8 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   AbstractLocSet::const_iterator end = relevantLocs.end();
 
   std::set<const ConsElem *> elementsToConstrain;
-  errs() << "=====\n";
   for (; loc != end; ++loc) {
-    (*loc)->dump();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, (*loc)->dump(););
     std::map<unsigned, const ConsElem *> elemMap =
         ifa->getOrCreateConsElem(**loc);
     if (((*loc)->isNodeCompletelyFolded() ||
@@ -186,15 +188,15 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 #if HOTSPOT
       }
 #endif
-
-      errs() << "REL: \n";
-      for (auto e : rel) {
-        e->dump(errs() << "");
-        errs() << "\n";
-      }
+      DEBUG_WITH_TYPE(
+          DEBUG_TYPE_DEBUG, errs() << "REL: \n"; for (auto e
+                                                      : rel) {
+            e->dump(errs() << "");
+            errs() << "\n";
+          });
       elementsToConstrain.insert(rel.begin(), rel.end());
     } else {
-      errs() << "No offset.\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "No offset.\n";);
       for (auto &locs : relevantLocs) {
         DSNode::LinkMapTy edges{locs->edge_begin(), locs->edge_end()};
         for (auto &edge : edges) {
@@ -216,18 +218,19 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
         }
       }
     }
-
-    errs() << "FOUND " << elementsToConstrain.size()
-           << " elements from the locsForValue\n";
-    errs() << "=====\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "FOUND " << elementsToConstrain.size()
+                           << " elements from the locsForValue\n";
+                    errs() << "=====\n";);
   }
-
-  errs() << "Number of elements to constrain: " << elementsToConstrain.size()
-         << "\n";
-  for (auto &el : elementsToConstrain) {
-    el->dump(errs());
-    errs() << " : addr " << el << "\n";
-  }
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_DEBUG, errs() << "Number of elements to constrain: "
+                               << elementsToConstrain.size() << "\n";
+      for (auto &el
+           : elementsToConstrain) {
+        el->dump(errs());
+        errs() << " : addr " << el << "\n";
+      });
   ifa->constrainAllConsElem(kind, value, elementsToConstrain, label);
 }
 
@@ -488,11 +491,15 @@ void TaintAnalysisBase::labelValue(std::string kind,
         if (value.hasName()) {
           if (value.getName() == var.name) {
             variable_matches = true;
-            errs() << "- Lookup: " << var.function << " : " << var.name << "\n";
-            errs() << "Matching value with config variable within function ["
-                   << (fn ? fn->getName() : "GLOBAL") << "]\n";
-            errs() << "\t- Value has the name [" << value.getName() << "]\n";
-            errs() << "\t- Found a value name match\n\n";
+            DEBUG_WITH_TYPE(
+                DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
+                                         << " : " << var.name << "\n";
+                errs()
+                << "Matching value with config variable within function ["
+                << (fn ? fn->getName() : "GLOBAL") << "]\n";
+                errs() << "\t- Value has the name [" << value.getName()
+                       << "]\n";
+                errs() << "\t- Found a value name match\n\n";);
           }
         }
         if (!variable_matches && fn) {
@@ -501,13 +508,15 @@ void TaintAnalysisBase::labelValue(std::string kind,
               (local_var->getTag() == 257 || local_var->getTag() == 256)) {
             if (local_var->getName() == var.name) {
               variable_matches = true;
-              errs() << "- Lookup: " << var.function << " : " << var.name
-                     << "\n";
-              errs() << "Matching value with config variable within function ["
-                     << fn->getName() << "]\n";
-              errs() << "\t- Variable has name [" << local_var->getName()
-                     << "]\n";
-              errs() << "\t- Found a local variable match\n\n";
+              DEBUG_WITH_TYPE(
+                  DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
+                                           << " : " << var.name << "\n";
+                  errs()
+                  << "Matching value with config variable within function ["
+                  << fn->getName() << "]\n";
+                  errs() << "\t- Variable has name [" << local_var->getName()
+                         << "]\n";
+                  errs() << "\t- Found a local variable match\n\n";);
             }
           }
         }

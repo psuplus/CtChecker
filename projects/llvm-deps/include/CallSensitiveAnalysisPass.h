@@ -98,11 +98,8 @@ public:
     }
     if (F) {
       if (!F->isDeclaration()) {
-        errs() << "F-implementation\n";
         return this->getAnalysisResult(AUnitType(newContext, *F), input);
       } else {
-        errs() << "F-declaration\n";
-        errs() << F->getName() << "\n";
         return signatureForExternalCall(cs, input);
       }
     }

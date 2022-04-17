@@ -87,4 +87,8 @@ export PATH="$PATH:../../processing_tools" # tmp change to path to have post-pro
 COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 
 echo Output log: ./$COL
-mv tmp.dat $COL
+# mv tmp.dat $COL
+
+python3 constraint_file.py tmp.dat
+python3 constraint_graph.py call-stack call-stack.dot -graph 1
+rm -f call-stack

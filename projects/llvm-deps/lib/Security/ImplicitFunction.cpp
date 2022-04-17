@@ -94,10 +94,11 @@ bool ImplicitFunction::runOnModule(Module &M) {
                 auto &BB = *(callee->begin());
                 auto V = dyn_cast<Value>(&BB);
                 if (tainted.find(V) != tainted.end()) {
-                  errs() << loc->getFilename() << " at line "
-                         << std::to_string(loc->getLine())
-                         << "\t\t called function [" << callee->getName()
-                         << "]\n";
+                  errs() << "[SCG] ";
+                  errs() << parent->getParent()->getName() << "|"
+                         << loc->getFilename() << ", L"
+                         << std::to_string(loc->getLine()) << "|"
+                         << callee->getName() << "\n";
                 }
               }
             }

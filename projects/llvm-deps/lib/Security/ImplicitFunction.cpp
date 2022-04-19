@@ -21,6 +21,7 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
+#include <chrono>
 
 // For __cxa_demangle (demangling c++ function names)
 // Requires libstdc++
@@ -35,6 +36,8 @@ static RegisterPass<ImplicitFunction>
 char ImplicitFunction::ID;
 
 bool ImplicitFunction::runOnModule(Module &M) {
+  int64_t i, s, p, l;
+  auto start = std::chrono::steady_clock::now();
   ifa = &getAnalysis<Infoflow>();
   parser.setInfoflow(ifa);
   if (!ifa) {
@@ -48,23 +51,46 @@ bool ImplicitFunction::runOnModule(Module &M) {
     ifa->removeConstraint("default", whitelist);
   }
 
+  auto end = std::chrono::steady_clock::now();
+  errs() << "INFOFLOW: "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()
+         << " ms\n";
+  i = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+          .count();
+  start = end;
+
   std::set<std::string> kinds{"source-sink", "default", "default-sink",
                               "implicit"};
   InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
+
+  end = std::chrono::steady_clock::now();
+  errs() << "SOLUTION: "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()
+         << " ms\n";
+
+  s = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+          .count();
+  start = end;
+
   std::set<const Value *> tainted = soln->getAllTaintValues();
 
-  errs() << "\n---- Tainted Values BEGIN ----\n";
-  for (auto i : tainted) {
-    if (auto bb = dyn_cast<BasicBlock>(i)) {
-      if (bb->hasName())
-        errs() << bb->getParent()->getName() << ": " << bb->getName() << "\n";
-      else
-        errs() << bb->getParent()->getName() << ": " << i << "\n";
-    } else {
-      i->dump();
-    }
-  }
-  errs() << "---- Tainted Values END ----\n\n";
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_TAINT, errs() << "\n---- Tainted Values BEGIN ----\n";
+      for (auto i
+           : tainted) {
+        if (auto bb = dyn_cast<BasicBlock>(i)) {
+          if (bb->hasName())
+            errs() << bb->getParent()->getName() << ": " << bb->getName()
+                   << "\n";
+          else
+            errs() << bb->getParent()->getName() << ": " << i << "\n";
+        } else {
+          errs() << ifa->getOrCreateStringFromValue(*i) << "\n";
+        }
+      };
+      errs() << "---- Tainted Values END ----\n\n";);
 
   // Printing constraints
   errs() << "\n---- Constraints BEGIN ----\n";
@@ -74,6 +100,15 @@ bool ImplicitFunction::runOnModule(Module &M) {
       cons.dump();
   }
   errs() << "---- Constraints END ----\n\n";
+
+  end = std::chrono::steady_clock::now();
+  errs() << "PRINTING: "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()
+         << " ms\n";
+  p = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+          .count();
+  start = end;
 
   errs() << "#------------------Results------------------#\n";
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {
@@ -100,6 +135,12 @@ bool ImplicitFunction::runOnModule(Module &M) {
                          << std::to_string(loc->getLine()) << "|"
                          << callee->getName() << "\n";
                 }
+              } else {
+                errs() << "[SCG] ";
+                errs() << parent->getParent()->getName() << "|"
+                       << loc->getFilename() << ", L"
+                       << std::to_string(loc->getLine()) << "|"
+                       << callee->getName() << "\n";
               }
             }
           }
@@ -108,6 +149,21 @@ bool ImplicitFunction::runOnModule(Module &M) {
     }
   }
   errs() << "\n\n";
+
+  end = std::chrono::steady_clock::now();
+  errs() << "LOOKUP: "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()
+         << " ms\n";
+
+  l = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+          .count();
+  start = end;
+
+  errs() << "INFOFLOW: " << i << "\n";
+  errs() << "SOLUTION: " << s << "\n";
+  errs() << "PRINTING: " << p << "\n";
+  errs() << "LOOKUP: " << l << "\n";
 
   return false;
 } // namespace deps

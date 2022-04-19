@@ -523,15 +523,12 @@ void TaintAnalysisBase::labelValue(std::string kind,
 
         if (variable_matches) {
           constrainValue(kind, value, var.index, var.name, var.label);
-        } else {
-          std::string s;
-          llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
-          *ss << value;
-          ss->str();
+        } else if (function_matches) {
           // test if the value's content starts with match
-          if (s.find(var.name) == 0 && function_matches) {
+          std::string name = ifa->getOrCreateStringFromValue(value);
+          if (name.find(var.name) == 0) {
             ifa->setLabel(kind, value, var.label, gte);
-            errs() << "Match Detected for " << s << "\n";
+            errs() << "Match Detected for " << name << "\n";
           }
         }
       }

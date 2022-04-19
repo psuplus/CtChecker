@@ -34,10 +34,12 @@ def main():
                 for line in file:
                     line = re.split(r"\|+|[\r\n]+", line)
                     if IGNORED not in line[0] and IGNORED not in line[2]:
-                        nodes.add(line[0])
-                        nodes.add(line[2])
+                        left = '"' + line[0] + '"'
+                        right = '"' + line[2] + '"'
+                        nodes.add(left)
+                        nodes.add(right)
                         edge_label = '\t[ label = " ' + line[1] + '" ] '
-                        edges.add(line[0] + " -> " + line[2] + edge_label + "\n")
+                        edges.add(left + " -> " + right + edge_label + "\n")
 
                 for node in nodes:
                     tmp_file.write("\t" + node + "\n")

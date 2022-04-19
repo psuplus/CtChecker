@@ -53,18 +53,21 @@ bool ImplicitFunction::runOnModule(Module &M) {
   InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
   std::set<const Value *> tainted = soln->getAllTaintValues();
 
-  errs() << "\n---- Tainted Values BEGIN ----\n";
-  for (auto i : tainted) {
-    if (auto bb = dyn_cast<BasicBlock>(i)) {
-      if (bb->hasName())
-        errs() << bb->getParent()->getName() << ": " << bb->getName() << "\n";
-      else
-        errs() << bb->getParent()->getName() << ": " << i << "\n";
-    } else {
-      i->dump();
-    }
-  }
-  errs() << "---- Tainted Values END ----\n\n";
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_TAINT, errs() << "\n---- Tainted Values BEGIN ----\n";
+      for (auto i
+           : tainted) {
+        if (auto bb = dyn_cast<BasicBlock>(i)) {
+          if (bb->hasName())
+            errs() << bb->getParent()->getName() << ": " << bb->getName()
+                   << "\n";
+          else
+            errs() << bb->getParent()->getName() << ": " << i << "\n";
+        } else {
+          errs() << ifa->getOrCreateStringFromValue(*i) << "\n";
+        }
+      };
+      errs() << "---- Tainted Values END ----\n\n";);
 
   // Printing constraints
   errs() << "\n---- Constraints BEGIN ----\n";

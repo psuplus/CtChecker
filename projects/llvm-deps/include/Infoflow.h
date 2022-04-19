@@ -64,6 +64,7 @@ using json = nlohmann::json;
 #define DEBUG_TYPE_FLOW "flow"
 #define DEBUG_TYPE_DEBUG "debug"
 #define DEBUG_TYPE_PROFILE "profile"
+#define DEBUG_TYPE_TAINT "taint"
 
 #define IMPLICIT 1
 #define HOTSPOT 0
@@ -346,6 +347,7 @@ private:
 
   ValueConsElemMap summarySinkValueConstraintMap;
   ValueConsElemMap summarySourceValueConstraintMap;
+  DenseMap<const Value *, std::string> valueStringMap;
   DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
   DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;
 
@@ -379,7 +381,7 @@ private:
                                    bool);
   const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
-  const std::string stringFromValue(const Value &);
+  const std::string getOrCreateStringFromValue(const Value &);
   unsigned GEPInstCalculateNumberElements(const GetElementPtrInst *);
   unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst *,
                                        std::set<const AbstractLoc *>);

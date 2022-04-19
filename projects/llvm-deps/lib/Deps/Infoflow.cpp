@@ -88,9 +88,10 @@ const Unit Infoflow::bottomOutput() const { return Unit(); }
 
 const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
                                   const Unit input) {
-  DEBUG(errs() << "Running on [" << unit.function().getName()
-               << "] in context [";
-        CM.getContextFor(unit.context()).dump(); errs() << "]\n");
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Running on ["
+                                           << unit.function().getName()
+                                           << "] in context [";
+                  CM.getContextFor(unit.context()).dump(); errs() << "]\n");
 
   // start only from entry functions, if entry is specified in config
   bool needAnalysis = true;
@@ -317,22 +318,26 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
   for (auto v : values) {
     const std::set<const AbstractLoc *> &locs = locsForValue(*v);
     if (isa<GetElementPtrInst>(v) && offset_used) {
-      DEBUG(errs() << "DSOURCEGEP INSTRUCTION " << stringFromValue(*v) << "\n");
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "DSOURCEGEP INSTRUCTION "
+                                               << getOrCreateStringFromValue(*v)
+                                               << "\n");
       processGetElementPtrInstSource(v, elems, locs, implicit);
     } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(v)) {
-      DEBUG(bit->getSrcTy()->dump());
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, bit->getSrcTy()->dump());
       if (bit->getSrcTy()->isPointerTy() &&
           !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
           bit->getSrcTy()->getPointerElementType()->isStructTy() &&
           bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
               "union.") &&
           offset_used) {
-        DEBUG(errs() << "DSOURCE BITCAST INSTRUCTION " << stringFromValue(*v)
-                     << "\n");
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                        errs() << "DSOURCE BITCAST "
+                               << getOrCreateStringFromValue(*v) << "\n");
         const BitCastInst *bit = dyn_cast<BitCastInst>(v);
         if (bit->getDestTy()->isPointerTy() &&
             !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
-          DEBUG(bit->getDestTy()->getPointerElementType()->dump());
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                          bit->getDestTy()->getPointerElementType()->dump());
           for (auto loc : locs) {
             std::map<unsigned, const ConsElem *> elemMap;
             elemMap = getOrCreateConsElemTyped(*loc, 0, v);
@@ -344,8 +349,8 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
             }
             elems = findRelevantConsElem(loc, elemMap, 0, v);
             for (auto s : elems) {
-              DEBUG(errs() << "BITCAST SOURCE: "; s->dump(errs());
-                    errs() << s << "\n";);
+              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "BITCAST SOURCE: ";
+                              s->dump(errs()); errs() << s << "\n";);
             }
           }
         }
@@ -369,8 +374,8 @@ void Infoflow::addReachSourceLocations(const FlowRecord &record,
   for (FlowRecord::value_iterator source = record.source_reachptr_begin(),
                                   end = record.source_reachptr_end();
        source != end; ++source) {
-    errs() << "REACHABLE SOURCE: ";
-    (*source)->dump();
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "REACHABLE SOURCE: ";
+                    (*source)->dump(););
     if (!DepsDropAtSink || !sourceSinkAnalysis->reachPtrIsSink(**source)) {
       reachSource.insert(*source);
     } else {
@@ -395,11 +400,13 @@ void Infoflow::addReachValuesToSources(FlowRecord::value_set values,
        ++it) {
     const std::set<const AbstractLoc *> &locs = reachableLocsForValue(**it);
     if (isa<GetElementPtrInst>(*it) && offset_used) {
-      errs() << "RSOURCEGEP INSTRUCTION " << stringFromValue(**it) << "\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      errs() << "RSOURCEGEP INSTRUCTION "
+                             << getOrCreateStringFromValue(**it) << "\n";);
       processGetElementPtrInstSource(*it, elems, locs, implicit);
     } else {
       for (auto &l : locs) {
-        l->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, l->dump(););
       }
       locations.insert(locs.begin(), locs.end());
     }
@@ -440,9 +447,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
        sink != record.sink_directptr_end(); ++sink) {
     const std::set<const AbstractLoc *> &locs = locsForValue(**sink);
     if (isa<GetElementPtrInst>(*sink) && offset_used) {
-      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "DSINKGEP INSTRUCTION "
-                                               << stringFromValue(**sink)
-                                               << "\n";);
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      errs() << "DSINKGEP INSTRUCTION "
+                             << getOrCreateStringFromValue(**sink) << "\n";);
       if (regFlow)
         processGetElementPtrInstSink(*sink, implicit, false, source, locs);
       if (sinkFlow)
@@ -458,7 +465,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
         const Value *v = *sink;
         // FIXIT: Should probably also be reflected in
         // constrainReachSinkLocations
-        errs() << "DSINK BITCAST INSTRUCTION " << stringFromValue(*v) << "\n";
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                        errs() << "DSINK BITCAST INSTRUCTION "
+                               << getOrCreateStringFromValue(*v) << "\n";);
         if (bit->getDestTy()->isPointerTy() &&
             !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
           bit->getDestTy()->getPointerElementType()->dump();
@@ -473,9 +482,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
             }
             ConsElemSet elems = findRelevantConsElem(loc, elemMap, 0, v);
             for (auto e : elems) {
-              errs() << "BITCAST CONSTRAINING: ";
-              e->dump(errs());
-              errs() << e << "\n";
+              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs()
+                                                    << "BITCAST CONSTRAINING: ";
+                              e->dump(errs()); errs() << e << "\n";);
               kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
                                  source, *e, " ;  [ConsDebugTag-15]");
             }
@@ -507,7 +516,9 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
   for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(),
                                   end = record.sink_reachptr_end();
        sink != end; ++sink) {
-    errs() << "RSINKGEP INSTRUCTION " << stringFromValue(**sink) << "\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "RSINKGEP INSTRUCTION "
+                           << getOrCreateStringFromValue(**sink) << "\n";);
     const std::set<const AbstractLoc *> &locs = reachableLocsForValue(**sink);
     if (isa<GetElementPtrInst>(*sink) && offset_used) {
       if (regFlow)
@@ -538,8 +549,9 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
 void Infoflow::processGetElementPtrInstSink(
     const Value *value, bool implicit, bool sink, const ConsElem &lub,
     std::set<const AbstractLoc *> locs) {
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  errs() << "[Sink:] " << stringFromValue(*value) << "\n";);
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "[Sink:] "
+                                           << getOrCreateStringFromValue(*value)
+                                           << "\n";);
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -628,7 +640,8 @@ void Infoflow::processGetElementPtrInstSource(
     std::set<const AbstractLoc *> locs, bool implicit) {
   // get ConsElem from Value
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  errs() << "[Source:] " << stringFromValue(*source) << "\n";);
+                  errs() << "[Source:] " << getOrCreateStringFromValue(*source)
+                         << "\n";);
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(source);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -795,7 +808,8 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
     }
   }
 
-  // DEBUG(errs() << "SIZE OF ELEMENTS : " << elements.size() << "\n");
+  // DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "SIZE OF ELEMENTS : " <<
+  // elements.size() << "\n");
   return elements;
 }
 
@@ -948,7 +962,8 @@ bool InfoflowSolution::isTainted(const Value &value) {
     const ConsElem &elem = *(entry->second);
     return (!(soln->subst(elem) == botConstant));
   } else {
-    DEBUG(errs() << "not in solution: " << value << "\n");
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "not in solution: " << value << "\n");
     return defaultTainted;
   }
 }
@@ -1288,7 +1303,8 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
     const ConsElem &elem = *(entry->second);
     return (soln->subst(elem) == topConstant);
   } else {
-    DEBUG(errs() << "not in solution: varargs of " << fun.getName() << "\n");
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "not in solution: varargs of "
+                                             << fun.getName() << "\n");
     return defaultTainted;
   }
 }
@@ -1522,12 +1538,40 @@ const std::string Infoflow::kindFromImplicitSink(bool implicit,
   }
 }
 
-const std::string Infoflow::stringFromValue(const Value &value) {
-  raw_string_ostream *valueStream;
-  std::string valueString;
-  valueStream = new raw_string_ostream(valueString);
-  *valueStream << value;
-  valueStream->str();
+const std::string Infoflow::getOrCreateStringFromValue(const Value &value) {
+  if (valueStringMap.find(&value) != valueStringMap.end()) {
+    return valueStringMap[&value];
+  }
+  std::string valueString = "";
+  if (auto I = dyn_cast<Instruction>(&value)) {
+    if (I->hasName()) {
+      valueString = I->getParent()->getParent()->getName().str() + ": " +
+                    I->getName().str();
+    } else {
+      raw_string_ostream O(valueString);
+      I->print(O);
+    }
+  } else if (auto A = dyn_cast<Argument>(&value)) {
+    if (A->hasName()) {
+      valueString = A->getParent()->getName().str() + ": " + A->getName().str();
+    } else {
+      raw_string_ostream O(valueString);
+      A->print(O);
+    }
+  } else if (auto BB = dyn_cast<BasicBlock>(&value)) {
+    valueString = BB->getParent()->getName().str() + ": " + BB->getName().str();
+  } else {
+    if (isa<GlobalValue>(value)) {
+      valueString = "GLOBAL: ";
+    }
+    if (value.hasName()) {
+      valueString += value.getName();
+    } else {
+      raw_string_ostream O(valueString);
+      value.print(O);
+    }
+  }
+  valueStringMap.insert(std::make_pair(&value, valueString));
   return valueString;
 }
 
@@ -1541,12 +1585,7 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
       summarySourceValueConstraintMap.find(&value);
   if (curElem == summarySourceValueConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    std::string name;
-    if (value.hasName()) {
-      name = value.getName();
-    } else {
-      name = stringFromValue(value);
-    }
+    std::string name = getOrCreateStringFromValue(value);
 
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
@@ -1576,17 +1615,14 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
       summarySinkValueConstraintMap.find(&value);
   if (curElem == summarySinkValueConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
-    std::string varStr = value.getName();
-    if (varStr.size() == 0) {
-      raw_string_ostream ss(varStr);
-      ss << value;
-    }
+    std::string name = getOrCreateStringFromValue(value);
+
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--2\n";);
     const ConsElem &elem =
-        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value) +
-                    delim + "*SummSink*");
+        kit->newVar(name + delim + getOriginalLocationConsElem(&value) + delim +
+                    "*SummSink*");
     summarySinkValueConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1605,22 +1641,16 @@ void Infoflow::putOrConstrainConsElemSummarySink(std::string kind,
 
 const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
                                               const Value &value) {
-  DenseMap<const Value *, const ConsElem *> &valueMap =
-      getOrCreateValueConstraintMap(ctxt);
-  DenseMap<const Value *, const ConsElem *>::iterator curElem =
-      valueMap.find(&value);
+  ValueConsElemMap &valueMap = getOrCreateValueConstraintMap(ctxt);
+  ValueConsElemMap::iterator curElem = valueMap.find(&value);
   if (curElem == valueMap.end()) {
-    std::string identifier = "";
-    if (value.hasName()) {
-      identifier = value.getName();
-    } else {
-      identifier = stringFromValue(value);
-    }
+    std::string name = getOrCreateStringFromValue(value);
+
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--3\n";);
     const ConsElem &elem =
-        kit->newVar(identifier + delim + getOriginalLocationConsElem(&value));
+        kit->newVar(name + delim + getOriginalLocationConsElem(&value));
     valueMap.insert(std::make_pair(&value, &elem));
 
     // Hook up the summaries for non-context sensitive interface
@@ -1682,16 +1712,13 @@ Infoflow::getOrCreateVargConsElemSummarySource(const Function &value) {
       summarySourceVargConstraintMap.find(&value);
   if (curElem == summarySourceVargConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
+    std::string name = getOrCreateStringFromValue(value);
+
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--4\n";);
-    std::string varStr = value.getName();
-    if (varStr.size() == 0) {
-      raw_string_ostream ss(varStr);
-      ss << value;
-    }
     const ConsElem &elem =
-        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
+        kit->newVar(name + delim + getOriginalLocationConsElem(&value));
     summarySourceVargConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1714,16 +1741,13 @@ Infoflow::getOrCreateVargConsElemSummarySink(const Function &value) {
       summarySinkVargConstraintMap.find(&value);
   if (curElem == summarySinkVargConstraintMap.end()) {
     // errs() << "Created a constraint variable...\n";
+    std::string name = getOrCreateStringFromValue(value);
+
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--5\n";);
-    std::string varStr = value.getName();
-    if (varStr.size() == 0) {
-      raw_string_ostream ss(varStr);
-      ss << value;
-    }
     const ConsElem &elem =
-        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
+        kit->newVar(name + delim + getOriginalLocationConsElem(&value));
     summarySinkVargConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1747,16 +1771,13 @@ const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
   DenseMap<const Function *, const ConsElem *>::iterator curElem =
       valueMap.find(&value);
   if (curElem == valueMap.end()) {
+    std::string name = getOrCreateStringFromValue(value);
+
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--6\n";);
-    std::string varStr = value.getName();
-    if (varStr.size() == 0) {
-      raw_string_ostream ss(varStr);
-      ss << value;
-    }
     const ConsElem &elem =
-        kit->newVar(varStr + delim + getOriginalLocationConsElem(&value));
+        kit->newVar(name + delim + getOriginalLocationConsElem(&value));
     valueMap.insert(std::make_pair(&value, &elem));
 
     // Hook up the summaries for non-context sensitive interface
@@ -1848,7 +1869,9 @@ void Infoflow::createConsElemFromStruct(
     const AbstractLoc &loc, StructType *s,
     std::map<unsigned, const ConsElem *> &elemMap, unsigned baseOffset) {
   if (!baseOffset)
-    DEBUG(errs() << "Creating ConsElem Map for struct: \n"; loc.dump(););
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Creating ConsElem Map for struct: \n";
+                    loc.dump(););
 
   // Dealing with unions in the front-end language:
   // https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/en/latest/basic-constructs/unions.html
@@ -1865,8 +1888,9 @@ void Infoflow::createConsElemFromStruct(
       std::string varDesc = name + "[" + std::to_string(baseOffset) + "," +
                             std::to_string(baseOffset + 1) + "];";
       const ConsElem &elem = kit->newVar(varDesc);
-      DEBUG(errs() << "\t\toffset " << format_decimal(baseOffset, 3) << ": ["
-                   << varDesc << "]\n";);
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "\t\toffset "
+                                               << format_decimal(baseOffset, 3)
+                                               << ": [" << varDesc << "]\n";);
       elemMap[baseOffset] = &elem;
     }
     return;
@@ -1895,8 +1919,9 @@ void Infoflow::createConsElemFromStruct(
         varMeta.append(getOriginalLocationConsElem(v));
       }
       const ConsElem &elem = kit->newVar(varDesc, varMeta);
-      DEBUG(errs() << "\t\toffset " << format_decimal(start, 3) << ": ["
-                   << varDesc << "]\n";);
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "\t\toffset "
+                                               << format_decimal(start, 3)
+                                               << ": [" << varDesc << "]\n";);
       elemMap[start] = &elem;
     }
   }
@@ -1905,7 +1930,9 @@ void Infoflow::createConsElemFromStruct(
 void Infoflow::createConsElemFromArray(
     const AbstractLoc &loc, ArrayType *a,
     std::map<unsigned, const ConsElem *> &elemMap) {
-  DEBUG(errs() << "Creating ConsElem Map for array: \n"; loc.dump(););
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "Creating ConsElem Map for array: \n";
+                  loc.dump(););
   std::string name = getCaption(&loc, NULL);
   a->dump();
 }
@@ -2081,7 +2108,8 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
     for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                         itEnd = elemMap.end();
          it != itEnd; ++it) {
-      DEBUG(errs() << "Adding " << elemMap.size() << " elements\n");
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      errs() << "Adding " << elemMap.size() << " elements\n");
       kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
                          *(*it).second, " ;  [ConsDebugTag-17]");
     }
@@ -2150,7 +2178,7 @@ void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
 
   for (BasicBlock::const_iterator inst = bb.begin(), end = bb.end();
        inst != end; ++inst) {
-    DEBUG(errs() << " +INST+\n"; (*inst).dump(););
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << " +INST+\n"; (*inst).dump(););
     getInstructionFlowsInternal(*inst, true, flows, "");
   }
 }
@@ -2188,7 +2216,6 @@ const ConsElem &Infoflow::getOrCreateMemoryConsElem(const Value &value) {
   const std::set<const AbstractLoc *> &locs = locsForValue(value);
   unsigned offset = 0;
   bool hasOffset = offsetForValue(value, &offset);
-  // errs() << "getOrCreate: " << stringFromValue(value) << "\n";
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(),
                                                end = locs.end();
        loc != end; ++loc) {
@@ -2211,7 +2238,6 @@ Infoflow::getOrCreateReachableMemoryConsElem(const Value &value) {
   const std::set<const AbstractLoc *> &locs = reachableLocsForValue(value);
   unsigned offset = 0;
   bool hasOffset = offsetForValue(value, &offset);
-  // errs() << "getOrCreate2: " << stringFromValue(value) << "\n";
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(),
                                                end = locs.end();
        loc != end; ++loc) {
@@ -3001,8 +3027,10 @@ void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {
     return;
     // Unsupported intrinsics
   default:
-    DEBUG(errs() << "Unsupported intrinsic: "
-                 << Intrinsic::getName(intr.getIntrinsicID()) << "\n");
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Unsupported intrinsic: "
+                           << Intrinsic::getName(intr.getIntrinsicID())
+                           << "\n");
   }
 }
 
@@ -3165,10 +3193,11 @@ Infoflow::parseTaintString(std::string line) {
 
 void Infoflow::readConfiguration() {
   // Read the config.json file and store it
-  DEBUG(errs() << "\n[CONFIG] Start reading configuration file...\n");
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "\n[CONFIG] Start reading configuration file...\n");
   std::ifstream i("config.json");
   i >> config;
-  DEBUG(errs() << config.dump(4) << "\n\n");
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << config.dump(4) << "\n\n");
 
   // Sanity check: entry
   if (config.contains("entry")) {
@@ -3328,14 +3357,12 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
     int t_offset = whitelist.index;
     std::string fn_name = whitelist.function;
 
-    std::string s;
-    llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
-    *ss << value; // dump value info to ss
-    ss->str();    // flush stream to s
-
-    errs() << "The value under examination is: [" << s << "]\n"
-           << "\twith offset = [" << t_offset << "], and in the function: ["
-           << fn_name << "]\n\n";
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "The value under examination is: ["
+                           << getOrCreateStringFromValue(value) << "]\n"
+                           << "\twith offset = [" << t_offset
+                           << "], and in the function: [" << fn_name
+                           << "]\n\n";);
 
     const Function *fn = findEnclosingFunc(&value);
     bool function_matches = false;
@@ -3445,7 +3472,7 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
           }
         }
       }
-    } else if (s.find(whitelist.name) == 0) {
+    } else if (getOrCreateStringFromValue(value).find(whitelist.name) == 0) {
       errs() << "Removing constraint with a no match: ";
       const ConsElem &elem = *(entry->second);
       elem.dump(errs());

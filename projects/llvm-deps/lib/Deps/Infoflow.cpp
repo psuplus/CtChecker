@@ -2998,20 +2998,20 @@ void constrainMemset(const IntrinsicInst &intr, Flows &flows) {
 
 void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {
   switch (intr.getIntrinsicID()) {
-    // Vararg intrinsics
+  // Vararg intrinsics
   case Intrinsic::vastart:
   case Intrinsic::vaend:
   case Intrinsic::vacopy:
     // These should be nops because the actual flows are taken care of as part
     // of function invocation and the va_arg instruction
     return;
-    // StdLib memory intrinsics
+  // StdLib memory intrinsics
   case Intrinsic::memcpy:
   case Intrinsic::memmove:
     return constrainMemcpyOrMove(intr, flows);
   case Intrinsic::memset:
     return constrainMemset(intr, flows);
-    // StdLib math intrinsics
+  // StdLib math intrinsics
   case Intrinsic::sqrt:
   case Intrinsic::powi:
   case Intrinsic::sin:
@@ -3020,12 +3020,13 @@ void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {
   case Intrinsic::exp:
   case Intrinsic::log:
   case Intrinsic::fma:
+  case Intrinsic::expect:
     return this->operandsAndPCtoValue(intr, flows);
-    // dbg
+  // dbg
   case Intrinsic::dbg_declare:
   case Intrinsic::dbg_value:
     return;
-    // Unsupported intrinsics
+  // Unsupported intrinsics
   default:
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                     errs() << "Unsupported intrinsic: "

@@ -1538,28 +1538,43 @@ const std::string Infoflow::kindFromImplicitSink(bool implicit,
   }
 }
 
-const std::string Infoflow::getOrCreateStringFromValue(const Value &value) {
-  if (valueStringMap.find(&value) != valueStringMap.end()) {
+const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
+                                                       bool withParent) {
+  if (valueStringMap.find(&value) != valueStringMap.end() && withParent) {
     return valueStringMap[&value];
   }
   std::string valueString = "";
   if (auto I = dyn_cast<Instruction>(&value)) {
     if (I->hasName()) {
-      valueString = I->getParent()->getParent()->getName().str() + ": " +
-                    I->getName().str();
+      if (withParent) {
+        valueString = I->getParent()->getParent()->getName().str() + ": " +
+                      I->getName().str();
+      } else {
+        valueString = I->getName();
+      }
     } else {
       raw_string_ostream O(valueString);
       I->print(O);
     }
   } else if (auto A = dyn_cast<Argument>(&value)) {
     if (A->hasName()) {
-      valueString = A->getParent()->getName().str() + ": " + A->getName().str();
+      if (withParent) {
+        valueString =
+            A->getParent()->getName().str() + ": " + A->getName().str();
+      } else {
+        valueString = A->getName();
+      }
     } else {
       raw_string_ostream O(valueString);
       A->print(O);
     }
   } else if (auto BB = dyn_cast<BasicBlock>(&value)) {
-    valueString = BB->getParent()->getName().str() + ": " + BB->getName().str();
+    if (withParent) {
+      valueString =
+          BB->getParent()->getName().str() + ": " + BB->getName().str();
+    } else {
+      valueString = BB->getName();
+    }
   } else {
     if (isa<GlobalValue>(value)) {
       valueString = "GLOBAL: ";

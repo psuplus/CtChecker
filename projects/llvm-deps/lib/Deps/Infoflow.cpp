@@ -2819,8 +2819,10 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
                    callinst->getCalledValue()->stripPointerCasts())) {
       fName = F->getName();
     }
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Function name: " << fName << "\n";);
 
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Fname: " << fName << "\n";);
+    bool callResult = true;
     for (auto var : sinkVariables) {
       if (fName.size() > 0 && fName.equals(var.function)) {
         errs() << "Found function match: " << fName << "\n";
@@ -2838,31 +2840,20 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
             errs() << "at offset: " << var.index << "\n";
           }
         }
-        // return; // TODO: Could this be the ULTIMATE solution?!
+        callResult = false;
       }
     }
 
-    DEBUG_WITH_TYPE(
-        DEBUG_TYPE_DEBUG,
-        errs() << "============ getCallResult(cs, Unit()) ============\n";);
-    this->getCallResult(cs, Unit());
-    DEBUG_WITH_TYPE(
-        DEBUG_TYPE_DEBUG,
-        errs()
-            << "============ getCallResult(cs, Unit()) - end ============\n";);
+    if (callResult) {
+      this->getCallResult(cs, Unit());
+    }
   } else if (usesExternalSignature(cs)) {
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "usesExternalSignature(cs)\n";);
     Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
     flows.insert(flows.end(), recs.begin(), recs.end());
   }
 
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  errs() << "============ invokableCode(cs) ============\n";);
   std::set<std::pair<const Function *, const ContextID>> callees =
       this->invokableCode(cs);
-  DEBUG_WITH_TYPE(
-      DEBUG_TYPE_DEBUG,
-      errs() << "============ invokableCode(cs) - end ============\n";);
   // Do constraints for each callee
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                   errs() << "callees' size: " << callees.size() << "\n";);
@@ -2870,9 +2861,6 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
            callee = callees.begin(),
            end = callees.end();
        callee != end; ++callee) {
-    // errs() << "%%%% function: ";
-    // (*callee).first->dump();
-    // (*callee).second->dump();
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
 }

@@ -2801,6 +2801,11 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
                                            << "analyzing callees\n";);
 
   if (analyzeCallees) {
+    FlowRecord imp = currentContextFlowRecord(true);
+    imp.addSourceValue(*cs->getParent());
+    imp.addSinkValue(*cs.getInstruction());
+    flows.push_back(imp);
+
     const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "The CallInst is: \n\t";
                     callinst->dump(););

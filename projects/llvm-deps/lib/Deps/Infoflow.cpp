@@ -2540,7 +2540,18 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
   if (!inst.isConditional() && !fullImplicit)
     return;
 
-  FlowRecord flow = currentContextFlowRecord(true);
+  bool useWhitelist = config.at("using_whitelist");
+  if (useWhitelist && config.contains("implicit_whitelist")) {
+    std::list<json> whiteList = config.at("implicit_whitelist");
+    for (auto item : whiteList) {
+      std::string file = item.at("file");
+      int line = item.at("line");
+      std::string match = "|" + file + "," + std::to_string(line);
+      if (!match.compare(getOriginalLocationConsElem(&inst)))
+        return;
+    }
+  }
+
   // pc
   flow.addSourceValue(*inst.getParent());
   // cond

@@ -381,7 +381,7 @@ private:
                                    bool);
   const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
-  const std::string getOrCreateStringFromValue(const Value &);
+  const std::string getOrCreateStringFromValue(const Value &, bool = true);
   unsigned GEPInstCalculateNumberElements(const GetElementPtrInst *);
   unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst *,
                                        std::set<const AbstractLoc *>);

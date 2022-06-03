@@ -1538,28 +1538,43 @@ const std::string Infoflow::kindFromImplicitSink(bool implicit,
   }
 }
 
-const std::string Infoflow::getOrCreateStringFromValue(const Value &value) {
-  if (valueStringMap.find(&value) != valueStringMap.end()) {
+const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
+                                                       bool withParent) {
+  if (valueStringMap.find(&value) != valueStringMap.end() && withParent) {
     return valueStringMap[&value];
   }
   std::string valueString = "";
   if (auto I = dyn_cast<Instruction>(&value)) {
     if (I->hasName()) {
-      valueString = I->getParent()->getParent()->getName().str() + ": " +
-                    I->getName().str();
+      if (withParent) {
+        valueString = I->getParent()->getParent()->getName().str() + ": " +
+                      I->getName().str();
+      } else {
+        valueString = I->getName();
+      }
     } else {
       raw_string_ostream O(valueString);
       I->print(O);
     }
   } else if (auto A = dyn_cast<Argument>(&value)) {
     if (A->hasName()) {
-      valueString = A->getParent()->getName().str() + ": " + A->getName().str();
+      if (withParent) {
+        valueString =
+            A->getParent()->getName().str() + ": " + A->getName().str();
+      } else {
+        valueString = A->getName();
+      }
     } else {
       raw_string_ostream O(valueString);
       A->print(O);
     }
   } else if (auto BB = dyn_cast<BasicBlock>(&value)) {
-    valueString = BB->getParent()->getName().str() + ": " + BB->getName().str();
+    if (withParent) {
+      valueString =
+          BB->getParent()->getName().str() + ": " + BB->getName().str();
+    } else {
+      valueString = BB->getName();
+    }
   } else {
     if (isa<GlobalValue>(value)) {
       valueString = "GLOBAL: ";
@@ -2304,7 +2319,7 @@ void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
 
         const TerminatorInst *t = cur->getTerminator();
         for (unsigned i = 0, end = t->getNumSuccessors(); i < end; ++i) {
-          if (visited.find(cur) == visited.end()) {
+          if (visited.find(t->getSuccessor(i)) == visited.end()) {
             workqueue.push_back(t->getSuccessor(i));
           }
         }
@@ -2525,7 +2540,18 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
   if (!inst.isConditional() && !fullImplicit)
     return;
 
-  FlowRecord flow = currentContextFlowRecord(true);
+  bool useWhitelist = config.at("using_whitelist");
+  if (useWhitelist && config.contains("implicit_whitelist")) {
+    std::list<json> whiteList = config.at("implicit_whitelist");
+    for (auto item : whiteList) {
+      std::string file = item.at("file");
+      int line = item.at("line");
+      std::string match = "|" + file + "," + std::to_string(line);
+      if (!match.compare(getOriginalLocationConsElem(&inst)))
+        return;
+    }
+  }
+
   // pc
   flow.addSourceValue(*inst.getParent());
   // cond
@@ -2801,6 +2827,11 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
                                            << "analyzing callees\n";);
 
   if (analyzeCallees) {
+    FlowRecord imp = currentContextFlowRecord(true);
+    imp.addSourceValue(*cs->getParent());
+    imp.addSinkValue(*cs.getInstruction());
+    flows.push_back(imp);
+
     const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "The CallInst is: \n\t";
                     callinst->dump(););
@@ -2814,8 +2845,10 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
                    callinst->getCalledValue()->stripPointerCasts())) {
       fName = F->getName();
     }
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                    errs() << "Function name: " << fName << "\n";);
 
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Fname: " << fName << "\n";);
+    bool callResult = true;
     for (auto var : sinkVariables) {
       if (fName.size() > 0 && fName.equals(var.function)) {
         errs() << "Found function match: " << fName << "\n";
@@ -2833,31 +2866,20 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
             errs() << "at offset: " << var.index << "\n";
           }
         }
-        // return; // TODO: Could this be the ULTIMATE solution?!
+        callResult = false;
       }
     }
 
-    DEBUG_WITH_TYPE(
-        DEBUG_TYPE_DEBUG,
-        errs() << "============ getCallResult(cs, Unit()) ============\n";);
-    this->getCallResult(cs, Unit());
-    DEBUG_WITH_TYPE(
-        DEBUG_TYPE_DEBUG,
-        errs()
-            << "============ getCallResult(cs, Unit()) - end ============\n";);
+    if (callResult) {
+      this->getCallResult(cs, Unit());
+    }
   } else if (usesExternalSignature(cs)) {
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "usesExternalSignature(cs)\n";);
     Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
     flows.insert(flows.end(), recs.begin(), recs.end());
   }
 
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  errs() << "============ invokableCode(cs) ============\n";);
   std::set<std::pair<const Function *, const ContextID>> callees =
       this->invokableCode(cs);
-  DEBUG_WITH_TYPE(
-      DEBUG_TYPE_DEBUG,
-      errs() << "============ invokableCode(cs) - end ============\n";);
   // Do constraints for each callee
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                   errs() << "callees' size: " << callees.size() << "\n";);
@@ -2865,9 +2887,6 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
            callee = callees.begin(),
            end = callees.end();
        callee != end; ++callee) {
-    // errs() << "%%%% function: ";
-    // (*callee).first->dump();
-    // (*callee).second->dump();
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
 }
@@ -2998,20 +3017,20 @@ void constrainMemset(const IntrinsicInst &intr, Flows &flows) {
 
 void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {
   switch (intr.getIntrinsicID()) {
-    // Vararg intrinsics
+  // Vararg intrinsics
   case Intrinsic::vastart:
   case Intrinsic::vaend:
   case Intrinsic::vacopy:
     // These should be nops because the actual flows are taken care of as part
     // of function invocation and the va_arg instruction
     return;
-    // StdLib memory intrinsics
+  // StdLib memory intrinsics
   case Intrinsic::memcpy:
   case Intrinsic::memmove:
     return constrainMemcpyOrMove(intr, flows);
   case Intrinsic::memset:
     return constrainMemset(intr, flows);
-    // StdLib math intrinsics
+  // StdLib math intrinsics
   case Intrinsic::sqrt:
   case Intrinsic::powi:
   case Intrinsic::sin:
@@ -3020,12 +3039,13 @@ void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {
   case Intrinsic::exp:
   case Intrinsic::log:
   case Intrinsic::fma:
+  case Intrinsic::expect:
     return this->operandsAndPCtoValue(intr, flows);
-    // dbg
+  // dbg
   case Intrinsic::dbg_declare:
   case Intrinsic::dbg_value:
     return;
-    // Unsupported intrinsics
+  // Unsupported intrinsics
   default:
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                     errs() << "Unsupported intrinsic: "

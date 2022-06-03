@@ -2319,7 +2319,7 @@ void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
 
         const TerminatorInst *t = cur->getTerminator();
         for (unsigned i = 0, end = t->getNumSuccessors(); i < end; ++i) {
-          if (visited.find(cur) == visited.end()) {
+          if (visited.find(t->getSuccessor(i)) == visited.end()) {
             workqueue.push_back(t->getSuccessor(i));
           }
         }

@@ -2191,6 +2191,16 @@ void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
   //   predicateMap[&bb] = predicate;
   // }
 
+  if (&bb.getParent()->getEntryBlock() == &bb) {
+    FlowRecord entryToBlocks = currentContextFlowRecord(true);
+    entryToBlocks.addSourceValue(bb);
+    for (auto &otherBB : *bb.getParent()) {
+      if (&otherBB != &bb)
+        entryToBlocks.addSinkValue(otherBB);
+    }
+    flows.push_back(entryToBlocks);
+  }
+
   for (BasicBlock::const_iterator inst = bb.begin(), end = bb.end();
        inst != end; ++inst) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << " +INST+\n"; (*inst).dump(););
@@ -2531,13 +2541,7 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
 /// successors that do not post-dominate the current instruction.
 void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
   // Only additional flow for conditional branch
-  bool fullImplicit = false;
-  if (config.contains("implicit_mode") &&
-      config.at("implicit_mode") == ImplicitFlowMode_Full) {
-    fullImplicit = true;
-  }
-
-  if (!inst.isConditional() && !fullImplicit)
+  if (!inst.isConditional())
     return;
 
   bool useWhitelist = config.at("using_whitelist");
@@ -2552,15 +2556,12 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
     }
   }
 
+  FlowRecord flow = currentContextFlowRecord(true);
   // pc
   flow.addSourceValue(*inst.getParent());
   // cond
-  if (inst.isConditional()) {
-    flow.addSourceValue(*inst.getCondition());
-    constrainConditionalSuccessors(inst, flow);
-  } else {
-    flow.addSinkValue(*inst.getOperand(0));
-  }
+  flow.addSourceValue(*inst.getCondition());
+  constrainConditionalSuccessors(inst, flow);
 
   flows.push_back(flow);
 }

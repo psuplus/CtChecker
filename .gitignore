@@ -116,5 +116,10 @@ results_with_source*.txt
 !/projects/llvm-deps/linux_security_tests/tomoyo/bitcode/*.bc
 !/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
+
+projects/llvm-deps/linux_security_tests/**/configs.bak
+projects/llvm-deps/linux_security_tests/**/results
 projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg
+projects/llvm-deps/processing_tools/data/
+projects/llvm-deps/udp_unit_test/

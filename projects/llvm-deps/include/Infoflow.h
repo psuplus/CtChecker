@@ -89,8 +89,6 @@ public:
 
 enum class ConfigVariableType { Argument, Variable };
 
-enum ImplicitFlowMode { ImplicitFlowMode_Partial, ImplicitFlowMode_Full };
-
 class ConfigVariable {
 public:
   std::string function;

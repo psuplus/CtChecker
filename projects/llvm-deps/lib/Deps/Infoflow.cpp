@@ -2537,13 +2537,7 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
   return operandsAndPCtoValue(inst, flows);
 }
 
-/// Conditional branches cause a flow from the condition and pc to all
-/// successors that do not post-dominate the current instruction.
-void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
-  // Only additional flow for conditional branch
-  if (!inst.isConditional())
-    return;
-
+bool Infoflow::matchImplicitWhitelist(const Instruction &inst) {
   bool useWhitelist = config.at("using_whitelist");
   if (useWhitelist && config.contains("implicit_whitelist")) {
     std::list<json> whiteList = config.at("implicit_whitelist");
@@ -2552,9 +2546,18 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
       int line = item.at("line");
       std::string match = "|" + file + "," + std::to_string(line);
       if (!match.compare(getOriginalLocationConsElem(&inst)))
-        return;
+        return true;
     }
   }
+  return false;
+}
+
+/// Conditional branches cause a flow from the condition and pc to all
+/// successors that do not post-dominate the current instruction.
+void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
+  // Only additional flow for conditional branch
+  if (!inst.isConditional() || matchImplicitWhitelist(inst))
+    return;
 
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
@@ -2576,6 +2579,9 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
 /// aren't post-dominators)
 void Infoflow::constrainIndirectBrInst(const IndirectBrInst &inst,
                                        Flows &flows) {
+  if (matchImplicitWhitelist(inst))
+    return;
+
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
   flow.addSourceValue(*inst.getParent());
@@ -2600,6 +2606,9 @@ void Infoflow::constrainIndirectBrInst(const IndirectBrInst &inst,
 /// Flow from the pc and address to the pc of all successor basic blocks (that
 /// aren't post-dominators)
 void Infoflow::constrainSwitchInst(const SwitchInst &inst, Flows &flows) {
+  if (matchImplicitWhitelist(inst))
+    return;
+
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
   flow.addSourceValue(*inst.getParent());
@@ -2793,6 +2802,9 @@ void Infoflow::constrainCallInst(const CallInst &inst, bool analyzeCallees,
 
 void Infoflow::constrainInvokeInst(const InvokeInst &inst, bool analyzeCallees,
                                    Flows &flows) {
+  if (matchImplicitWhitelist(inst))
+    return;
+
   constrainCallSite(ImmutableCallSite(&inst), analyzeCallees, flows);
 
   // Since an invoke instruction may not return to the same program point

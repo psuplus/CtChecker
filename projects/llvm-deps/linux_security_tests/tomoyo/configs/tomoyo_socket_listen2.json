@@ -24,9 +24,31 @@
   },
   "source": [
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_check_inet_address",
       "type": "variable",
-      "name": "path1",
+      "name": "address",
+      "index": 2,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_inet_address",
+      "type": "variable",
+      "name": "address",
+      "index": 3,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_inet_address",
+      "type": "variable",
+      "name": "addr",
       "index": -1,
       "l": {
         "source": "input",
@@ -35,9 +57,9 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_check_inet_address",
       "type": "variable",
-      "name": "path2",
+      "name": "addr_len",
       "index": -1,
       "l": {
         "source": "input",
@@ -46,10 +68,10 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_path2_perm",
+      "function": "tomoyo_check_inet_address",
       "type": "variable",
-      "name": "operation",
-      "index": -1,
+      "name": "address",
+      "index": 0,
       "l": {
         "source": "input",
         "value": "dynamic"
@@ -57,9 +79,19 @@
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "tomoyo_domain",
+      "function": "tomoyo_check_inet_address",
       "type": "variable",
-      "name": "security",
+      "name": "address",
+      "index": 1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "variable",
+      "name": "current_task",
       "index": -1,
       "l": {
         "source": "external",
@@ -106,7 +138,29 @@
       "function": "tomoyo_check_acl",
       "type": "argument",
       "number": 0,
+      "index": 7,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_acl",
+      "type": "argument",
+      "number": 0,
       "index": 5,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "function": "tomoyo_check_acl",
+      "type": "argument",
+      "number": 0,
+      "index": 6,
       "l": {
         "source": "input",
         "value": "dynamic"
@@ -114,5 +168,14 @@
       "c": { "purpose": ["operation"] }
     }
   ],
-  "entry": ["tomoyo_path2_perm"]
+  "using_whitelist": true,
+  "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/tomoyo/network.c", "line": 473 },
+    { "file": "security/tomoyo/network.c", "line": 507 },
+    { "file": "security/tomoyo/network.c", "line": 509 },
+    { "file": "security/tomoyo/network.c", "line": 517 },
+    { "file": "security/tomoyo/network.c", "line": 527 }
+  ],
+  "entry": ["tomoyo_check_inet_address"]
 }

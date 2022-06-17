@@ -1,0 +1,128 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "source",
+        "level": ["mediator", "input", "external"]
+      },
+      {
+        "name": "value",
+        "level": ["static", "k-static", "dynamic"]
+      }
+    ],
+    "compartments": [
+      {
+        "name": "purpose",
+        "set": ["subject", "object", "operation", "policy"]
+      }
+    ]
+  },
+  "source": [
+    {
+      "function": "tomoyo_file_fcntl",
+      "type": "variable",
+      "name": "file",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_file_fcntl",
+      "type": "variable",
+      "name": "cmd",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "function": "tomoyo_file_fcntl",
+      "type": "variable",
+      "name": "arg",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "variable",
+      "name": "current_task",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    }
+  ],
+  "sink": [
+    {
+      "function": "tomoyo_check_acl",
+      "type": "argument",
+      "number": 0,
+      "index": 2,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "tomoyo_check_acl",
+      "type": "argument",
+      "number": 0,
+      "index": 3,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_acl",
+      "type": "argument",
+      "number": 0,
+      "index": 4,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_acl",
+      "type": "argument",
+      "number": 0,
+      "index": 5,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    }
+  ],
+  "using_whitelist": true,
+  "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/tomoyo/tomoyo.c", "line": 315 },
+    { "file": "security/tomoyo/file.c", "line": 151 },
+    { "file": "security/tomoyo/file.c", "line": 761 },
+    { "file": "security/tomoyo/file.c", "line": 750 },
+    { "file": "security/tomoyo/file.c", "line": 758 },
+    { "file": "security/tomoyo/file.c", "line": 761 },
+    { "file": "security/tomoyo/file.c", "line": 565 }
+  ],
+  "entry": ["tomoyo_file_fcntl"]
+}

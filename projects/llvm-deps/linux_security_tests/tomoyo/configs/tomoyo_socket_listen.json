@@ -24,9 +24,31 @@
   },
   "source": [
     {
-      "function": "tomoyo_check_open_permission",
+      "function": "tomoyo_check_unix_address",
       "type": "variable",
-      "name": "path",
+      "name": "address",
+      "index": 2,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_unix_address",
+      "type": "variable",
+      "name": "address",
+      "index": 3,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_unix_address",
+      "type": "variable",
+      "name": "addr_len",
       "index": -1,
       "l": {
         "source": "input",
@@ -35,20 +57,41 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_check_open_permission",
+      "function": "tomoyo_check_unix_address",
       "type": "variable",
-      "name": "flag",
+      "name": "addr",
       "index": -1,
       "l": {
         "source": "input",
-        "value": "static"
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "tomoyo_check_unix_address",
+      "type": "variable",
+      "name": "address",
+      "index": 0,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
       },
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "tomoyo_check_open_permission",
+      "function": "tomoyo_check_unix_address",
       "type": "variable",
-      "name": "domain",
+      "name": "address",
+      "index": 1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "variable",
+      "name": "current_task",
       "index": -1,
       "l": {
         "source": "external",
@@ -89,7 +132,7 @@
         "source": "input",
         "value": "dynamic"
       },
-      "c": { "purpose": ["object"] }
+      "c": { "purpose": ["operation"] }
     },
     {
       "function": "tomoyo_check_acl",
@@ -97,11 +140,18 @@
       "number": 0,
       "index": 5,
       "l": {
-        "source": "mediator",
-        "value": "static"
+        "source": "input",
+        "value": "dynamic"
       },
       "c": { "purpose": ["operation"] }
     }
   ],
-  "entry": ["tomoyo_check_open_permission"]
+  "using_whitelist": true,
+  "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/tomoyo/network.c", "line": 548 },
+    { "file": "security/tomoyo/network.c", "line": 560 },
+    { "file": "security/tomoyo/network.c", "line": 596 }
+  ],
+  "entry": ["tomoyo_check_unix_address"]
 }

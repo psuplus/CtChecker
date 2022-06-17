@@ -24,9 +24,9 @@
   },
   "source": [
     {
-      "function": "tomoyo_socket_connect_permission",
+      "function": "tomoyo_check_open_permission",
       "type": "variable",
-      "name": "sock",
+      "name": "path",
       "index": -1,
       "l": {
         "source": "input",
@@ -35,31 +35,41 @@
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_socket_connect_permission",
+      "function": "tomoyo_check_open_permission",
       "type": "variable",
-      "name": "addr",
+      "name": "buf",
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
     },
     {
-      "function": "tomoyo_socket_connect_permission",
+      "function": "tomoyo_check_open_permission",
       "type": "variable",
-      "name": "address",
-      "index": 1,
+      "name": "flag",
+      "index": -1,
       "l": {
         "source": "input",
-        "value": "dynamic"
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "get_current",
       "type": "variable",
       "name": "current_task",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "tomoyo_check_open_permission",
+      "type": "variable",
+      "name": "domain",
       "index": -1,
       "l": {
         "source": "external",
@@ -75,7 +85,7 @@
       "number": 0,
       "index": 2,
       "l": {
-        "source": "external",
+        "source": "input",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -98,10 +108,20 @@
       "index": 5,
       "l": {
         "source": "input",
-        "value": "dynamic"
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     }
   ],
-  "entry": ["tomoyo_socket_connect_permission"]
+  "using_whitelist": true,
+  "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/tomoyo/file.c", "line": 151 },
+    { "file": "security/tomoyo/file.c", "line": 761 },
+    { "file": "security/tomoyo/file.c", "line": 750 },
+    { "file": "security/tomoyo/file.c", "line": 758 },
+    { "file": "security/tomoyo/file.c", "line": 761 },
+    { "file": "security/tomoyo/file.c", "line": 565 }
+  ],
+  "entry": ["tomoyo_check_open_permission"]
 }

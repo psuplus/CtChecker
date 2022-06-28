@@ -62,6 +62,24 @@ bool ImplicitFunction::runOnModule(Module &M) {
 
   std::set<std::string> kinds{"source-sink", "default", "default-sink",
                               "implicit"};
+  // Printing constraints
+  errs() << "\n---- Constraints BEGIN ----\n";
+  for (auto kind : kinds) {
+    errs() << kind << ":\n";
+    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
+      cons.dump();
+  }
+  errs() << "---- Constraints END ----\n\n";
+
+  end = std::chrono::steady_clock::now();
+  errs() << "PRINTING: "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()
+         << " ms\n";
+  p = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+          .count();
+  start = end;
+
   InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
 
   end = std::chrono::steady_clock::now();
@@ -91,24 +109,6 @@ bool ImplicitFunction::runOnModule(Module &M) {
         }
       };
       errs() << "---- Tainted Values END ----\n\n";);
-
-  // Printing constraints
-  errs() << "\n---- Constraints BEGIN ----\n";
-  for (auto kind : kinds) {
-    errs() << kind << ":\n";
-    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
-      cons.dump();
-  }
-  errs() << "---- Constraints END ----\n\n";
-
-  end = std::chrono::steady_clock::now();
-  errs() << "PRINTING: "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-                .count()
-         << " ms\n";
-  p = std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-          .count();
-  start = end;
 
   errs() << "#------------------Results------------------#\n";
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {

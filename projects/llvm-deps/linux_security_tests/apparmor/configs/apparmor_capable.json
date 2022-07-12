@@ -1,0 +1,87 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "source",
+        "level": ["mediator", "input", "external"]
+      },
+      {
+        "name": "value",
+        "level": ["static", "k-static", "dynamic"]
+      }
+    ],
+    "compartments": [
+      {
+        "name": "purpose",
+        "set": ["subject", "object", "operation", "policy"]
+      }
+    ]
+  },
+  "source": [
+    {
+      "function": "apparmor_capable",
+      "type": "variable",
+      "name": "cred",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "aa_ptrace",
+      "type": "variable",
+      "name": "cap",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "variable",
+      "name": "current_task",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    }
+  ],
+  "sink": [
+    {
+      "function": "aa_capable",
+      "type": "argument",
+      "number": 0,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "aa_capable",
+      "type": "argument",
+      "number": 2,
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    }
+  ],
+  "using_whitelist": true,
+  "whitelist": [],
+  "implicit_whitelist": [{ "file": "security/apparmor/lsm.c", "line": 145 }],
+  "entry": ["apparmor_capable"]
+}

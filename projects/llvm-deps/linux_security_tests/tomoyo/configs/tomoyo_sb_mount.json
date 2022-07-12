@@ -62,7 +62,7 @@
       "name": "flags",
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "external",
         "value": "dynamic"
       },
       "c": { "purpose": ["operation"] }
@@ -107,8 +107,8 @@
       "number": 0,
       "index": 3,
       "l": {
-        "source": "input",
-        "value": "dynamic"
+        "source": "mediator",
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     },
@@ -140,8 +140,8 @@
       "number": 0,
       "index": 6,
       "l": {
-        "source": "input",
-        "value": "dynamic"
+        "source": "mediator",
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     }

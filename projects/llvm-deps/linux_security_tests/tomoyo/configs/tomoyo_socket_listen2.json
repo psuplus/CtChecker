@@ -73,8 +73,8 @@
       "name": "address",
       "index": 0,
       "l": {
-        "source": "input",
-        "value": "dynamic"
+        "source": "mediator",
+        "value": "k-static"
       },
       "c": { "purpose": ["operation"] }
     },
@@ -107,7 +107,7 @@
       "number": 0,
       "index": 2,
       "l": {
-        "source": "external",
+        "source": "input",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -151,8 +151,8 @@
       "number": 0,
       "index": 5,
       "l": {
-        "source": "input",
-        "value": "dynamic"
+        "source": "mediator",
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     },
@@ -162,8 +162,8 @@
       "number": 0,
       "index": 6,
       "l": {
-        "source": "input",
-        "value": "dynamic"
+        "source": "mediator",
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     }

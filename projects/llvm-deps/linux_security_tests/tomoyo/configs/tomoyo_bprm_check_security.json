@@ -51,7 +51,7 @@
       "name": "flag",
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "external",
         "value": "static"
       },
       "c": { "purpose": ["operation"] }
@@ -107,7 +107,7 @@
       "number": 0,
       "index": 5,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "static"
       },
       "c": { "purpose": ["operation"] }

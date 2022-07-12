@@ -57,6 +57,17 @@
       "c": { "purpose": ["operation"] }
     },
     {
+      "function": "tomoyo_check_open_permission",
+      "type": "variable",
+      "name": "flag",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "type": "variable",
       "name": "current_task",
       "index": -1,

@@ -52,7 +52,7 @@
       "index": -1,
       "l": {
         "source": "input",
-        "value": "static"
+        "value": "dynamic"
       },
       "c": { "purpose": ["operation"] }
     },
@@ -72,7 +72,7 @@
       "name": "domain",
       "index": -1,
       "l": {
-        "source": "external",
+        "source": "input",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -107,7 +107,7 @@
       "number": 0,
       "index": 5,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "static"
       },
       "c": { "purpose": ["operation"] }

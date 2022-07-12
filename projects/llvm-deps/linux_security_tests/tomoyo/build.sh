@@ -22,14 +22,14 @@ make V=0 \
 cd security/tomoyo
 pwd
 $BIN_DIR/llvm-link \
-    file.bc util.bc tomoyo.bc \
-    -o t-u-f.bc
+    file.bc network.bc mount.bc util.bc tomoyo.bc \
+    -o test.bc
 
-mv t-u-f.bc $ANALYSIS_DIR/
+mv test.bc $ANALYSIS_DIR/
 cd $ANALYSIS_DIR
 pwd
-ls -la t-u-f.bc
-$BIN_DIR/llvm-dis t-u-f.bc
+ls -la test.bc
+$BIN_DIR/llvm-dis test.bc
 
 sudo update-alternatives --set gcc /usr/bin/gcc-10
 sudo update-alternatives --set g++ /usr/bin/g++-10

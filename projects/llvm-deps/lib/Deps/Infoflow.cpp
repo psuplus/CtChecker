@@ -455,7 +455,7 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
     } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(*sink)) {
-      bit->getSrcTy()->dump();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, bit->getSrcTy()->dump(););
       if (bit->getSrcTy()->isPointerTy() &&
           !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
           bit->getSrcTy()->getPointerElementType()->isStructTy() &&
@@ -470,7 +470,8 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
                                << getOrCreateStringFromValue(*v) << "\n";);
         if (bit->getDestTy()->isPointerTy() &&
             !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
-          bit->getDestTy()->getPointerElementType()->dump();
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                          bit->getDestTy()->getPointerElementType()->dump(););
           for (auto loc : locs) {
             std::map<unsigned, const ConsElem *> elemMap;
             elemMap = getOrCreateConsElemTyped(*loc, 0, v);
@@ -533,8 +534,8 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
         const AbstractLoc *child = handlekv.second.getNode();
         if (child != NULL) {
           SinkLocs.insert(child);
-          errs() << "Added child elem: ";
-          child->dump();
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Added child elem: ";
+                          child->dump(););
         }
       }
     }
@@ -589,18 +590,19 @@ void Infoflow::processGetElementPtrInstSink(
         const Value *allocValue = getAllocationValue(gep);
         if (allocValue) {
           if (auto inst = dyn_cast<BitCastInst>(allocValue)) {
-            allocValue->dump();
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, allocValue->dump(););
             if (Type *ty = inst->getOperand(0)->getType()) {
-              inst->getOperand(0)->dump();
-              ty->dump();
+              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, inst->getOperand(0)->dump();
+                              ty->dump(););
               if (ty->isStructTy()) {
                 //  && ty->getStructName().startswith("union.")
                 s = dyn_cast<StructType>(ty);
               }
               if (ty->isPointerTy() &&
                   ty->getPointerElementType()->isStructTy()) {
-                errs() << ty->getPointerElementType()->getStructName()
-                       << "here\n";
+                DEBUG_WITH_TYPE(
+                    DEBUG_TYPE_DEBUG,
+                    errs() << ty->getPointerElementType()->getStructName(););
                 s = dyn_cast<StructType>(ty->getPointerElementType());
               }
             }
@@ -1949,7 +1951,7 @@ void Infoflow::createConsElemFromArray(
                   errs() << "Creating ConsElem Map for array: \n";
                   loc.dump(););
   std::string name = getCaption(&loc, NULL);
-  a->dump();
+  // a->dump();
 }
 
 std::map<unsigned, const ConsElem *>
@@ -2024,14 +2026,15 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
       const AbstractLoc *node = l->second.getNode();
       if (node != NULL && child_loc_types.size() > 0) {
         unsigned type_set_size = child_loc_types[l->first]->size();
-        errs() << "EDGE: ";
-        errs() << "[" << l->first << ": tymap-size " << type_set_size << "]: ";
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "EDGE: ";
+                        errs() << "[" << l->first << ": tymap-size "
+                               << type_set_size << "]: ";);
         if (type_set_size == 1) {
           Type *sub_type = *child_loc_types[l->first]->begin();
           if (sub_type->isPointerTy()) {
             // If the types are overlapping, uh don't
             Type *sub = sub_type->subtypes()[0];
-            sub->dump();
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, sub->dump(););
             if (StructType *st = dyn_cast<StructType>(sub)) {
               if (locConstraintMap.find(node) == locConstraintMap.end() &&
                   !st->isOpaque()) {
@@ -2112,10 +2115,11 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const Value *value,
                                       unsigned numElements) {
 
-  errs() << " ===== putOrConstrainConsElem =====\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << " ===== putOrConstrainConsElem =====\n";);
   std::map<unsigned, const ConsElem *> elemMap =
       getOrCreateConsElemTyped(loc, numElements, value);
-  loc.dump();
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, loc.dump(););
   if (elemMap.size() == 0)
     return;
 
@@ -2137,7 +2141,8 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                          " ;  [ConsDebugTag-18]");
     }
   }
-  errs() << " ===== putOrConstrainConsElem end =====\n";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << " ===== putOrConstrainConsElem end =====\n";);
 }
 
 void Infoflow::generateFunctionConstraints(const Function &f) {
@@ -2537,13 +2542,7 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
   return operandsAndPCtoValue(inst, flows);
 }
 
-/// Conditional branches cause a flow from the condition and pc to all
-/// successors that do not post-dominate the current instruction.
-void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
-  // Only additional flow for conditional branch
-  if (!inst.isConditional())
-    return;
-
+bool Infoflow::matchImplicitWhitelist(const Instruction &inst) {
   bool useWhitelist = config.at("using_whitelist");
   if (useWhitelist && config.contains("implicit_whitelist")) {
     std::list<json> whiteList = config.at("implicit_whitelist");
@@ -2552,9 +2551,18 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
       int line = item.at("line");
       std::string match = "|" + file + "," + std::to_string(line);
       if (!match.compare(getOriginalLocationConsElem(&inst)))
-        return;
+        return true;
     }
   }
+  return false;
+}
+
+/// Conditional branches cause a flow from the condition and pc to all
+/// successors that do not post-dominate the current instruction.
+void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
+  // Only additional flow for conditional branch
+  if (!inst.isConditional() || matchImplicitWhitelist(inst))
+    return;
 
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
@@ -2576,6 +2584,9 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
 /// aren't post-dominators)
 void Infoflow::constrainIndirectBrInst(const IndirectBrInst &inst,
                                        Flows &flows) {
+  if (matchImplicitWhitelist(inst))
+    return;
+
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
   flow.addSourceValue(*inst.getParent());
@@ -2600,6 +2611,9 @@ void Infoflow::constrainIndirectBrInst(const IndirectBrInst &inst,
 /// Flow from the pc and address to the pc of all successor basic blocks (that
 /// aren't post-dominators)
 void Infoflow::constrainSwitchInst(const SwitchInst &inst, Flows &flows) {
+  if (matchImplicitWhitelist(inst))
+    return;
+
   FlowRecord flow = currentContextFlowRecord(true);
   // pc
   flow.addSourceValue(*inst.getParent());
@@ -2793,6 +2807,9 @@ void Infoflow::constrainCallInst(const CallInst &inst, bool analyzeCallees,
 
 void Infoflow::constrainInvokeInst(const InvokeInst &inst, bool analyzeCallees,
                                    Flows &flows) {
+  if (matchImplicitWhitelist(inst))
+    return;
+
   constrainCallSite(ImmutableCallSite(&inst), analyzeCallees, flows);
 
   // Since an invoke instruction may not return to the same program point
@@ -2862,9 +2879,9 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
                 std::make_tuple(this->getCurrentContext(), var.label, value,
                                 var.index);
             sinkValueSet.insert(valueOffsetPair);
-            errs() << "inserted: ";
-            value->dump();
-            errs() << "at offset: " << var.index << "\n";
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "inserted: ";
+                            value->dump();
+                            errs() << "at offset: " << var.index << "\n";);
           }
         }
         callResult = false;
@@ -3466,8 +3483,7 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
               const AbstractLoc *node = nh.getNode();
               errs() << "Linked Node";
               if (node != NULL) {
-
-                node->dump();
+                DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, node->dump(););
                 DenseMap<const AbstractLoc *,
                          std::map<unsigned, const ConsElem *>>::iterator
                     childElem = locConstraintMap.find(node);
@@ -3551,7 +3567,7 @@ StructType *convertValueToStructType(const Value *v) {
     if (subTypeLength == 1) {
       t = t->getContainedType(0);
       if ((st = dyn_cast<StructType>(t))) {
-        st->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, st->dump(););
       }
     } else {
       errs() << "Type has multiple subtypes, unclear how to proceed.\n";
@@ -3636,7 +3652,7 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
       const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(v);
       if (gep) {
         Type *type = gep->getPointerOperand()->getType();
-        type->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, type->dump(););
       }
     }
   }

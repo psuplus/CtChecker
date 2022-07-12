@@ -1,2 +1,0 @@
-[source:kernel,value:dynamic][purpose:{subject}] inode_has_perm 0
-[source:mediator,value:dynamic][purpose:{operation}] inode_has_perm 2

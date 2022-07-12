@@ -455,6 +455,7 @@ private:
   void removeConstraintFromIndex(std::string, const AbstractLoc *,
                                  const Value *,
                                  std::map<unsigned, const ConsElem *>, int);
+  bool matchImplicitWhitelist(const Instruction &inst);
   void constrainAllConsElem(std::string kind,
                             std::map<unsigned, const ConsElem *>, RLLabel);
   void constrainAllConsElem(std::string kind, std::set<const ConsElem *>,

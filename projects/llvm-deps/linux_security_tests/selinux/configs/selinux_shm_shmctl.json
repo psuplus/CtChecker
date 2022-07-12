@@ -1,0 +1,130 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "source",
+        "level": ["mediator", "input", "external"]
+      },
+      {
+        "name": "value",
+        "level": ["static", "k-static", "dynamic"]
+      }
+    ],
+    "compartments": [
+      {
+        "name": "purpose",
+        "set": ["subject", "object", "operation", "policy"]
+      }
+    ]
+  },
+  "source": [
+    {
+      "function": "selinux_shm_shmctl",
+      "type": "variable",
+      "name": "shp",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "selinux_shm_shmctl",
+      "type": "variable",
+      "name": "cmd",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "function": "ipc_has_perm",
+      "type": "variable",
+      "name": "perms",
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "variable",
+      "name": "current_task",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "ipc_has_perm",
+      "type": "variable",
+      "name": "sid",
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    }
+  ],
+  "sink": [
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 0,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 1,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 2,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 3,
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    }
+  ],
+  "using_whitelist": true,
+  "whitelist": [],
+  "entry": ["selinux_shm_shmctl"]
+}

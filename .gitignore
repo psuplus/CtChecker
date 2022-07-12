@@ -102,7 +102,6 @@ ocaml
 #==============================================================================#
 # Adding more files that should be ignored - 3/31/2020
 #==============================================================================#
-tmp*.dat
 results_with_source*.txt
 /projects/llvm-deps/mod_exp_tests/results/
 /projects/llvm-deps/mod_exp_tests/results-*/
@@ -113,13 +112,15 @@ results_with_source*.txt
 #==============================================================================#
 # Need some new exceptions for LSM tests - 4/15/2021
 #==============================================================================#
-!/projects/llvm-deps/linux_security_tests/tomoyo/bitcode/*.bc
 !/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
+!/projects/llvm-deps/linux_security_tests/apparmor/*.bc
 
 projects/llvm-deps/linux_security_tests/**/configs.bak
 projects/llvm-deps/linux_security_tests/**/results
+projects/llvm-deps/udp_tests/results
 projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg
 projects/llvm-deps/processing_tools/data/
 projects/llvm-deps/udp_unit_test/
+projects/llvm-deps/linux_security_tests/latex/

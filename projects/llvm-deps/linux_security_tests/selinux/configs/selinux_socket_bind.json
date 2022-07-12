@@ -1,0 +1,138 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "source",
+        "level": ["mediator", "input", "external"]
+      },
+      {
+        "name": "value",
+        "level": ["static", "k-static", "dynamic"]
+      }
+    ],
+    "compartments": [
+      {
+        "name": "purpose",
+        "set": ["subject", "object", "operation", "policy"]
+      }
+    ]
+  },
+  "source": [
+    {
+      "function": "selinux_socket_bind",
+      "type": "variable",
+      "name": "sock",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "selinux_socket_bind",
+      "type": "variable",
+      "name": "address",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "selinux_socket_bind",
+      "type": "variable",
+      "name": "addrlen",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "sock_has_perm",
+      "type": "variable",
+      "name": "perms",
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "variable",
+      "name": "current_task",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    }
+  ],
+  "sink": [
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 0,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 1,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 2,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 3,
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    }
+  ],
+  "using_whitelist": true,
+  "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/selinux/hooks.c", "line": 4039 },
+    { "file": "security/selinux/hooks.c", "line": 4058 },
+    { "file": "security/selinux/hooks.c", "line": 4068 },
+    { "file": "security/selinux/hooks.c", "line": 4073 },
+    { "file": "security/selinux/hooks.c", "line": 4076 },
+    { "file": "security/selinux/hooks.c", "line": 4048 }
+  ],
+  "entry": ["selinux_socket_bind"]
+}

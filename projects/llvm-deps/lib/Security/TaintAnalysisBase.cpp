@@ -122,7 +122,8 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
     }
 
     if (hasOffset) {
-      errs() << "Has offset [" << offset << "]\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      errs() << "Has offset [" << offset << "]\n";);
       std::set<const ConsElem *> rel;
 
 #if HOTSPOT
@@ -381,16 +382,16 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
     return relevant;
 
   elemMap = curElem->second;
-
-  errs() << "\tConsElemMap: \n";
-  for (auto e : elemMap) {
-    errs() << "\toffset: " << e.first << ", element [";
-    e.second->dump(errs());
-    errs() << "] addr [" << e.second << "] added.\n";
-  }
-
-  errs() << "Map size [" << elemMap.size() << "] <--> Number of elements ["
-         << numElements << "]\n";
+  DEBUG_WITH_TYPE(
+      DEBUG_TYPE_DEBUG, errs() << "\tConsElemMap: \n"; for (auto e
+                                                            : elemMap) {
+        errs() << "\toffset: " << e.first << ", element [";
+        e.second->dump(errs());
+        errs() << "] addr [" << e.second << "] added.\n";
+      });
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Map size [" << elemMap.size()
+                                           << "] <--> Number of elements ["
+                                           << numElements << "]\n";);
   if (elemMap.size() >= numElements) {
     if (span > 0) {
       return ifa->findRelevantConsElem(node, elemMap, offset, span);
@@ -526,8 +527,9 @@ void TaintAnalysisBase::labelValue(std::string kind,
         } else if (function_matches) {
           // test if the value's content starts with match
           std::string name = ifa->getOrCreateStringFromValue(value, false);
-          errs() << "var.name = " << var.name << "\n";
-          errs() << "name = " << name << "\n";
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                          errs() << "var.name = " << var.name << "\n";
+                          errs() << "name = " << name << "\n";);
           if (name.find(var.name) == 0 && var.name.find(name) == 0) {
             errs() << "Match Detected for " << name << "\n";
             ifa->setLabel(kind, value, var.label, gte);

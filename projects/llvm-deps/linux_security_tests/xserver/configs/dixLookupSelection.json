@@ -24,78 +24,89 @@
   },
   "source": [
     {
-      "function": "dixLookupDrawable",
-      "type": "variable",
-      "name": "id",
-      "index": -1,
-      "l": {
-        "source": "external",
-        "value": "dynamic"
-      },
-      "c": { "purpose": ["object"] }
-    },
-    {
-      "function": "dixLookupDrawable",
-      "type": "variable",
-      "name": "access",
-      "index": -1,
-      "l": {
-        "source": "external",
-        "value": "dynamic"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "function": "dixLookupDrawable",
+      "function": "dixLookupSelection",
       "type": "variable",
       "name": "client",
       "index": -1,
       "l": {
-        "source": "external",
+        "source": "input",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "dixLookupSelection",
+      "type": "variable",
+      "name": "CurrentSelections",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "dixLookupSelection",
+      "type": "variable",
+      "name": "selectionName",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "dixLookupSelection",
+      "type": "variable",
+      "name": "pSel",
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "dixLookupSelection",
+      "type": "variable",
+      "name": "access_mode",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
     }
   ],
   "sink": [
     {
-      "function": "XaceHook",
+      "function": "XaceHookSelectionAccess",
       "type": "argument",
-      "number": 7,
-      "index": 0,
+      "number": 2,
+      "index": -1,
       "l": {
-        "source": "external",
+        "source": "input",
         "value": "dynamic"
       },
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "XaceHook",
-      "type": "argument",
-      "number": 3,
-      "index": 0,
-      "l": {
-        "source": "external",
-        "value": "dynamic"
-      },
-      "c": { "purpose": ["object"] }
-    },
-    {
-      "function": "XaceHook",
-      "type": "argument",
-      "number": 4,
-      "index": 0,
-      "l": {
-        "source": "external",
-        "value": "dynamic"
-      },
-      "c": { "purpose": ["object"] }
-    },
-    {
-      "function": "XaceHook",
+      "function": "XaceHookSelectionAccess",
       "type": "argument",
       "number": 1,
-      "index": 0,
+      "index": -1,
+      "l": {
+        "source": "external",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "XaceHookSelectionAccess",
+      "type": "argument",
+      "number": 0,
+      "index": -1,
       "l": {
         "source": "external",
         "value": "dynamic"
@@ -103,5 +114,7 @@
       "c": { "purpose": ["subject"] }
     }
   ],
-  "entry": ["dixLookupDrawable"]
+  "using_whitelist": true,
+  "whitelist": [],
+  "entry": ["dixLookupSelection"]
 }

@@ -112,9 +112,9 @@ results_with_source*.txt
 #==============================================================================#
 # Need some new exceptions for LSM tests - 4/15/2021
 #==============================================================================#
-!/projects/llvm-deps/linux_security_tests/tomoyo/bitcode/*.bc
 !/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
+!/projects/llvm-deps/linux_security_tests/apparmor/*.bc
 
 projects/llvm-deps/linux_security_tests/**/configs.bak
 projects/llvm-deps/linux_security_tests/**/results

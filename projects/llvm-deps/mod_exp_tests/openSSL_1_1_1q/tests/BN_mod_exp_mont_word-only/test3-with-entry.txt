@@ -1,0 +1,29 @@
+BN_EXP:
+BN_MOD_EXP:
+BN_MOD_EXP_RECP:
+BN_MOD_EXP_MONT:
+BN_MOD_EXP_MONT_CONSTTIME:
+BN_MOD_EXP_MONT_WORD:
+bn_exp.c line 1123 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+bn_exp.c line 1124 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+bn_exp.c line 1133 - if (!BN_is_odd(m)) {
+bn_exp.c line 1137 - if (m->top == 1)
+bn_exp.c line 1141 - if (bits == 0) {
+bn_exp.c line 1143 - if (BN_is_one(m)) {
+bn_exp.c line 1151 - if (a == 0) {
+bn_exp.c line 1161 - if (d == NULL || r == NULL || t == NULL)
+bn_exp.c line 1161 - if (d == NULL || r == NULL || t == NULL)
+bn_exp.c line 1161 - if (d == NULL || r == NULL || t == NULL)
+bn_exp.c line 1167 - if ((mont = BN_MONT_CTX_new()) == NULL)
+bn_exp.c line 1179 - for (b = bits - 2; b >= 0; b--) {
+bn_exp.c line 1182 - if ((next_w / w) != w) { /* overflow */
+bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
+bn_exp.c line 1188 - if (!BN_MOD_MUL_WORD(r, w, m))
+bn_exp.c line 1200 - if (BN_is_bit_set(p, b)) {
+bn_exp.c line 1202 - if ((next_w / a) != w) { /* overflow */
+bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
+bn_exp.c line 1208 - if (!BN_MOD_MUL_WORD(r, w, m))
+bn_exp.c line 1218 - if (w != 1) {
+bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
+bn_exp.c line 1224 - if (!BN_MOD_MUL_WORD(r, w, m))
+BN_MOD_EXP_SIMPLE:

@@ -1,0 +1,4 @@
+wbits
+wsize
+N
+E

@@ -15,7 +15,7 @@
   },
   "source": [
     {
-      "function": "BN_mod_exp_mont_consttime",
+      "function": "BN_mod_exp_mont_word",
       "type": "variable",
       "name": "p",
       "index": 0,
@@ -28,5 +28,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [{ "name": "bits" }],
-  "entry": ["BN_mod_exp_mont_consttime"]
+  "entry": ["BN_mod_exp_mont_word"]
 }

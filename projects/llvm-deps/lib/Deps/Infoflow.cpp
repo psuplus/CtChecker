@@ -3299,11 +3299,16 @@ void Infoflow::readConfiguration() {
 
 ConfigVariable Infoflow::parseConfigVariable(json v) {
   std::string fn = v.contains("function") ? v.at("function") : "";
-  ConfigVariableType ty =
-      v.contains("type")
-          ? (v.at("type") == "argument" ? ConfigVariableType::Argument
-                                        : ConfigVariableType::Variable)
-          : ConfigVariableType::Variable;
+  ConfigVariableType ty = ConfigVariableType::Variable;
+  if (v.contains("type")) {
+    std::string type = v.at("type");
+    if (type == "argument")
+      ty = ConfigVariableType::Argument;
+    else if (type == "variable")
+      ty = ConfigVariableType::Variable;
+    else if (type == "constant")
+      ty = ConfigVariableType::Constant;
+  }
   std::string name = v.contains("name") ? v.at("name") : "";
   int num = v.contains("number") ? (int)v.at("number") : 0;
   int idx = v.contains("index") ? (int)v.at("index") : -1;
@@ -3329,7 +3334,13 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
     }
   }
   RLLabel label(level, compartment);
-  return ConfigVariable(fn, ty, name, num, idx, label);
+
+  // for constants
+  std::string file = v.contains("file") ? v.at("file") : "";
+  int line = v.contains("line") ? (unsigned int)v.at("line") : 0;
+  long value = v.contains("value") ? (long)v.at("value") : 0;
+
+  return ConfigVariable(fn, ty, name, num, idx, file, line, value, label);
 }
 
 int Infoflow::matchValueAndParsedString(const Value &value, std::string kind,

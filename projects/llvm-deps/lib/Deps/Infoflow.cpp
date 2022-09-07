@@ -160,6 +160,21 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
 }
 
 void Infoflow::constrainFlowRecord(const FlowRecord &record) {
+  if (record.one_to_one_directptr()) {
+    const Value *src = *record.source_directptr_begin();
+    const Value *sink = *record.sink_directptr_begin();
+    auto srcLoc = locsForValue(*src);
+    auto sinkLoc = locsForValue(*sink);
+    if (srcLoc.size() == 1 && sinkLoc.size() == 1) {
+      (*srcLoc.begin())->dump();
+      (*sinkLoc.begin())->dump();
+      if (*srcLoc.begin() == *sinkLoc.begin()) {
+        errs() << "One to one directptr, not constraining\n";
+        return;
+      }
+    }
+  }
+
   const ConsElem *sourceElem = NULL;
   const ConsElem *sinkSourceElem = NULL;
 

@@ -15,10 +15,10 @@
   },
   "source": [
     {
-      "function": "BN_mod_exp_mont_word",
+      "function": "mbedtls_mpi_exp_mod",
       "type": "variable",
-      "name": "p",
-      "index": 0,
+      "name": "E",
+      "index": 2,
       "l": {
         "secret": "private"
       },
@@ -27,6 +27,6 @@
   ],
   "sink": [],
   "using_whitelist": true,
-  "whitelist": [{ "name": "bits" }],
-  "entry": ["BN_mod_exp_mont_word"]
+  "whitelist": [{ "name": "wsize" }],
+  "entry": ["mbedtls_mpi_exp_mod"]
 }

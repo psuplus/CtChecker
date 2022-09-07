@@ -15,10 +15,10 @@
   },
   "source": [
     {
-      "function": "BN_mod_exp_mont_word",
+      "function": "_gcry_mpi_powm",
       "type": "variable",
-      "name": "p",
-      "index": 0,
+      "name": "expo",
+      "index": 4,
       "l": {
         "secret": "private"
       },
@@ -27,6 +27,10 @@
   ],
   "sink": [],
   "using_whitelist": true,
-  "whitelist": [{ "name": "bits" }],
-  "entry": ["BN_mod_exp_mont_word"]
+  "whitelist": [
+    { "name": "base_u_size" },
+    { "name": "rsize" },
+    { "name": "max_size" }
+  ],
+  "entry": ["_gcry_mpi_powm"]
 }

@@ -1,0 +1,34 @@
+BN_EXP:
+BN_MOD_EXP:
+BN_MOD_EXP_RECP:
+BN_MOD_EXP_MONT:
+BN_MOD_EXP_MONT_CONSTTIME:
+BN_MOD_EXP_MONT_WORD:
+BN_MOD_EXP_SIMPLE:
+bn_exp.c line 1255 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+bn_exp.c line 1256 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+bn_exp.c line 1257 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+bn_exp.c line 1264 - if (bits == 0) {
+bn_exp.c line 1266 - if (BN_is_one(m)) {
+bn_exp.c line 1278 - if (!d || !val[0])
+bn_exp.c line 1278 - if (!d || !val[0])
+bn_exp.c line 1281 - if (!BN_nnmod(val[0], a, m, ctx))
+bn_exp.c line 1283 - if (BN_is_zero(val[0])) {
+bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
+bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
+bn_exp.c line 1289 - window = BN_window_bits_for_exponent_size(bits);
+bn_exp.c line 1290 - if (window > 1) {
+bn_exp.c line 1291 - if (!BN_mod_mul(d, val[0], val[0], m, ctx))
+bn_exp.c line 1294 - for (i = 1; i < j; i++) {
+bn_exp.c line 1295 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+bn_exp.c line 1295 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+bn_exp.c line 1312 - if (BN_is_bit_set(p, wstart) == 0) {
+bn_exp.c line 1314 - if (!BN_mod_mul(r, r, r, m, ctx))
+bn_exp.c line 1316 - if (wstart == 0)
+bn_exp.c line 1329 - for (i = 1; i < window; i++) {
+bn_exp.c line 1330 - if (wstart - i < 0)
+bn_exp.c line 1332 - if (BN_is_bit_set(p, wstart - i)) {
+bn_exp.c line 1343 - for (i = 0; i < j; i++) {
+bn_exp.c line 1344 - if (!BN_mod_mul(r, r, r, m, ctx))
+bn_exp.c line 1349 - if (!BN_mod_mul(r, r, val[wvalue >> 1], m, ctx))
+bn_exp.c line 1356 - if (wstart < 0)

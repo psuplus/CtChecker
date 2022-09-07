@@ -1,0 +1,3 @@
+i32_sub.c line   36 - for (u = 1; u < m; u ++) {
+i32_add.c line   36 - for (u = 1; u < m; u ++) {
+i32_tmont.c line   33 - for (k = (m[0] + 31) >> 5; k > 0; k --) {

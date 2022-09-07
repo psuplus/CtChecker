@@ -173,6 +173,29 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
          source != end; ++source) {
       const ConsElem *elem =
           &getOrCreateConsElem(record.sourceContext(), **source);
+      (*source)->getType()->dump();
+      if (auto c = dyn_cast<ConstantInt>(*source)) {
+        errs() << "constant: ";
+        c->dump();
+        for (auto use : c->users()) {
+          // errs() << "used in: ";
+          // use->dump();
+          if (auto inst = dyn_cast<Instruction>(use)) {
+            for (FlowRecord::value_iterator sink = record.sink_value_begin(),
+                                            end = record.sink_value_end();
+                 sink != end; ++sink) {
+              if (*sink == inst && inst->getDebugLoc()) {
+                errs() << inst->getDebugLoc()->getFilename() << ":"
+                       << inst->getDebugLoc()->getLine() << "\n";
+                std::string loc =
+                    inst->getDebugLoc()->getFilename().str() + ":" +
+                    std::to_string(inst->getDebugLoc()->getLine());
+                constantValueConstraintMap[loc].insert(std::make_pair(c, elem));
+              }
+            }
+          }
+        }
+      }
       if (!DepsDropAtSink || !sourceSinkAnalysis->valueIsSink(**source)) {
         Sources.insert(elem);
       } else {
@@ -323,36 +346,37 @@ void Infoflow::addDirectValuesToSources(FlowRecord::value_set values,
                                                << "\n");
       processGetElementPtrInstSource(v, elems, locs, implicit);
     } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(v)) {
-      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, bit->getSrcTy()->dump());
-      if (bit->getSrcTy()->isPointerTy() &&
-          !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
-          bit->getSrcTy()->getPointerElementType()->isStructTy() &&
-          bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
-              "union.") &&
-          offset_used) {
-        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                        errs() << "DSOURCE BITCAST "
-                               << getOrCreateStringFromValue(*v) << "\n");
-        const BitCastInst *bit = dyn_cast<BitCastInst>(v);
-        if (bit->getDestTy()->isPointerTy() &&
-            !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
+      Type *ty = bit->getSrcTy();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, ty->dump());
+      if (ty->isPointerTy() && !ty->getPointerElementType()->isPointerTy()) {
+        StructType *st = dyn_cast<StructType>(ty->getPointerElementType());
+        if (st && st->hasName() && st->getName().startswith("union.") &&
+            offset_used) {
           DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                          bit->getDestTy()->getPointerElementType()->dump());
-          for (auto loc : locs) {
-            std::map<unsigned, const ConsElem *> elemMap;
-            elemMap = getOrCreateConsElemTyped(*loc, 0, v);
-            if (elemMap.size() == 1 && !loc->isArrayNode() &&
-                !loc->isNodeCompletelyFolded()) {
-              if (loc->isHeapNode()) {
-                elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+                          errs() << "DSOURCE BITCAST "
+                                 << getOrCreateStringFromValue(*v) << "\n");
+          if (bit->getDestTy()->isPointerTy() &&
+              !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                            bit->getDestTy()->getPointerElementType()->dump());
+            for (auto loc : locs) {
+              std::map<unsigned, const ConsElem *> elemMap;
+              elemMap = getOrCreateConsElemTyped(*loc, 0, v);
+              if (elemMap.size() == 1 && !loc->isArrayNode() &&
+                  !loc->isNodeCompletelyFolded()) {
+                if (loc->isHeapNode()) {
+                  elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+                }
+              }
+              elems = findRelevantConsElem(loc, elemMap, 0, v);
+              for (auto s : elems) {
+                DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "BITCAST SOURCE: ";
+                                s->dump(errs()); errs() << s << "\n";);
               }
             }
-            elems = findRelevantConsElem(loc, elemMap, 0, v);
-            for (auto s : elems) {
-              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "BITCAST SOURCE: ";
-                              s->dump(errs()); errs() << s << "\n";);
-            }
           }
+        } else {
+          locations.insert(locs.begin(), locs.end());
         }
       } else {
         locations.insert(locs.begin(), locs.end());
@@ -455,41 +479,43 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
       if (sinkFlow)
         processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
     } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(*sink)) {
-      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, bit->getSrcTy()->dump(););
-      if (bit->getSrcTy()->isPointerTy() &&
-          !bit->getSrcTy()->getPointerElementType()->isPointerTy() &&
-          bit->getSrcTy()->getPointerElementType()->isStructTy() &&
-          bit->getSrcTy()->getPointerElementType()->getStructName().startswith(
-              "union.") &&
-          offset_used) {
-        const Value *v = *sink;
-        // FIXIT: Should probably also be reflected in
-        // constrainReachSinkLocations
-        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                        errs() << "DSINK BITCAST INSTRUCTION "
-                               << getOrCreateStringFromValue(*v) << "\n";);
-        if (bit->getDestTy()->isPointerTy() &&
-            !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
+      Type *ty = bit->getSrcTy();
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, ty->dump(););
+      if (ty->isPointerTy() && !ty->getPointerElementType()->isPointerTy()) {
+        StructType *st = dyn_cast<StructType>(ty->getPointerElementType());
+        if (st && st->hasName() && st->getName().startswith("union.") &&
+            offset_used) {
+          const Value *v = *sink;
+          // FIXIT: Should probably also be reflected in
+          // constrainReachSinkLocations
           DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                          bit->getDestTy()->getPointerElementType()->dump(););
-          for (auto loc : locs) {
-            std::map<unsigned, const ConsElem *> elemMap;
-            elemMap = getOrCreateConsElemTyped(*loc, 0, v);
-            if (elemMap.size() == 1 && !loc->isArrayNode() &&
-                !loc->isNodeCompletelyFolded()) {
-              if (loc->isHeapNode()) {
-                elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+                          errs() << "DSINK BITCAST INSTRUCTION "
+                                 << getOrCreateStringFromValue(*v) << "\n";);
+          if (bit->getDestTy()->isPointerTy() &&
+              !bit->getDestTy()->getPointerElementType()->isPointerTy()) {
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                            bit->getDestTy()->getPointerElementType()->dump(););
+            for (auto loc : locs) {
+              std::map<unsigned, const ConsElem *> elemMap;
+              elemMap = getOrCreateConsElemTyped(*loc, 0, v);
+              if (elemMap.size() == 1 && !loc->isArrayNode() &&
+                  !loc->isNodeCompletelyFolded()) {
+                if (loc->isHeapNode()) {
+                  elemMap = getOrCreateConsElemTyped(*loc, 0, v, true);
+                }
+              }
+              ConsElemSet elems = findRelevantConsElem(loc, elemMap, 0, v);
+              for (auto e : elems) {
+                DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                                errs() << "BITCAST CONSTRAINING: ";
+                                e->dump(errs()); errs() << e << "\n";);
+                kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
+                                   source, *e, " ;  [ConsDebugTag-15]");
               }
             }
-            ConsElemSet elems = findRelevantConsElem(loc, elemMap, 0, v);
-            for (auto e : elems) {
-              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs()
-                                                    << "BITCAST CONSTRAINING: ";
-                              e->dump(errs()); errs() << e << "\n";);
-              kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
-                                 source, *e, " ;  [ConsDebugTag-15]");
-            }
           }
+        } else {
+          SinkLocs.insert(locs.begin(), locs.end());
         }
       } else {
         SinkLocs.insert(locs.begin(), locs.end());
@@ -1692,7 +1718,7 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
     }
   } else if (auto alloca = dyn_cast<AllocaInst>(&value)) {
     StructType *ty = dyn_cast<StructType>(alloca->getAllocatedType());
-    if (ty && ty->getStructName().startswith("union.")) {
+    if (ty && ty->hasName() && ty->getStructName().startswith("union.")) {
       AbstractLocSet locs = locsForValue(value);
       for (auto loc : locs) {
         createConsElemFromStruct(*loc, ty, locConstraintMap[loc], 0);

@@ -1011,6 +1011,19 @@ bool InfoflowSolution::isTainted(const Value &value) {
   }
 }
 
+bool InfoflowSolution::isTainted(const AbstractLoc &loc) {
+  auto entry = locMap.find(&loc);
+  if (entry != locMap.end()) {
+    auto &elem = entry->second;
+    for (auto &e : elem) {
+      if (!(soln->subst(*e.second) == botConstant)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 const Function *Infoflow::findEnclosingFunc(const Value *V) const {
   if (const Argument *Arg = dyn_cast<Argument>(V)) {
     return Arg->getParent();

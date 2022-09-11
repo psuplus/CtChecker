@@ -94,6 +94,19 @@ bool ImplicitFunction::runOnModule(Module &M) {
 
   std::set<const Value *> tainted = soln->getAllTaintValues();
 
+  // A hacky fix to add globals to the tainted set.
+  for (auto v : ifa->summarySourceValueConstraintMap) {
+    auto val = v.first;
+    if (!isa<BasicBlock>(val)) {
+      auto locs = ifa->locsForValue(*val);
+      for (auto loc : locs) {
+        if (soln->isTainted(*loc)) {
+          tainted.insert(val);
+        }
+      }
+    }
+  }
+
   DEBUG_WITH_TYPE(
       DEBUG_TYPE_TAINT, errs() << "\n---- Tainted Values BEGIN ----\n";
       for (auto i
@@ -104,6 +117,9 @@ bool ImplicitFunction::runOnModule(Module &M) {
                    << "\n";
           else
             errs() << bb->getParent()->getName() << ": " << i << "\n";
+          // Example of value printing filtering (by type).
+          // } else if (auto global = dyn_cast<GlobalVariable>(i)) {
+          //   errs() << "GLOBAL: " << global->getName() << "\n";
         } else {
           errs() << ifa->getOrCreateStringFromValue(*i) << "\n";
         }

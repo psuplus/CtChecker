@@ -131,6 +131,7 @@ public:
 
   /// isTainted - returns true if the security level of the value is High.
   bool isTainted(const Value &);
+  bool isTainted(const AbstractLoc &);
   void getOriginalLocation(const Value *);
   void allTainted();
   std::set<const Value *> getAllTaintValues();

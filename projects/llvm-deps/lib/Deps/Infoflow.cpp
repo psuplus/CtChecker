@@ -166,9 +166,11 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
     auto srcLoc = locsForValue(*src);
     auto sinkLoc = locsForValue(*sink);
     if (srcLoc.size() == 1 && sinkLoc.size() == 1) {
-      (*srcLoc.begin())->dump();
-      (*sinkLoc.begin())->dump();
       if (*srcLoc.begin() == *sinkLoc.begin()) {
+        FlowRecord newRecord = record;
+        newRecord.dump();
+        (*srcLoc.begin())->dump();
+        (*sinkLoc.begin())->dump();
         errs() << "One to one directptr, not constraining\n";
         return;
       }
@@ -188,20 +190,19 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
          source != end; ++source) {
       const ConsElem *elem =
           &getOrCreateConsElem(record.sourceContext(), **source);
-      (*source)->getType()->dump();
       if (auto c = dyn_cast<ConstantInt>(*source)) {
-        errs() << "constant: ";
-        c->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTANT, errs() << "constant: ";
+                        c->dump(););
         for (auto use : c->users()) {
-          // errs() << "used in: ";
-          // use->dump();
           if (auto inst = dyn_cast<Instruction>(use)) {
             for (FlowRecord::value_iterator sink = record.sink_value_begin(),
                                             end = record.sink_value_end();
                  sink != end; ++sink) {
               if (*sink == inst && inst->getDebugLoc()) {
-                errs() << inst->getDebugLoc()->getFilename() << ":"
-                       << inst->getDebugLoc()->getLine() << "\n";
+                DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTANT,
+                                errs()
+                                    << inst->getDebugLoc()->getFilename() << ":"
+                                    << inst->getDebugLoc()->getLine() << "\n");
                 std::string loc =
                     inst->getDebugLoc()->getFilename().str() + ":" +
                     std::to_string(inst->getDebugLoc()->getLine());
@@ -1009,6 +1010,19 @@ bool InfoflowSolution::isTainted(const Value &value) {
                     errs() << "not in solution: " << value << "\n");
     return defaultTainted;
   }
+}
+
+bool InfoflowSolution::isTainted(const AbstractLoc &loc) {
+  auto entry = locMap.find(&loc);
+  if (entry != locMap.end()) {
+    auto &elem = entry->second;
+    for (auto &e : elem) {
+      if (!(soln->subst(*e.second) == botConstant)) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 const Function *Infoflow::findEnclosingFunc(const Value *V) const {

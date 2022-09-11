@@ -65,6 +65,7 @@ using json = nlohmann::json;
 #define DEBUG_TYPE_DEBUG "debug"
 #define DEBUG_TYPE_PROFILE "profile"
 #define DEBUG_TYPE_TAINT "taint"
+#define DEBUG_TYPE_CONSTANT "constant"
 
 #define IMPLICIT 1
 #define HOTSPOT 0
@@ -131,6 +132,7 @@ public:
 
   /// isTainted - returns true if the security level of the value is High.
   bool isTainted(const Value &);
+  bool isTainted(const AbstractLoc &);
   void getOriginalLocation(const Value *);
   void allTainted();
   std::set<const Value *> getAllTaintValues();

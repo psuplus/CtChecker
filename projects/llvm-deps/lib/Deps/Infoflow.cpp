@@ -166,9 +166,11 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
     auto srcLoc = locsForValue(*src);
     auto sinkLoc = locsForValue(*sink);
     if (srcLoc.size() == 1 && sinkLoc.size() == 1) {
-      (*srcLoc.begin())->dump();
-      (*sinkLoc.begin())->dump();
       if (*srcLoc.begin() == *sinkLoc.begin()) {
+        FlowRecord newRecord = record;
+        newRecord.dump();
+        (*srcLoc.begin())->dump();
+        (*sinkLoc.begin())->dump();
         errs() << "One to one directptr, not constraining\n";
         return;
       }

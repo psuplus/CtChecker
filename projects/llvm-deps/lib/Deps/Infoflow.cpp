@@ -188,20 +188,19 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
          source != end; ++source) {
       const ConsElem *elem =
           &getOrCreateConsElem(record.sourceContext(), **source);
-      (*source)->getType()->dump();
       if (auto c = dyn_cast<ConstantInt>(*source)) {
-        errs() << "constant: ";
-        c->dump();
+        DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTANT, errs() << "constant: ";
+                        c->dump(););
         for (auto use : c->users()) {
-          // errs() << "used in: ";
-          // use->dump();
           if (auto inst = dyn_cast<Instruction>(use)) {
             for (FlowRecord::value_iterator sink = record.sink_value_begin(),
                                             end = record.sink_value_end();
                  sink != end; ++sink) {
               if (*sink == inst && inst->getDebugLoc()) {
-                errs() << inst->getDebugLoc()->getFilename() << ":"
-                       << inst->getDebugLoc()->getLine() << "\n";
+                DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTANT,
+                                errs()
+                                    << inst->getDebugLoc()->getFilename() << ":"
+                                    << inst->getDebugLoc()->getLine() << "\n");
                 std::string loc =
                     inst->getDebugLoc()->getFilename().str() + ":" +
                     std::to_string(inst->getDebugLoc()->getLine());

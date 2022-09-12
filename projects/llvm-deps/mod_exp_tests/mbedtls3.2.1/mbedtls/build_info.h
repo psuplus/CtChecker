@@ -54,7 +54,7 @@
 #endif
 
 #if !defined(MBEDTLS_CONFIG_FILE)
-#include "mbedtls/mbedtls_config.h"
+#include "mbedtls_config.h"
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
@@ -81,6 +81,6 @@
 #include "mbedtls/config_psa.h"
 #endif
 
-#include "mbedtls/check_config.h"
+#include "check_config.h"
 
 #endif /* MBEDTLS_BUILD_INFO_H */

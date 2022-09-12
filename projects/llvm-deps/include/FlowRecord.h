@@ -130,6 +130,13 @@ public:
   fun_iterator sink_varg_begin() const { return vargSinks.begin(); }
   fun_iterator sink_varg_end() const { return vargSinks.end(); }
 
+  bool one_to_one_directptr() const {
+    return directPtrSources.size() == 1 && directPtrSinks.size() == 1 &&
+           valueSources.size() == 0 && valueSinks.size() == 0 &&
+           vargSources.size() == 0 && vargSinks.size() == 0 &&
+           reachPtrSources.size() == 0 && reachPtrSinks.size() == 0;
+  }
+
   void dump() {
     errs() << "++++ Dumping Flow Record ++++ [" << this << "]\n";
     errs() << "\tSource context: " << sourceCtxt << "\n";

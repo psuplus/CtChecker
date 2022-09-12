@@ -65,6 +65,7 @@ using json = nlohmann::json;
 #define DEBUG_TYPE_DEBUG "debug"
 #define DEBUG_TYPE_PROFILE "profile"
 #define DEBUG_TYPE_TAINT "taint"
+#define DEBUG_TYPE_CONSTANT "constant"
 
 #define IMPLICIT 1
 #define HOTSPOT 0
@@ -87,7 +88,7 @@ public:
   const Unit upperBound(const Unit &u) const { return u; }
 };
 
-enum class ConfigVariableType { Argument, Variable };
+enum class ConfigVariableType { Argument, Variable, Constant };
 
 class ConfigVariable {
 public:
@@ -96,12 +97,16 @@ public:
   std::string name;
   int number;
   int index;
+  std::string file;
+  unsigned int line;
+  long value;
   RLLabel label;
 
   ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
-                 int num, int idx, RLLabel label)
-      : function(fn), type(ty), name(name), number(num), index(idx),
-        label(label) {}
+                 int num, int idx, std::string file, int line, int value,
+                 RLLabel label)
+      : function(fn), type(ty), name(name), number(num), index(idx), file(file),
+        line(line), value(value), label(label) {}
   ~ConfigVariable(){};
 };
 
@@ -127,6 +132,7 @@ public:
 
   /// isTainted - returns true if the security level of the value is High.
   bool isTainted(const Value &);
+  bool isTainted(const AbstractLoc &);
   void getOriginalLocation(const Value *);
   void allTainted();
   std::set<const Value *> getAllTaintValues();
@@ -345,6 +351,8 @@ private:
 
   ValueConsElemMap summarySinkValueConstraintMap;
   ValueConsElemMap summarySourceValueConstraintMap;
+  std::map<std::string, DenseMap<const ConstantInt *, const ConsElem *>>
+      constantValueConstraintMap;
   DenseMap<const Value *, std::string> valueStringMap;
   DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
   DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;

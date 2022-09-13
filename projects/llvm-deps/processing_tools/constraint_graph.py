@@ -14,12 +14,12 @@ HOTSPOT_MATCH = ["*Constant*"]
 class CE:
     """Constraint Element class"""
 
-    def __init__(self, a="", l=""):
-        self.addr = a
-        l = re.sub(r"\|\|+", "|", l)
-        l = re.sub(r"\|$", "", l)
-        l = re.sub(r"(\w+\.\w+)\|(\d+)", r"\1, \2", l)
-        self.label = l
+    def __init__(self, addr="", label=""):
+        self.addr = addr
+        label = re.sub(r"\|\|+", "|", label)
+        label = re.sub(r"\|$", "", label)
+        label = re.sub(r"(\w+\.\w+)\|(\d+)", r"\1, \2", label)
+        self.label = label
 
     def __hash__(self):
         return hash((self.addr, self.label))
@@ -46,11 +46,13 @@ class CE:
 def main():
     """Main function for generation of graph"""
 
+    encoding = "UTF-8"
+
     if len(sys.argv) <= 2:
         print("Usage: constraint_graph.py [con_file] [out_dot] -op [op]")
         print("\t [con_file]: The *.con file for use")
         print("\t [out_dot]: The *.dot file for output")
-        print("\t -grpah [0-1]: specifying if generating graph, defaults to 0")
+        print("\t -graph [0-1]: specifying if generating graph, defaults to 0")
         print("\t\t\t0: just dot file")
         print("\t\t\t1: also generating svg image")
 
@@ -63,9 +65,9 @@ def main():
             if sys.argv[i] == "-hotspot":
                 hotspot = int(sys.argv[i + 1])
 
-        with open(sys.argv[2], "w") as tmp_file:
+        with open(sys.argv[2], "w", encoding=encoding) as tmp_file:
             tmp_file.write("digraph {\n")
-            with open(sys.argv[1], "r") as file:
+            with open(sys.argv[1], "r", encoding=encoding) as file:
                 ce_set = set()
                 con_set = set()
                 for line in file:

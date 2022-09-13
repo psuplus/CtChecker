@@ -8,14 +8,16 @@ import sys
 def main():
     """Main function for generation of graph"""
 
+    encoding = "UTF-8"
+
     if len(sys.argv) <= 1:
         print("Usage: constraint_graph.py [dat_file]")
         print("\t [dat_file]: The *.dat file for use")
 
     else:
-        with open("./constraints-explicit.con", "w") as explicit:
-            with open("./constraints-implicit.con", "w") as implicit:
-                with open(sys.argv[1], "r") as dat:
+        with open("./constraints-explicit.con", "w", encoding=encoding) as explicit:
+            with open("./constraints-implicit.con", "w", encoding=encoding) as implicit:
+                with open(sys.argv[1], "r", encoding=encoding) as dat:
                     exp_write = False
                     imp_write = False
                     for line in dat:

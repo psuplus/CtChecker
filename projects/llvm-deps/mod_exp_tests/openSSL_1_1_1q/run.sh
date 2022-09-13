@@ -61,6 +61,8 @@ FILE="bn_exp.c"
 
 #use makefile
 make $1
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
+$LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
     do
@@ -70,29 +72,29 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         
         if [ $FUNC == "recp" ]; then
             echo "recp"
-            START=170
-            END=305
+            START=161
+            END=295
             TABLECOL=4
         elif [ $FUNC == "mont" ]; then
             echo "mont"
-            START=305
-            END=485
+            START=297
+            END=471
             TABLECOL=5
         elif [ $FUNC == "mont_consttime" ]; then
             echo "mont_consttime"
             START=593
-            END=1096
+            END=1136
             TABLECOL=6
         elif [ $FUNC == "mont_word" ]; then
             echo "mont_word"
-            START=1096
-            END=1244
+            START=1138
+            END=1283
             TABLECOL=7
         fi 
 
         TIME=$(date +%s)
         ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-        $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+        $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

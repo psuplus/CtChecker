@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MAY_READ",
+      "file": "security/apparmor/lsm.c",
+      "line": 478,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "apparmor_mmap_file",
       "type": "variable",
       "name": "file",

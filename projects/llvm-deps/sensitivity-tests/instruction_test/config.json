@@ -1,0 +1,30 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "caller",
+      "type": "variable",
+      "name": "obuf",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "entry": ["caller"]
+}

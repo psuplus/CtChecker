@@ -1,0 +1,30 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "foo",
+      "type": "variable",
+      "name": "A",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "entry": ["foo"]
+}

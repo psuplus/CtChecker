@@ -1,6 +1,7 @@
 {
   "signature_mode": {
-    "default": 2,
+    "direction": 2,
+    "pointer": 1,
     "custom": []
   },
   "lattice": {

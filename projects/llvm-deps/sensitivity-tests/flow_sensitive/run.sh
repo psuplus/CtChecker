@@ -32,13 +32,13 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -S main.ll -o main2.ll
 
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -constraint-generation  -debug < test.bc 2> tmp.dat > /dev/null
+  -vulnerablebranch  -debug < test.bc 2> tmp.dat > /dev/null
 
 cat tmp.dat | grep '<:' > constraints.con
 
@@ -53,3 +53,6 @@ cat tmp.dat | grep '<:' > constraints.con
 
 #./welcome
 
+
+CONS_FILENAME=$( echo 'constraints.con' | tr '/' '-')
+cat tmp.dat | grep '<:' > $CONS_FILENAME

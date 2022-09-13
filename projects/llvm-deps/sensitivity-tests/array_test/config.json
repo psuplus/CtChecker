@@ -1,6 +1,7 @@
 {
   "signature_mode": {
-    "default": 1,
+    "direction": 1,
+    "pointer": 0,
     "custom": []
   },
   "lattice": {
@@ -25,5 +26,7 @@
     }
   ],
   "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
   "entry": ["main"]
 }

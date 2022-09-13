@@ -51,7 +51,7 @@ struct Data {
   int *f1;
 };
 
-int regular_func(struct KeyS *, int);
+int regular_func(struct KeyS *a1, int a2);
 int regular_func(struct KeyS *a1, int a2) {
   a1->k0 = 1;
   a1->u.s0.f1 = a2;

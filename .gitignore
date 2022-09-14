@@ -43,6 +43,10 @@ cscope.out
 autoconf/aclocal.m4
 autoconf/autom4te.cache
 /compile_commands.json
+projects/llvm-deps/paper/conference/ccs.aux
+projects/llvm-deps/paper/conference/ccs.out
+projects/llvm-deps/paper/conference/ccs.synctex.gz
+
 
 #==============================================================================#
 # Directories to ignore (do not add trailing '/'s, they skip symlinks).

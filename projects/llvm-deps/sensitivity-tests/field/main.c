@@ -1,52 +1,22 @@
 #include <stdlib.h>
 
-typedef struct
-{
+typedef struct {
   int *a;
-  int *b;
+  int b;
 } S;
-typedef struct
-{
-  int *a;
-  int *b;
-} H;
 
-int* dummy_func(S *X, H *Y) {
-  // return Y->b;
-  // S k = *X;
-  // if (k.b != 0) {
-  //   return NULL;
-  // }
-  if (X->b != 0) {
-    return X->b;
-    // return NULL;
-  }
-  return (void*)0xFFFFEEEE;
-}
+int bar(const S *b) { return b->a[0]; }
 
-int* func(S* A, H *B)
-// int* func()
-{
-  // S tmp = *A;
-  // tmp.a = NULL;
-  // tmp.b = NULL;
-  // S* C = &tmp;
-  // S* A = (S*)malloc(sizeof(S));
-  // int* bits;
-  // if (A->b != 0) {
-  //   bits = A->a;
-  // } else {
-  //   bits = NULL;
-  // }
-  // int* bits = dummy_func(A);
-  // int* bits = A->b;
-  // S *C = (S*)malloc(sizeof(S));
-  // C->b = A->b;
-  // if (dummy_func(C, B) == 0) {
-    // return A->a;
-  // }
-  if (A->a) {
-    return B->a;
-  }
-  return (void *)0;
+int foo(S *A, S *B) {
+  if (bar(A))
+    ;
+  if (A->a[0])
+    ;
+  if (A->b)
+    ;
+  if (bar(B))
+    ;
+  if (B->b)
+    ;
+  return 0;
 }

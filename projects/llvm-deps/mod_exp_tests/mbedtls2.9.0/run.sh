@@ -65,6 +65,8 @@ LDFLAGS=
 LEVEL="../../../.."
 
 make $1
+$LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=0 $1 -o $1
+$LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 TIME=$(date +%s)
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \

@@ -4,7 +4,6 @@
     "pointer": 0,
     "custom": []
   },
-  "implicit_mode": 1,
   "lattice": {
     "levels": [
       {
@@ -16,9 +15,10 @@
   },
   "source": [
     {
+      "function": "tcp_v4_rcv",
       "type": "variable",
-      "name": "udptable",
-      "index": -1,
+      "name": "sk",
+      "index": 0,
       "l": {
         "secret": "private"
       },
@@ -28,5 +28,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["__udp4_lib_err"]
+  "entry": ["tcp_v4_rcv"]
 }

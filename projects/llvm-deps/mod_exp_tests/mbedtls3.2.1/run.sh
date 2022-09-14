@@ -40,8 +40,8 @@ if [ $3 = true ] ; then
 fi
 
 if [ $4 = true ] ; then
-        START=1605
-        END=1811
+        START=1965
+        END=2201
         FILE="bignum.c"
         if [ "$COL" = "" ] ; then
                 COL+="SRC"
@@ -65,9 +65,11 @@ LDFLAGS=
 LEVEL="../../../.."
 
 make $1
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
+$LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 TIME=$(date +%s)
-$LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

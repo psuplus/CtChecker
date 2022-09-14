@@ -59,6 +59,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+__attribute__((always_inline))
 static void mbedtls_mpi_zeroize( mbedtls_mpi_uint *v, size_t n ) {
     volatile mbedtls_mpi_uint *p = v; while( n-- ) *p++ = 0;
 }
@@ -111,6 +112,7 @@ void mbedtls_mpi_free( mbedtls_mpi *X )
 /*
  * Enlarge to the specified number of limbs
  */
+__attribute__((always_inline))
 int mbedtls_mpi_grow( mbedtls_mpi *X, size_t nblimbs )
 {
     mbedtls_mpi_uint *p;
@@ -712,6 +714,7 @@ int mbedtls_mpi_write_binary( const mbedtls_mpi *X, unsigned char *buf, size_t b
 /*
  * Left-shift: X <<= count
  */
+__attribute__((always_inline))
 int mbedtls_mpi_shift_l( mbedtls_mpi *X, size_t count )
 {
     int ret;
@@ -762,6 +765,7 @@ cleanup:
 /*
  * Right-shift: X >>= count
  */
+__attribute__((always_inline))
 int mbedtls_mpi_shift_r( mbedtls_mpi *X, size_t count )
 {
     size_t i, v0, v1;
@@ -835,6 +839,7 @@ int mbedtls_mpi_cmp_abs( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 /*
  * Compare signed values
  */
+__attribute__((always_inline))
 int mbedtls_mpi_cmp_mpi( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 {
     size_t i, j;
@@ -868,6 +873,7 @@ int mbedtls_mpi_cmp_mpi( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 /*
  * Compare signed values
  */
+__attribute__((always_inline))
 int mbedtls_mpi_cmp_int( const mbedtls_mpi *X, mbedtls_mpi_sint z )
 {
     mbedtls_mpi Y;
@@ -940,6 +946,7 @@ cleanup:
 /*
  * Helper for mbedtls_mpi subtraction
  */
+__attribute__((always_inline))
 static void mpi_sub_hlp( size_t n, mbedtls_mpi_uint *s, mbedtls_mpi_uint *d )
 {
     size_t i;
@@ -1106,6 +1113,7 @@ static
  */
 __attribute__ ((noinline))
 #endif
+__attribute__((always_inline))
 void mpi_mul_hlp( size_t i, mbedtls_mpi_uint *s, mbedtls_mpi_uint *d, mbedtls_mpi_uint b )
 {
     mbedtls_mpi_uint c = 0, t = 0;
@@ -1207,6 +1215,7 @@ cleanup:
 /*
  * Baseline multiplication: X = A * b
  */
+__attribute__((always_inline))
 int mbedtls_mpi_mul_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_uint b )
 {
     mbedtls_mpi _B;
@@ -1547,6 +1556,7 @@ static void mpi_montg_init( mbedtls_mpi_uint *mm, const mbedtls_mpi *N )
 /*
  * Montgomery multiplication: A = A * B * R^-1 mod N  (HAC 14.36)
  */
+__attribute__((always_inline))
 static int mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi *N, mbedtls_mpi_uint mm,
                          const mbedtls_mpi *T )
 {
@@ -1590,6 +1600,7 @@ static int mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi 
 /*
  * Montgomery reduction: A = A * R^-1 mod N
  */
+__attribute__((always_inline))
 static int mpi_montred( mbedtls_mpi *A, const mbedtls_mpi *N, mbedtls_mpi_uint mm, const mbedtls_mpi *T )
 {
     mbedtls_mpi_uint z = 1;

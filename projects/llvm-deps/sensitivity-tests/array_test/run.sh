@@ -32,7 +32,9 @@ $LEVEL/Debug+Asserts/bin/opt \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < test.bc > /dev/null
+  -vulnerablebranch  -debug < test.bc 2> tmp.dat > /dev/null
+
+cat tmp.dat | grep '<:' > constraints.con
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc
@@ -45,6 +47,3 @@ $LEVEL/Debug+Asserts/bin/opt \
 
 #./welcome
 
-
-CONS_FILENAME=$( echo 'constraints.con' | tr '/' '-')
-cat tmp.dat | grep '<:' > $CONS_FILENAME

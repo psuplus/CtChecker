@@ -42,4 +42,5 @@ min.bc: $(MIN_SRC)
 
 clean:
 	$(RM) *.bc
+	$(RM) *.ll
 	$(RM) mpi/*.bc

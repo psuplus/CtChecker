@@ -12,8 +12,11 @@
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
+/* Defined if --disable-asm was used to configure */
+/* #undef ASM_DISABLED */
+
 /* GIT commit id revision used to build this package */
-#define BUILD_REVISION ""
+#define BUILD_REVISION "ae0e5678"
 
 /* The time this package was configured for a build */
 #define BUILD_TIMESTAMP "<none>"
@@ -40,6 +43,9 @@
 /* Enable support for Intel DRNG (RDRAND instruction). */
 #define ENABLE_DRNG_SUPPORT 1
 
+/* Enable forcing 'soft' HW feature bits on (for testing). */
+/* #undef ENABLE_FORCE_SOFT_HWFEATURES */
+
 /* Define to support an HMAC based integrity check */
 /* #undef ENABLE_HMAC_BINARY_CHECK */
 
@@ -55,8 +61,17 @@
 /* Enable support for Intel PCLMUL instructions. */
 #define ENABLE_PCLMUL_SUPPORT 1
 
+/* Enable support for POWER 8 (PowerISA 2.07) crypto extension. */
+/* #undef ENABLE_PPC_CRYPTO_SUPPORT */
+
+/* Enable support for Intel SHAEXT instructions. */
+#define ENABLE_SHAEXT_SUPPORT 1
+
 /* Enable support for Intel SSE4.1 instructions. */
 #define ENABLE_SSE41_SUPPORT 1
+
+/* Define FIPS module version for certification */
+#define FIPS_MODULE_VERSION ""
 
 /* Define to use the GNU C visibility attribute. */
 #define GCRY_USE_VISIBILITY 1
@@ -79,17 +94,34 @@
 /* Defined if compiler has '__builtin_bswap64' intrinsic */
 #define HAVE_BUILTIN_BSWAP64 1
 
+/* Defined if compiler has '__builtin_clz' intrinsic */
+#define HAVE_BUILTIN_CLZ 1
+
+/* Defined if compiler has '__builtin_clzl' intrinsic */
+#define HAVE_BUILTIN_CLZL 1
+
 /* Defined if compiler has '__builtin_ctz' intrinsic */
 #define HAVE_BUILTIN_CTZ 1
 
-/* Defined if a `byte' is typedef'd */
-/* #undef HAVE_BYTE_TYPEDEF */
+/* Defined if compiler has '__builtin_ctzl' intrinsic */
+#define HAVE_BUILTIN_CTZL 1
+
+/* Define to 1 if the system has the type `byte'. */
+/* #undef HAVE_BYTE */
 
 /* Define to 1 if you have the `clock' function. */
 #define HAVE_CLOCK 1
 
 /* Define to 1 if you have the `clock_gettime' function. */
 #define HAVE_CLOCK_GETTIME 1
+
+/* Defined if underlying compiler supports PowerPC AltiVec/VSX/crypto
+   intrinsics */
+/* #undef HAVE_COMPATIBLE_CC_PPC_ALTIVEC */
+
+/* Defined if underlying compiler supports PowerPC AltiVec/VSX/crypto
+   intrinsics with extra GCC flags */
+/* #undef HAVE_COMPATIBLE_CC_PPC_ALTIVEC_WITH_CFLAGS */
 
 /* Defined if underlying assembler is compatible with ARMv8/Aarch64 assembly
    implementations */
@@ -122,15 +154,14 @@
 /* Defined for PPC platforms */
 /* #undef HAVE_CPU_ARCH_PPC */
 
+/* Defined for s390x/zSeries platforms */
+/* #undef HAVE_CPU_ARCH_S390X */
+
 /* Defined for SPARC platforms */
 /* #undef HAVE_CPU_ARCH_SPARC */
 
 /* Defined for the x86 platforms */
 #define HAVE_CPU_ARCH_X86 1
-
-/* Define to 1 if you have the declaration of `sys_siglist', and to 0 if you
-   don't. */
-#define HAVE_DECL_SYS_SIGLIST 1
 
 /* defined if the system supports a random device */
 #define HAVE_DEV_RANDOM 1
@@ -148,6 +179,15 @@
 /* defined if we must run on a stupid file system */
 /* #undef HAVE_DRIVE_LETTERS */
 
+/* Define to 1 if you have the `elf_aux_info' function. */
+/* #undef HAVE_ELF_AUX_INFO */
+
+/* Define to 1 if you have the `explicit_bzero' function. */
+#define HAVE_EXPLICIT_BZERO 1
+
+/* Define to 1 if you have the `explicit_memset' function. */
+/* #undef HAVE_EXPLICIT_MEMSET */
+
 /* Define to 1 if you have the `fcntl' function. */
 #define HAVE_FCNTL 1
 
@@ -156,6 +196,12 @@
 
 /* Define to 1 if you have the `ftruncate' function. */
 #define HAVE_FTRUNCATE 1
+
+/* Defined if underlying assembler supports for CFI directives */
+#define HAVE_GCC_ASM_CFI_DIRECTIVES 1
+
+/* Defined if underlying assembler supports for ELF directives */
+#define HAVE_GCC_ASM_ELF_DIRECTIVES 1
 
 /* Define if inline asm memory barrier is supported */
 #define HAVE_GCC_ASM_VOLATILE_MEMORY 1
@@ -209,11 +255,36 @@
 /* Defined if inline assembler supports PCLMUL instructions */
 #define HAVE_GCC_INLINE_ASM_PCLMUL 1
 
+/* Defined if inline assembler supports PowerPC AltiVec/VSX/crypto
+   instructions */
+/* #undef HAVE_GCC_INLINE_ASM_PPC_ALTIVEC */
+
+/* Defined if inline assembler supports PowerISA 3.00 instructions */
+/* #undef HAVE_GCC_INLINE_ASM_PPC_ARCH_3_00 */
+
+/* Defined if inline assembler supports zSeries instructions */
+/* #undef HAVE_GCC_INLINE_ASM_S390X */
+
+/* Defined if inline assembler supports zSeries vector instructions */
+/* #undef HAVE_GCC_INLINE_ASM_S390X_VX */
+
+/* Defined if inline assembler supports SHA Extensions instructions */
+#define HAVE_GCC_INLINE_ASM_SHAEXT 1
+
 /* Defined if inline assembler supports SSE4.1 instructions */
 #define HAVE_GCC_INLINE_ASM_SSE41 1
 
 /* Defined if inline assembler supports SSSE3 instructions */
 #define HAVE_GCC_INLINE_ASM_SSSE3 1
+
+/* Defined if inline assembler supports VAES and VPCLMUL instructions */
+#define HAVE_GCC_INLINE_ASM_VAES_VPCLMUL 1
+
+/* Define to 1 if you have the `getauxval' function. */
+#define HAVE_GETAUXVAL 1
+
+/* Define to 1 if you have the `getentropy' function. */
+#define HAVE_GETENTROPY 1
 
 /* Define to 1 if you have the `gethrtime' function. */
 /* #undef HAVE_GETHRTIME */
@@ -264,6 +335,9 @@
 /* Define to 1 if you have the `rand' function. */
 #define HAVE_RAND 1
 
+/* Define to 1 if you have the <spawn.h> header file. */
+/* #undef HAVE_SPAWN_H */
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
@@ -291,6 +365,9 @@
 /* Define to 1 if you have the `strtoul' function. */
 #define HAVE_STRTOUL 1
 
+/* Defined if compiler has '__sync_synchronize' intrinsic */
+#define HAVE_SYNC_SYNCHRONIZE 1
+
 /* Define to 1 if you have the `syscall' function. */
 #define HAVE_SYSCALL 1
 
@@ -300,17 +377,17 @@
 /* Define to 1 if you have the `syslog' function. */
 #define HAVE_SYSLOG 1
 
+/* Define to 1 if you have the <sys/auxv.h> header file. */
+#define HAVE_SYS_AUXV_H 1
+
 /* Define to 1 if you have the <sys/capability.h> header file. */
 /* #undef HAVE_SYS_CAPABILITY_H */
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 /* #undef HAVE_SYS_MMAN_H */
 
-/* Define to 1 if you have the <sys/msg.h> header file. */
-#define HAVE_SYS_MSG_H 1
-
-/* Define to 1 if you have the <sys/select.h> header file. */
-#define HAVE_SYS_SELECT_H 1
+/* Define to 1 if you have the <sys/random.h> header file. */
+#define HAVE_SYS_RANDOM_H 1
 
 /* Define to 1 if you have the <sys/socket.h> header file. */
 #define HAVE_SYS_SOCKET_H 1
@@ -321,23 +398,23 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
-/* Defined if a `u16' is typedef'd */
-/* #undef HAVE_U16_TYPEDEF */
+/* Define to 1 if the system has the type `u16'. */
+/* #undef HAVE_U16 */
 
-/* Defined if a `u32' is typedef'd */
-/* #undef HAVE_U32_TYPEDEF */
+/* Define to 1 if the system has the type `u32'. */
+/* #undef HAVE_U32 */
+
+/* Define to 1 if the system has the type `u64'. */
+/* #undef HAVE_U64 */
 
 /* Define to 1 if the system has the type `uintptr_t'. */
 #define HAVE_UINTPTR_T 1
 
-/* Defined if a `ulong' is typedef'd */
-#define HAVE_ULONG_TYPEDEF 1
-
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
-/* Defined if a `ushort' is typedef'd */
-#define HAVE_USHORT_TYPEDEF 1
+/* Define to 1 if the system has the type `ushort'. */
+#define HAVE_USHORT 1
 
 /* Defined if variable length arrays are supported */
 #define HAVE_VLA 1
@@ -357,9 +434,6 @@
 /* Define to 1 if you have the `waitpid' function. */
 #define HAVE_WAITPID 1
 
-/* Define to 1 if you have the <winsock2.h> header file. */
-/* #undef HAVE_WINSOCK2_H */
-
 /* Define to 1 if you have the <ws2tcpip.h> header file. */
 /* #undef HAVE_WS2TCPIP_H */
 
@@ -367,10 +441,10 @@
 /* #undef IS_DEVELOPMENT_VERSION */
 
 /* List of available cipher algorithms */
-#define LIBGCRYPT_CIPHERS "arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia:idea:salsa20:gost28147:chacha20"
+#define LIBGCRYPT_CIPHERS "arcfour:blowfish:cast5:des:aes:twofish:serpent:rfc2268:seed:camellia:idea:salsa20:gost28147:chacha20:sm4"
 
 /* List of available digest algorithms */
-#define LIBGCRYPT_DIGESTS "crc:gostr3411-94::md4:md5:rmd160:sha1:sha256:sha512:sha3:tiger:whirlpool:stribog:blake2"
+#define LIBGCRYPT_DIGESTS "crc:gostr3411-94::md4:md5:rmd160:sha1:sha256:sha512:sha3:tiger:whirlpool:stribog:blake2:sm3"
 
 /* List of available KDF algorithms */
 #define LIBGCRYPT_KDFS "s2k:pkdf2:scrypt"
@@ -391,17 +465,17 @@
 /* defined to the name of the weaker random device */
 #define NAME_OF_DEV_URANDOM "/dev/urandom"
 
-/* Name of this package */
+/* Name of package */
 #define PACKAGE "libgcrypt"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "http://bugs.gnupg.org"
+#define PACKAGE_BUGREPORT "https://bugs.gnupg.org"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "libgcrypt"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "libgcrypt 1.8.2"
+#define PACKAGE_STRING "libgcrypt 1.10.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "libgcrypt"
@@ -410,13 +484,10 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.8.2"
+#define PACKAGE_VERSION "1.10.1"
 
 /* A human readable text with the name of the OS */
 #define PRINTABLE_OS_NAME "GNU/Linux"
-
-/* Define as the return type of signal handlers (`int' or `void'). */
-#define RETSIGTYPE void
 
 /* The size of `uint64_t', as computed by sizeof. */
 #define SIZEOF_UINT64_T 8
@@ -505,8 +576,8 @@
 /* set this to limit filenames to the 8.3 format */
 /* #undef USE_ONLY_8DOT3 */
 
-/* Define to support the experimental random daemon */
-/* #undef USE_RANDOM_DAEMON */
+/* defined if we use posix_spawn in test program */
+/* #undef USE_POSIX_SPAWN_FOR_TESTS */
 
 /* Defined if this module should be included */
 #define USE_RFC2268 1
@@ -517,8 +588,11 @@
 /* Defined if the EGD based RNG should be used. */
 /* #undef USE_RNDEGD */
 
+/* Defined if the getentropy RNG should be used. */
+#define USE_RNDGETENTROPY 1
+
 /* Defined if the /dev/random RNG should be used. */
-#define USE_RNDLINUX 1
+/* #undef USE_RNDOLDLINUX */
 
 /* Defined if the default Unix RNG should be used. */
 /* #undef USE_RNDUNIX */
@@ -556,6 +630,12 @@
 /* Defined if this module should be included */
 #define USE_SHA512 1
 
+/* Defined if this module should be included */
+#define USE_SM3 1
+
+/* Defined if this module should be included */
+#define USE_SM4 1
+
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -587,8 +667,8 @@
 /* Defined if this module should be included */
 #define USE_WHIRLPOOL 1
 
-/* Version of this package */
-#define VERSION "1.8.2"
+/* Version number of package */
+#define VERSION "1.10.1"
 
 /* Defined if compiled symbols have a leading underscore */
 /* #undef WITH_SYMBOL_UNDERSCORE */
@@ -653,6 +733,12 @@
 
 
 #define _GCRYPT_IN_LIBGCRYPT 1
+
+/* Add .note.gnu.property section for Intel CET in assembler sources
+   when CET is enabled.  */
+#if defined(__ASSEMBLER__) && defined(__CET__)
+# include <cet.h>
+#endif
 
 /* If the configure check for endianness has been disabled, get it from
    OS macros.  This is intended for making fat binary builds on OS X.  */

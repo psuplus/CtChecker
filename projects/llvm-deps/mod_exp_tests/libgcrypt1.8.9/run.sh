@@ -72,7 +72,8 @@ make full.bc
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer full.bc -o full.bc
 $LEVEL/Debug+Asserts/bin/llvm-dis full.bc
 
-make mpi-pow.bc
+make mpi/mpi-pow.bc
+cp mpi/mpi-pow.bc .
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer mpi-pow.bc -o mpi-pow.bc
 $LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc
 

@@ -15,10 +15,10 @@
   },
   "source": [
     {
-      "function": "argument_gap",
+      "function": "main",
       "type": "variable",
-      "name": "n",
-      "index": 2,
+      "name": "A",
+      "index": 1,
       "l": {
         "secret": "private"
       },
@@ -28,5 +28,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["argument_gap"]
+  "entry": ["main"]
 }

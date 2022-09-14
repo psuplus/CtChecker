@@ -1,2 +1,0 @@
-p 0 BN_mod_exp_mont_consttime_algorithm
-m 0 BN_mod_exp_mont_consttime_algorithm

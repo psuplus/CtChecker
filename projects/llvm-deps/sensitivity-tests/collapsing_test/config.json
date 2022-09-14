@@ -36,5 +36,7 @@
     }
   ],
   "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
   "entry": ["main"]
 }

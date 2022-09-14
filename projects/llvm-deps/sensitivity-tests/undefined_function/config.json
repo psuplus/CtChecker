@@ -17,7 +17,7 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "key",
+      "name": "t",
       "index": -1,
       "l": {
         "secret": "private"
@@ -27,7 +27,17 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "pk",
+      "name": "y",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "main",
+      "type": "variable",
+      "name": "a",
       "index": -1,
       "l": {
         "secret": "private"

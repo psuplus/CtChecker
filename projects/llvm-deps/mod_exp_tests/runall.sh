@@ -63,7 +63,7 @@ full_library_tests()
 	
     execute_test "BearSSL0.6" "./run.sh" "testall.bc" $OUT_FULL_DIR true
     execute_test "mbedtls3.2.1" "./run.sh" "test2.bc" $OUT_FULL_DIR true
-    execute_test "libgcrypt1.8.9" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    execute_test "libgcrypt1.10.1" "./run.sh" "full.bc" $OUT_FULL_DIR true
     execute_test "openSSL_1_1_1q" "./run.sh" "test4.bc" $OUT_FULL_DIR true
 }
 
@@ -78,7 +78,7 @@ min_library_tests()
 	
     execute_test "BearSSL0.6" "./run.sh" "test2.bc" $OUT_MIN_DIR false
     execute_test "mbedtls3.2.1" "./run.sh" "test1.bc" $OUT_MIN_DIR false
-    execute_test "libgcrypt1.8.9" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
+    execute_test "libgcrypt1.10.1" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
     execute_test "openSSL_1_1_1q" "./run.sh" "test1.bc" $OUT_MIN_DIR false
 }
 

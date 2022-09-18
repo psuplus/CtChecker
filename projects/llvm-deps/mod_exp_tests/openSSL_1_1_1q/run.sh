@@ -108,8 +108,8 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         cat tmp.dat | grep '<:' > $CONS_FILENAME
 
         FILENAME=$( echo 'results_with_source-'$FUNC'-'$COL'.txt' | tr '/' '-')
-        export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-        post_analysis.py tmp.dat $START $END $COL $TABLECOL $FILE $TIME > $FILENAME
+        #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
+        python ../../processing_tools/post_analysis.py tmp.dat $START $END $COL $TABLECOL $FILE $TIME > $FILENAME
 
         DAT=$( echo 'tmp-'$FUNC'-'$COL'.dat' | tr '/' '-')
 

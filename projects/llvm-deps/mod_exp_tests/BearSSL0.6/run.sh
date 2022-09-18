@@ -78,8 +78,8 @@ CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
 cat tmp.dat | grep '<:' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
-export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
-post_analysis.py tmp.dat $START $END $COL 3 $FILE $TIME > $FILENAME
+#export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
+python ../../processing_tools/post_analysis.py tmp.dat $START $END $COL 3 $FILE $TIME > $FILENAME
 
 COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')
 

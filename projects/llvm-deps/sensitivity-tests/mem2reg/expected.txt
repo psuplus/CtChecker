@@ -1,5 +1,0 @@
-main.c line 13
-main.c line 16
-main.c line 19
-main.c line 22
-

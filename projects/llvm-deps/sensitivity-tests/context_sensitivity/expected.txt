@@ -1,2 +1,1 @@
-main.c line 6
-main.c line 10
+main.c line 45

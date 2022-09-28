@@ -112,6 +112,7 @@ bool ImplicitFunction::runOnModule(Module &M) {
       for (auto i
            : tainted) {
         if (auto bb = dyn_cast<BasicBlock>(i)) {
+          continue;
           if (bb->hasName())
             errs() << bb->getParent()->getName() << ": " << bb->getName()
                    << "\n";
@@ -122,6 +123,17 @@ bool ImplicitFunction::runOnModule(Module &M) {
           //   errs() << "GLOBAL: " << global->getName() << "\n";
         } else {
           errs() << ifa->getOrCreateStringFromValue(*i) << "\n";
+          auto locs = ifa->locsForValue(*i);
+          for (auto e : soln->taintedConsElemFromValue(*i)) {
+            e->dump(errs() << "  | CE" << e << ": ");
+            errs() << "\n";
+          }
+          for (auto loc : locs) {
+            for (auto e : soln->taintedConsElemFromLoc(*loc)) {
+              e->dump(errs() << "  | CE" << e << ": ");
+              errs() << "\n";
+            }
+          }
         }
       };
       errs() << "---- Tainted Values END ----\n\n";);

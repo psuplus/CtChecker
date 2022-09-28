@@ -25,7 +25,7 @@
     }
   ],
   "sink": [],
-  "using_whitelist": true,
+  "using_whitelist": false,
   "whitelist": [{ "name": "wl" }],
   "entry": ["main_function"]
 }

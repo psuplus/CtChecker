@@ -25,7 +25,7 @@ int main() {
   char b;
   int c = flow_between_args(&a, b);
 
-  if (p == 0) // should be untainted, but the absloc for c is tainted (from t) and flows to d
+  if (p == 0) // should be untainted, but the AbsLoc for c is tainted (from t) and flows to d
     ;
   if (q == 0) // untainted
     ;
@@ -36,7 +36,7 @@ int main() {
     ;
   if (t == 0) // tainted by taint.txt
     ;
-  if (u == 0) // untainted becuase no arguments are tainted
+  if (u == 0) // untainted because no arguments are tainted
     ;
 
   if (x == 0) // tainted from y because of undefined function

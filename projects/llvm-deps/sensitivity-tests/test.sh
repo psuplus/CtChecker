@@ -16,7 +16,11 @@ FAILS=0
 
 function execute_test() {
     cd $1
-    rm test.bc # make sure that the previously compiled code is gone
+    if [ -f test.bc ]; then
+        rm test.bc # make sure that the previously compiled code is gone
+    else
+        pwd
+    fi
 
     if [ "$(uname)" == "Darwin" ]; then
         EXT="dylib"
@@ -28,12 +32,21 @@ function execute_test() {
     LLVMLIBS=
     LDFLAGS=
     LEVEL="../../../.."
+    INCLUDES="-Iinclude"
+    MEM2REG=
+    if [ "$1" == "./flow_sensitive" ]; then
+        MEM2REG="-mem2reg"
+    fi
+    
+    if [ "$1" == "./mem2reg" ]; then
+        MEM2REG="-mem2reg"
+    fi
 
     # Compile using clang
     $LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.c* -o test.bc 2> /dev/null
 
     # Run the pass
-    $LEVEL/Debug+Asserts/bin/opt  -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+    $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
                                   -load ../../Debug+Asserts/lib/Constraints.$EXT  \
                                   -load ../../Debug+Asserts/lib/sourcesinkanalysis.$EXT \
                                   -load ../../Debug+Asserts/lib/pointstointerface.$EXT \
@@ -52,7 +65,7 @@ function execute_test() {
     cd $HOME_DIR
 }
 
-for d in $(find ./* -maxdepth 1 -type d);
+for d in $(find ./* -maxdepth 0 -type d);
 do
     if execute_test $d tmp filtered; then
         CHECK=$(diff $d/filtered $d/expected.txt | wc -l)

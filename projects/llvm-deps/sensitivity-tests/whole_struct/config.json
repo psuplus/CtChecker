@@ -37,6 +37,6 @@
   ],
   "sink": [],
   "using_whitelist": true,
-  "whitelist": [],
+  "whitelist": [{ "name": "c", "index": 0 }],
   "entry": ["main"]
 }

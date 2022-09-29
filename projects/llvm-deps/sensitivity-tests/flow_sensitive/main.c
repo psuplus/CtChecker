@@ -1,14 +1,21 @@
-int dummy_func(int *dum) { return *dum + 1; }
-int dummy_func2(int *dum) { return 23; }
+#include <stdio.h>
 
-int func(int br_arg) {
+void mbed(int secret) {
+  size_t wbits;
+  size_t i;
+  size_t nbits;
 
-  if (dummy_func(&br_arg))
-    ;
-  if (dummy_func2(&br_arg))
-    ;
-  if (dummy_func(&br_arg))
-    ;
+  i = secret;
+  for (; i < nbits; i++) {
+    printf("c");
+    wbits <<= 1;
+  }
+  i = 5;
+  i = 6;
+  i = 7;
 
-  return 0;
+  for (; i < nbits; i++) {
+    printf("c");
+    wbits <<= 1;
+  }
 }

@@ -5,11 +5,15 @@
 #define PRINT printf(" ")
 
 int function(int key) {
-	int i, b = rand();
-	srand(time(NULL));
-	i = key;
-	
-	i = b + rand();
-	
-	return i;
+  int i, b = rand();
+  srand(time(NULL));
+  i = key;
+  if (i)
+    ;
+
+  i = b + rand();
+  if (i)
+    ;
+
+  return i;
 }

@@ -17,8 +17,18 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "A",
-      "index": 1,
+      "name": "bad",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "main",
+      "type": "variable",
+      "name": "d",
+      "index": 2,
       "l": {
         "secret": "private"
       },

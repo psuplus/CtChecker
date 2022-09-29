@@ -4,7 +4,6 @@
 
 import sys
 import networkx
-from lattice import RLLabel, RLLattice
 
 
 def print_path(graph, start, end):
@@ -22,66 +21,14 @@ def print_path(graph, start, end):
 
 def main():
     """main function"""
-
     graph = networkx.drawing.nx_pydot.read_dot(sys.argv[1])
-    lattice = RLLattice(sys.argv[2])
 
     source_set = ["CONST[secret:1(private)][]"]
     sink_set = ["CE0x6429190"]
     for start in source_set:
         for end in sink_set:
             if networkx.has_path(graph, source=start, target=end) and start != end:
-                left = RLLabel(start)
-                right = RLLabel(end)
-                if not lattice.check_sub(left, right):
-                    print_path(graph, start, end)
-
-    # for e in sys.argv:
-    #     print(e)
-    # if len(sys.argv) != 3:
-    #     sys.exit("Error: Provide start and end node addresses.")
-    # print("===========")
-
-    # START = sys.argv[1]
-    # END = sys.argv[2]
-
-    # G = networkx.drawing.nx_pydot.read_dot("./tmp.dot")
-    # start = START
-    # end = ""
-    # edges = []
-    # print(start)
-    # print("-----------")
-    # for path in networkx.shortest_path(G, source=START, target=END):
-    #     end = path
-    #     if start == end:
-    #         continue
-    #     # edges.append(start + "&#45;&gt;" + end)
-    #     print(end)
-    #     start = end
-
-    # # print(edges)
-
-    # print("-----------")
-    # print(end)
-    # with open("./tmp.svg", "w") as tmp:
-    #     with open("./g.svg", "r+") as svg:
-    #         replace = False
-    #         count = 0
-    #         for line in svg:
-    #             if not replace:
-    #                 tmp.write(line)
-    #                 for e in edges:
-    #                     if e in line:
-    #                         replace = True
-    #                         print(line)
-    #             else:
-    #                 count = count + 1
-    #                 tmp.write(line.replace('"black"', '"red"'))
-    #                 if count == 4:
-    #                     count = 0
-    #                     replace = False
-    #     svg.close()
-    # tmp.close()
+                print_path(graph, start, end)
 
 
 if __name__ == "__main__":

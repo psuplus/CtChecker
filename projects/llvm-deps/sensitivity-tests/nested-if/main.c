@@ -1,15 +1,12 @@
 #include <stdio.h>
 
-
 typedef struct {
   int x;
   int y;
   int z;
 } Context;
 
-
-int main(void)
-{
+int main(void) {
   Context c, d;
   int key = 0; // this is tainted
 
@@ -22,14 +19,17 @@ int main(void)
   d.y = 0;
   d.z = 0;
 
+  if (key) {
+    d.y++;
 
-	if (key) {
-		d.y++;
-		
-		if(c.z == 0) {
-			d.x++;
-		}
-	}
+    if (c.x == 0) {
+      d.x++;
+    }
+
+    if (c.z == 0) {
+      d.x++;
+    }
+  }
 
   return 0;
 }

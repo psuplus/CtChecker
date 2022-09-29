@@ -18,9 +18,9 @@ int main () {
   q->y = key;
 
 
-  if (p.x == 4) // Vulnerable + Reported
+  if (p.x == 4) // Vulnerable + Not reported due to whitelist
     ;
-  if (p.y == 4) // Vulnerable + Not reported due to whitelist
+  if (p.y == 4) // Vulnerable + Reported
     ;
 
   if (q->x == 4) // Vulnerable + Reported

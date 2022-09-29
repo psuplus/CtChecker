@@ -32,17 +32,6 @@ $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.c
 $LEVEL/Debug+Asserts/bin/opt -mem2reg $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis $1
 
-if [ $2 = true ] ; then
-        if [ "$COL" = "" ] ; then
-                COL+="WL"
-        else
-                COL+="/WL"
-        fi
-        sed -i -r "s/\"using_whitelist\": false/\"using_whitelist\": true/g" "config.json"
-else
-        sed -i -r "s/\"using_whitelist\": true/\"using_whitelist\": false/g" "config.json"
-fi
-
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
@@ -50,7 +39,7 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -constraint-generation  -debug < test.bc 2> tmp.dat > /dev/null
+  -vulnerablebranch  -debug < test.bc 2> tmp.dat > /dev/null
 
 cat tmp.dat | grep '<:' > constraints.con
 

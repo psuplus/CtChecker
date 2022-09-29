@@ -1025,6 +1025,35 @@ bool InfoflowSolution::isTainted(const AbstractLoc &loc) {
   return false;
 }
 
+DenseSet<const ConsElem *>
+InfoflowSolution::taintedConsElemFromValue(const Value &value) {
+  DenseSet<const ConsElem *> result;
+  DenseMap<const Value *, const ConsElem *>::iterator entry =
+      valueMap.find(&value);
+  if (entry != valueMap.end()) {
+    const ConsElem &elem = *(entry->second);
+    if (!(soln->subst(elem) == botConstant)) {
+      result.insert(&elem);
+    }
+  }
+  return result;
+}
+
+DenseSet<const ConsElem *>
+InfoflowSolution::taintedConsElemFromLoc(const AbstractLoc &loc) {
+  DenseSet<const ConsElem *> result;
+  auto entry = locMap.find(&loc);
+  if (entry != locMap.end()) {
+    auto &elem = entry->second;
+    for (auto &e : elem) {
+      if (!(soln->subst(*e.second) == botConstant)) {
+        result.insert(e.second);
+      }
+    }
+  }
+  return result;
+}
+
 const Function *Infoflow::findEnclosingFunc(const Value *V) const {
   if (const Argument *Arg = dyn_cast<Argument>(V)) {
     return Arg->getParent();

@@ -27,6 +27,9 @@
   ],
   "sink": [],
   "using_whitelist": true,
-  "whitelist": [],
+  "whitelist": [
+    { "name": "p", "index": 0 },
+    { "name": "q", "index": 1 }
+  ],
   "entry": ["main"]
 }

@@ -15,10 +15,10 @@
   },
   "source": [
     {
-      "function": "mbedtls_mpi_exp_mod",
+      "function": "main",
       "type": "variable",
-      "name": "E",
-      "index": 2,
+      "name": "key",
+      "index": -1,
       "l": {
         "secret": "private"
       },
@@ -27,6 +27,6 @@
   ],
   "sink": [],
   "using_whitelist": true,
-  "whitelist": [],
-  "entry": ["mbedtls_mpi_exp_mod"]
+  "whitelist": [{ "name": "b" }],
+  "entry": ["main"]
 }

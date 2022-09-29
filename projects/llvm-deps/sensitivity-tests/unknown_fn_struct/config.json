@@ -1,6 +1,6 @@
 {
   "signature_mode": {
-    "direction": 1,
+    "direction": 3,
     "pointer": 0,
     "custom": []
   },
@@ -15,7 +15,6 @@
   },
   "source": [
     {
-      "function": "defined_function_2",
       "type": "variable",
       "name": "k",
       "index": 0,
@@ -28,5 +27,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["defined_function_2"]
+  "entry": ["defined_function", "defined_function_2", "defined_function_3"]
 }

@@ -15,18 +15,16 @@
   },
   "source": [
     {
-      "function": "func",
+      "function": "mbed",
       "type": "variable",
-      "name": "br_arg",
-      "index": 1,
+      "name": "secret",
+      "index": -1,
       "l": {
         "secret": "private"
       },
       "c": {}
     }
   ],
-  "sink": [],
-  "using_whitelist": true,
-  "whitelist": [],
-  "entry": ["func"]
+  "using_whitelist": false,
+  "sink": []
 }

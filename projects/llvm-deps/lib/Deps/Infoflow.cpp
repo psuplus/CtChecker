@@ -14,21 +14,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-// CHANGE
 #ifndef DEBUG_TYPE
 #define DEBUG_TYPE "deps"
 
 #include "Infoflow.h"
-#include "SignatureLibrary.h"
-
-#include "llvm/IR/DebugInfoMetadata.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/InstIterator.h"
-#include "llvm/IR/Module.h"
-#include "llvm/Support/CommandLine.h"
-#include "llvm/Support/Debug.h"
-#include <fstream>
-#include <iterator>
 
 namespace deps {
 
@@ -50,6 +39,7 @@ typedef Infoflow::Flows Flows;
 
 char Infoflow::ID = 42;
 char PDTCache::ID = 0;
+std::string delim = "|";
 
 static RegisterPass<Infoflow>
     X("infoflow", "Compute information flow constraints", true, true);
@@ -62,11 +52,13 @@ Infoflow::Infoflow()
       // user's analysis and a non-negative integer k.
       CallSensitiveAnalysisPass<Unit, Unit, 1, CallerContext>(
           ID, DepsCollapseExtContext, DepsCollapseIndContext),
-      kit(new LHConstraintKit()) {
+      kit(new RLConstraintKit()) {
   offset_used = false;
 }
 
 void Infoflow::doInitialization() {
+  readConfiguration();
+
   // Get the PointsToInterface
   pti = &getAnalysis<PointsToInterface>();
   // CHANGE
@@ -102,29 +94,29 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
   DEBUG(errs() << "Running on " << unit.function().getName() << " in context [";
         CM.getContextFor(unit.context()).dump(); errs() << "]\n");
 
-  // start only from entry functions, if "entry.txt" is specified
+  // start only from entry functions, if entry is specified in config
   bool needAnalysis = true;
   if (unit.context() == DefaultID) { // top-level function
-    std::ifstream fentry("entry.txt");
-    if (fentry.good()) {    // file exists
+    if (config.contains("entry")) {
       needAnalysis = false; // ignore if there is no match
-      std::string line;
-      while (std::getline(fentry, line)) {
-        if (unit.function().getName() == line) {
+      std::list<std::string> entries = config.at("entry");
+      for (auto e : entries) {
+        if (unit.function().getName() == e) {
           needAnalysis = true;
           break;
         }
       }
     }
   }
+
   if (!needAnalysis)
     return Unit();
 
   generateFunctionConstraints(unit.function());
 
   // errs() << "----- Trying to print out kit->vars -----\n";
-  // std::vector<const LHConsVar *> vars = kit->getVars();
-  // for (std::vector<const LHConsVar *>::iterator var = vars.begin(), end =
+  // std::vector<const RLConsVar *> vars = kit->getVars();
+  // for (std::vector<const RLConsVar *>::iterator var = vars.begin(), end =
   // vars.end();
   //  var != end; ++var) {
   //    if((*var)->getDesc() != "")
@@ -133,8 +125,8 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
 
   // kit->getOrCreateConstraintSet(kind)
   // errs() << "----- Trying to print out kit->joins -----\n";
-  // std::set<LHJoin> joins = kit->getJoins();
-  // for (std::set<LHJoin>::iterator join = joins.begin(), end = joins.end();
+  // std::set<RLJoin> joins = kit->getJoins();
+  // for (std::set<RLJoin>::iterator join = joins.begin(), end = joins.end();
   //    join != end; ++join) {
   //      errs() << "--- Elements of one join ---\n";
   //      std::set<const ConsElem *> elems = (*join).elements();
@@ -148,10 +140,10 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
   errs() << "----- Trying to print out ConstraintSet -----\n";
   /// there are 4 types "kind": default, default-sinks, explicit, explicit-sinks
   /// try "default" first
-  std::vector<LHConstraint> set = kit->getOrCreateConstraintSet("default");
+  std::vector<RLConstraint> set = kit->getOrCreateConstraintSet("default");
   /// set contains all constraints, constraints are pairs of ConsElem
   /// can't joint on rhs, only on lhs
-  for(std::vector<LHConstraint>::iterator constraint = set.begin(), end = set.end();
+  for(std::vector<RLConstraint>::iterator constraint = set.begin(), end = set.end();
       constraint != end; ++constraint) {
     //       /// a constraint contains two ConElem: lhs and rhs.
     //       /// We need to search through valueMap, locMap and vargMap to get the
@@ -801,7 +793,7 @@ bool InfoflowSolution::isTainted(const Value &value) {
       valueMap.find(&value);
   if (entry != valueMap.end()) {
     const ConsElem &elem = *(entry->second);
-    return (soln->subst(elem) == highConstant);
+    return (!(soln->subst(elem) == botConstant));
   } else {
     DEBUG(errs() << "not in solution: " << value << "\n");
     return defaultTainted;
@@ -935,7 +927,7 @@ bool InfoflowSolution::isDirectPtrTainted(const Value &value) {
           entry->second.end();
       for (; it != itEnd; ++it) {
         const ConsElem &elem = *(*it).second;
-        if (soln->subst(elem) == highConstant) {
+        if (!(soln->subst(elem) == botConstant)) {
           return true;
         }
       }
@@ -962,7 +954,7 @@ bool InfoflowSolution::isReachPtrTainted(const Value &value) {
           entry->second.end();
       for (; it != itEnd; ++it) {
         const ConsElem &elem = *(*it).second;
-        if (soln->subst(elem) == highConstant) {
+        if (!(soln->subst(elem) == botConstant)) {
           return true;
         }
       }
@@ -979,7 +971,7 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
       vargMap.find(&fun);
   if (entry != vargMap.end()) {
     const ConsElem &elem = *(entry->second);
-    return (soln->subst(elem) == highConstant);
+    return (!(soln->subst(elem) == botConstant));
   } else {
     DEBUG(errs() << "not in solution: varargs of " << fun.getName() << "\n");
     return defaultTainted;
@@ -991,30 +983,43 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
 ///////////////////////////////////////////////////////////////////////////////
 bool Infoflow::DropAtSinks() const { return DepsDropAtSink; }
 
+void Infoflow::setLabel(std::string kind, const Value &value, RLLabel label,
+                        bool gte) {
+  assert(kind != "default" && "Cannot add constraints to the default kind");
+  assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
+
+  if (gte)
+    putOrConstrainConsElemSummarySource(kind, value, kit->constant(label));
+  else {
+    const ConsElem &current = getOrCreateConsElemSummarySink(value);
+    kit->addConstraint(kind, current, kit->constant(label));
+  }
+}
+
 void Infoflow::setUntainted(std::string kind, const Value &value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const ConsElem &current = getOrCreateConsElemSummarySink(value);
-  kit->addConstraint(kind, current, kit->lowConstant());
+  kit->addConstraint(kind, current, kit->botConstant());
 }
 
 void Infoflow::setTainted(std::string kind, const Value &value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  putOrConstrainConsElemSummarySource(kind, value, kit->highConstant());
+  putOrConstrainConsElemSummarySource(kind, value, kit->topConstant());
 }
 
 void Infoflow::setVargUntainted(std::string kind, const Function &fun) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
   const ConsElem &current = getOrCreateVargConsElemSummarySink(fun);
-  kit->addConstraint(kind, current, kit->lowConstant());
+  kit->addConstraint(kind, current, kit->botConstant());
 }
 
 void Infoflow::setVargTainted(std::string kind, const Function &fun) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-  putOrConstrainVargConsElemSummarySource(kind, fun, kit->highConstant());
+  putOrConstrainVargConsElemSummarySource(kind, fun, kit->topConstant());
 }
 
 void Infoflow::setDirectPtrUntainted(std::string kind, const Value &value) {
@@ -1029,7 +1034,7 @@ void Infoflow::setDirectPtrUntainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, elem, kit->lowConstant());
+      kit->addConstraint(kind, elem, kit->botConstant());
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
@@ -1050,7 +1055,7 @@ void Infoflow::setDirectPtrTainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, kit->highConstant(), elem);
+      kit->addConstraint(kind, kit->topConstant(), elem);
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
@@ -1071,7 +1076,7 @@ void Infoflow::setReachPtrUntainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, elem, kit->lowConstant());
+      kit->addConstraint(kind, elem, kit->botConstant());
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
@@ -1092,7 +1097,7 @@ void Infoflow::setReachPtrTainted(std::string kind, const Value &value) {
     std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(**loc);
     if (hasOffset) {
       const ConsElem &elem = *elemMap[offset];
-      kit->addConstraint(kind, kit->highConstant(), elem);
+      kit->addConstraint(kind, kit->topConstant(), elem);
     }
     // for(std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
     // itEnd= elemMap.end(); it != itEnd; ++it){ kit->addConstraint(kind,
@@ -1112,8 +1117,9 @@ InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
     kinds.insert("implicit-sinks");
   return new InfoflowSolution(*this,                     // infoflow
                               kit->leastSolution(kinds), // ConsSoln* s
-                              kit->highConstant(), // const ConsElem & high
-                              false,               /* default to untainted */
+                              kit->topConstant(),        // const ConsElem & top
+                              kit->botConstant(),
+                              false, /* default to untainted */
                               summarySinkValueConstraintMap, // valueMap
                               locConstraintMap,              // locMap
                               summarySinkVargConstraintMap); // vargMap
@@ -1129,8 +1135,8 @@ InfoflowSolution *Infoflow::greatestSolution(std::set<std::string> kinds,
   }
   return new InfoflowSolution(*this,                        // infoflow
                               kit->greatestSolution(kinds), // ConsSoln* s
-                              kit->highConstant(), // const ConsElem & high
-                              true,                /* default to tainted */
+                              kit->topConstant(),       // const ConsElem & top
+                              kit->botConstant(), true, /* default to tainted */
                               summarySourceValueConstraintMap, // valueMap
                               locConstraintMap,                // locMap
                               summarySourceVargConstraintMap); // vargMap
@@ -2541,20 +2547,129 @@ Infoflow::parseTaintString(std::string line) {
   return ret;
 }
 
-int Infoflow::matchValueAndParsedString(
-    const Value &value, std::string kind,
-    std::tuple<std::string, int, std::string> match) {
-  std::string match_name;
-  int t_offset;
-  std::string fn_name;
-  std::tie(match_name, t_offset, fn_name) = match;
+void Infoflow::readConfiguration() {
+  // Read the config.json file and store it
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "\n[CONFIG] Start reading configuration file...\n");
+  std::ifstream i("config.json");
+  i >> config;
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << config.dump(4) << "\n\n");
 
+  // Sanity check: entry
+  if (config.contains("entry")) {
+    assert(config.at("entry").is_array());
+    std::list<json> entries = config.at("entry");
+    for (auto e : entries) {
+      assert(e.is_string());
+    }
+  }
+
+  // Read lattice
+  assert(config.contains("lattice"));
+  json lattice = config.at("lattice");
+  assert(lattice.contains("levels") && lattice.contains("compartments"));
+  for (json level : lattice.at("levels")) {
+    std::vector<std::string> levels;
+    for (std::string l : level.at("level")) {
+      auto it = std::find(levels.begin(), levels.end(), l);
+      assert(it == levels.end() && "Duplicate level names!");
+      levels.push_back(l);
+    }
+    RLConstant::RLLevelMap.insert(
+        std::pair<std::string, std::vector<std::string>>(level.at("name"),
+                                                         levels));
+    RLConstant::BotLabel.first[level.at("name")] = 0;
+    RLConstant::TopLabel.first[level.at("name")] = levels.size() - 1;
+  }
+  for (json set : lattice.at("compartments")) {
+    std::set<std::string> compartments;
+    for (std::string e : set.at("set")) {
+      compartments.insert(e);
+    }
+    RLConstant::RLCompartmentMap.insert(
+        std::pair<std::string, std::set<std::string>>(set.at("name"),
+                                                      compartments));
+
+    RLConstant::BotLabel.second[set.at("name")] = std::set<std::string>();
+    RLConstant::TopLabel.second[set.at("name")] = compartments;
+  }
+
+  RLConstant::lockLattice();
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, RLConstant::dump_lattice(errs());;);
+
+  // Read source & sink
+  assert(config.contains("source"));
+  for (json source : config.at("source")) {
+    sourceVariables.push_back(parseConfigVariable(source));
+  }
+  assert(config.contains("sink"));
+  for (json sink : config.at("sink")) {
+    sinkVariables.push_back(parseConfigVariable(sink));
+  }
+  assert(config.contains("using_whitelist"));
+  if (config.at("using_whitelist")) {
+    assert(config.contains("whitelist"));
+    for (json whitelist : config.at("whitelist")) {
+      whitelistVariables.push_back(parseConfigVariable(whitelist));
+    }
+  }
+}
+
+ConfigVariable Infoflow::parseConfigVariable(json v) {
+  std::string fn = v.contains("function") ? v.at("function") : "";
+  ConfigVariableType ty = ConfigVariableType::Variable;
+  if (v.contains("type")) {
+    std::string type = v.at("type");
+    if (type == "argument")
+      ty = ConfigVariableType::Argument;
+    else if (type == "variable")
+      ty = ConfigVariableType::Variable;
+    else if (type == "constant")
+      ty = ConfigVariableType::Constant;
+  }
+  std::string name = v.contains("name") ? v.at("name") : "";
+  int num = v.contains("number") ? (int)v.at("number") : 0;
+  int idx = v.contains("index") ? (int)v.at("index") : -1;
+
+  RLLevel level;
+  RLCompartment compartment;
+  if (v.contains("l") && v.contains("c")) {
+    std::unordered_map<std::string, std::string> lmap = v.at("l");
+    for (auto l : lmap) {
+      auto v = RLConstant::RLLevelMap.at(l.first);
+      auto it = find(v.begin(), v.end(), l.second);
+      assert(it != v.end());
+      int index = it - v.begin();
+      level.insert(std::make_pair(l.first, index));
+    }
+    std::unordered_map<std::string, std::list<std::string>> cmap = v.at("c");
+    for (auto c : cmap) {
+      std::set<std::string> set;
+      for (auto e : c.second) {
+        set.insert(e);
+      }
+      compartment.insert(std::make_pair(c.first, set));
+    }
+  }
+  RLLabel label(level, compartment);
+
+  // for constants
+  std::string file = v.contains("file") ? v.at("file") : "";
+  int line = v.contains("line") ? (unsigned int)v.at("line") : 0;
+  long value = v.contains("value") ? (long)v.at("value") : 0;
+
+  return ConfigVariable(fn, ty, name, num, idx, file, line, value, label);
+}
+
+int Infoflow::matchValueAndParsedString(const Value &value, std::string kind,
+                                        ConfigVariable var) {
   errs() << "Matching value with parsed string.\n";
-
   const Function *fn = findEnclosingFunc(&value);
+  if (fn)
+    errs() << "\t- found enclosing function: " << fn->getName() << "\n";
   int variable_matches = 0;
-  if (fn_name.size() == 0 ||
-      (fn && fn->hasName() && fn->getName() == fn_name)) {
+  if (var.function.size() == 0 ||
+      (fn && fn->hasName() && fn->getName() == var.function)) {
     errs() << "\t- function matched\n";
     const MDLocalVariable *local_var;
     if (fn) {
@@ -2564,14 +2679,14 @@ int Infoflow::matchValueAndParsedString(
         (local_var->getTag() == 257 || local_var->getTag() == 256)) {
       errs() << "\t- local_var has the name: [" << local_var->getName()
              << "]\n";
-      if (local_var->getName() == match_name) {
+      if (local_var->getName() == var.name) {
         variable_matches |= 1;
         errs() << "\t- Found a local variable match\n\n";
       }
     }
     if (value.hasName()) {
       errs() << "\t- value has the name: [" << value.getName() << "]\n";
-      if (value.getName() == match_name) {
+      if (value.getName() == var.name) {
         variable_matches |= 2;
         errs() << "\t- Found a value name match\n\n";
       }
@@ -2626,10 +2741,9 @@ void Infoflow::getOrCreateLocationValueMap() {
   }
 }
 
-void Infoflow::removeConstraint(
-    std::string kind, std::tuple<std::string, int, std::string> match) {
+void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
   getOrCreateLocationValueMap();
-  errs() << "Removing values tied to " << std::get<0>(match) << "\n";
+  errs() << "Removing values tied to " << whitelist.name << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = summarySourceValueConstraintMap.begin(),
            end = summarySourceValueConstraintMap.end();
@@ -2639,22 +2753,22 @@ void Infoflow::removeConstraint(
 
     const Value &value = *(entry->first);
 
-    std::string s;
-    llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(s);
-    *ss << value; // dump value info to ss
-    ss->str();    // flush stream to s
+    std::string match_name = whitelist.name;
+    int t_offset = whitelist.index;
+    std::string fn_name = whitelist.function;
 
-    std::string match_name;
-    int t_offset;
-    std::string fn_name;
-    std::tie(match_name, t_offset, fn_name) = match;
-
-    errs() << "The value under examination is: [" << s << "]\n"
-           << "\twith offset = [" << t_offset << "], and in the function: ["
-           << fn_name << "]\n\n";
+    const Function *fn = findEnclosingFunc(&value);
+    bool function_matches = false;
+    if (fn_name.size() == 0 ||
+        (fn && fn->hasName() && fn->getName() == fn_name)) {
+      function_matches = true;
+    }
 
     bool remove_reg = true, remove_mem = true;
-    if (matchValueAndParsedString(value, kind, match)) {
+    // if(function_matches && value.hasName() && value.getName() ==
+    // whitelist.name)
+    // {
+    if (matchValueAndParsedString(value, kind, whitelist)) {
       // Removing constraints in the registers, i.e., valueConstraintMap
       if (remove_reg) {
         errs() << "Removing constraint from valueConstraintMap\n";
@@ -2681,11 +2795,11 @@ void Infoflow::removeConstraint(
         }
       }
 
-      // Removing constraints in the memory, i.e., AbstractLoc set derived from
-      // the value
+      // Removing constraints in the memory, i.e., AbstractLoc set derived
+      // from the value
       if (remove_mem) {
         const std::set<const AbstractLoc *> &locs = locsForValue(value);
-        errs() << "--" << match_name << " : " << value
+        errs() << "--" << whitelist.name << " : " << value
                << ", t_offset: " << t_offset << ", locs: " << locs.size()
                << "\n";
         for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
@@ -2706,7 +2820,8 @@ void Infoflow::removeConstraint(
             // if the AbsLocation is a merged node, we conservatively kick it
             // out of the whitelisting process
             errs() << "^^^^^: "
-                   << invertedLocConstraintMap.find(*loc)->getFirst() << "\n";
+                   << invertedLocConstraintMap.find(*loc)->getSecond().size()
+                   << "\n";
             invertedLocConstraintMap.find(*loc)->getSecond().erase(&value);
             continue;
           }
@@ -2717,14 +2832,13 @@ void Infoflow::removeConstraint(
               linkExists = curElem->first->hasLink(0);
 
             if (linkExists) {
-              // If the value is a pointer, use pointsto analysis to resolve the
+              // If value is a pointer, use points-to analysis to resolve the
               // target
               const DSNodeHandle nh = curElem->first->getLink(0);
               const AbstractLoc *node = nh.getNode();
               errs() << "Linked Node";
               if (node != NULL) {
-
-                node->dump();
+                DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, node->dump(););
                 DenseMap<const AbstractLoc *,
                          std::map<unsigned, const ConsElem *>>::iterator
                     childElem = locConstraintMap.find(node);
@@ -2738,19 +2852,19 @@ void Infoflow::removeConstraint(
             removeConstraintFromIndex(kind, *loc, &value, elemMap, t_offset);
           } else {
             // Removes any constraints tied to that AbstractLoc
-            for (std::map<unsigned, const ConsElem *>::iterator it =
-                     elemMap.begin();
-                 it != elemMap.end(); ++it) {
+            for (std::map<unsigned, const ConsElem *>::iterator
+                     it = elemMap.begin(),
+                     itEnd = elemMap.end();
+                 it != itEnd; ++it) {
               const ConsElem *e = it->second;
-              errs() << "------"
-                     << " conselem addr"
-                     << " : " << e << "\n";
+
+              errs() << "------ conselem addr: " << e << "\n";
               kit->removeConstraintRHS(kind, *e);
             }
           }
         }
       }
-    } else if (s.find(match_name) == 0) {
+    } else if (stringFromValue(value).find(whitelist.name) == 0) {
       errs() << "Removing constraint with a no match: ";
       const ConsElem &elem = *(entry->second);
       elem.dump(errs());
@@ -2763,33 +2877,34 @@ void Infoflow::removeConstraint(
 }
 
 void Infoflow::constrainAllConsElem(
-    std::string kind, std::map<unsigned, const ConsElem *> elemMap) {
-  // errs() << "Tainting all constraint elements from value\n";
+    std::string kind, std::map<unsigned, const ConsElem *> elemMap,
+    RLLabel label) {
   for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                       end = elemMap.end();
        it != end; ++it) {
     // it->second->dump(errs());
     if ((it->second) != NULL)
-      kit->addConstraint(kind, kit->highConstant(), *(it->second));
+      kit->addConstraint(kind, kit->constant(label), *(it->second));
   }
 }
+
 void Infoflow::constrainAllConsElem(std::string kind,
-                                    std::set<const ConsElem *> elems) {
-  // errs() << "Tainting all constraint elements from value\n";
+                                    std::set<const ConsElem *> elems,
+                                    RLLabel label) {
   for (std::set<const ConsElem *>::iterator it = elems.begin(),
                                             end = elems.end();
        it != end; ++it) {
-    //(*it)->dump(errs());
-    kit->addConstraint(kind, kit->highConstant(), *(*it));
+    kit->addConstraint(kind, kit->constant(label), *(*it));
   }
 }
+
 void Infoflow::constrainAllConsElem(std::string kind, const Value &v,
-                                    std::set<const ConsElem *> elems) {
-  // errs() << "Tainting all constraint elements from value\n";
+                                    std::set<const ConsElem *> elems,
+                                    RLLabel label) {
   if (elems.size() == 0) {
-    setTainted(kind, v);
+    setLabel(kind, v, label, true);
   } else {
-    constrainAllConsElem(kind, elems);
+    constrainAllConsElem(kind, elems, label);
   }
 }
 
@@ -2887,6 +3002,8 @@ AbstractLocSet Infoflow::getPointedToAbstractLocs(const Value *v) {
 void Infoflow::constrainOffsetFromIndex(
     std::string kind, const AbstractLoc *loc, const Value *v,
     std::map<unsigned, const ConsElem *> elemMap, int fieldIdx) {
+// TODO enable this when fixed
+#if 0
   if (StructType *st = convertValueToStructType(v)) {
     unsigned offset = findOffsetFromFieldIndex(st, (unsigned)fieldIdx, loc);
     errs() << "Index " << fieldIdx << "->" << offset << "\n";
@@ -2896,9 +3013,11 @@ void Infoflow::constrainOffsetFromIndex(
       // it->second->dump(errs());
       elem->dump(errs());
       errs() << "\n";
-      kit->addConstraint(kind, kit->highConstant(), *elem);
+      kit->addConstraint(kind, kit->topConstant(), *elem,
+                         " ;  [ConsDebugTag-20]");
     } else {
-      constrainAllConsElem(kind, elemMap);
+      //TODO enable this when fixed
+      // constrainAllConsElem(kind, elemMap);
     }
   } else if (const AllocaInst *al = dyn_cast<AllocaInst>(v)) {
     if (isa<ArrayType>(al->getAllocatedType())) {
@@ -2907,12 +3026,15 @@ void Infoflow::constrainOffsetFromIndex(
       // elements as the array So just taint that one otherwise taint all
       // elements in the map
       if (elemMap.size() > (unsigned)fieldIdx) {
-        kit->addConstraint(kind, kit->highConstant(), *elem);
+        kit->addConstraint(kind, kit->topConstant(), *elem,
+                           " ;  [ConsDebugTag-21]");
       } else {
-        constrainAllConsElem(kind, elemMap);
+        //TODO enable this when fixed
+        // constrainAllConsElem(kind, elemMap);
       }
     }
   }
+#endif
 }
 
 void Infoflow::removeConstraintFromIndex(

@@ -11,14 +11,14 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "Infoflow.h"
-#include "Constraints/LHConstraintKit.h"
-#include "Constraints/LHConstraints.h"
 #include "Constraints/PartialSolution.h"
+#include "Constraints/RLConstraintKit.h"
+#include "Constraints/RLConstraints.h"
 #include "Constraints/SolverThread.h"
+#include "Infoflow.h"
 
-#include "llvm/Support/Threading.h"
 #include "llvm/Support/Atomic.h"
+#include "llvm/Support/Threading.h"
 #include <cassert>
 #include <pthread.h>
 
@@ -26,7 +26,7 @@ using namespace llvm;
 
 namespace deps {
 
-SolverThread* SolverThread::spawn(Constraints &C, bool greatest) {
+SolverThread *SolverThread::spawn(Constraints &C, bool greatest) {
   SolverThread *T = new SolverThread(C, greatest);
 
   if (::pthread_create(&T->thread, NULL, solve, T)) {
@@ -36,26 +36,26 @@ SolverThread* SolverThread::spawn(Constraints &C, bool greatest) {
   return T;
 }
 
-void* SolverThread::solve(void* arg) {
+void *SolverThread::solve(void *arg) {
   assert(arg);
-  SolverThread *T = (SolverThread*)arg;
+  SolverThread *T = (SolverThread *)arg;
   PartialSolution *P = new PartialSolution(T->C, T->greatest);
-  return (void*)P;
+  return (void *)P;
 }
 
-void SolverThread::join(PartialSolution*& P) {
-  ::pthread_join(thread, (void**)&P);
+void SolverThread::join(PartialSolution *&P) {
+  ::pthread_join(thread, (void **)&P);
 }
 
-void LHConstraintKit::solveMT(std::string kind) {
-  assert(lockedConstraintKinds.insert(kind).second && "Already solved");
-  assert(!leastSolutions.count(kind));
-  assert(!greatestSolutions.count(kind));
+void RLConstraintKit::solveMT(std::string kind, Predicate *pred) {
+  assert(lockedConstraintKinds[pred].insert(kind).second && "Already solved");
+  assert(!leastSolutions[pred].count(kind));
+  assert(!greatestSolutions[pred].count(kind));
 
-  PartialSolution*& G = greatestSolutions[kind];
-  PartialSolution*& L = leastSolutions[kind];
+  PartialSolution *&G = greatestSolutions[pred][kind];
+  PartialSolution *&L = leastSolutions[pred][kind];
 
-  Constraints &C = getOrCreateConstraintSet(kind);
+  Constraints &C = getOrCreateConstraintSet(kind, *pred);
 
   SolverThread *TG = SolverThread::spawn(C, true);
   SolverThread *TL = SolverThread::spawn(C, false);
@@ -66,25 +66,25 @@ void LHConstraintKit::solveMT(std::string kind) {
   delete TG;
   delete TL;
 
-  assert(leastSolutions.count(kind));
-  assert(greatestSolutions.count(kind));
+  assert(leastSolutions[pred].count(kind));
+  assert(greatestSolutions[pred].count(kind));
 
   // Cleanup
-  freeUnneededConstraints(kind);
+  freeUnneededConstraints(kind, *pred);
 }
 
-
 struct MergeInfo {
-  PartialSolution * Default;
-  PartialSolution * DefaultSinks;
+  PartialSolution *Default;
+  PartialSolution *DefaultSinks;
   bool useDefaultSinks;
-  std::vector<PartialSolution*> Mergees;
+  std::vector<PartialSolution *> Mergees;
 };
 
-void* merge(void *arg) {
-  MergeInfo *MI = (MergeInfo*)arg;
-  for (std::vector<PartialSolution*>::iterator I = MI->Mergees.begin(),
-	 E = MI->Mergees.end(); I != E; ++I) {
+void *merge(void *arg) {
+  MergeInfo *MI = (MergeInfo *)arg;
+  for (std::vector<PartialSolution *>::iterator I = MI->Mergees.begin(),
+                                                E = MI->Mergees.end();
+       I != E; ++I) {
     (*I)->mergeIn(*MI->Default);
     if (MI->useDefaultSinks) {
       (*I)->mergeIn(*MI->DefaultSinks);
@@ -93,23 +93,27 @@ void* merge(void *arg) {
   return NULL;
 }
 
-std::vector<PartialSolution*>
-LHConstraintKit::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks) {
-  assert(leastSolutions.count("default"));
+std::vector<PartialSolution *>
+RLConstraintKit::solveLeastMT(std::vector<std::string> kinds,
+                              bool useDefaultSinks, const Predicate *pred) {
+  assert(leastSolutions[pred].count("default"));
 
-  PartialSolution *P = leastSolutions["default"];
-  PartialSolution *DS = leastSolutions["default-sinks"];
-  std::vector<PartialSolution*> ToMerge;
-  for (std::vector<std::string>::iterator kind = kinds.begin(), end = kinds.end();
+  PartialSolution *P = leastSolutions[pred]["default"];
+  PartialSolution *DS = leastSolutions[pred]["default-sinks"];
+  std::vector<PartialSolution *> ToMerge;
+  for (std::vector<std::string>::iterator kind = kinds.begin(),
+                                          end = kinds.end();
        kind != end; ++kind) {
-    assert(lockedConstraintKinds.insert(*kind).second && "Already solved");
-    assert(!leastSolutions.count(*kind));
-    leastSolutions[*kind] = new PartialSolution(getOrCreateConstraintSet(*kind), false);
-    ToMerge.push_back(new PartialSolution(*leastSolutions[*kind]));
+    assert(lockedConstraintKinds[pred].insert(*kind).second &&
+           "Already solved");
+    assert(!leastSolutions[pred].count(*kind));
+    leastSolutions[pred][*kind] =
+        new PartialSolution(getOrCreateConstraintSet(*kind, *pred), false);
+    ToMerge.push_back(new PartialSolution(*leastSolutions[pred][*kind]));
   }
 
   // Make copy of the set of solutions for returning when we're done
-  std::vector<PartialSolution*> Merged(ToMerge);
+  std::vector<PartialSolution *> Merged(ToMerge);
 
   const unsigned T = 16;
   // Now kick off up to 'T' jobs, each with a vector of merges to do
@@ -125,7 +129,7 @@ LHConstraintKit::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSin
   // And round-robin hand out merge jobs:
   unsigned TID = 0;
   while (!ToMerge.empty()) {
-    MergeInfo* M = &MI[TID];
+    MergeInfo *M = &MI[TID];
     TID = (TID + 1) % T;
 
     M->Mergees.push_back(ToMerge.back());
@@ -155,20 +159,20 @@ LHConstraintKit::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSin
   return Merged;
 }
 
-std::vector<InfoflowSolution*>
-Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks) {
-  std::vector<PartialSolution*> PS = kit->solveLeastMT(kinds, useDefaultSinks);
+std::vector<InfoflowSolution *>
+Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
+                       const Predicate *pred) {
+  std::vector<PartialSolution *> PS =
+      kit->solveLeastMT(kinds, useDefaultSinks, pred);
 
-  std::vector<InfoflowSolution*> Solns;
-  for (std::vector<PartialSolution*>::iterator I = PS.begin(), E = PS.end();
+  std::vector<InfoflowSolution *> Solns;
+  for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();
        I != E; ++I) {
-    Solns.push_back(new InfoflowSolution(*this,
-                                         *I,
-                                         kit->highConstant(),
-                                         false, /* default to untainted */
-                                         summarySinkValueConstraintMap,
-                                         locConstraintMap,
-                                         summarySinkVargConstraintMap));
+    Solns.push_back(
+        new InfoflowSolution(*this, *I, kit->topConstant(), kit->botConstant(),
+                             false, /* default to untainted */
+                             summarySinkValueConstraintMap, locConstraintMap,
+                             summarySinkVargConstraintMap));
   }
 
   return Solns;

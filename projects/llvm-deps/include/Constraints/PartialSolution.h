@@ -15,11 +15,11 @@
 #define _PARTIAL_SOLUTION_H_
 
 #include "Constraints/ConstraintKit.h"
-#include "Constraints/LHConstraintKit.h"
-#include "Constraints/LHConstraints.h"
+#include "Constraints/RLConstraintKit.h"
+#include "Constraints/RLConstraints.h"
 
-#include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/DenseSet.h"
 #include "llvm/ADT/SmallPtrSet.h"
 
 #include <vector>
@@ -29,12 +29,12 @@ namespace deps {
 class PartialSolution : public ConsSoln {
 public:
   // Exported types:
-  typedef llvm::SmallPtrSet<const ConsVar*,1> VarSet;
-  typedef llvm::DenseMap<const ConsVar*, std::vector<const ConsVar*> > PMap;
-  typedef std::vector<LHConstraint> Constraints;
+  typedef llvm::SmallPtrSet<const ConsVar *, 1> VarSet;
+  typedef llvm::DenseMap<const ConsVar *, std::vector<const ConsVar *>> PMap;
+  typedef std::vector<RLConstraint> Constraints;
 
   // Constructor, constraints aren't stored
-  PartialSolution(Constraints & C, bool initial) : initial(initial) {
+  PartialSolution(Constraints &C, bool initial) : initial(initial) {
     initialize(C);
     propagate();
   }
@@ -46,16 +46,18 @@ public:
   void mergeIn(PartialSolution &P);
 
   // Evaluate the given ConsElem in our solution environment
-  const LHConstant& subst(const ConsElem& E);
+  const RLConstant &subst(const ConsElem &E);
 
 private:
   // Construct propagation map and seed VSet
-  void initialize(Constraints & C);
+  void initialize(Constraints &C);
 
   // Solve by propagation
   void propagate();
   // Query VSets of this and all chained solutions
-  bool isChanged(const ConsVar*);
+  bool isChanged(const ConsVar *);
+
+  RLLabel boundLabel(const ConsVar *);
 
   // Member variables:
 
@@ -63,10 +65,12 @@ private:
   // Used to store by-value the PropagationMap when the non-merge ctor is used.
   PMap P;
   // Set of variables with non-default values
-  VarSet VSet;
+  std::map<RLLabel, VarSet> VSet;
+
+  static std::map<const ConsVar *, RLLabel> VarLabelMap;
 
   // Chained solutions
-  std::vector<PartialSolution*> Chained;
+  std::vector<PartialSolution *> Chained;
 
   // Do we consider variables 'high' intially?
   bool initial;

@@ -103,3 +103,4 @@ ocaml
 tmp*.dat
 results_with_source*.txt
 /projects/llvm-deps/mod_exp_tests/results/
+.vscode

@@ -19,25 +19,57 @@
 
 #include "CallContext.h"
 #include "CallSensitiveAnalysisPass.h"
-#include "Constraints/LHConsSoln.h"
-#include "Constraints/LHConstraintKit.h"
+#include "Constraints/RLConsSoln.h"
+#include "Constraints/RLConstraintKit.h"
 #include "FPCache.h"
 #include "FlowRecord.h"
 #include "InfoflowSignature.h"
 #include "PointsToInterface.h"
+#include "SignatureLibrary.h"
 #include "SourceSinkAnalysis.h"
 #include "TaintAnalysisBase.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Analysis/PostDominators.h"
+#include "llvm/IR/DebugInfo.h"
+#include "llvm/IR/DebugInfoMetadata.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/InstIterator.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
+#include "llvm/IR/LLVMContext.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Support/CommandLine.h"
+#include "llvm/Support/Debug.h"
+#include "llvm/Support/Format.h"
+
+#include "json/json.hpp"
 
 #include <deque>
+#include <filesystem>
+#include <fstream>
+#include <iterator>
 #include <map>
+#include <regex>
 #include <set>
 #include <tuple>
 #include <utility>
+
+using json = nlohmann::json;
+
+#ifndef DEBUG_TYPE_CONSTRAINT
+#define DEBUG_TYPE_CONSTRAINT "constraint"
+#endif
+#define DEBUG_TYPE_CALLINST "callinst"
+#define DEBUG_TYPE_METAINFO "meta"
+#define DEBUG_TYPE_FLOW "flow"
+#define DEBUG_TYPE_DEBUG "debug"
+#define DEBUG_TYPE_PROFILE "profile"
+#define DEBUG_TYPE_TAINT "taint"
+#define DEBUG_TYPE_CONSTANT "constant"
+
+#define IMPLICIT 1
+#define HOTSPOT 0
 
 namespace deps {
 
@@ -62,6 +94,28 @@ public:
   virtual const char *getPassName() const { return "PostDom Cache"; }
 };
 
+enum class ConfigVariableType { Argument, Variable, Constant };
+
+class ConfigVariable {
+public:
+  std::string function;
+  ConfigVariableType type;
+  std::string name;
+  int number;
+  int index;
+  std::string file;
+  unsigned int line;
+  long value;
+  RLLabel label;
+
+  ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
+                 int num, int idx, std::string file, int line, int value,
+                 RLLabel label)
+      : function(fn), type(ty), name(name), number(num), index(idx), file(file),
+        line(line), value(value), label(label) {}
+  ~ConfigVariable(){};
+};
+
 class Infoflow;
 
 /// InfoflowSolution wraps a constraint set solution with
@@ -69,15 +123,15 @@ class Infoflow;
 /// values and locations.
 class InfoflowSolution {
 public:
-  InfoflowSolution(Infoflow &infoflow, ConsSoln *s, const ConsElem &high,
-                   bool defaultTainted,
+  InfoflowSolution(Infoflow &infoflow, ConsSoln *s, const ConsElem &top,
+                   const ConsElem &bot, bool defaultTainted,
                    DenseMap<const Value *, const ConsElem *> &valueMap,
                    DenseMap<const AbstractLoc *,
                             std::map<unsigned, const ConsElem *>> &locMap,
                    DenseMap<const Function *, const ConsElem *> &vargMap)
       :
 
-        infoflow(infoflow), soln(s), highConstant(high),
+        infoflow(infoflow), soln(s), topConstant(top), botConstant(bot),
         defaultTainted(defaultTainted), valueMap(valueMap), locMap(locMap),
         vargMap(vargMap) {}
   ~InfoflowSolution();
@@ -102,7 +156,8 @@ private:
 
   const Infoflow &infoflow;
   ConsSoln *soln;
-  const ConsElem &highConstant;
+  const ConsElem &topConstant;
+  const ConsElem &botConstant;
   bool defaultTainted;
   DenseMap<const Value *, const ConsElem *> &valueMap;
   DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>> &locMap;
@@ -128,8 +183,11 @@ public:
   typedef std::set<const ConsElem *> ConsElemSet;
   typedef FlowRecord::value_iterator value_iterator;
   typedef FlowRecord::value_set value_set;
+
   static char ID;
   bool offset_used;
+  json config;
+
   Infoflow();
   virtual ~Infoflow() {
     delete kit;
@@ -175,6 +233,7 @@ public:
   /// solving for an information flow solution, the user
   /// may specify a set of constraints to include.
 
+  void setLabel(std::string, const Value &, RLLabel, bool);
   /// Adds the constraint "TAINTED <= VALUE" to the given kind
   void setUntainted(std::string, const Value &);
   /// Adds the constraint "VALUE <= UNTAINTED" to the given kind
@@ -232,12 +291,13 @@ public:
   Flows getInstructionFlows(const Instruction &);
 
   // Solve the given kind using two threads.
-  void solveMT(std::string kind = "default") {
+  void solveMT(std::string kind, Predicate *pred) {
     assert(kit);
-    kit->solveMT(kind);
+    kit->solveMT(kind, pred);
   }
-  std::vector<InfoflowSolution *> solveLeastMT(std::vector<std::string> kinds,
-                                               bool useDefaultSinks);
+  std::vector<InfoflowSolution *>
+  solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
+               const Predicate *pred = &RLConstraintKit::truePredicate());
 
 private:
   virtual void doInitialization();
@@ -246,7 +306,7 @@ private:
   virtual const Unit bottomOutput() const;
   virtual const Unit runOnContext(const AUnitType unit, const Unit input);
 
-  LHConstraintKit *kit;
+  RLConstraintKit *kit;
 
   PointsToInterface *pti;
   SourceSinkAnalysis *sourceSinkAnalysis;
@@ -265,6 +325,10 @@ private:
   reachableHandlesForValue(const Value &value) const;
 
   bool offsetForValue(const Value &value, unsigned *Offset);
+
+  std::vector<ConfigVariable> sinkVariables;
+  std::vector<ConfigVariable> sourceVariables;
+  std::vector<ConfigVariable> whitelistVariables;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
@@ -363,10 +427,12 @@ private:
                                        const StructType *);
 
   std::tuple<std::string, int, std::string> parseTaintString(std::string line);
-  static int
-  matchValueAndParsedString(const Value &value, std::string kind,
-                            std::tuple<std::string, int, std::string> match);
+  void readConfiguration();
+  ConfigVariable parseConfigVariable(json v);
+
+  int matchValueAndParsedString(const Value &, std::string, ConfigVariable);
   void getOrCreateLocationValueMap();
+  void removeConstraint(std::string, ConfigVariable);
   void removeConstraint(std::string kind, std::string match);
   void removeConstraint(std::string kind,
                         std::tuple<std::string, int, std::string> match);
@@ -374,10 +440,11 @@ private:
                                  const Value *,
                                  std::map<unsigned, const ConsElem *>, int);
   void constrainAllConsElem(std::string kind,
-                            std::map<unsigned, const ConsElem *>);
-  void constrainAllConsElem(std::string kind, std::set<const ConsElem *>);
+                            std::map<unsigned, const ConsElem *>, RLLabel);
+  void constrainAllConsElem(std::string kind, std::set<const ConsElem *>,
+                            RLLabel);
   void constrainAllConsElem(std::string kind, const Value &,
-                            std::set<const ConsElem *>);
+                            std::set<const ConsElem *>, RLLabel);
   void constrainOffsetFromIndex(std::string, const AbstractLoc *, const Value *,
                                 std::map<unsigned, const ConsElem *>, int);
 

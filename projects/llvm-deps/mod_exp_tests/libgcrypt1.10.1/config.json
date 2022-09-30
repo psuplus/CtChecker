@@ -1,0 +1,36 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "_gcry_mpi_powm",
+      "type": "variable",
+      "name": "expo",
+      "index": 4,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [
+    { "name": "base_u_size" },
+    { "name": "rsize" },
+    { "name": "max_size" }
+  ],
+  "entry": ["_gcry_mpi_powm"]
+}

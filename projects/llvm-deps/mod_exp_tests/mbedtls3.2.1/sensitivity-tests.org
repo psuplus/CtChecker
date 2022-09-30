@@ -1,0 +1,3394 @@
+* Linking extra files - Early June 2017
+** External nodes merged in PTI
+   Vulnerable Branch :: tainted value "pk"
+   1. pk_encrypt.c +6 -0
+      - pk_encrypt.c line 91  - call to mbedtls_ctr_drbg_seed(..)
+      - pk_encrypt.c line 104 - call to pk_parse_public_keyfile(..)
+      - pk_encrypt.c line 110 - call to strlen(..)
+      - pk_encrypt.c line 124 - call to mbedtls_pk_encrypt(..)
+      - pk_encrypt.c line 142 - for loop on olen
+      - pk_encrypt.c line 155 - ret from all previous calls
+   2. pk_encrypt.c pk.c+27 -0
+      - pk_encrypt.c line 91
+      - pk_encrypt.c line 104
+      - pk_encrypt.c line 110
+      - pk_encrypt.c line 124
+      - pk_encrypt.c line 142
+      - pk_encrypt.c line 155
+      - pk.c line 70  - Null check
+      - pk.c line 109 - Null check
+      - pk.c line 132 - Null check
+      - pk.c line 157 - Null check
+      - pk.c line 187 - Null check
+      - pk.c line 191 - Null check on child struct
+      - pk.c line 206 - Null check
+      - pk.c line 228 - siglen < mbedtls_pk_get_len(ctx)
+      - pk.c line 237 - ret from mbedtls_rsa_rsassa_pss_verify_ext(mbedtls_pk_rsa(*ctx))
+      - pk.c line 240 - siglen < mbedtls_pk_get_len(ctx)
+      - pk.c line 264 - Null check
+      - pk.c line 268 - Null check
+      - pk.c line 283 - Null check
+      - pk.c line 286 - Null check 
+      - pk.c line 301 - Null check
+      - pk.c line 304 - Null check
+      - pk.c line 316 - Null check
+      - pk.c line 317 - Null check
+      - pk.c line 316 - Null check
+      - pk.c line 323 - Private context type check
+      - pk.c line 325 - Nested in above Public context type check
+      - pk.c line 330 - public/private comparison of pkinfo
+      - pk.c line 342 - Null check
+      - pk.c line 353 - Null check
+      - pk.c line 356 - Null check
+      - pk.c line 368 - Null check
+      - pk.c line 379 - Null check
+   3. pk_encrypt.c pk.c pk_wrap.c+7 -0
+      - pk_encrypt.c line 91
+      - pk_encrypt.c line 104
+      - pk_encrypt.c line 110
+      - pk_encrypt.c line 124
+      - pk_encrypt.c line 142
+      - pk_encrypt.c line 155
+      - pk.c line 70
+      - pk.c line 109
+      - pk.c line 132
+      - pk.c line 157
+      - pk.c line 187
+      - pk.c line 191
+      - pk.c line 206
+      - pk.c line 228
+      - pk.c line 237
+      - pk.c line 240
+      - pk.c line 264
+      - pk.c line 268
+      - pk.c line 283
+      - pk.c line 286
+      - pk.c line 301
+      - pk.c line 304
+      - pk.c line 316
+      - pk.c line 317
+      - pk.c line 316
+      - pk.c line 323
+      - pk.c line 325
+      - pk.c line 330
+      - pk.c line 342
+      - pk.c line 353
+      - pk.c line 356
+      - pk.c line 368
+      - pk.c line 379
+      - pk_wrap.c line 87  - direct branch on ctx->len
+      - pk_wrap.c line 95  - direct branch on ctx->len
+      - pk_wrap.c line 122 - direct branch on ctx->len
+      - pk_wrap.c line 136 - direct branch on ctx->len
+      - pk_wrap.c line 441 - direct branch with ctx
+      - pk_wrap.c line 456 - prv cmp pub <extracted from original tainted value>
+      - pk_wrap.c line 461 - branch on fn call with prv
+   4. pk_encrypt.c pk.c pk_wrap.c rsa.c+130 -0
+      - pk_encrypt.c line 91
+      - pk_encrypt.c line 104
+      - pk_encrypt.c line 110
+      - pk_encrypt.c line 124
+      - pk_encrypt.c line 142
+      - pk_encrypt.c line 155
+      - pk.c line 70
+      - pk.c line 109
+      - pk.c line 132
+      - pk.c line 157
+      - pk.c line 187
+      - pk.c line 191
+      - pk.c line 206
+      - pk.c line 228
+      - pk.c line 237
+      - pk.c line 240
+      - pk.c line 264
+      - pk.c line 268
+      - pk.c line 283
+      - pk.c line 286
+      - pk.c line 301
+      - pk.c line 304
+      - pk.c line 316
+      - pk.c line 317
+      - pk.c line 316
+      - pk.c line 323
+      - pk.c line 325
+      - pk.c line 330
+      - pk.c line 342
+      - pk.c line 353
+      - pk.c line 356
+      - pk.c line 368
+      - pk.c line 379
+      - pk_wrap.c line 87
+      - pk_wrap.c line 90 - call to mbedtls_rsa_pkcs1_verify
+      - pk_wrap.c line 95
+      - pk_wrap.c line 122
+      - pk_wrap.c line 136
+      - pk_wrap.c line 441
+      - pk_wrap.c line 456
+      - pk_wrap.c line 461
+      - pk_wrap.c line 468 - call to rsa_verify_wrap
+      - rsa.c line 177
+      - rsa.c line 177
+      - rsa.c line 180
+      - rsa.c line 180
+      - rsa.c line 206
+      - rsa.c line 206
+      - rsa.c line 206
+      - rsa.c line 295
+      - rsa.c line 297
+      - rsa.c line 304
+      - rsa.c line 305
+      - rsa.c line 315
+      - rsa.c line 375
+      - rsa.c line 375
+      - rsa.c line 375
+      - rsa.c line 385
+      - rsa.c line 386
+      - rsa.c line 398
+      - rsa.c line 399
+      - rsa.c line 400
+      - rsa.c line 412
+      - rsa.c line 413
+      - rsa.c line 419
+      - rsa.c line 420
+      - rsa.c line 425
+      - rsa.c line 435
+      - rsa.c line 436
+      - rsa.c line 440
+      - rsa.c line 450
+      - rsa.c line 524
+      - rsa.c line 531
+      - rsa.c line 538
+      - rsa.c line 538
+      - rsa.c line 546
+      - rsa.c line 559
+      - rsa.c line 596
+      - rsa.c line 606
+      - rsa.c line 616
+      - rsa.c line 622
+      - rsa.c line 635
+      - rsa.c line 703
+      - rsa.c line 708
+      - rsa.c line 708
+      - rsa.c line 712
+      - rsa.c line 718
+      - rsa.c line 728
+      - rsa.c line 735
+      - rsa.c line 766
+      - rsa.c line 773
+      - rsa.c line 788
+      - rsa.c line 791
+      - rsa.c line 818
+      - rsa.c line 823
+      - rsa.c line 823
+      - rsa.c line 830
+      - rsa.c line 848
+      - rsa.c line 863
+      - rsa.c line 875
+      - rsa.c line 878
+      - rsa.c line 941
+      - rsa.c line 953
+      - rsa.c line 960
+      - rsa.c line 966
+      - rsa.c line 972
+      - rsa.c line 983
+      - rsa.c line 1042
+      - rsa.c line 1064
+      - rsa.c line 1064
+      - rsa.c line 1111
+      - rsa.c line 1115
+      - rsa.c line 1121
+      - rsa.c line 1122
+      - rsa.c line 1125
+      - rsa.c line 1129
+      - rsa.c line 1202
+      - rsa.c line 1207
+      - rsa.c line 1207
+      - rsa.c line 1214
+      - rsa.c line 1219
+      - rsa.c line 1226
+      - rsa.c line 1233
+      - rsa.c line 1247
+      - rsa.c line 1252
+      - rsa.c line 1256
+      - rsa.c line 1266
+      - rsa.c line 1266
+      - rsa.c line 1269
+      - rsa.c line 1269
+      - rsa.c line 1279
+      - rsa.c line 1279
+      - rsa.c line 1315
+      - rsa.c line 1348
+      - rsa.c line 1353
+      - rsa.c line 1353
+      - rsa.c line 1360
+      - rsa.c line 1365
+      - rsa.c line 1365
+      - rsa.c line 1368
+      - rsa.c line 1370
+      - rsa.c line 1370
+      - rsa.c line 1378
+      - rsa.c line 1396
+      - rsa.c line 1400
+      - rsa.c line 1403
+      - rsa.c line 1407
+      - rsa.c line 1410
+      - rsa.c line 1419
+      - rsa.c line 1425
+      - rsa.c line 1428
+      - rsa.c line 1431
+      - rsa.c line 1439
+      - rsa.c line 1655
+      - rsa.c line 1667
+      - rsa.c line 1694
+      - rsa.c line 1706
+      - rsa.c line 332
+      - rsa.c line 335
+      - rsa.c line 336
+      - rsa.c line 337
+      - rsa.c line 338
+      - rsa.c line 348
+      - rsa.c line 349
+      - rsa.c line 350
+      - rsa.c line 353
+      - rsa.c line 354
+      - rsa.c line 483
+      - rsa.c line 486
+      - rsa.c line 494
+   5. pk_encrypt.c pk.c pk_wrap.c rsa.c pkparse.c - T:346 +176 -0
+      - pk_encrypt.c line 91
+      - pk_encrypt.c line 104
+      - pk_encrypt.c line 110
+      - pk_encrypt.c line 124
+      - pk_encrypt.c line 142
+      - pk_encrypt.c line 155
+      - pk.c line 70
+      - pk.c line 109
+      - pk.c line 132
+      - pk.c line 157
+      - pk.c line 187
+      - pk.c line 191
+      - pk.c line 206
+      - pk.c line 228
+      - pk.c line 237
+      - pk.c line 240
+      - pk.c line 264
+      - pk.c line 268
+      - pk.c line 283
+      - pk.c line 286
+      - pk.c line 301
+      - pk.c line 304
+      - pk.c line 316
+      - pk.c line 317
+      - pk.c line 316
+      - pk.c line 323
+      - pk.c line 325
+      - pk.c line 330
+      - pk.c line 342
+      - pk.c line 353
+      - pk.c line 356
+      - pk.c line 368
+      - pk.c line 379
+      - pk_wrap.c line 87
+      - pk_wrap.c line 90
+      - pk_wrap.c line 95
+      - pk_wrap.c line 122
+      - pk_wrap.c line 136
+      - pk_wrap.c line 441
+      - pk_wrap.c line 456
+      - pk_wrap.c line 461
+      - pk_wrap.c line 468
+      - rsa.c line 177
+      - rsa.c line 177
+      - rsa.c line 180
+      - rsa.c line 180
+      - rsa.c line 184
+      - rsa.c line 184
+      - rsa.c line 188
+      - rsa.c line 188
+      - rsa.c line 206
+      - rsa.c line 206
+      - rsa.c line 206
+      - rsa.c line 214
+      - rsa.c line 215
+      - rsa.c line 216
+      - rsa.c line 217
+      - rsa.c line 219
+      - rsa.c line 225
+      - rsa.c line 226
+      - rsa.c line 227
+      - rsa.c line 231
+      - rsa.c line 232
+      - rsa.c line 233
+      - rsa.c line 234
+      - rsa.c line 248
+      - rsa.c line 251
+      - rsa.c line 262
+      - rsa.c line 295
+      - rsa.c line 297
+      - rsa.c line 304
+      - rsa.c line 305
+      - rsa.c line 315
+      - rsa.c line 375
+      - rsa.c line 375
+      - rsa.c line 375
+      - rsa.c line 385
+      - rsa.c line 386
+      - rsa.c line 398
+      - rsa.c line 399
+      - rsa.c line 400
+      - rsa.c line 412
+      - rsa.c line 413
+      - rsa.c line 419
+      - rsa.c line 420
+      - rsa.c line 425
+      - rsa.c line 435
+      - rsa.c line 436
+      - rsa.c line 440
+      - rsa.c line 450
+      - rsa.c line 524
+      - rsa.c line 531
+      - rsa.c line 538
+      - rsa.c line 538
+      - rsa.c line 546
+      - rsa.c line 559
+      - rsa.c line 596
+      - rsa.c line 606
+      - rsa.c line 616
+      - rsa.c line 622
+      - rsa.c line 635
+      - rsa.c line 703
+      - rsa.c line 708
+      - rsa.c line 708
+      - rsa.c line 712
+      - rsa.c line 718
+      - rsa.c line 728
+      - rsa.c line 735
+      - rsa.c line 766
+      - rsa.c line 773
+      - rsa.c line 788
+      - rsa.c line 791
+      - rsa.c line 818
+      - rsa.c line 823
+      - rsa.c line 823
+      - rsa.c line 830
+      - rsa.c line 848
+      - rsa.c line 863
+      - rsa.c line 875
+      - rsa.c line 878
+      - rsa.c line 941
+      - rsa.c line 953
+      - rsa.c line 960
+      - rsa.c line 966
+      - rsa.c line 972
+      - rsa.c line 983
+      - rsa.c line 1042
+      - rsa.c line 1064
+      - rsa.c line 1064
+      - rsa.c line 1111
+      - rsa.c line 1115
+      - rsa.c line 1121
+      - rsa.c line 1122
+      - rsa.c line 1125
+      - rsa.c line 1129
+      - rsa.c line 1202
+      - rsa.c line 1207
+      - rsa.c line 1207
+      - rsa.c line 1214
+      - rsa.c line 1219
+      - rsa.c line 1226
+      - rsa.c line 1233
+      - rsa.c line 1247
+      - rsa.c line 1252
+      - rsa.c line 1256
+      - rsa.c line 1266
+      - rsa.c line 1266
+      - rsa.c line 1269
+      - rsa.c line 1269
+      - rsa.c line 1279
+      - rsa.c line 1279
+      - rsa.c line 1315
+      - rsa.c line 1348
+      - rsa.c line 1353
+      - rsa.c line 1353
+      - rsa.c line 1360
+      - rsa.c line 1365
+      - rsa.c line 1365
+      - rsa.c line 1368
+      - rsa.c line 1370
+      - rsa.c line 1370
+      - rsa.c line 1378
+      - rsa.c line 1396
+      - rsa.c line 1400
+      - rsa.c line 1403
+      - rsa.c line 1407
+      - rsa.c line 1410
+      - rsa.c line 1419
+      - rsa.c line 1425
+      - rsa.c line 1428
+      - rsa.c line 1431
+      - rsa.c line 1439
+      - rsa.c line 1641
+      - rsa.c line 1655
+      - rsa.c line 1667
+      - rsa.c line 1694
+      - rsa.c line 1706
+      - rsa.c line 332
+      - rsa.c line 335
+      - rsa.c line 336
+      - rsa.c line 337
+      - rsa.c line 338
+      - rsa.c line 348
+      - rsa.c line 349
+      - rsa.c line 350
+      - rsa.c line 353
+      - rsa.c line 354
+      - rsa.c line 483
+      - rsa.c line 486
+      - rsa.c line 494
+      - pkparse.c line 83
+      - pkparse.c line 96
+      - pkparse.c line 96
+      - pkparse.c line 103
+      - pkparse.c line 1076
+      - pkparse.c line 1076
+      - pkparse.c line 1084
+      - pkparse.c line 1089
+      - pkparse.c line 1099
+      - pkparse.c line 1101
+      - pkparse.c line 1103
+      - pkparse.c line 1109
+      - pkparse.c line 1109
+      - pkparse.c line 1116
+      - pkparse.c line 1121
+      - pkparse.c line 1131
+      - pkparse.c line 1133
+      - pkparse.c line 1135
+      - pkparse.c line 1140
+      - pkparse.c line 1140
+      - pkparse.c line 1147
+      - pkparse.c line 1149
+      - pkparse.c line 1158
+      - pkparse.c line 1163
+      - pkparse.c line 1163
+      - pkparse.c line 1170
+      - pkparse.c line 1172
+      - pkparse.c line 1182
+      - pkparse.c line 1199
+      - pkparse.c line 1207
+      - pkparse.c line 1213
+      - pkparse.c line 1222
+      - pkparse.c line 1235
+      - pkparse.c line 1262
+      - pkparse.c line 1262
+      - pkparse.c line 1270
+      - pkparse.c line 1278
+      - pkparse.c line 590
+      - pkparse.c line 598
+      - pkparse.c line 601
+      - pkparse.c line 604
+      - pkparse.c line 615
+      - pkparse.c line 621
+      - pkparse.c line 621
+      - pkparse.c line 624
+      - pkparse.c line 630
+      - pkparse.c line 630
+      - pkparse.c line 634
+      - pkparse.c line 68
+      - pkparse.c line 671
+      - pkparse.c line 679
+      - pkparse.c line 684
+      - pkparse.c line 689
+      - pkparse.c line 690
+      - pkparse.c line 691
+      - pkparse.c line 692
+      - pkparse.c line 693
+      - pkparse.c line 694
+      - pkparse.c line 695
+      - pkparse.c line 689
+      - pkparse.c line 704
+      - pkparse.c line 711
+      - pkparse.c line 747
+      - pkparse.c line 755
+      - pkparse.c line 758
+      - pkparse.c line 761
+      - pkparse.c line 764
+      - pkparse.c line 773
+      - pkparse.c line 778
+      - pkparse.c line 781
+      - pkparse.c line 781
+      - pkparse.c line 788
+      - pkparse.c line 798
+      - pkparse.c line 803
+      - pkparse.c line 806
+      - pkparse.c line 810
+      - pkparse.c line 818
+      - pkparse.c line 822
+      - pkparse.c line 829
+      - pkparse.c line 837
+      - pkparse.c line 879
+      - pkparse.c line 887
+      - pkparse.c line 890
+      - pkparse.c line 893
+      - pkparse.c line 896
+      - pkparse.c line 899
+      - pkparse.c line 910
+      - pkparse.c line 912
+      - pkparse.c line 920
+      - pkparse.c line 920
+      - pkparse.c line 922
+      - pkparse.c line 922
+      - pkparse.c line 959
+      - pkparse.c line 976
+      - pkparse.c line 984
+      - pkparse.c line 987
+      - pkparse.c line 990
+      - pkparse.c line 999
+      - pkparse.c line 1003
+      - pkparse.c line 1011
+      - pkparse.c line 1013
+      - pkparse.c line 1024
+      - pkparse.c line 1032
+      - pkparse.c line 1034
+      - pkparse.c line 1037
+      - pkparse.c line 557
+      - pkparse.c line 566
+      - pkparse.c line 567
+      - pkparse.c line 567
+      - pkparse.c line 566
+      - pkparse.c line 517
+      - pkparse.c line 521
+      - pkparse.c line 525
+      - pkparse.c line 525
+      - pkparse.c line 529
+      - pkparse.c line 449
+      - pkparse.c line 457
+      - pkparse.c line 467
+      - pkparse.c line 467
+      - pkparse.c line 470
+      - pkparse.c line 488
+      - pkparse.c line 424
+      - pkparse.c line 237
+      - pkparse.c line 240
+      - pkparse.c line 240
+      - pkparse.c line 249
+      - pkparse.c line 263
+      - pkparse.c line 266
+      - pkparse.c line 275
+      - pkparse.c line 280
+      - pkparse.c line 293
+      - pkparse.c line 303
+      - pkparse.c line 303
+      - pkparse.c line 311
+      - pkparse.c line 311
+      - pkparse.c line 320
+      - pkparse.c line 323
+      - pkparse.c line 330
+      - pkparse.c line 333
+      - pkparse.c line 340
+      - pkparse.c line 341
+      - pkparse.c line 341
+      - pkparse.c line 342
+      - pkparse.c line 343
+      - pkparse.c line 344
+      - pkparse.c line 356
+      - pkparse.c line 380
+      - pkparse.c line 384
+      - pkparse.c line 387
+      - pkparse.c line 387
+      - pkparse.c line 407
+      - pkparse.c line 407
+      - pkparse.c line 184
+      - pkparse.c line 182
+      - pkparse.c line 192
+      - pkparse.c line 200
+** No external node merges in PTI
+   Vulnerable Branch Test :: tainted value "pk"
+   1. pk_encrypt.c - T:0
+   2. pk_encrypt.c pk.c - T:4
+        pk_encrypt.c line 124 - if ( (ret  = mbedtls_pk_encrypt ... )) 
+        pk_encrypt.c line 155 - if( ret != 0 )
+        pk.c line 237 - if ( ret != 0 ) :: from ret = mbedtls_rsa_rsassa_pss...(*ctx);
+        pk.c line 301 - NULL CHECK
+   3. pk_encrypt.c pk.c pk_wrap.c - T:4
+        pk_encrypt.c line 124 - if ( (ret  = mbedtls_pk_encrypt ... ))
+        pk_encrypt.c line 155 - if( ret != 0 )
+        pk.c line 237 - if ( ret != 0 ) :: from ret = mbedtls_rsa_rsassa_pss...(*ctx);
+        pk.c line 301 - NULL CHECK
+   4. pk_encrypt.c pk.c pk_wrap.c rsa.c - T: 136
+        pk_encrypt.c line 110 - strlen(argv[2] > 100)
+        pk_encrypt.c line 124
+        pk_encrypt.c line 142 - for (i = 0; i < olen i++)
+        pk_encrypt.c line 155 
+        pk.c line 237
+        pk.c line 301
+        pk_wrap.c line 87 - if ( sig_len < ctx->len )
+        pk_wrap.c line 90 - if ( ( ret = mbedtls_rsa_pkcs1_verify (....) ) )
+        pk_wrap.c line 95 - if ( sig_len < ctx->len )
+        pk_wrap.c line 122 - if( ilen != ctx->len )
+        pk_wrap.c line 136 - if  (*olen > osize) // note: olen = ctx->len
+        pk_wrap.c line 441 - if ( ilen != rsa_alt->key_len_func(rsa_alt->key) )
+        pk_wrap.c line 456 - if ( rsa_alt_get_bitlen( prv ) != rsa_get_bitlen( pub ) )
+        pk_wrap.c line 461 - if ( ( ret = rsa_alt_sign_wrap(....) )
+        pk_wrap.c line 468 - if ( rsa_verify_wrap( ...) != 0 )
+        rsa.c line 177
+        rsa.c line 177
+        rsa.c line 180
+        rsa.c line 180
+        rsa.c line 206
+        rsa.c line 206
+        rsa.c line 206
+        rsa.c line 295
+        rsa.c line 297
+        rsa.c line 304
+        rsa.c line 305
+        rsa.c line 315
+        rsa.c line 375
+        rsa.c line 375
+        rsa.c line 375
+        rsa.c line 385
+        rsa.c line 386
+        rsa.c line 398
+        rsa.c line 399
+        rsa.c line 400
+        rsa.c line 412
+        rsa.c line 413
+        rsa.c line 419
+        rsa.c line 420
+        rsa.c line 425
+        rsa.c line 435
+        rsa.c line 436
+        rsa.c line 440
+        rsa.c line 450
+        rsa.c line 524
+        rsa.c line 531
+        rsa.c line 538
+        rsa.c line 538
+        rsa.c line 546
+        rsa.c line 559
+        rsa.c line 596
+        rsa.c line 606
+        rsa.c line 616
+        rsa.c line 622
+        rsa.c line 635
+        rsa.c line 703
+        rsa.c line 708
+        rsa.c line 708
+        rsa.c line 712
+        rsa.c line 718
+        rsa.c line 728
+        rsa.c line 735
+        rsa.c line 766
+        rsa.c line 773
+        rsa.c line 788
+        rsa.c line 791
+        rsa.c line 818
+        rsa.c line 823
+        rsa.c line 823
+        rsa.c line 830
+        rsa.c line 848
+        rsa.c line 863
+        rsa.c line 875
+        rsa.c line 878
+        rsa.c line 941
+        rsa.c line 953
+        rsa.c line 960
+        rsa.c line 966
+        rsa.c line 972
+        rsa.c line 983
+        rsa.c line 1042
+        rsa.c line 1064
+        rsa.c line 1064
+        rsa.c line 1111
+        rsa.c line 1115
+        rsa.c line 1121
+        rsa.c line 1122
+        rsa.c line 1125
+        rsa.c line 1129
+        rsa.c line 1202
+        rsa.c line 1207
+        rsa.c line 1207
+        rsa.c line 1214
+        rsa.c line 1219
+        rsa.c line 1226
+        rsa.c line 1233
+        rsa.c line 1247
+        rsa.c line 1252
+        rsa.c line 1256
+        rsa.c line 1266
+        rsa.c line 1266
+        rsa.c line 1269
+        rsa.c line 1269
+        rsa.c line 1279
+        rsa.c line 1315
+        rsa.c line 1348
+        rsa.c line 1353
+        rsa.c line 1353
+        rsa.c line 1360
+        rsa.c line 1370
+        rsa.c line 1378
+        rsa.c line 1396
+        rsa.c line 1400
+        rsa.c line 1403
+        rsa.c line 1407
+        rsa.c line 1410
+        rsa.c line 1425
+        rsa.c line 1428
+        rsa.c line 1439
+        rsa.c line 1655
+        rsa.c line 1667
+        rsa.c line 1694
+        rsa.c line 1706
+        rsa.c line 332
+        rsa.c line 335
+        rsa.c line 336
+        rsa.c line 337
+        rsa.c line 338
+        rsa.c line 348
+        rsa.c line 349
+        rsa.c line 350
+        rsa.c line 353
+        rsa.c line 354
+        rsa.c line 483
+        rsa.c line 486
+        rsa.c line 494
+   5. pk_encrypt.c pk.c pk_wrap.c rsa.c pkparse.c - T:276
+      pk_encrypt.c line 104
+      pk_encrypt.c line 110
+      pk_encrypt.c line 124
+      pk_encrypt.c line 142
+      pk_encrypt.c line 155
+      pk.c line 70
+      pk.c line 109
+      pk.c line 237
+      pk.c line 301
+      pk.c line 304
+      pk_wrap.c line 87
+      pk_wrap.c line 90
+      pk_wrap.c line 95
+      pk_wrap.c line 122
+      pk_wrap.c line 136
+      pk_wrap.c line 441
+      pk_wrap.c line 456
+      pk_wrap.c line 461
+      pk_wrap.c line 468
+      rsa.c line 177
+      rsa.c line 177
+      rsa.c line 180
+      rsa.c line 180
+      rsa.c line 184
+      rsa.c line 184
+      rsa.c line 188
+      rsa.c line 188
+      rsa.c line 206
+      rsa.c line 206
+      rsa.c line 206
+      rsa.c line 214
+      rsa.c line 215
+      rsa.c line 216
+      rsa.c line 217
+      rsa.c line 219
+      rsa.c line 225
+      rsa.c line 226
+      rsa.c line 227
+      rsa.c line 231
+      rsa.c line 232
+      rsa.c line 233
+      rsa.c line 234
+      rsa.c line 248
+      rsa.c line 251
+      rsa.c line 262
+      rsa.c line 295
+      rsa.c line 297
+      rsa.c line 304
+      rsa.c line 305
+      rsa.c line 315
+      rsa.c line 375
+      rsa.c line 375
+      rsa.c line 375
+      rsa.c line 385
+      rsa.c line 386
+      rsa.c line 398
+      rsa.c line 399
+      rsa.c line 400
+      rsa.c line 412
+      rsa.c line 413
+      rsa.c line 419
+      rsa.c line 420
+      rsa.c line 425
+      rsa.c line 435
+      rsa.c line 436
+      rsa.c line 440
+      rsa.c line 450
+      rsa.c line 524
+      rsa.c line 531
+      rsa.c line 538
+      rsa.c line 538
+      rsa.c line 546
+      rsa.c line 559
+      rsa.c line 596
+      rsa.c line 606
+      rsa.c line 616
+      rsa.c line 622
+      rsa.c line 635
+      rsa.c line 703
+      rsa.c line 708
+      rsa.c line 708
+      rsa.c line 712
+      rsa.c line 718
+      rsa.c line 728
+      rsa.c line 735
+      rsa.c line 766
+      rsa.c line 773
+      rsa.c line 788
+      rsa.c line 791
+      rsa.c line 818
+      rsa.c line 823
+      rsa.c line 823
+      rsa.c line 830
+      rsa.c line 848
+      rsa.c line 863
+      rsa.c line 875
+      rsa.c line 878
+      rsa.c line 941
+      rsa.c line 953
+      rsa.c line 960
+      rsa.c line 966
+      rsa.c line 972
+      rsa.c line 983
+      rsa.c line 1042
+      rsa.c line 1064
+      rsa.c line 1064
+      rsa.c line 1111
+      rsa.c line 1115
+      rsa.c line 1121
+      rsa.c line 1122
+      rsa.c line 1125
+      rsa.c line 1129
+      rsa.c line 1202
+      rsa.c line 1207
+      rsa.c line 1207
+      rsa.c line 1214
+      rsa.c line 1219
+      rsa.c line 1226
+      rsa.c line 1233
+      rsa.c line 1247
+      rsa.c line 1252
+      rsa.c line 1256
+      rsa.c line 1266
+      rsa.c line 1266
+      rsa.c line 1269
+      rsa.c line 1269
+      rsa.c line 1279
+      rsa.c line 1315
+      rsa.c line 1348
+      rsa.c line 1353
+      rsa.c line 1353
+      rsa.c line 1360
+      rsa.c line 1370
+      rsa.c line 1378
+      rsa.c line 1396
+      rsa.c line 1400
+      rsa.c line 1403
+      rsa.c line 1407
+      rsa.c line 1410
+      rsa.c line 1425
+      rsa.c line 1428
+      rsa.c line 1439
+      rsa.c line 1641
+      rsa.c line 1655
+      rsa.c line 1667
+      rsa.c line 1694
+      rsa.c line 1706
+      rsa.c line 332
+      rsa.c line 335
+      rsa.c line 336
+      rsa.c line 337
+      rsa.c line 338
+      rsa.c line 348
+      rsa.c line 349
+      rsa.c line 350
+      rsa.c line 353
+      rsa.c line 354
+      rsa.c line 483
+      rsa.c line 486
+      rsa.c line 494
+      pkparse.c line 83
+      pkparse.c line 103
+      pkparse.c line 1076
+      pkparse.c line 1084
+      pkparse.c line 1089
+      pkparse.c line 1099
+      pkparse.c line 1101
+      pkparse.c line 1103
+      pkparse.c line 1109
+      pkparse.c line 1116
+      pkparse.c line 1121
+      pkparse.c line 1131
+      pkparse.c line 1133
+      pkparse.c line 1135
+      pkparse.c line 1140
+      pkparse.c line 1147
+      pkparse.c line 1149
+      pkparse.c line 1158
+      pkparse.c line 1163
+      pkparse.c line 1170
+      pkparse.c line 1172
+      pkparse.c line 1182
+      pkparse.c line 1199
+      pkparse.c line 1207
+      pkparse.c line 1213
+      pkparse.c line 1222
+      pkparse.c line 1235
+      pkparse.c line 1262
+      pkparse.c line 1270
+      pkparse.c line 1278
+      pkparse.c line 590
+      pkparse.c line 598
+      pkparse.c line 601
+      pkparse.c line 604
+      pkparse.c line 624
+      pkparse.c line 630
+      pkparse.c line 630
+      pkparse.c line 634
+      pkparse.c line 671
+      pkparse.c line 679
+      pkparse.c line 684
+      pkparse.c line 689
+      pkparse.c line 690
+      pkparse.c line 691
+      pkparse.c line 692
+      pkparse.c line 693
+      pkparse.c line 694
+      pkparse.c line 695
+      pkparse.c line 689
+      pkparse.c line 704
+      pkparse.c line 711
+      pkparse.c line 747
+      pkparse.c line 755
+      pkparse.c line 761
+      pkparse.c line 764
+      pkparse.c line 773
+      pkparse.c line 778
+      pkparse.c line 781
+      pkparse.c line 781
+      pkparse.c line 788
+      pkparse.c line 798
+      pkparse.c line 803
+      pkparse.c line 806
+      pkparse.c line 810
+      pkparse.c line 818
+      pkparse.c line 822
+      pkparse.c line 829
+      pkparse.c line 837
+      pkparse.c line 879
+      pkparse.c line 887
+      pkparse.c line 893
+      pkparse.c line 896
+      pkparse.c line 912
+      pkparse.c line 922
+      pkparse.c line 922
+      pkparse.c line 1024
+      pkparse.c line 557
+      pkparse.c line 567
+      pkparse.c line 567
+      pkparse.c line 566
+      pkparse.c line 517
+      pkparse.c line 521
+      pkparse.c line 525
+      pkparse.c line 525
+      pkparse.c line 529
+      pkparse.c line 449
+      pkparse.c line 457
+      pkparse.c line 467
+      pkparse.c line 467
+      pkparse.c line 470
+      pkparse.c line 488
+      pkparse.c line 424
+      pkparse.c line 237
+      pkparse.c line 249
+      pkparse.c line 263
+      pkparse.c line 275
+      pkparse.c line 280
+      pkparse.c line 293
+      pkparse.c line 303
+      pkparse.c line 303
+      pkparse.c line 311
+      pkparse.c line 311
+      pkparse.c line 320
+      pkparse.c line 323
+      pkparse.c line 330
+      pkparse.c line 333
+      pkparse.c line 340
+      pkparse.c line 341
+      pkparse.c line 341
+      pkparse.c line 343
+      pkparse.c line 344
+      pkparse.c line 356
+      pkparse.c line 184
+      pkparse.c line 182
+      pkparse.c line 192
+      pkparse.c line 200
+* Tests with working separable structs/arrays
+** HandleConversion Branch
+   Tainted! Function mbedtls_pk_ec Arg: pk.coerce0
+   Tainted! Function mbedtls_pk_ec Arg: pk.coerce1
+   Tainted! Function mbedtls_pk_rsa77 Arg: pk.coerce0
+   Tainted! Function mbedtls_pk_rsa77 Arg: pk.coerce1
+   Tainted! Function mbedtls_rsa_check_privkey Arg: ctx
+   Tainted! Function mbedtls_rsa_check_pubkey Arg: ctx
+   Tainted! Function mbedtls_rsa_free Arg: ctx
+   Tainted! Function pk_get_ecpubkey Arg: key
+   Tainted! Function pk_get_rsapubkey Arg: rsa
+   Tainted! Function pk_parse_key_pkcs1_der Arg: rsa
+   Tainted! Function pk_parse_key_sec1_der Arg: eck
+   Tainted! Function pk_use_ecparams Arg: grp
+   Tainted! include/mbedtls/pk.h line 143
+   Tainted! include/mbedtls/pk.h line 156
+   Tainted! pk.c line 109
+   Tainted! pk.c line 301
+   Tainted! pk.c line 304
+   Tainted! pk.c line 307
+   Tainted! pk.c line 309
+   Tainted! pk.c line 70
+   Tainted! pk.c line 73
+   Tainted! pk_encrypt.c line 104
+   Tainted! pk_encrypt.c line 106
+   Tainted! pk_encrypt.c line 124
+   Tainted! pk_encrypt.c line 126
+   Tainted! pk_encrypt.c line 128
+   Tainted! pk_encrypt.c line 155
+   Tainted! pk_encrypt.c line 157
+   Tainted! pk_encrypt.c line 167
+   Tainted! pk_encrypt.c line 95
+   Tainted! pkparse.c line 1054
+   Tainted! pkparse.c line 1055
+   Tainted! pkparse.c line 1084
+   Tainted! pkparse.c line 1090
+   Tainted! pkparse.c line 1091
+   Tainted! pkparse.c line 1097
+   Tainted! pkparse.c line 1099
+   Tainted! pkparse.c line 1101
+   Tainted! pkparse.c line 1103
+   Tainted! pkparse.c line 1104
+   Tainted! pkparse.c line 1116
+   Tainted! pkparse.c line 1122
+   Tainted! pkparse.c line 1123
+   Tainted! pkparse.c line 1129
+   Tainted! pkparse.c line 1131
+   Tainted! pkparse.c line 1133
+   Tainted! pkparse.c line 1135
+   Tainted! pkparse.c line 1136
+   Tainted! pkparse.c line 1147
+   Tainted! pkparse.c line 1149
+   Tainted! pkparse.c line 1150
+   Tainted! pkparse.c line 1156
+   Tainted! pkparse.c line 1158
+   Tainted! pkparse.c line 1159
+   Tainted! pkparse.c line 1170
+   Tainted! pkparse.c line 1172
+   Tainted! pkparse.c line 1174
+   Tainted! pkparse.c line 1180
+   Tainted! pkparse.c line 1182
+   Tainted! pkparse.c line 1183
+   Tainted! pkparse.c line 1199
+   Tainted! pkparse.c line 1200
+   Tainted! pkparse.c line 1207
+   Tainted! pkparse.c line 1209
+   Tainted! pkparse.c line 1213
+   Tainted! pkparse.c line 1223
+   Tainted! pkparse.c line 1236
+   Tainted! pkparse.c line 1245
+   Tainted! pkparse.c line 1270
+   Tainted! pkparse.c line 1278
+   Tainted! pkparse.c line 1281
+   Tainted! pkparse.c line 1286
+   Tainted! pkparse.c line 1292
+   Tainted! pkparse.c line 1293
+   Tainted! pkparse.c line 131
+   Tainted! pkparse.c line 134
+   Tainted! pkparse.c line 136
+   Tainted! pkparse.c line 142
+   Tainted! pkparse.c line 143
+   Tainted! pkparse.c line 155
+   Tainted! pkparse.c line 157
+   Tainted! pkparse.c line 162
+   Tainted! pkparse.c line 163
+   Tainted! pkparse.c line 458
+   Tainted! pkparse.c line 467
+   Tainted! pkparse.c line 470
+   Tainted! pkparse.c line 471
+   Tainted! pkparse.c line 474
+   Tainted! pkparse.c line 488
+   Tainted! pkparse.c line 489
+   Tainted! pkparse.c line 491
+   Tainted! pkparse.c line 499
+   Tainted! pkparse.c line 519
+   Tainted! pkparse.c line 525
+   Tainted! pkparse.c line 526
+   Tainted! pkparse.c line 527
+   Tainted! pkparse.c line 533
+   Tainted! pkparse.c line 536
+   Tainted! pkparse.c line 539
+   Tainted! pkparse.c line 593
+   Tainted! pkparse.c line 599
+   Tainted! pkparse.c line 602
+   Tainted! pkparse.c line 612
+   Tainted! pkparse.c line 617
+   Tainted! pkparse.c line 623
+   Tainted! pkparse.c line 624
+   Tainted! pkparse.c line 625
+   Tainted! pkparse.c line 630
+   Tainted! pkparse.c line 634
+   Tainted! pkparse.c line 637
+   Tainted! pkparse.c line 638
+   Tainted! pkparse.c line 674
+   Tainted! pkparse.c line 679
+   Tainted! pkparse.c line 681
+   Tainted! pkparse.c line 684
+   Tainted! pkparse.c line 689
+   Tainted! pkparse.c line 690
+   Tainted! pkparse.c line 691
+   Tainted! pkparse.c line 692
+   Tainted! pkparse.c line 693
+   Tainted! pkparse.c line 694
+   Tainted! pkparse.c line 695
+   Tainted! pkparse.c line 696
+   Tainted! pkparse.c line 698
+   Tainted! pkparse.c line 699
+   Tainted! pkparse.c line 702
+   Tainted! pkparse.c line 706
+   Tainted! pkparse.c line 711
+   Tainted! pkparse.c line 713
+   Tainted! pkparse.c line 714
+   Tainted! pkparse.c line 718
+   Tainted! pkparse.c line 750
+   Tainted! pkparse.c line 756
+   Tainted! pkparse.c line 762
+   Tainted! pkparse.c line 764
+   Tainted! pkparse.c line 766
+   Tainted! pkparse.c line 767
+   Tainted! pkparse.c line 782
+   Tainted! pkparse.c line 784
+   Tainted! pkparse.c line 785
+   Tainted! pkparse.c line 788
+   Tainted! pkparse.c line 790
+   Tainted! pkparse.c line 791
+   Tainted! pkparse.c line 804
+   Tainted! pkparse.c line 810
+   Tainted! pkparse.c line 818
+   Tainted! pkparse.c line 822
+   Tainted! pkparse.c line 824
+   Tainted! pkparse.c line 825
+   Tainted! pkparse.c line 830
+   Tainted! pkparse.c line 831
+   Tainted! pkparse.c line 833
+   Tainted! pkparse.c line 834
+   Tainted! pkparse.c line 837
+   Tainted! pkparse.c line 839
+   Tainted! pkparse.c line 840
+   Tainted! pkparse.c line 844
+   Tainted! pkparse.c line 882
+   Tainted! pkparse.c line 888
+   Tainted! pkparse.c line 891
+   Tainted! pkparse.c line 894
+   Tainted! pkparse.c line 897
+   Tainted! pkparse.c line 907
+   Tainted! pkparse.c line 912
+   Tainted! pkparse.c line 915
+   Tainted! pkparse.c line 922
+   Tainted! pkparse.c line 923
+   Tainted! pkparse.c line 926
+   Tainted! pkparse.c line 933
+   Tainted! rsa.c line 1519
+   Tainted! rsa.c line 1520
+   Tainted! rsa.c line 1521
+   Tainted! rsa.c line 1522
+   Tainted! rsa.c line 1523
+   Tainted! rsa.c line 1642
+   Tainted! rsa.c line 177
+   Tainted! rsa.c line 180
+   Tainted! rsa.c line 181
+   Tainted! rsa.c line 184
+   Tainted! rsa.c line 185
+   Tainted! rsa.c line 188
+   Tainted! rsa.c line 189
+   Tainted! rsa.c line 203
+   Tainted! rsa.c line 204
+   Tainted! rsa.c line 206
+   Tainted! rsa.c line 214
+   Tainted! rsa.c line 215
+   Tainted! rsa.c line 216
+   Tainted! rsa.c line 217
+   Tainted! rsa.c line 219
+   Tainted! rsa.c line 225
+   Tainted! rsa.c line 226
+   Tainted! rsa.c line 227
+   Tainted! rsa.c line 231
+   Tainted! rsa.c line 232
+   Tainted! rsa.c line 233
+   Tainted! rsa.c line 234
+   Tainted! rsa.c line 248
+   Tainted! rsa.c line 249
+   Tainted! rsa.c line 251
+   Tainted! rsa.c line 252
+   Tainted! rsa.c line 263
+   Tainted! rsa.c line 255
+** Master Branch
+    Tainted! Function mbedtls_pk_ec Arg: pk.coerce1
+    Tainted! Function mbedtls_pk_encrypt Arg: ilen
+    Tainted! Function mbedtls_pk_parse_subpubkey Arg: end
+    Tainted! Function mbedtls_pk_rsa77 Arg: pk.coerce0
+    Tainted! Function mbedtls_pk_rsa77 Arg: pk.coerce1
+    Tainted! Function mbedtls_rsa_check_privkey Arg: ctx
+    Tainted! Function mbedtls_rsa_check_pubkey Arg: ctx
+    Tainted! Function mbedtls_rsa_free Arg: ctx
+    Tainted! Function mbedtls_rsa_private Arg: ctx
+    Tainted! Function mbedtls_rsa_private Arg: output
+    Tainted! Function mbedtls_rsa_public Arg: ctx
+    Tainted! Function mbedtls_rsa_public Arg: input
+    Tainted! Function mbedtls_rsa_public Arg: output
+    Tainted! Function mbedtls_rsa_rsassa_pss_verify_ext Arg: ctx
+    Tainted! Function mbedtls_rsa_rsassa_pss_verify_ext Arg: mgf1_hash_id
+    Tainted! Function mgf_mask Arg: dlen
+    Tainted! Function mgf_mask Arg: dst
+    Tainted! Function mgf_mask Arg: slen
+    Tainted! Function mgf_mask Arg: src
+    Tainted! Function pk_get_ecparams Arg: end
+    Tainted! Function pk_get_ecpubkey Arg: end
+    Tainted! Function pk_get_ecpubkey Arg: key
+    Tainted! Function pk_get_pk_alg Arg: end
+    Tainted! Function pk_get_rsapubkey Arg: end
+    Tainted! Function pk_get_rsapubkey Arg: rsa
+    Tainted! Function pk_parse_key_pkcs1_der Arg: key
+    Tainted! Function pk_parse_key_pkcs1_der Arg: rsa
+    Tainted! Function pk_parse_key_sec1_der Arg: eck
+    Tainted! Function pk_parse_key_sec1_der Arg: key
+    Tainted! Function pk_use_ecparams Arg: grp
+    Tainted! Function rsa_prepare_blinding Arg: ctx
+    Tainted! Function rsa_verify_wrap Arg: sig_len
+    Tainted! Unknown location
+    Tainted! Unknown location for 
+    Tainted! include/mbedtls/pk.h line 143
+    Tainted! include/mbedtls/pk.h line 156
+    Tainted! pk.c line 109
+    Tainted! pk.c line 112
+    Tainted! pk.c line 231
+    Tainted! pk.c line 237
+    Tainted! pk.c line 238
+    Tainted! pk.c line 254
+    Tainted! pk.c line 301
+    Tainted! pk.c line 304
+    Tainted! pk.c line 307
+    Tainted! pk.c line 309
+    Tainted! pk.c line 70
+    Tainted! pk.c line 73
+    Tainted! pk_encrypt.c line 104
+    Tainted! pk_encrypt.c line 106
+    Tainted! pk_encrypt.c line 110
+    Tainted! pk_encrypt.c line 116
+    Tainted! pk_encrypt.c line 124
+    Tainted! pk_encrypt.c line 126
+    Tainted! pk_encrypt.c line 128
+    Tainted! pk_encrypt.c line 142
+    Tainted! pk_encrypt.c line 143
+    Tainted! pk_encrypt.c line 155
+    Tainted! pk_encrypt.c line 157
+    Tainted! pk_encrypt.c line 158
+    Tainted! pk_encrypt.c line 167
+    Tainted! pk_encrypt.c line 95
+    Tainted! pk_encrypt.c line 99
+    Tainted! pk_wrap.c line 111
+    Tainted! pk_wrap.c line 113
+    Tainted! pk_wrap.c line 115
+    Tainted! pk_wrap.c line 122
+    Tainted! pk_wrap.c line 125
+    Tainted! pk_wrap.c line 127
+    Tainted! pk_wrap.c line 134
+    Tainted! pk_wrap.c line 136
+    Tainted! pk_wrap.c line 139
+    Tainted! pk_wrap.c line 141
+    Tainted! pk_wrap.c line 207
+    Tainted! pk_wrap.c line 410
+    Tainted! pk_wrap.c line 425
+    Tainted! pk_wrap.c line 427
+    Tainted! pk_wrap.c line 429
+    Tainted! pk_wrap.c line 441
+    Tainted! pk_wrap.c line 444
+    Tainted! pk_wrap.c line 446
+    Tainted! pk_wrap.c line 456
+    Tainted! pk_wrap.c line 461
+    Tainted! pk_wrap.c line 463
+    Tainted! pk_wrap.c line 465
+    Tainted! pk_wrap.c line 468
+    Tainted! pk_wrap.c line 469
+    Tainted! pk_wrap.c line 475
+    Tainted! pk_wrap.c line 73
+    Tainted! pk_wrap.c line 87
+    Tainted! pk_wrap.c line 90
+    Tainted! pk_wrap.c line 92
+    Tainted! pk_wrap.c line 93
+    Tainted! pk_wrap.c line 95
+    Tainted! pk_wrap.c line 99
+    Tainted! pkparse.c line 1024
+    Tainted! pkparse.c line 103
+    Tainted! pkparse.c line 105
+    Tainted! pkparse.c line 1054
+    Tainted! pkparse.c line 1055
+    Tainted! pkparse.c line 1076
+    Tainted! pkparse.c line 1084
+    Tainted! pkparse.c line 1090
+    Tainted! pkparse.c line 1091
+    Tainted! pkparse.c line 1097
+    Tainted! pkparse.c line 1099
+    Tainted! pkparse.c line 110
+    Tainted! pkparse.c line 1101
+    Tainted! pkparse.c line 1103
+    Tainted! pkparse.c line 1104
+    Tainted! pkparse.c line 1109
+    Tainted! pkparse.c line 1116
+    Tainted! pkparse.c line 1122
+    Tainted! pkparse.c line 1123
+    Tainted! pkparse.c line 1129
+    Tainted! pkparse.c line 1131
+    Tainted! pkparse.c line 1133
+    Tainted! pkparse.c line 1135
+    Tainted! pkparse.c line 1136
+    Tainted! pkparse.c line 1140
+    Tainted! pkparse.c line 1147
+    Tainted! pkparse.c line 1149
+    Tainted! pkparse.c line 1150
+    Tainted! pkparse.c line 1156
+    Tainted! pkparse.c line 1158
+    Tainted! pkparse.c line 1159
+    Tainted! pkparse.c line 1163
+    Tainted! pkparse.c line 1170
+    Tainted! pkparse.c line 1172
+    Tainted! pkparse.c line 1174
+    Tainted! pkparse.c line 1180
+    Tainted! pkparse.c line 1182
+    Tainted! pkparse.c line 1183
+    Tainted! pkparse.c line 1199
+    Tainted! pkparse.c line 1200
+    Tainted! pkparse.c line 1207
+    Tainted! pkparse.c line 1209
+    Tainted! pkparse.c line 1213
+    Tainted! pkparse.c line 1223
+    Tainted! pkparse.c line 1236
+    Tainted! pkparse.c line 1245
+    Tainted! pkparse.c line 1262
+    Tainted! pkparse.c line 1270
+    Tainted! pkparse.c line 1278
+    Tainted! pkparse.c line 1281
+    Tainted! pkparse.c line 1286
+    Tainted! pkparse.c line 1292
+    Tainted! pkparse.c line 1293
+    Tainted! pkparse.c line 131
+    Tainted! pkparse.c line 134
+    Tainted! pkparse.c line 136
+    Tainted! pkparse.c line 142
+    Tainted! pkparse.c line 143
+    Tainted! pkparse.c line 155
+    Tainted! pkparse.c line 157
+    Tainted! pkparse.c line 162
+    Tainted! pkparse.c line 163
+    Tainted! pkparse.c line 181
+    Tainted! pkparse.c line 182
+    Tainted! pkparse.c line 184
+    Tainted! pkparse.c line 192
+    Tainted! pkparse.c line 194
+    Tainted! pkparse.c line 197
+    Tainted! pkparse.c line 198
+    Tainted! pkparse.c line 200
+    Tainted! pkparse.c line 205
+    Tainted! pkparse.c line 230
+    Tainted! pkparse.c line 231
+    Tainted! pkparse.c line 237
+    Tainted! pkparse.c line 238
+    Tainted! pkparse.c line 249
+    Tainted! pkparse.c line 250
+    Tainted! pkparse.c line 251
+    Tainted! pkparse.c line 253
+    Tainted! pkparse.c line 263
+    Tainted! pkparse.c line 264
+    Tainted! pkparse.c line 267
+    Tainted! pkparse.c line 272
+    Tainted! pkparse.c line 275
+    Tainted! pkparse.c line 276
+    Tainted! pkparse.c line 280
+    Tainted! pkparse.c line 293
+    Tainted! pkparse.c line 294
+    Tainted! pkparse.c line 295
+    Tainted! pkparse.c line 297
+    Tainted! pkparse.c line 303
+    Tainted! pkparse.c line 304
+    Tainted! pkparse.c line 306
+    Tainted! pkparse.c line 309
+    Tainted! pkparse.c line 311
+    Tainted! pkparse.c line 312
+    Tainted! pkparse.c line 314
+    Tainted! pkparse.c line 317
+    Tainted! pkparse.c line 320
+    Tainted! pkparse.c line 321
+    Tainted! pkparse.c line 323
+    Tainted! pkparse.c line 330
+    Tainted! pkparse.c line 331
+    Tainted! pkparse.c line 333
+    Tainted! pkparse.c line 334
+    Tainted! pkparse.c line 340
+    Tainted! pkparse.c line 341
+    Tainted! pkparse.c line 343
+    Tainted! pkparse.c line 344
+    Tainted! pkparse.c line 351
+    Tainted! pkparse.c line 356
+    Tainted! pkparse.c line 357
+    Tainted! pkparse.c line 366
+    Tainted! pkparse.c line 424
+    Tainted! pkparse.c line 432
+    Tainted! pkparse.c line 449
+    Tainted! pkparse.c line 457
+    Tainted! pkparse.c line 458
+    Tainted! pkparse.c line 467
+    Tainted! pkparse.c line 470
+    Tainted! pkparse.c line 471
+    Tainted! pkparse.c line 474
+    Tainted! pkparse.c line 488
+    Tainted! pkparse.c line 489
+    Tainted! pkparse.c line 491
+    Tainted! pkparse.c line 497
+    Tainted! pkparse.c line 499
+    Tainted! pkparse.c line 517
+    Tainted! pkparse.c line 518
+    Tainted! pkparse.c line 519
+    Tainted! pkparse.c line 521
+    Tainted! pkparse.c line 525
+    Tainted! pkparse.c line 526
+    Tainted! pkparse.c line 527
+    Tainted! pkparse.c line 529
+    Tainted! pkparse.c line 533
+    Tainted! pkparse.c line 536
+    Tainted! pkparse.c line 539
+    Tainted! pkparse.c line 557
+    Tainted! pkparse.c line 558
+    Tainted! pkparse.c line 567
+    Tainted! pkparse.c line 568
+    Tainted! pkparse.c line 574
+    Tainted! pkparse.c line 590
+    Tainted! pkparse.c line 591
+    Tainted! pkparse.c line 593
+    Tainted! pkparse.c line 596
+    Tainted! pkparse.c line 598
+    Tainted! pkparse.c line 599
+    Tainted! pkparse.c line 601
+    Tainted! pkparse.c line 602
+    Tainted! pkparse.c line 604
+    Tainted! pkparse.c line 612
+    Tainted! pkparse.c line 617
+    Tainted! pkparse.c line 623
+    Tainted! pkparse.c line 624
+    Tainted! pkparse.c line 625
+    Tainted! pkparse.c line 630
+    Tainted! pkparse.c line 634
+    Tainted! pkparse.c line 637
+    Tainted! pkparse.c line 638
+    Tainted! pkparse.c line 652
+    Tainted! pkparse.c line 653
+    Tainted! pkparse.c line 671
+    Tainted! pkparse.c line 672
+    Tainted! pkparse.c line 674
+    Tainted! pkparse.c line 677
+    Tainted! pkparse.c line 679
+    Tainted! pkparse.c line 681
+    Tainted! pkparse.c line 684
+    Tainted! pkparse.c line 689
+    Tainted! pkparse.c line 690
+    Tainted! pkparse.c line 691
+    Tainted! pkparse.c line 692
+    Tainted! pkparse.c line 693
+    Tainted! pkparse.c line 694
+    Tainted! pkparse.c line 695
+    Tainted! pkparse.c line 696
+    Tainted! pkparse.c line 698
+    Tainted! pkparse.c line 699
+    Tainted! pkparse.c line 702
+    Tainted! pkparse.c line 704
+    Tainted! pkparse.c line 706
+    Tainted! pkparse.c line 711
+    Tainted! pkparse.c line 713
+    Tainted! pkparse.c line 714
+    Tainted! pkparse.c line 718
+    Tainted! pkparse.c line 733
+    Tainted! pkparse.c line 734
+    Tainted! pkparse.c line 747
+    Tainted! pkparse.c line 748
+    Tainted! pkparse.c line 750
+    Tainted! pkparse.c line 753
+    Tainted! pkparse.c line 755
+    Tainted! pkparse.c line 756
+    Tainted! pkparse.c line 761
+    Tainted! pkparse.c line 762
+    Tainted! pkparse.c line 764
+    Tainted! pkparse.c line 766
+    Tainted! pkparse.c line 767
+    Tainted! pkparse.c line 770
+    Tainted! pkparse.c line 773
+    Tainted! pkparse.c line 778
+    Tainted! pkparse.c line 779
+    Tainted! pkparse.c line 781
+    Tainted! pkparse.c line 782
+    Tainted! pkparse.c line 784
+    Tainted! pkparse.c line 785
+    Tainted! pkparse.c line 788
+    Tainted! pkparse.c line 790
+    Tainted! pkparse.c line 791
+    Tainted! pkparse.c line 798
+    Tainted! pkparse.c line 799
+    Tainted! pkparse.c line 801
+    Tainted! pkparse.c line 803
+    Tainted! pkparse.c line 804
+    Tainted! pkparse.c line 806
+    Tainted! pkparse.c line 810
+    Tainted! pkparse.c line 818
+    Tainted! pkparse.c line 822
+    Tainted! pkparse.c line 824
+    Tainted! pkparse.c line 825
+    Tainted! pkparse.c line 83
+    Tainted! pkparse.c line 830
+    Tainted! pkparse.c line 831
+    Tainted! pkparse.c line 833
+    Tainted! pkparse.c line 834
+    Tainted! pkparse.c line 837
+    Tainted! pkparse.c line 839
+    Tainted! pkparse.c line 840
+    Tainted! pkparse.c line 844
+    Tainted! pkparse.c line 859
+    Tainted! pkparse.c line 86
+    Tainted! pkparse.c line 87
+    Tainted! pkparse.c line 879
+    Tainted! pkparse.c line 880
+    Tainted! pkparse.c line 882
+    Tainted! pkparse.c line 885
+    Tainted! pkparse.c line 887
+    Tainted! pkparse.c line 888
+    Tainted! pkparse.c line 89
+    Tainted! pkparse.c line 891
+    Tainted! pkparse.c line 893
+    Tainted! pkparse.c line 894
+    Tainted! pkparse.c line 896
+    Tainted! pkparse.c line 897
+    Tainted! pkparse.c line 907
+    Tainted! pkparse.c line 912
+    Tainted! pkparse.c line 915
+    Tainted! pkparse.c line 92
+    Tainted! pkparse.c line 922
+    Tainted! pkparse.c line 923
+    Tainted! pkparse.c line 926
+    Tainted! pkparse.c line 933
+    Tainted! pkparse.c line 99
+    Tainted! rsa.c line 1001
+    Tainted! rsa.c line 1006
+    Tainted! rsa.c line 1008
+    Tainted! rsa.c line 1009
+    Tainted! rsa.c line 1011
+    Tainted! rsa.c line 1012
+    Tainted! rsa.c line 1013
+    Tainted! rsa.c line 1014
+    Tainted! rsa.c line 1042
+    Tainted! rsa.c line 1045
+    Tainted! rsa.c line 1046
+    Tainted! rsa.c line 1057
+    Tainted! rsa.c line 1062
+    Tainted! rsa.c line 1064
+    Tainted! rsa.c line 1067
+    Tainted! rsa.c line 1068
+    Tainted! rsa.c line 1069
+    Tainted! rsa.c line 1070
+    Tainted! rsa.c line 1071
+    Tainted! rsa.c line 1075
+    Tainted! rsa.c line 1088
+    Tainted! rsa.c line 1089
+    Tainted! rsa.c line 1090
+    Tainted! rsa.c line 1091
+    Tainted! rsa.c line 1092
+    Tainted! rsa.c line 1093
+    Tainted! rsa.c line 1094
+    Tainted! rsa.c line 1095
+    Tainted! rsa.c line 1096
+    Tainted! rsa.c line 1097
+    Tainted! rsa.c line 1098
+    Tainted! rsa.c line 1099
+    Tainted! rsa.c line 1100
+    Tainted! rsa.c line 1104
+    Tainted! rsa.c line 1110
+    Tainted! rsa.c line 1111
+    Tainted! rsa.c line 1114
+    Tainted! rsa.c line 1115
+    Tainted! rsa.c line 1117
+    Tainted! rsa.c line 1121
+    Tainted! rsa.c line 1122
+    Tainted! rsa.c line 1125
+    Tainted! rsa.c line 1126
+    Tainted! rsa.c line 1127
+    Tainted! rsa.c line 1129
+    Tainted! rsa.c line 1135
+    Tainted! rsa.c line 1138
+    Tainted! rsa.c line 1139
+    Tainted! rsa.c line 1141
+    Tainted! rsa.c line 1142
+    Tainted! rsa.c line 1157
+    Tainted! rsa.c line 1161
+    Tainted! rsa.c line 1167
+    Tainted! rsa.c line 1174
+    Tainted! rsa.c line 1202
+    Tainted! rsa.c line 1205
+    Tainted! rsa.c line 1207
+    Tainted! rsa.c line 1210
+    Tainted! rsa.c line 1211
+    Tainted! rsa.c line 1212
+    Tainted! rsa.c line 1214
+    Tainted! rsa.c line 1215
+    Tainted! rsa.c line 1219
+    Tainted! rsa.c line 1226
+    Tainted! rsa.c line 1229
+    Tainted! rsa.c line 1232
+    Tainted! rsa.c line 1233
+    Tainted! rsa.c line 1236
+    Tainted! rsa.c line 1237
+    Tainted! rsa.c line 1244
+    Tainted! rsa.c line 1247
+    Tainted! rsa.c line 1250
+    Tainted! rsa.c line 1252
+    Tainted! rsa.c line 1256
+    Tainted! rsa.c line 1259
+    Tainted! rsa.c line 1262
+    Tainted! rsa.c line 1264
+    Tainted! rsa.c line 1266
+    Tainted! rsa.c line 1269
+    Tainted! rsa.c line 1270
+    Tainted! rsa.c line 1277
+    Tainted! rsa.c line 1280
+    Tainted! rsa.c line 1291
+    Tainted! rsa.c line 1292
+    Tainted! rsa.c line 1297
+    Tainted! rsa.c line 1301
+    Tainted! rsa.c line 1315
+    Tainted! rsa.c line 1316
+    Tainted! rsa.c line 1319
+    Tainted! rsa.c line 1321
+    Tainted! rsa.c line 1348
+    Tainted! rsa.c line 1351
+    Tainted! rsa.c line 1353
+    Tainted! rsa.c line 1356
+    Tainted! rsa.c line 1357
+    Tainted! rsa.c line 1358
+    Tainted! rsa.c line 1360
+    Tainted! rsa.c line 1361
+    Tainted! rsa.c line 1370
+    Tainted! rsa.c line 1376
+    Tainted! rsa.c line 1378
+    Tainted! rsa.c line 1391
+    Tainted! rsa.c line 1396
+    Tainted! rsa.c line 1397
+    Tainted! rsa.c line 1400
+    Tainted! rsa.c line 1403
+    Tainted! rsa.c line 1404
+    Tainted! rsa.c line 1407
+    Tainted! rsa.c line 1410
+    Tainted! rsa.c line 1425
+    Tainted! rsa.c line 1428
+    Tainted! rsa.c line 1439
+    Tainted! rsa.c line 1443
+    Tainted! rsa.c line 1458
+    Tainted! rsa.c line 1462
+    Tainted! rsa.c line 1468
+    Tainted! rsa.c line 1475
+    Tainted! rsa.c line 1519
+    Tainted! rsa.c line 1520
+    Tainted! rsa.c line 1521
+    Tainted! rsa.c line 1522
+    Tainted! rsa.c line 1523
+    Tainted! rsa.c line 1642
+    Tainted! rsa.c line 1655
+    Tainted! rsa.c line 1656
+    Tainted! rsa.c line 1667
+    Tainted! rsa.c line 1669
+    Tainted! rsa.c line 1677
+    Tainted! rsa.c line 1694
+    Tainted! rsa.c line 1695
+    Tainted! rsa.c line 1706
+    Tainted! rsa.c line 1707
+    Tainted! rsa.c line 177
+    Tainted! rsa.c line 180
+    Tainted! rsa.c line 181
+    Tainted! rsa.c line 184
+    Tainted! rsa.c line 185
+    Tainted! rsa.c line 188
+    Tainted! rsa.c line 189
+    Tainted! rsa.c line 203
+    Tainted! rsa.c line 204
+    Tainted! rsa.c line 206
+    Tainted! rsa.c line 214
+    Tainted! rsa.c line 215
+    Tainted! rsa.c line 216
+    Tainted! rsa.c line 217
+    Tainted! rsa.c line 219
+    Tainted! rsa.c line 225
+    Tainted! rsa.c line 226
+    Tainted! rsa.c line 227
+    Tainted! rsa.c line 231
+    Tainted! rsa.c line 232
+    Tainted! rsa.c line 233
+    Tainted! rsa.c line 234
+    Tainted! rsa.c line 248
+    Tainted! rsa.c line 249
+    Tainted! rsa.c line 251
+    Tainted! rsa.c line 252
+    Tainted! rsa.c line 255
+    Tainted! rsa.c line 263
+    Tainted! rsa.c line 295
+    Tainted! rsa.c line 297
+    Tainted! rsa.c line 303
+    Tainted! rsa.c line 304
+    Tainted! rsa.c line 305
+    Tainted! rsa.c line 315
+    Tainted! rsa.c line 316
+    Tainted! rsa.c line 319
+    Tainted! rsa.c line 332
+    Tainted! rsa.c line 335
+    Tainted! rsa.c line 336
+    Tainted! rsa.c line 337
+    Tainted! rsa.c line 338
+    Tainted! rsa.c line 348
+    Tainted! rsa.c line 349
+    Tainted! rsa.c line 350
+    Tainted! rsa.c line 353
+    Tainted! rsa.c line 354
+    Tainted! rsa.c line 358
+    Tainted! rsa.c line 359
+    Tainted! rsa.c line 375
+    Tainted! rsa.c line 385
+    Tainted! rsa.c line 386
+    Tainted! rsa.c line 398
+    Tainted! rsa.c line 399
+    Tainted! rsa.c line 400
+    Tainted! rsa.c line 412
+    Tainted! rsa.c line 413
+    Tainted! rsa.c line 419
+    Tainted! rsa.c line 420
+    Tainted! rsa.c line 425
+    Tainted! rsa.c line 435
+    Tainted! rsa.c line 436
+    Tainted! rsa.c line 439
+    Tainted! rsa.c line 440
+    Tainted! rsa.c line 450
+    Tainted! rsa.c line 451
+    Tainted! rsa.c line 454
+    Tainted! rsa.c line 481
+    Tainted! rsa.c line 483
+    Tainted! rsa.c line 486
+    Tainted! rsa.c line 487
+    Tainted! rsa.c line 490
+    Tainted! rsa.c line 494
+    Tainted! rsa.c line 495
+    Tainted! rsa.c line 499
+    Tainted! rsa.c line 524
+    Tainted! rsa.c line 530
+    Tainted! rsa.c line 531
+    Tainted! rsa.c line 534
+    Tainted! rsa.c line 535
+    Tainted! rsa.c line 538
+    Tainted! rsa.c line 541
+    Tainted! rsa.c line 543
+    Tainted! rsa.c line 546
+    Tainted! rsa.c line 547
+    Tainted! rsa.c line 549
+    Tainted! rsa.c line 552
+    Tainted! rsa.c line 553
+    Tainted! rsa.c line 554
+    Tainted! rsa.c line 555
+    Tainted! rsa.c line 556
+    Tainted! rsa.c line 559
+    Tainted! rsa.c line 562
+    Tainted! rsa.c line 566
+    Tainted! rsa.c line 570
+    Tainted! rsa.c line 575
+    Tainted! rsa.c line 576
+    Tainted! rsa.c line 577
+    Tainted! rsa.c line 578
+    Tainted! rsa.c line 596
+    Tainted! rsa.c line 603
+    Tainted! rsa.c line 606
+    Tainted! rsa.c line 609
+    Tainted! rsa.c line 616
+    Tainted! rsa.c line 622
+    Tainted! rsa.c line 635
+    Tainted! rsa.c line 642
+    Tainted! rsa.c line 643
+    Tainted! rsa.c line 644
+    Tainted! rsa.c line 645
+    Tainted! rsa.c line 658
+    Tainted! rsa.c line 662
+    Tainted! rsa.c line 668
+    Tainted! rsa.c line 675
+    Tainted! rsa.c line 703
+    Tainted! rsa.c line 706
+    Tainted! rsa.c line 708
+    Tainted! rsa.c line 711
+    Tainted! rsa.c line 712
+    Tainted! rsa.c line 715
+    Tainted! rsa.c line 718
+    Tainted! rsa.c line 724
+    Tainted! rsa.c line 725
+    Tainted! rsa.c line 726
+    Tainted! rsa.c line 728
+    Tainted! rsa.c line 729
+    Tainted! rsa.c line 735
+    Tainted! rsa.c line 738
+    Tainted! rsa.c line 743
+    Tainted! rsa.c line 746
+    Tainted! rsa.c line 750
+    Tainted! rsa.c line 761
+    Tainted! rsa.c line 763
+    Tainted! rsa.c line 766
+    Tainted! rsa.c line 767
+    Tainted! rsa.c line 773
+    Tainted! rsa.c line 775
+    Tainted! rsa.c line 776
+    Tainted! rsa.c line 779
+    Tainted! rsa.c line 780
+    Tainted! rsa.c line 788
+    Tainted! rsa.c line 791
+    Tainted! rsa.c line 794
+    Tainted! rsa.c line 795
+    Tainted! rsa.c line 798
+    Tainted! rsa.c line 818
+    Tainted! rsa.c line 821
+    Tainted! rsa.c line 823
+    Tainted! rsa.c line 826
+    Tainted! rsa.c line 827
+    Tainted! rsa.c line 828
+    Tainted! rsa.c line 830
+    Tainted! rsa.c line 831
+    Tainted! rsa.c line 839
+    Tainted! rsa.c line 844
+    Tainted! rsa.c line 848
+    Tainted! rsa.c line 850
+    Tainted! rsa.c line 851
+    Tainted! rsa.c line 854
+    Tainted! rsa.c line 855
+    Tainted! rsa.c line 859
+    Tainted! rsa.c line 863
+    Tainted! rsa.c line 865
+    Tainted! rsa.c line 866
+    Tainted! rsa.c line 869
+    Tainted! rsa.c line 870
+    Tainted! rsa.c line 873
+    Tainted! rsa.c line 875
+    Tainted! rsa.c line 878
+    Tainted! rsa.c line 881
+    Tainted! rsa.c line 882
+    Tainted! rsa.c line 885
+    Tainted! rsa.c line 899
+    Tainted! rsa.c line 903
+    Tainted! rsa.c line 909
+    Tainted! rsa.c line 917
+    Tainted! rsa.c line 941
+    Tainted! rsa.c line 947
+    Tainted! rsa.c line 953
+    Tainted! rsa.c line 956
+    Tainted! rsa.c line 959
+    Tainted! rsa.c line 960
+    Tainted! rsa.c line 963
+    Tainted! rsa.c line 964
+    Tainted! rsa.c line 966
+    Tainted! rsa.c line 969
+    Tainted! rsa.c line 972
+    Tainted! rsa.c line 973
+    Tainted! rsa.c line 977
+    Tainted! rsa.c line 978
+    Tainted! rsa.c line 979
+    Tainted! rsa.c line 980
+    Tainted! rsa.c line 983
+    Tainted! rsa.c line 986
+    Tainted! rsa.c line 991
+    Tainted! rsa.c line 992
+    Tainted! rsa.c line 993
+    Tainted! rsa.c line 994
+* Tests field-sensitivity - July 18
+** Notes 
+   Tainting a struct pointer "pk" does not taint the elements inside the
+   structure.
+
+** Vulnerable Branch Test :: tainted value "pk"
+  #+BEGIN_SRC c 
+// pk.h definition of tainted value
+typedef struct
+{
+    const mbedtls_pk_info_t *   pk_info; /**< Public key informations        */
+    void *                      pk_ctx;  /**< Underlying public key context  */
+} mbedtls_pk_context;
+#+END_SRC
+   1. pk_encrypt.c - T: 0
+   2. pk_encrypt.c pk.c - T: 1
+        pk_encrypt.c line 124
+        pk_encrypt.c line 155
+        pk.c line 237
+        pk.c line 301
+   3. pk_encrypt.c pk.c pk_wrap.c - T: 4
+        pk_encrypt.c line 124 - if( ( ret = mbedtls_pk_encrytp(&pk,..,..,..) != 0)
+        pk_encrypt.c line 155 - if ( ret != 0 )
+        pk.c line 237         - mbedtls_pk_verify_ext : if ( ret != 0 )
+        pk.c line 301         - mbedtls_pk_encrypt : if (ctx == NULL || ctx->pk_info == NULL)
+   4. pk_encrypt.c pk.c pk_wrap.c rsa.c - T: 42
+        pk_encrypt.c line 124 - if( ( ret = mbedtls_pk_encrytp(&pk,..,..,..) != 0)
+        pk_encrypt.c line 155 - if ( ret != 0 )
+        pk.c line 237         - mbedtls_pk_verify_ext | if ( ret != 0 )
+        pk.c line 301         - mbedtls_pk_encrypt : if (ctx == NULL || ctx->pk_info == NULL)
+        pk_wrap.c line 90     - rsa_verify_wrap : mbedtls_rsa_pkcs1_verify(ctx .....)
+        pk_wrap.c line 468    - rsa_alt_check_pair : if ( rsa_verify_wrap (....))
+        rsa.c line 297        - mbedtls_rsa_public : if( mbedtls_mpi_cmp_mpi( &T, &ctx->N ) >= 0 )
+        rsa.c line 304        - mbedtls_rsa_public : MBEDTLS_MPI_CHK(....);
+        rsa.c line 315        - mbedtls_rsa_public : if( ret != 0 )
+        rsa.c line 335        - rsa_prepare_blinding : MPI_CHK ( various ctx parameters)
+          rsa.c line 336      - same as 355
+          rsa.c line 337      - same as 355
+          rsa.c line 338      - same as 355
+        rsa.c line 348        - rsa_prepare_blinding : MBEDTLS_MPI_CHK( various ctx parameters)
+          rsa.c line 349      - same as 348
+        rsa.c line 350        - rsa_prepare_blinding : while( mbedtls_mpi_cmp_int( &ctx->Vi, 1 ) != 0 ); 
+        rsa.c line 353        - rsa_prepare_blinding : MBEDTLS_MPI_CHK( various ctx parameters)
+        rsa.c line 354        - rsa_prepare_blinding : MBEDTLS_MPI_CHK( various ctx parameters)
+        rsa.c line 386        - mbedtls_rsa_private : if ( mbedtls_mpi_cmp_mpi(ctx->N)
+        rsa.c line 398        - mbedtls_rsa_private : MBEDTLS_MPI_CHK( rsa_prepare_blinding(...))
+        rsa.c line 399        - mbedtls_rsa_private : MBEDTLS_MPI_CHK( mbedtls_mpi_mul_mpi (...))
+        rsa.c line 400        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi (...) )
+        rsa.c line 412        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_exp_mod(...))
+        rsa.c line 413        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_exp_mod(...))
+        rsa.c line 419        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_mul_mpi(...))
+        rsa.c line 420        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(...))
+        rsa.c line 425        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_mul_mpi(...))
+        rsa.c line 435        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_mul_mpi(...))
+        rsa.c line 436        - mbedtls_rsa_private : MBEDTLS_MPI_CHK(mbedtls_mpi_mod_mpi(...))
+        rsa.c line 450        - mbedtls_rsa_private : if (ret != 0)
+        rsa.c line 728        - mbedtls_rsa_rsaes_oaep_decrypt : if ( ret != 0 )
+        rsa.c line 830        - mbedtls_rsa_rsaes_pkcs1_v15_decrypt: if ( ret != 0)
+        rsa.c line 1121       - mbedtls_rsa_rsassa_pkcs1_v15_sign : MBEDTLS_MPI_CHK(mbedtls_rsa_private(..))
+        rsa.c line 1122       - mbedtls_rsa_rsassa_pkcs1_v15_sign : MBEDTLS_MPI_CHK(mbedtls_rsa_public(..))
+        rsa.c line 1214       - mbedtls_rsa_rsassa_pss_verify_ext : if ( ret != 0)
+        rsa.c line 1247       - mbedtls_rsa_rsassa_pss_verify_ext : if ( msb % 8 == 0)
+        rsa.c line 1252       - mbedtls_rsa_rsassa_pss_verify_ext : if ( buf[0] >> ( 8 - siglen * 8 + msb ) )
+        rsa.c line 1360       - mbedtls_rsa_rsassa_pkcs1_v15_verify :  if ( ret != 0 ) 
+        rsa.c line 1655       - mbedtls_rsa_self_test : if (mbedtls_rsa_pkcs1_encrypt(...))
+        rsa.c line 1667       - mbedtls_rsa_self_test : if (mbedtls_rsa_pkcs1_decrypt (...))
+        rsa.c line 1694       - mbedtls_rsa_self_test : if (mbedtls_rsa_pkcs1_sign (...))
+        rsa.c line 1706       - mbedtls_rsa_self_test : if (mbedtls_rsa_pkcs1_verify(...))
+   5. pk_encrypt.c pk.c pk_wrap.c rsa.c pkparse.c - T: 111
+        pk.c line 109
+        pk.c line 237
+        pk.c line 301
+        pk.c line 70
+        pk_encrypt.c line 104
+        pk_encrypt.c line 124
+        pk_encrypt.c line 155
+        pk_wrap.c line 468
+        pk_wrap.c line 90
+        pkparse.c line 1084
+        pkparse.c line 1089
+        pkparse.c line 1099
+        pkparse.c line 1101
+        pkparse.c line 1103
+        pkparse.c line 1116
+        pkparse.c line 1121
+        pkparse.c line 1131
+        pkparse.c line 1133
+        pkparse.c line 1135
+        pkparse.c line 1147
+        pkparse.c line 1149
+        pkparse.c line 1158
+        pkparse.c line 1170
+        pkparse.c line 1172
+        pkparse.c line 1182
+        pkparse.c line 1199
+        pkparse.c line 1207
+        pkparse.c line 1213
+        pkparse.c line 1222
+        pkparse.c line 1235
+        pkparse.c line 1270
+        pkparse.c line 1278
+        pkparse.c line 470
+        pkparse.c line 488
+        pkparse.c line 525
+        pkparse.c line 624
+        pkparse.c line 630
+        pkparse.c line 634
+        pkparse.c line 679
+        pkparse.c line 689
+        pkparse.c line 690
+        pkparse.c line 691
+        pkparse.c line 692
+        pkparse.c line 693
+        pkparse.c line 694
+        pkparse.c line 695
+        pkparse.c line 711
+        pkparse.c line 764
+        pkparse.c line 781
+        pkparse.c line 788
+        pkparse.c line 810
+        pkparse.c line 818
+        pkparse.c line 822
+        pkparse.c line 829
+        pkparse.c line 837
+        pkparse.c line 912
+        pkparse.c line 922
+        rsa.c line 1121
+        rsa.c line 1122
+        rsa.c line 1214
+        rsa.c line 1247
+        rsa.c line 1252
+        rsa.c line 1360
+        rsa.c line 1641
+        rsa.c line 1655
+        rsa.c line 1667
+        rsa.c line 1694
+        rsa.c line 1706
+        rsa.c line 184
+        rsa.c line 188
+        rsa.c line 214
+        rsa.c line 215
+        rsa.c line 216
+        rsa.c line 217
+        rsa.c line 219
+        rsa.c line 225
+        rsa.c line 226
+        rsa.c line 227
+        rsa.c line 231
+        rsa.c line 232
+        rsa.c line 233
+        rsa.c line 234
+        rsa.c line 248
+        rsa.c line 251
+        rsa.c line 262
+        rsa.c line 297
+        rsa.c line 304
+        rsa.c line 315
+        rsa.c line 335
+        rsa.c line 336
+        rsa.c line 337
+        rsa.c line 338
+        rsa.c line 348
+        rsa.c line 349
+        rsa.c line 350
+        rsa.c line 353
+        rsa.c line 354
+        rsa.c line 386
+        rsa.c line 398
+        rsa.c line 399
+        rsa.c line 400
+        rsa.c line 412
+        rsa.c line 413
+        rsa.c line 419
+        rsa.c line 420
+        rsa.c line 425
+        rsa.c line 435
+        rsa.c line 436
+        rsa.c line 450
+        rsa.c line 728
+        rsa.c line 830
+
+* Testing RSA in projects/llvm-deps/rsa_test 
+  Control test is don with commit *e0ed882*
+  Experimental test is done with commit *baab0b5* 
+  Tainted Values: P, Q, D  -- private key exponents 
+** Control Results - T: 78
+    rsa.c line 222 
+    rsa.c line 251 
+    rsa.c line 340 
+    rsa.c line 350 
+    rsa.c line 360 
+    rsa.c line 377 
+    rsa.c line 393 
+    rsa.c line 426 
+    rsa.c line 439 
+    rsa.c line 481 
+    rsa.c line 491 
+    rsa.c line 525 
+    rsa.c line 528 
+    rsa.c line 536 
+    rsa.c line 566 
+    rsa.c line 573 
+    rsa.c line 579 
+    rsa.c line 588 
+    rsa.c line 637 
+    rsa.c line 645 
+    rsa.c line 655 
+    rsa.c line 661 
+    rsa.c line 675 
+    rsa.c line 743 
+    rsa.c line 748 
+    rsa.c line 752 
+    rsa.c line 762 
+    rsa.c line 797 
+    rsa.c line 804 
+    rsa.c line 819 
+    rsa.c line 822 
+    rsa.c line 849 
+    rsa.c line 854 
+    rsa.c line 861 
+    rsa.c line 879 
+    rsa.c line 894 
+    rsa.c line 904 
+    rsa.c line 907 
+    rsa.c line 970 
+    rsa.c line 983 
+    rsa.c line 990 
+    rsa.c line 996 
+    rsa.c line 1003 
+    rsa.c line 1073 
+    rsa.c line 1095 
+    rsa.c line 1143 
+    rsa.c line 1146 
+    rsa.c line 1147 
+    rsa.c line 1150 
+    rsa.c line 1154 
+    rsa.c line 1227 
+    rsa.c line 1232 
+    rsa.c line 1239 
+    rsa.c line 1244 
+    rsa.c line 1252 
+    rsa.c line 1259 
+    rsa.c line 1278 
+    rsa.c line 1288 
+    rsa.c line 1291 
+    rsa.c line 1301 
+    rsa.c line 1336 
+    rsa.c line 1369 
+    rsa.c line 1374 
+    rsa.c line 1381 
+    rsa.c line 1391 
+    rsa.c line 1399 
+    rsa.c line 1416 
+    rsa.c line 1420 
+    rsa.c line 1423 
+    rsa.c line 1427 
+    rsa.c line 1430 
+    rsa.c line 1445 
+    rsa.c line 1448 
+    rsa.c line 1459 
+    rsa.c line 1673 
+    rsa.c line 1685 
+    rsa.c line 1712 
+    rsa.c line 1724 
+
+** Experimental Results - T: 28 
+    rsa.c line 566 
+    rsa.c line 573 
+    rsa.c line 579 
+    rsa.c line 588 
+    rsa.c line 525 
+    rsa.c line 528 
+    rsa.c line 536 
+    rsa.c line 637 
+    rsa.c line 743 
+    rsa.c line 752 
+    rsa.c line 797 
+    rsa.c line 804 
+    rsa.c line 822 
+    rsa.c line 849 
+    rsa.c line 970 
+    rsa.c line 983 
+    rsa.c line 990 
+    rsa.c line 996 
+    rsa.c line 1003 
+    rsa.c line 1073 
+    rsa.c line 1227 
+    rsa.c line 1252 
+    rsa.c line 1259 
+    rsa.c line 1301 
+    rsa.c line 1336 
+    rsa.c line 1369 
+    rsa.c line 1673 
+    rsa.c line 1712
+* Manual Tracing through mbedtls_rsa_self_test
+** Entry: mbedtls_rsa_self_test
+   New test is done with commit *baab0b5*
+   Original test is don with commit *e0ed882*
+   Tainted Values: P, Q, D  -- private key exponents
+*** Results for both tests: new test
+   
+   1. Call to mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V15, 0);
+      Call to rsa_set_paddign(&rsa, padding, hash_id);
+      Call to mbedtls_mutex_init
+      - Results in new test: None
+      - Results in original test: None
+   2. Setting RSA variables
+      #+BEGIN_SRC c
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.N , 16, RSA_N  ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.E , 16, RSA_E  ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.D , 16, RSA_D  ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.P , 16, RSA_P  ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.Q , 16, RSA_Q  ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.DP, 16, RSA_DP ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.DQ, 16, RSA_DQ ) );
+          MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &rsa.QP, 16, RSA_QP ) );
+      #+END_SRC
+      MBEDTLS_MPI_CHK is defined in bignum.h - need to check if linked
+      Notes: &rsa.D is not tainted, though rsa.D. No Tainted lines should appear
+      - Result in new test: None
+      - Result in original test: None
+   3. RSA Key Validation
+      #+BEGIN_SRC c
+    if( verbose != 0 )
+        mbedtls_printf( "  RSA key validation: " );
+
+    if( mbedtls_rsa_check_pubkey(  &rsa ) != 0 ||
+        mbedtls_rsa_check_privkey( &rsa ) != 0 )
+    {
+        if( verbose != 0 )
+            mbedtls_printf( "failed\n" );
+
+        return( 1 );
+    }
+      #+END_SRC
+      Verbose is an int input to the self_test function, not tainted
+      Call to mbedtls_rsa_check_pubkey( &rsa )
+        Operates on rsa->N.p and rsa->E.p
+      Call to mbedtls_rsa_check_privkey ( &rsa )
+      - Operates on &P, &D, &Q
+      - No branches should appear in the analysis here due to operation on
+        address.
+      - There would likely be flagged branches here if bignum.h was included
+      - Results in new test: None
+      - Results in original test: 222 251
+   4. PKCS#1 encryption
+      #+BEGIN_SRC c
+    if( verbose != 0 )
+        mbedtls_printf( "passed\n  PKCS#1 encryption : " );
+
+    memcpy( rsa_plaintext, RSA_PT, PT_LEN );
+
+    if( mbedtls_rsa_pkcs1_encrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PUBLIC, PT_LEN,
+                           rsa_plaintext, rsa_ciphertext ) != 0 )
+    {
+        if( verbose != 0 )
+            mbedtls_printf( "failed\n" );
+
+        return( 1 );
+    }
+      #+END_SRC
+      Calls to memcpy - none of the values tainted
+      Call to mbedtls_rsa_pkcs1_encrypt
+      - Result: No direct operations on P, D, or Q, or any values influenced by
+        them
+      - Reported in new test:
+          mbedtls_rsa_public: None
+          mbedtls_rsa_private: None
+          mbedtls_rsa_rsaes_oaep_encrypt: 566 573 579 588
+          mbedtls_rsa_pkcs1_v15_encrypt: 637
+          rsa_prepare_blinding: None
+      - Reported in original test: 
+          mbedtls_rsa_public: 340 350 360
+          mbedtls_rsa_private: 426 439 481 491
+          mbedtls_rsa_rsaes_oaep_encrypt: 566 573 579 588
+          mbedtls_rsa_pkcs1_v15_encrypt: 637 645 655 661 675
+          rsa_prepare_blinding: 377 393
+      - Notes: Code wrapped in preprocessor if blocks not evaluated(?)
+   5. PKCS#1 decryption
+      #+BEGIN_SRC c
+    if( verbose != 0 )
+        mbedtls_printf( "passed\n  PKCS#1 decryption : " );
+
+    if( mbedtls_rsa_pkcs1_decrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, &len,
+                           rsa_ciphertext, rsa_decrypted,
+                           sizeof(rsa_decrypted) ) != 0 )
+    {
+        if( verbose != 0 )
+            mbedtls_printf( "failed\n" );
+
+        return( 1 );
+    }
+      #+END_SRC
+      - Reported in new test:
+          mbedtls_rsa_pkcs1_decrypt: None
+          mbedtls_rsa_rsaes_oaep_decrypt: 743 752 797 804 822
+          mbedtls_rsa_rsaes_pkcs1_v15_decrypt: 849
+      - Reported in original test:
+          mbedtls_rsa_pkcs1_decrypt: None
+          mbedtls_rsa_rsaes_oaep_decrypt: 743 748 752 762 797 804 819 822
+          mbedtls_rsa_pkcs1_decrypt: 849 854 861 879 894 904 907
+   6. PKCS#1 sign
+      #+BEGIN_SRC c
+        if( verbose != 0 )
+            mbedtls_printf( "PKCS#1 data sign  : " );
+
+        mbedtls_sha1( rsa_plaintext, PT_LEN, sha1sum );
+
+        if( mbedtls_rsa_pkcs1_sign( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA1, 0,
+                            sha1sum, rsa_ciphertext ) != 0 )
+        {
+            if( verbose != 0 )
+                mbedtls_printf( "failed\n" );
+
+            return( 1 );
+        }
+      #+END_SRC
+      Calls mbedtls_rsa_pkcs1_sign
+      - Results from new test:
+          mbedtls_rsa_pkcs1_sign: None
+          mbedtls_rsa_rsassa_pss_sign: 970 983 990 996 1003
+          mbedtls_rsa_rsassa_pkcs1_v15_sign: 1073
+          mbedtls_rsa_public: same as before
+          mbedtls_rsa_private: same as before
+      - Results from original test:
+          mbedtls_rsa_pkcs1_sign: None
+          mbedtls_rsa_rsassa_pss_sign: 970 983 990 996 1003
+          mbedtls_rsa_rsassa_pkcs1_v15_sign: 1073 1095 1143 1146 1147 1150 1154
+          mbedtls_rsa_rsassa_pss_sign:
+          mbedtls_rsa_public: same as before
+          mbedtls_rsa_private: same as before
+   7. PKCS#1 verify
+      #+BEGIN_SRC C
+        if( verbose != 0 )
+            mbedtls_printf( "passed\n  PKCS#1 sig. verify: " );
+
+        if( mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA1, 0,
+                              sha1sum, rsa_ciphertext ) != 0 )
+        {
+            if( verbose != 0 )
+                mbedtls_printf( "failed\n" );
+
+            return( 1 );
+        }
+      #+END_SRC
+      - Results from new test:
+          mbedtls_rsa_pkcs1_verify: None
+          mbedtls_rsa_pkcs1_v15_verify: 1369
+          mbedtls_rsa_rsassa_pss_verify: 1336
+          mbedtls_rsa_rsassa_pss_verify_ext: 1227 1252 1259 1301
+      - Results from original test:
+          mbedtls_rsa_pkcs1_verify: None
+          mbedtls_rsa_pkcs1_v15_verify: 1369 1374 1381 1391 1399 1416 1420 1423 1427 1430 1445 1448 1459
+          mbedtls_rsa_rsassa_pss_verify: 1336
+          mbedtls_rsa_rsassa_pss_verify_ext: 1227 1232 1239 1244 1252 1259 1278 1288 1291 1301 
+*** Potential misses
+    Anything that stems from the following could be missed.
+    Any and all values that interact with P and/or Q here should be tainted. In
+    this case we don't know the definition of mbedtls_mpi_exp_mod
+    #+BEGIN_SRC c
+    /*
+     * faster decryption using the CRT (Chinese Remainder Theorem)
+     *
+     * T1 = input ^ dP mod P
+     * T2 = input ^ dQ mod Q
+     */
+    MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &T1, &T, &ctx->DP, &ctx->P, &ctx->RP ) );
+    MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &T2, &T, &ctx->DQ, &ctx->Q, &ctx->RQ ) );
+    #+END_SRC
+
+    Additionally ctx->padding and ctx->hash_id seem to be incorrectly tainted.
+* Tracing through rsa.c + bignum.c with overlap commit
+** Early July(?) 2017 Results
+*** Vulnerable Branch - P, Q, D // Untrusted Value, input
+    bignum.c line 154
+    bignum.c line 195
+    bignum.c line 353
+    bignum.c line 369
+    bignum.c line 388
+    bignum.c line 510
+    bignum.c line 656
+    bignum.c line 678
+    bignum.c line 813
+    bignum.c line 817
+    bignum.c line 828
+    bignum.c line 829
+    bignum.c line 843
+    bignum.c line 847
+    bignum.c line 861
+    bignum.c line 862
+    bignum.c line 907
+    bignum.c line 924
+    bignum.c line 954
+    bignum.c line 992
+    bignum.c line 1166
+    bignum.c line 1185
+    bignum.c line 1189
+    bignum.c line 1243
+    bignum.c line 1254
+    bignum.c line 1372
+    bignum.c line 1522
+    bignum.c line 1617
+    bignum.c line 1736
+    bignum.c line 1739
+    bignum.c line 1784
+    bignum.c line 1793
+    bignum.c line 1923
+    bignum.c line 1927
+    bignum.c line 1937
+    bignum.c line 1941
+    bignum.c line 2025
+    bignum.c line 2035
+    bignum.c line 2228
+    bignum.c line 2230
+    rsa.c line 225
+    rsa.c line 661
+    rsa.c line 819
+    rsa.c line 822
+    rsa.c line 904
+    rsa.c line 907
+    rsa.c line 1154
+    rsa.c line 1244
+    rsa.c line 1278
+    rsa.c line 1288
+    rsa.c line 1291
+*** Vulnerable Branch - Taint/Untrust P, Q, D 
+    bignum.c line 63
+    bignum.c line 97
+    bignum.c line 100
+    bignum.c line 118
+    bignum.c line 121
+    bignum.c line 123
+    bignum.c line 126
+    bignum.c line 150
+    bignum.c line 153
+    bignum.c line 154
+    bignum.c line 158
+    bignum.c line 161
+    bignum.c line 164
+    bignum.c line 185
+    bignum.c line 188
+    bignum.c line 194
+    bignum.c line 195
+    bignum.c line 243
+    bignum.c line 276
+    bignum.c line 328
+    bignum.c line 351
+    bignum.c line 353
+    bignum.c line 369
+    bignum.c line 384
+    bignum.c line 387
+    bignum.c line 388
+    bignum.c line 475
+    bignum.c line 507
+    bignum.c line 510
+    bignum.c line 544
+    bignum.c line 553
+    bignum.c line 561
+    bignum.c line 567
+    bignum.c line 580
+    bignum.c line 656
+    bignum.c line 677
+    bignum.c line 678
+    bignum.c line 684
+    bignum.c line 701
+    bignum.c line 706
+    bignum.c line 726
+    bignum.c line 734
+    bignum.c line 736
+    bignum.c line 739
+    bignum.c line 746
+    bignum.c line 748
+    bignum.c line 773
+    bignum.c line 779
+    bignum.c line 781
+    bignum.c line 784
+    bignum.c line 791
+    bignum.c line 793
+    bignum.c line 812
+    bignum.c line 813
+    bignum.c line 816
+    bignum.c line 817
+    bignum.c line 820
+    bignum.c line 823
+    bignum.c line 824
+    bignum.c line 826
+    bignum.c line 828
+    bignum.c line 829
+    bignum.c line 842
+    bignum.c line 843
+    bignum.c line 846
+    bignum.c line 847
+    bignum.c line 850
+    bignum.c line 853
+    bignum.c line 854
+    bignum.c line 856
+    bignum.c line 857
+    bignum.c line 859
+    bignum.c line 861
+    bignum.c line 862
+    bignum.c line 906
+    bignum.c line 907
+    bignum.c line 917
+    bignum.c line 924
+    bignum.c line 926
+    bignum.c line 948
+    bignum.c line 954
+    bignum.c line 991
+    bignum.c line 992
+    bignum.c line 1011
+    bignum.c line 1042
+    bignum.c line 1128
+    bignum.c line 1143
+    bignum.c line 1154
+    bignum.c line 1166
+    bignum.c line 1184
+    bignum.c line 1185
+    bignum.c line 1188
+    bignum.c line 1189
+    bignum.c line 1195
+    bignum.c line 1243
+    bignum.c line 1254
+    bignum.c line 1328
+    bignum.c line 1351
+    bignum.c line 1363
+    bignum.c line 1370
+    bignum.c line 1372
+    bignum.c line 1386
+    bignum.c line 1391
+    bignum.c line 1392
+    bignum.c line 1394
+    bignum.c line 1401
+    bignum.c line 1422
+    bignum.c line 1457
+    bignum.c line 1462
+    bignum.c line 1465
+    bignum.c line 1505
+    bignum.c line 1522
+    bignum.c line 1556
+    bignum.c line 1563
+    bignum.c line 1565
+    bignum.c line 1617
+    bignum.c line 1620
+    bignum.c line 1633
+    bignum.c line 1634
+    bignum.c line 1636
+    bignum.c line 1648
+    bignum.c line 1658
+    bignum.c line 1673
+    bignum.c line 1686
+    bignum.c line 1696
+    bignum.c line 1702
+    bignum.c line 1721
+    bignum.c line 1736
+    bignum.c line 1739
+    bignum.c line 1756
+    bignum.c line 1761
+    bignum.c line 1778
+    bignum.c line 1784
+    bignum.c line 1793
+    bignum.c line 1801
+    bignum.c line 1806
+    bignum.c line 1837
+    bignum.c line 1842
+    bignum.c line 1878
+    bignum.c line 1881
+    bignum.c line 1896
+    bignum.c line 1905
+    bignum.c line 1923
+    bignum.c line 1927
+    bignum.c line 1937
+    bignum.c line 1941
+    bignum.c line 1951
+    bignum.c line 1963
+    bignum.c line 1966
+    bignum.c line 1969
+    bignum.c line 2025
+    bignum.c line 2030
+    bignum.c line 2035
+    bignum.c line 2070
+    bignum.c line 2071
+    bignum.c line 2072
+    bignum.c line 2074
+    bignum.c line 2079
+    bignum.c line 2081
+    bignum.c line 2090
+    bignum.c line 2094
+    bignum.c line 2102
+    bignum.c line 2110
+    bignum.c line 2115
+    bignum.c line 2123
+    bignum.c line 2132
+    bignum.c line 2161
+    bignum.c line 2165
+    bignum.c line 2198
+    bignum.c line 2201
+    bignum.c line 2209
+    bignum.c line 2211
+    bignum.c line 2228
+    bignum.c line 2230
+    bignum.c line 2243
+    bignum.c line 2245
+    bignum.c line 2251
+    bignum.c line 2326
+    bignum.c line 2351
+    bignum.c line 2374
+    bignum.c line 2396
+    bignum.c line 2418
+    rsa.c line 166 - mbedtls_gen_prime(&ctx-P, nbits, 0, f_rng, p_rng)
+    rsa.c line 169
+    rsa.c line 172
+    rsa.c line 175
+    rsa.c line 179
+    rsa.c line 186
+    rsa.c line 206
+    rsa.c line 222
+    rsa.c line 225
+    rsa.c line 229
+    rsa.c line 233
+  mbedtls_rsa_check_privkey
+    rsa.c line 251
+    rsa.c line 276
+    rsa.c line 277
+    rsa.c line 278
+    rsa.c line 279
+    rsa.c line 280
+    rsa.c line 281
+  -------------------------
+    rsa.c line 313
+    rsa.c line 342
+    rsa.c line 377
+    rsa.c line 393
+    rsa.c line 395
+    rsa.c line 427
+    rsa.c line 439
+    rsa.c line 491
+    rsa.c line 525
+    rsa.c line 528
+    rsa.c line 536
+    rsa.c line 566
+    rsa.c line 573
+    rsa.c line 579
+    rsa.c line 588
+    rsa.c line 637
+    rsa.c line 645
+    rsa.c line 655
+    rsa.c line 661
+    rsa.c line 675
+    rsa.c line 743
+    rsa.c line 748
+    rsa.c line 752
+    rsa.c line 762
+    rsa.c line 797
+    rsa.c line 804
+    rsa.c line 819
+    rsa.c line 822
+    rsa.c line 849
+    rsa.c line 854
+    rsa.c line 861
+    rsa.c line 879
+    rsa.c line 894
+    rsa.c line 904
+    rsa.c line 907
+    rsa.c line 970
+    rsa.c line 983
+    rsa.c line 990
+    rsa.c line 996
+    rsa.c line 1003
+    rsa.c line 1027
+    rsa.c line 1073
+    rsa.c line 1095
+    rsa.c line 1143
+    rsa.c line 1146
+    rsa.c line 1150
+    rsa.c line 1154
+    rsa.c line 1227
+    rsa.c line 1232
+    rsa.c line 1239
+    rsa.c line 1244
+    rsa.c line 1252
+    rsa.c line 1259
+    rsa.c line 1273
+    rsa.c line 1278
+    rsa.c line 1288
+    rsa.c line 1291
+    rsa.c line 1301
+    rsa.c line 1336
+    rsa.c line 1369
+    rsa.c line 1374
+    rsa.c line 1381
+    rsa.c line 1391
+    rsa.c line 1399
+    rsa.c line 1416
+    rsa.c line 1420
+    rsa.c line 1423
+    rsa.c line 1427
+    rsa.c line 1430
+    rsa.c line 1445
+    rsa.c line 1448
+    rsa.c line 1459
+    rsa.c line 1673
+    rsa.c line 1685
+    rsa.c line 1712
+    rsa.c line 1724
+*** Vulnerable Branch - Taint P, Q, D // Untrusted rsa_plaintext
+    bignum.c line 154 -
+    bignum.c line 195
+    bignum.c line 353
+    bignum.c line 369
+    bignum.c line 388
+    bignum.c line 510
+    bignum.c line 656
+    bignum.c line 678
+    bignum.c line 813
+    bignum.c line 817
+    bignum.c line 828
+    bignum.c line 829
+    bignum.c line 843
+    bignum.c line 847
+    bignum.c line 861
+    bignum.c line 862
+    bignum.c line 907
+    bignum.c line 924
+    bignum.c line 954
+    bignum.c line 992
+    bignum.c line 1166
+    bignum.c line 1185
+    bignum.c line 1189
+    bignum.c line 1243
+    bignum.c line 1254
+  div_mpi 
+    bignum.c line 1372
+  -------
+    bignum.c line 1522
+  exp_mod
+    bignum.c line 1617
+    bignum.c line 1736
+    bignum.c line 1739
+    bignum.c line 1784
+    bignum.c line 1793
+  -------
+    bignum.c line 1923
+    bignum.c line 1927
+    bignum.c line 1937
+    bignum.c line 1941
+    bignum.c line 2025
+    bignum.c line 2035
+    bignum.c line 2228
+    bignum.c line 2230
+    rsa.c line 225 - mbedtls_rsa_check_pubkey: if ( ( ctx->N.p[0] & 1 ) == 0 || ( ctx->E.p[0] & 1 ) == 0 )
+    rsa.c line 661 - mbedtls_rsa_rsaes_pkcs1_v15_encrypt: while( *p == 0 && --rng_dl && ret == 0 )
+    rsa.c line 819 - mbedtls_rsa_rsaes_oaep_decrypt: if( bad != 0 )
+    rsa.c line 822 - mbedtls_rsa_rsaes_oaep_decrypt: if( ilen - ( p - buf ) > output_max_len )
+    rsa.c line 904 - mbedtls_rsa_rsaes_pkcs1_v15_decrypt: if ( bad )
+    rsa.c line 907 - mbedtls_rsa_rsaes_pkcs1_v15_decrypt: if( ilen - ( p - buf ) > output_max_len )  
+    rsa.c line 1154 - mbedtls_rsa_rsassa_pkcs1_v15_sign: if( diff_no_optimize != 0 )
+    rsa.c line 1244 - mbedtls_rsa_rsassa_pss_verify_ext: if( buf[siglen - 1] != 0xBC )
+    rsa.c line 1278 - mbedtls_rsa_rsassa_pss_verify_ext: if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+    rsa.c line 1288 - mbedtls_rsa_rsassa_pss_verify_ext: while( p < buf + siglen && *p == 0 )
+    rsa.c line 1291 - mbedtls_rsa_rsassa_pss_verify_ext: if( p == buf + siglen || *p++ != 0x01 )
+** Commit 65fc715 
+*** Vulnerable Branch - Taint/Untrust P, Q, D :: Empty Whitelist
+    #+BEGIN_SRC c
+      rsa.c line  166 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->P, ( nbits + 1 ) >> 1, 0,
+      rsa.c line  169 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->Q, ( nbits + 1 ) >> 1, 0,
+      rsa.c line  172 - if( mbedtls_mpi_cmp_mpi( &ctx->P, &ctx->Q ) < 0 )
+      rsa.c line  175 - if( mbedtls_mpi_cmp_mpi( &ctx->P, &ctx->Q ) == 0 )
+      rsa.c line  179 - if( mbedtls_mpi_bitlen( &ctx->N ) != nbits )
+      rsa.c line  186 - }
+      rsa.c line  206 - if( ret != 0 )
+      rsa.c line  222 - if( !ctx->N.p || !ctx->E.p )
+      rsa.c line  225 - if( ( ctx->N.p[0] & 1 ) == 0 ||
+      rsa.c line  229 - if( mbedtls_mpi_bitlen( &ctx->N ) < 128 ||
+      rsa.c line  233 - if( mbedtls_mpi_bitlen( &ctx->E ) < 2 ||
+      rsa.c line  251 - if( !ctx->P.p || !ctx->Q.p || !ctx->D.p )
+      rsa.c line  276 - if( mbedtls_mpi_cmp_mpi( &PQ, &ctx->N ) != 0 ||
+      rsa.c line  277 - mbedtls_mpi_cmp_mpi( &DP, &ctx->DP ) != 0 ||
+      rsa.c line  278 - mbedtls_mpi_cmp_mpi( &DQ, &ctx->DQ ) != 0 ||
+      rsa.c line  279 - mbedtls_mpi_cmp_mpi( &QP, &ctx->QP ) != 0 ||
+      rsa.c line  280 - mbedtls_mpi_cmp_int( &L2, 0 ) != 0 ||
+      rsa.c line  281 - mbedtls_mpi_cmp_int( &I, 1 ) != 0 ||
+      rsa.c line  313 - if( mbedtls_mpi_cmp_mpi( &pub->N, &prv->N ) != 0 ||
+      rsa.c line  342 - if( mbedtls_mpi_cmp_mpi( &T, &ctx->N ) >= 0 )
+      rsa.c line  377 - if( ctx->Vf.p != NULL )
+      rsa.c line  393 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &ctx->Vf, ctx->len - 1, f_rng, p_rng ) );
+      rsa.c line  395 - } while( mbedtls_mpi_cmp_int( &ctx->Vi, 1 ) != 0 );
+      rsa.c line  427 - if( mbedtls_mpi_cmp_mpi( &T, &ctx->N ) >= 0 )
+      rsa.c line  439 - MBEDTLS_MPI_CHK( rsa_prepare_blinding( ctx, f_rng, p_rng ) );
+      rsa.c line  491 - if( ret != 0 )
+      rsa.c line  525 - while( dlen > 0 )
+      rsa.c line  528 - if( dlen < hlen )
+      rsa.c line  536 - for( i = 0; i < use_len; ++i )
+      rsa.c line  566 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V21 )
+      rsa.c line  573 - if( md_info == NULL )
+      rsa.c line  579 - if( olen < ilen + 2 * hlen + 2 )
+      rsa.c line  588 - if( ( ret = f_rng( p_rng, p, hlen ) ) != 0 )
+      rsa.c line  637 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V15 )
+      rsa.c line  645 - if( olen < ilen + 11 )
+      rsa.c line  655 - while( nb_pad-- > 0 )
+      rsa.c line  661 - } while( *p == 0 && --rng_dl && ret == 0 );
+      rsa.c line  665 - if( rng_dl == 0 || ret != 0 )
+      rsa.c line  675 - while( nb_pad-- > 0 )
+      rsa.c line  743 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V21 )
+      rsa.c line  748 - if( ilen < 16 || ilen > sizeof( buf ) )
+      rsa.c line  752 - if( md_info == NULL )
+      rsa.c line  762 - if( ret != 0 )
+      rsa.c line  797 - for( i = 0; i < hlen; i++ )
+      rsa.c line  804 - for( i = 0; i < ilen - 2 * hlen - 2; i++ )
+      rsa.c line  819 - if( bad != 0 )
+      rsa.c line  822 - if( ilen - ( p - buf ) > output_max_len )
+      rsa.c line  849 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V15 )
+      rsa.c line  854 - if( ilen < 16 || ilen > sizeof( buf ) )
+      rsa.c line  861 - if( ret != 0 )
+      rsa.c line  879 - for( i = 0; i < ilen - 3; i++ )
+      rsa.c line  894 - for( i = 0; i < ilen - 3; i++ )
+      rsa.c line  904 - if( bad )
+      rsa.c line  907 - if( ilen - ( p - buf ) > output_max_len )
+      rsa.c line  970 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V21 )
+      rsa.c line  983 - if( md_info == NULL )
+      rsa.c line  990 - if( md_info == NULL )
+      rsa.c line  996 - if( olen < hlen + slen + 2 )
+      rsa.c line 1003 - if( ( ret = f_rng( p_rng, salt, slen ) ) != 0 )
+      rsa.c line 1027 - if( msb % 8 == 0 )
+      rsa.c line 1073 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V15 )
+      rsa.c line 1085 - if( mbedtls_oid_get_oid_by_md( md_alg, &oid, &oid_size ) != 0 )
+      rsa.c line 1095 - if( ( nb_pad < 8 ) || ( nb_pad > olen ) )
+      rsa.c line 1143 - if( sig_try == NULL || verif == NULL )
+      rsa.c line 1146 - MBEDTLS_MPI_CHK( mbedtls_rsa_private( ctx, f_rng, p_rng, sig, sig_try ) );
+      rsa.c line 1150 - for( diff = 0, i = 0; i < ctx->len; i++ )
+      rsa.c line 1154 - if( diff_no_optimize != 0 )
+      rsa.c line 1227 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V21 )
+      rsa.c line 1232 - if( siglen < 16 || siglen > sizeof( buf ) )
+      rsa.c line 1239 - if( ret != 0 )
+      rsa.c line 1244 - if( buf[siglen - 1] != 0xBC )
+      rsa.c line 1252 - if( md_info == NULL )
+      rsa.c line 1259 - if( md_info == NULL )
+      rsa.c line 1273 - if( msb % 8 == 0 )
+      rsa.c line 1278 - if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+      rsa.c line 1288 - while( p < buf + siglen && *p == 0 )
+      rsa.c line 1291 - if( p == buf + siglen ||
+      rsa.c line 1301 - if( expected_salt_len != MBEDTLS_RSA_SALT_LEN_ANY &&
+      rsa.c line 1336 - mbedtls_md_type_t mgf1_hash_id = ( ctx->hash_id != MBEDTLS_MD_NONE )
+      rsa.c line 1369 - if( mode == MBEDTLS_RSA_PRIVATE && ctx->padding != MBEDTLS_RSA_PKCS_V15 )
+      rsa.c line 1374 - if( siglen < 16 || siglen > sizeof( buf ) )
+      rsa.c line 1381 - if( ret != 0 )
+      rsa.c line 1386 - if( *p++ != 0 || *p++ != MBEDTLS_RSA_SIGN )
+      rsa.c line 1389 - while( *p != 0 )
+      rsa.c line 1391 - if( p >= buf + siglen - 1 || *p != 0xFF )
+      rsa.c line 1399 - if( len == hashlen && md_alg == MBEDTLS_MD_NONE )
+      rsa.c line 1416 - if( ( ret = mbedtls_asn1_get_tag( &p, end, &asn1_len,
+      rsa.c line 1420 - if( asn1_len + 2 != len )
+      rsa.c line 1423 - if( ( ret = mbedtls_asn1_get_tag( &p, end, &asn1_len,
+      rsa.c line 1427 - if( asn1_len + 6 + hashlen != len )
+      rsa.c line 1430 - if( ( ret = mbedtls_asn1_get_tag( &p, end, &oid.len, MBEDTLS_ASN1_OID ) ) != 0 )
+      rsa.c line 1436 - if( mbedtls_oid_get_md_alg( &oid, &msg_md_alg ) != 0 )
+      rsa.c line 1439 - if( md_alg != msg_md_alg )
+      rsa.c line 1445 - if( ( ret = mbedtls_asn1_get_tag( &p, end, &asn1_len, MBEDTLS_ASN1_NULL ) ) != 0 )
+      rsa.c line 1448 - if( ( ret = mbedtls_asn1_get_tag( &p, end, &asn1_len, MBEDTLS_ASN1_OCTET_STRING ) ) != 0 )
+      rsa.c line 1451 - if( asn1_len != hashlen )
+      rsa.c line 1459 - if( p != end )
+      rsa.c line 1673 - if( mbedtls_rsa_pkcs1_encrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PUBLIC, PT_LEN,
+      rsa.c line 1685 - if( mbedtls_rsa_pkcs1_decrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, &len,
+      rsa.c line 1712 - if( mbedtls_rsa_pkcs1_sign( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA1, 0,
+      rsa.c line 1724 - if( mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA1, 0,
+      bignum.c line   63 - volatile mbedtls_mpi_uint *p = v; while( n-- ) *p++ = 0;
+      bignum.c line   97 - if( X == NULL )
+      bignum.c line  100 - if( X->p != NULL )
+      bignum.c line  118 - if( nblimbs > MBEDTLS_MPI_MAX_LIMBS )
+      bignum.c line  121 - if( X->n < nblimbs )
+      bignum.c line  123 - if( ( p = (mbedtls_mpi_uint*)mbedtls_calloc( nblimbs, ciL ) ) == NULL )
+      bignum.c line  126 - if( X->p != NULL )
+      bignum.c line  150 - if( X->n <= nblimbs )
+      bignum.c line  153 - for( i = X->n - 1; i > 0; i-- )
+      bignum.c line  154 - if( X->p[i] != 0 )
+      bignum.c line  158 - if( i < nblimbs )
+      bignum.c line  161 - if( ( p = (mbedtls_mpi_uint*)mbedtls_calloc( i, ciL ) ) == NULL )
+      bignum.c line  164 - if( X->p != NULL )
+      bignum.c line  185 - if( X == Y )
+      bignum.c line  188 - if( Y->p == NULL )
+      bignum.c line  194 - for( i = Y->n - 1; i > 0; i-- )
+      bignum.c line  195 - if( Y->p[i] != 0 )
+      bignum.c line  243 - for( ; i < X->n; i++ )
+      bignum.c line  276 - for( i = 0; i < X->n; i++ )
+      bignum.c line  328 - if( X->n * biL <= pos )
+      bignum.c line  351 - for( i = 0; i < X->n; i++ )
+      bignum.c line  353 - if( ( ( X->p[i] >> j ) & 1 ) != 0 )
+      bignum.c line  369 - if( x & mask ) break;
+      bignum.c line  384 - if( X->n == 0 )
+      bignum.c line  387 - for( i = X->n - 1; i > 0; i-- )
+      bignum.c line  388 - if( X->p[i] != 0 )
+      bignum.c line  475 - if( X->s == 1 )
+      bignum.c line  507 - if( mbedtls_mpi_cmp_int( X, 0 ) != 0 )
+      bignum.c line  510 - if( r < 10 )
+      bignum.c line  544 - if( buflen < n )
+      bignum.c line  553 - if( X->s == -1 )
+      bignum.c line  561 - for( i = X->n, k = 0; i > 0; i-- )
+      bignum.c line  567 - if( c == 0 && k == 0 && ( i + j ) != 2 )
+      bignum.c line  580 - if( T.s == -1 )
+      bignum.c line  656 - if( fwrite( p, 1, plen, fout ) != plen ||
+      bignum.c line  677 - for( n = 0; n < buflen; n++ )
+      bignum.c line  678 - if( buf[n] != 0 )
+      bignum.c line  684 - for( i = buflen, j = 0; i > n; i--, j++ )
+      bignum.c line  701 - if( buflen < n )
+      bignum.c line  706 - for( i = buflen - 1, j = 0; n > 0; i--, j++, n-- )
+      bignum.c line  726 - if( X->n * biL < i )
+      bignum.c line  734 - if( v0 > 0 )
+      bignum.c line  736 - for( i = X->n; i > v0; i-- )
+      bignum.c line  739 - for( ; i > 0; i-- )
+      bignum.c line  746 - if( t1 > 0 )
+      bignum.c line  748 - for( i = v0; i < X->n; i++ )
+      bignum.c line  773 - if( v0 > X->n || ( v0 == X->n && v1 > 0 ) )
+      bignum.c line  779 - if( v0 > 0 )
+      bignum.c line  781 - for( i = 0; i < X->n - v0; i++ )
+      bignum.c line  784 - for( ; i < X->n; i++ )
+      bignum.c line  791 - if( v1 > 0 )
+      bignum.c line  793 - for( i = X->n; i > 0; i-- )
+      bignum.c line  812 - for( i = X->n; i > 0; i-- )
+      bignum.c line  813 - if( X->p[i - 1] != 0 )
+      bignum.c line  816 - for( j = Y->n; j > 0; j-- )
+      bignum.c line  817 - if( Y->p[j - 1] != 0 )
+      bignum.c line  820 - if( i == 0 && j == 0 )
+      bignum.c line  823 - if( i > j ) return(  1 );
+      bignum.c line  824 - if( j > i ) return( -1 );
+      bignum.c line  826 - for( ; i > 0; i-- )
+      bignum.c line  828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+      bignum.c line  829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+      bignum.c line  842 - for( i = X->n; i > 0; i-- )
+      bignum.c line  843 - if( X->p[i - 1] != 0 )
+      bignum.c line  846 - for( j = Y->n; j > 0; j-- )
+      bignum.c line  847 - if( Y->p[j - 1] != 0 )
+      bignum.c line  850 - if( i == 0 && j == 0 )
+      bignum.c line  853 - if( i > j ) return(  X->s );
+      bignum.c line  854 - if( j > i ) return( -Y->s );
+      bignum.c line  856 - if( X->s > 0 && Y->s < 0 ) return(  1 );
+      bignum.c line  857 - if( Y->s > 0 && X->s < 0 ) return( -1 );
+      bignum.c line  859 - for( ; i > 0; i-- )
+      bignum.c line  861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+      bignum.c line  862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+      bignum.c line  906 - for( j = B->n; j > 0; j-- )
+      bignum.c line  907 - if( B->p[j - 1] != 0 )
+      bignum.c line  917 - for( i = 0; i < j; i++, o++, p++ )
+      bignum.c line  924 - while( c != 0 )
+      bignum.c line  926 - if( i >= X->n )
+      bignum.c line  948 - for( i = c = 0; i < n; i++, s++, d++ )
+      bignum.c line  954 - while( c != 0 )
+      bignum.c line  991 - for( n = B->n; n > 0; n-- )
+      bignum.c line  992 - if( B->p[n - 1] != 0 )
+      bignum.c line 1011 - if( A->s * B->s < 0 )
+      bignum.c line 1042 - if( A->s * B->s > 0 )
+      bignum.c line 1128 - for( ; i >= 16; i -= 16 )
+      bignum.c line 1143 - for( ; i >= 8; i -= 8 )
+      bignum.c line 1154 - for( ; i > 0; i-- )
+      bignum.c line 1166 - }
+      bignum.c line 1184 - for( i = A->n; i > 0; i-- )
+      bignum.c line 1185 - if( A->p[i - 1] != 0 )
+      bignum.c line 1188 - for( j = B->n; j > 0; j-- )
+      bignum.c line 1189 - if( B->p[j - 1] != 0 )
+      bignum.c line 1195 - for( i++; j > 0; j-- )
+      bignum.c line 1243 - if( 0 == d || u1 >= d )
+      bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+      bignum.c line 1328 - if( mbedtls_mpi_cmp_int( B, 0 ) == 0 )
+      bignum.c line 1336 - if( Q != NULL ) MBEDTLS_MPI_CHK( mbedtls_mpi_lset( Q, 0 ) );
+      bignum.c line 1351 - if( k < biL - 1 )
+      bignum.c line 1363 - while( mbedtls_mpi_cmp_mpi( &X, &Y ) >= 0 )
+      bignum.c line 1370 - for( i = n; i > t ; i-- )
+      bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+      bignum.c line 1386 - T1.p[0] = ( t < 1 ) ? 0 : Y.p[t - 1];
+      bignum.c line 1391 - T2.p[0] = ( i < 2 ) ? 0 : X.p[i - 2];
+      bignum.c line 1392 - T2.p[1] = ( i < 1 ) ? 0 : X.p[i - 1];
+      bignum.c line 1394 - }
+      bignum.c line 1401 - if( mbedtls_mpi_cmp_int( &X, 0 ) < 0 )
+      bignum.c line 1410 - if( Q != NULL )
+      bignum.c line 1422 - if( mbedtls_mpi_cmp_int( R, 0 ) == 0 )
+      bignum.c line 1457 - if( mbedtls_mpi_cmp_int( B, 0 ) < 0 )
+      bignum.c line 1462 - while( mbedtls_mpi_cmp_int( R, 0 ) < 0 )
+      bignum.c line 1465 - while( mbedtls_mpi_cmp_mpi( R, B ) >= 0 )
+      bignum.c line 1505 - for( i = A->n, y = 0; i > 0; i-- )
+      bignum.c line 1522 - if( A->s < 0 && y != 0 )
+      bignum.c line 1556 - if( T->n < N->n + 1 || T->p == NULL )
+      bignum.c line 1563 - m = ( B->n < n ) ? B->n : n;
+      bignum.c line 1565 - for( i = 0; i < n; i++ )
+                      
+      bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+      bignum.c line 1620 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 )
+      bignum.c line 1633 - wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :
+      bignum.c line 1634 - ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;
+      bignum.c line 1636 - if( wsize > MBEDTLS_MPI_WINDOW_SIZE )
+      bignum.c line 1648 - if( neg )
+      bignum.c line 1658 - if( _RR == NULL || _RR->p == NULL )
+      bignum.c line 1673 - if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 )
+      bignum.c line 1686 - if( wsize > 1 )
+      bignum.c line 1696 - for( i = 0; i < wsize - 1; i++ )
+      bignum.c line 1702 - for( i = j + 1; i < ( one << wsize ); i++ )
+      bignum.c line 1721 - if( nblimbs == 0 )
+      bignum.c line 1736 - if( ei == 0 && state == 0 )
+      bignum.c line 1739 - if( ei == 0 && state == 1 )
+      bignum.c line 1756 - if( nbits == wsize )
+      bignum.c line 1761 - for( i = 0; i < wsize; i++ )
+      bignum.c line 1778 - for( i = 0; i < nbits; i++ )
+      bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
+      bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+      bignum.c line 1801 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
+      bignum.c line 1806 - if( _RR == NULL || _RR->p == NULL )
+      bignum.c line 1837 - while( mbedtls_mpi_cmp_int( &TA, 0 ) != 0 )
+      bignum.c line 1842 - if( mbedtls_mpi_cmp_mpi( &TA, &TB ) >= 0 )
+      bignum.c line 1878 - if( size > MBEDTLS_MPI_MAX_SIZE )
+      bignum.c line 1881 - MBEDTLS_MPI_CHK( f_rng( p_rng, buf, size ) );
+      bignum.c line 1896 - if( mbedtls_mpi_cmp_int( N, 1 ) <= 0 )
+      bignum.c line 1905 - if( mbedtls_mpi_cmp_int( &G, 1 ) != 0 )
+      bignum.c line 1923 - while( ( TU.p[0] & 1 ) == 0 )
+      bignum.c line 1927 - if( ( U1.p[0] & 1 ) != 0 || ( U2.p[0] & 1 ) != 0 )
+      bignum.c line 1937 - while( ( TV.p[0] & 1 ) == 0 )
+      bignum.c line 1941 - if( ( V1.p[0] & 1 ) != 0 || ( V2.p[0] & 1 ) != 0 )
+      bignum.c line 1951 - if( mbedtls_mpi_cmp_mpi( &TU, &TV ) >= 0 )
+      bignum.c line 1963 - }
+      bignum.c line 1966 - while( mbedtls_mpi_cmp_int( &V1, 0 ) < 0 )
+      bignum.c line 1969 - while( mbedtls_mpi_cmp_mpi( &V1, N ) >= 0 )
+      bignum.c line 2025 - if( ( X->p[0] & 1 ) == 0 )
+      bignum.c line 2030 - if( mbedtls_mpi_cmp_int( X, small_prime[i] ) <= 0 )
+      bignum.c line 2035 - if( r == 0 )
+      bignum.c line 2070 - n = ( ( i >= 1300 ) ?  2 : ( i >=  850 ) ?  3 :
+      bignum.c line 2071 - ( i >=  650 ) ?  4 : ( i >=  350 ) ?  8 :
+      bignum.c line 2072 - ( i >=  250 ) ? 12 : ( i >=  150 ) ? 18 : 27 );
+      bignum.c line 2074 - for( i = 0; i < n; i++ )
+      bignum.c line 2079 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+      bignum.c line 2081 - if( mbedtls_mpi_cmp_mpi( &A, &W ) >= 0 )
+      bignum.c line 2090 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+      bignum.c line 2094 - if (j > k) {
+      bignum.c line 2102 - } while ( mbedtls_mpi_cmp_mpi( &A, &W ) >= 0 ||
+      bignum.c line 2110 - if( mbedtls_mpi_cmp_mpi( &A, &W ) == 0 ||
+      bignum.c line 2115 - while( j < s && mbedtls_mpi_cmp_mpi( &A, &W ) != 0 )
+      bignum.c line 2123 - if( mbedtls_mpi_cmp_int( &A, 1 ) == 0 )
+      bignum.c line 2132 - if( mbedtls_mpi_cmp_mpi( &A, &W ) != 0 ||
+      bignum.c line 2161 - if( mbedtls_mpi_cmp_int( &XX, 0 ) == 0 ||
+      bignum.c line 2165 - if( mbedtls_mpi_cmp_int( &XX, 2 ) == 0 )
+      bignum.c line 2198 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( X, n * ciL, f_rng, p_rng ) );
+      bignum.c line 2201 - if( k > nbits ) MBEDTLS_MPI_CHK( mbedtls_mpi_shift_r( X, k - nbits + 1 ) );
+      bignum.c line 2209 - while( ( ret = mbedtls_mpi_is_prime( X, f_rng, p_rng ) ) != 0 )
+      bignum.c line 2211 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+      bignum.c line 2228 - if( r == 0 )
+      bignum.c line 2230 - else if( r == 1 )
+      bignum.c line 2243 - if( ( ret = mpi_check_small_factors(  X         ) ) == 0 &&
+      bignum.c line 2245 - ( ret = mpi_miller_rabin(  X, f_rng, p_rng  ) ) == 0 &&
+      bignum.c line 2251 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+      bignum.c line 2326 - if( mbedtls_mpi_cmp_mpi( &X, &U ) != 0 )
+      bignum.c line 2351 - if( mbedtls_mpi_cmp_mpi( &X, &U ) != 0 ||
+      bignum.c line 2374 - if( mbedtls_mpi_cmp_mpi( &X, &U ) != 0 )
+      bignum.c line 2396 - if( mbedtls_mpi_cmp_mpi( &X, &U ) != 0 )
+      bignum.c line 2418 - if( mbedtls_mpi_cmp_int( &A, gcd_pairs[i][2] ) != 0 )
+    #+END_SRC
+*** Vulnerable Branch - Taint/Untrust P, Q, D: :: Whitelist wbits, wsize, N, E
+    #+BEGIN_SRC c
+
+    #+END_SRC
+*** Vulnerable Branch - Tainted P, Q, D :: Untrusted Value, input :: Empty whitelist
+    #+BEGIN_SRC c
+        rsa.c line  166 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->P, ( nbits + 1 ) >> 1, 0,
+        rsa.c line  169 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->Q, ( nbits + 1 ) >> 1, 0,
+        rsa.c line  206 - if( ret != 0 )
+        rsa.c line  225 - if( ( ctx->N.p[0] & 1 ) == 0 ||
+        rsa.c line  393 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &ctx->Vf, ctx->len - 1, f_rng, p_rng ) );
+        rsa.c line  439 - MBEDTLS_MPI_CHK( rsa_prepare_blinding( ctx, f_rng, p_rng ) );
+        rsa.c line  491 - if( ret != 0 )
+        rsa.c line  525 - while( dlen > 0 )
+        rsa.c line  528 - if( dlen < hlen )
+        rsa.c line  536 - for( i = 0; i < use_len; ++i )
+        rsa.c line  588 - if( ( ret = f_rng( p_rng, p, hlen ) ) != 0 )
+        rsa.c line  661 - } while( *p == 0 && --rng_dl && ret == 0 );
+        rsa.c line  665 - if( rng_dl == 0 || ret != 0 )
+        rsa.c line  762 - if( ret != 0 )
+        rsa.c line  819 - if( bad != 0 )
+        rsa.c line  822 - if( ilen - ( p - buf ) > output_max_len )
+        rsa.c line  861 - if( ret != 0 )
+        rsa.c line  904 - if( bad )
+        rsa.c line  907 - if( ilen - ( p - buf ) > output_max_len )
+        rsa.c line 1003 - if( ( ret = f_rng( p_rng, salt, slen ) ) != 0 )
+        rsa.c line 1085 - if( mbedtls_oid_get_oid_by_md( md_alg, &oid, &oid_size ) != 0 )
+        rsa.c line 1095 - if( ( nb_pad < 8 ) || ( nb_pad > olen ) )
+        rsa.c line 1146 - MBEDTLS_MPI_CHK( mbedtls_rsa_private( ctx, f_rng, p_rng, sig, sig_try ) );
+        rsa.c line 1154 - if( diff_no_optimize != 0 )
+        rsa.c line 1239 - if( ret != 0 )
+        rsa.c line 1244 - if( buf[siglen - 1] != 0xBC )
+        rsa.c line 1278 - if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+        rsa.c line 1288 - while( p < buf + siglen && *p == 0 )
+        rsa.c line 1291 - if( p == buf + siglen ||
+        rsa.c line 1381 - if( ret != 0 )
+        rsa.c line 1673 - if( mbedtls_rsa_pkcs1_encrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PUBLIC, PT_LEN,
+        rsa.c line 1685 - if( mbedtls_rsa_pkcs1_decrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, &len,
+        rsa.c line 1712 - if( mbedtls_rsa_pkcs1_sign( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA1, 0,
+        rsa.c line 1724 - if( mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA1, 0,
+        bignum.c line  154 - if( X->p[i] != 0 )
+        bignum.c line  195 - if( Y->p[i] != 0 )
+        bignum.c line  353 - if( ( ( X->p[i] >> j ) & 1 ) != 0 )
+        bignum.c line  369 - if( x & mask ) break;
+        bignum.c line  388 - if( X->p[i] != 0 )
+        bignum.c line  510 - if( r < 10 )
+        bignum.c line  656 - if( fwrite( p, 1, plen, fout ) != plen ||
+        bignum.c line  678 - if( buf[n] != 0 )
+        bignum.c line  813 - if( X->p[i - 1] != 0 )
+        bignum.c line  817 - if( Y->p[j - 1] != 0 )
+        bignum.c line  828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+        bignum.c line  829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+        bignum.c line  843 - if( X->p[i - 1] != 0 )
+        bignum.c line  847 - if( Y->p[j - 1] != 0 )
+        bignum.c line  861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+        bignum.c line  862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+        bignum.c line  907 - if( B->p[j - 1] != 0 )
+        bignum.c line  924 - while( c != 0 )
+        bignum.c line  954 - while( c != 0 )
+        bignum.c line  992 - if( B->p[n - 1] != 0 )
+        bignum.c line 1128 - for( ; i >= 16; i -= 16 )
+        bignum.c line 1143 - for( ; i >= 8; i -= 8 )
+        bignum.c line 1154 - for( ; i > 0; i-- )
+        bignum.c line 1166 - }
+        bignum.c line 1185 - if( A->p[i - 1] != 0 )
+        bignum.c line 1189 - if( B->p[j - 1] != 0 )
+        bignum.c line 1243 - if( 0 == d || u1 >= d )
+        bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+        bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+        bignum.c line 1522 - if( A->s < 0 && y != 0 )
+        bignum.c line 1563 - m = ( B->n < n ) ? B->n : n;
+        bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+        bignum.c line 1736 - if( ei == 0 && state == 0 )
+        bignum.c line 1739 - if( ei == 0 && state == 1 )
+        bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
+        bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+        bignum.c line 1881 - MBEDTLS_MPI_CHK( f_rng( p_rng, buf, size ) );
+        bignum.c line 1923 - while( ( TU.p[0] & 1 ) == 0 )
+        bignum.c line 1927 - if( ( U1.p[0] & 1 ) != 0 || ( U2.p[0] & 1 ) != 0 )
+        bignum.c line 1937 - while( ( TV.p[0] & 1 ) == 0 )
+        bignum.c line 1941 - if( ( V1.p[0] & 1 ) != 0 || ( V2.p[0] & 1 ) != 0 )
+        bignum.c line 2025 - if( ( X->p[0] & 1 ) == 0 )
+        bignum.c line 2035 - if( r == 0 )
+        bignum.c line 2079 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+        bignum.c line 2090 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+        bignum.c line 2198 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( X, n * ciL, f_rng, p_rng ) );
+        bignum.c line 2209 - while( ( ret = mbedtls_mpi_is_prime( X, f_rng, p_rng ) ) != 0 )
+        bignum.c line 2211 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+        bignum.c line 2228 - if( r == 0 )
+        bignum.c line 2230 - else if( r == 1 )
+        bignum.c line 2243 - if( ( ret = mpi_check_small_factors(  X         ) ) == 0 &&
+        bignum.c line 2245 - ( ret = mpi_miller_rabin(  X, f_rng, p_rng  ) ) == 0 &&
+        bignum.c line 2251 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+    #+END_SRC
+*** Vulnerable Branch - Tainted P, Q, D :: Untrusted Value, input :: Whitelist wbits, wsize, N, E
+    #+BEGIN_SRC c
+rsa.c line  166 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->P, ( nbits + 1 ) >> 1, 0,
+rsa.c line  169 - MBEDTLS_MPI_CHK( mbedtls_mpi_gen_prime( &ctx->Q, ( nbits + 1 ) >> 1, 0,
+rsa.c line  206 - if( ret != 0 )
+rsa.c line  225 - if( ( ctx->N.p[0] & 1 ) == 0 ||
+rsa.c line  393 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &ctx->Vf, ctx->len - 1, f_rng, p_rng ) );
+rsa.c line  439 - MBEDTLS_MPI_CHK( rsa_prepare_blinding( ctx, f_rng, p_rng ) );
+rsa.c line  491 - if( ret != 0 )
+rsa.c line  525 - while( dlen > 0 )
+rsa.c line  528 - if( dlen < hlen )
+rsa.c line  536 - for( i = 0; i < use_len; ++i )
+rsa.c line  588 - if( ( ret = f_rng( p_rng, p, hlen ) ) != 0 )
+rsa.c line  661 - } while( *p == 0 && --rng_dl && ret == 0 );
+rsa.c line  665 - if( rng_dl == 0 || ret != 0 )
+rsa.c line  762 - if( ret != 0 )
+rsa.c line  819 - if( bad != 0 )
+rsa.c line  822 - if( ilen - ( p - buf ) > output_max_len )
+rsa.c line  861 - if( ret != 0 )
+rsa.c line  904 - if( bad )
+rsa.c line  907 - if( ilen - ( p - buf ) > output_max_len )
+rsa.c line 1003 - if( ( ret = f_rng( p_rng, salt, slen ) ) != 0 )
+rsa.c line 1085 - if( mbedtls_oid_get_oid_by_md( md_alg, &oid, &oid_size ) != 0 )
+rsa.c line 1095 - if( ( nb_pad < 8 ) || ( nb_pad > olen ) )
+rsa.c line 1146 - MBEDTLS_MPI_CHK( mbedtls_rsa_private( ctx, f_rng, p_rng, sig, sig_try ) );
+rsa.c line 1154 - if( diff_no_optimize != 0 )
+rsa.c line 1239 - if( ret != 0 )
+rsa.c line 1244 - if( buf[siglen - 1] != 0xBC )
+rsa.c line 1278 - if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+rsa.c line 1288 - while( p < buf + siglen && *p == 0 )
+rsa.c line 1291 - if( p == buf + siglen ||
+rsa.c line 1381 - if( ret != 0 )
+rsa.c line 1673 - if( mbedtls_rsa_pkcs1_encrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PUBLIC, PT_LEN,
+rsa.c line 1685 - if( mbedtls_rsa_pkcs1_decrypt( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, &len,
+rsa.c line 1712 - if( mbedtls_rsa_pkcs1_sign( &rsa, myrand, NULL, MBEDTLS_RSA_PRIVATE, MBEDTLS_MD_SHA1, 0,
+rsa.c line 1724 - if( mbedtls_rsa_pkcs1_verify( &rsa, NULL, NULL, MBEDTLS_RSA_PUBLIC, MBEDTLS_MD_SHA1, 0,
+bignum.c line  154 - if( X->p[i] != 0 )
+bignum.c line  195 - if( Y->p[i] != 0 )
+bignum.c line  353 - if( ( ( X->p[i] >> j ) & 1 ) != 0 )
+bignum.c line  369 - if( x & mask ) break;
+bignum.c line  388 - if( X->p[i] != 0 )
+bignum.c line  510 - if( r < 10 )
+bignum.c line  656 - if( fwrite( p, 1, plen, fout ) != plen ||
+bignum.c line  678 - if( buf[n] != 0 )
+bignum.c line  813 - if( X->p[i - 1] != 0 )
+bignum.c line  817 - if( Y->p[j - 1] != 0 )
+bignum.c line  828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+bignum.c line  829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+bignum.c line  843 - if( X->p[i - 1] != 0 )
+bignum.c line  847 - if( Y->p[j - 1] != 0 )
+bignum.c line  861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+bignum.c line  862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+bignum.c line  907 - if( B->p[j - 1] != 0 )
+bignum.c line  924 - while( c != 0 )
+bignum.c line  954 - while( c != 0 )
+bignum.c line  992 - if( B->p[n - 1] != 0 )
+bignum.c line 1166 - }
+bignum.c line 1185 - if( A->p[i - 1] != 0 )
+bignum.c line 1189 - if( B->p[j - 1] != 0 )
+bignum.c line 1243 - if( 0 == d || u1 >= d )
+bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+bignum.c line 1522 - if( A->s < 0 && y != 0 )
+bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+bignum.c line 1736 - if( ei == 0 && state == 0 )
+bignum.c line 1739 - if( ei == 0 && state == 1 )
+bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+bignum.c line 1881 - MBEDTLS_MPI_CHK( f_rng( p_rng, buf, size ) );
+bignum.c line 1923 - while( ( TU.p[0] & 1 ) == 0 )
+bignum.c line 1927 - if( ( U1.p[0] & 1 ) != 0 || ( U2.p[0] & 1 ) != 0 )
+bignum.c line 1937 - while( ( TV.p[0] & 1 ) == 0 )
+bignum.c line 1941 - if( ( V1.p[0] & 1 ) != 0 || ( V2.p[0] & 1 ) != 0 )
+bignum.c line 2025 - if( ( X->p[0] & 1 ) == 0 )
+bignum.c line 2035 - if( r == 0 )
+bignum.c line 2079 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+bignum.c line 2090 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( &A, X->n * ciL, f_rng, p_rng ) );
+bignum.c line 2198 - MBEDTLS_MPI_CHK( mbedtls_mpi_fill_random( X, n * ciL, f_rng, p_rng ) );
+bignum.c line 2209 - while( ( ret = mbedtls_mpi_is_prime( X, f_rng, p_rng ) ) != 0 )
+bignum.c line 2211 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+bignum.c line 2228 - if( r == 0 )
+bignum.c line 2230 - else if( r == 1 )
+bignum.c line 2243 - if( ( ret = mpi_check_small_factors(  X         ) ) == 0 &&
+bignum.c line 2245 - ( ret = mpi_miller_rabin(  X, f_rng, p_rng  ) ) == 0 &&
+bignum.c line 2251 - if( ret != MBEDTLS_ERR_MPI_NOT_ACCEPTABLE )
+    #+END_SRC
+* Tracing through rsa_mpi.bc with overlap commit
+  Tainted Values: P, Q, D
+  Untrusted Values: rsa_plaintext
+
+*mbedtls_mpi_shrink* - 0 occurrences
+  bignum.c line 154 - if( X->p[i] != 0 )
+
+*mbedtls_mpi_copy* -  13 occurrences
+  bignum.c line 195 - if( Y->p[i] != 0 )
+
+*mbedtls_mpi_lsb* -  0 occurrences
+  bignum.c line 353 - if( ( ( X->p[i] >> j ) & 1 ) != 0 )
+
+*mbedtls_clz* -  0 occurrences
+  bignum.c line 369 - if( x & mask ) break;
+
+*mbedtls_mpi_bitlen* - 8 occurrences
+  bignum.c line 388 - if( X->p[i] != 0 )
+
+*mpi_write_hlp* -  0 occurrences
+  bignum.c line 510 - if( r < 10 )
+
+*mbedtls_write_file* -  0 occurrences
+  bignum.c line 656 - if( fwrite( p, 1, plen, fout ) != plen || fwrite( s, 1, slen, fout ) != slen )
+
+*mbedtls_mpi_read_binary* - 2 occurrences
+  bignum.c line 678 - if( buf[n] != 0 )
+
+*mbedtls_mpi_cmp_abs*
+  bignum.c line 813 - if( X->p[i - 1] != 0 )
+  bignum.c line 817 - if( Y->p[j - 1] != 0 )
+  bignum.c line 828 - if( X->p[i - 1] > Y->p[i - 1] ) return(  1 );
+  bignum.c line 829 - if( X->p[i - 1] < Y->p[i - 1] ) return( -1 );
+
+*mbedtls_mpi_cmp_mpi* - 11 occurrences
+  mbedtls_rsa_public calls this witth args &T, ctx->N;
+  bignum.c line 843 - if( X->p[i - 1] != 0 )
+  bignum.c line 847 - if( Y->p[j - 1] != 0 )
+  bignum.c line 861 - if( X->p[i - 1] > Y->p[i - 1] ) return(  X->s );
+  bignum.c line 862 - if( X->p[i - 1] < Y->p[i - 1] ) return( -X->s );
+
+*mbedtls_mpi_add_abs*
+  bignum.c line 907 - if( B->p[j - 1] != 0 )
+  bignum.c line 924 - while( c != 0 )
+
+*mpi_sub_hlp*
+  bignum.c line 954 - while( c != 0 )
+
+*mbedtls_mpi_sub_abs*
+  bignum.c line 992 - if( B->p[n - 1] != 0 )
+
+
+*mbedtls_mpi_mul_mpi* - 11 occurrences
+  bignum.c line 1185 - if( A->p[i - 1] != 0 )
+  bignum.c line 1189 - if( B->p[j - 1] != 0 )
+  calls mpi_mul_hlp
+*mpi_mul_hlp*
+  bignum.c line 1166 - while( c != 0 )
+
+*mbedtls_int_div_int* - 0 occurrences
+  bignum.c line 1243 - if( 0 == d || u1 >= d )
+  bignum.c line 1254 - if( quotient > ( (mbedtls_t_udbl) 1 << biL ) - 1 )
+  
+*mbedtls_mpi_div_mpi* - 1 occurrence
+  bignum.c line 1372 - if( X.p[i] >= Y.p[t] )
+
+*mbedtls_mpi_mod_int* -  0 occurrences
+  bignum.c line 1522 - if( A->s < 0 && y != 0 )
+
+*mbedtls_mpi_exp_mod*  - 5 occurrences 
+  mbedtls_rsa_public calls this with args:( &T, &T, &ctx->E, &ctx->N, &ctx->RN )
+
+  bignum.c line 1617 - if( mbedtls_mpi_cmp_int( N, 0 ) < 0 || ( N->p[0] & 1 ) == 0 )
+    This is a bug : offset not calculated correctly due to unused fields missing from typemap
+  bignum.c line 1736 - if( ei == 0 && state == 0 )
+    ei is calculated from E->p bufsize & 1;
+  bignum.c line 1739 - if( ei == 0 && state == 1 )
+    ei is tainted from before
+  bignum.c line 1784 - if( ( wbits & ( one << wsize ) ) != 0 )
+    wbits != ( ei << ( wsize - nbits ) ) 
+  bignum.c line 1793 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
+    E->n is tainted and so is E->p
+
+*mbedtls_mpi_inv_mod* - 4 occurrences
+  bignum.c line 1923 - while( ( TU.p[0] & 1 ) == 0 )
+  bignum.c line 1927 - if( ( U1.p[0] & 1 ) != 0 || ( U2.p[0] & 1 ) != 0 )
+  bignum.c line 1937 - while( ( TV.p[0] & 1 ) == 0 )
+  bignum.c line 1941 - if( ( V1.p[0] & 1 ) != 0 || ( V2.p[0] & 1 ) != 0 )
+
+*mpi_check_small_factors* - 0 
+  bignum.c line 2025 - if( ( X->p[0] & 1 ) == 0 )
+  bignum.c line 2035 - if( r == 0 )
+  bignum.c line 2228 - if( r == 0 )
+  bignum.c line 2230 - else if( r == 1 )
+
+*mbedtls_rsa_check_pubkey*  -  3 occurrences
+  rsa.c line 225 - if( ( ctx->N.p[0] & 1 ) == 0 || ( ctx->E.p[0] & 1 ) == 0 )
+    Unsure
+
+*mbedtls_rsa_rsaes_pkcs1_v15_encrypt* 1 occurrence
+  rsa.c line 661 - while( *p == 0 && --rng_dl && ret == 0 )
+    calls to rsa_public/rsa_private have input touch buf
+    p is then set equal to buf (p = buf)
+    p seems to be untrusted
+
+*mbedtls_rsa_rsaes_oaep_decrypt* - 1 occurrence
+  rsa.c line 819 - if( bad != 0 )
+    since *p is untrusted (bad |= lhash[i] ^ *p++;) "bad" is untrused
+
+  rsa.c line 822 - if( ilen - ( p - buf )
+    here both p and buf are untrusted
+    
+*mbedtls_rsa_rsaes_pkcs1_v15_decrypt* - 1 occurrence
+  rsa.c line 904 - if( bad )
+    calls to rsa_public/rsa_private have input touch buf
+    p is then set equal to buf (p = buf)
+    p seems to be untrusted
+    bad is computed by |= different bytes in p so bad is also untrusted
+    
+  rsa.c line 907 - if( ilen - ( p - buf ) > output_max_len )
+    p and buf are untrusted as before
+
+*mbedtls_rsa_rsassa_pkcs1_v15_sign* - 1 occurrence
+  rsa.c line 1154 - if( diff_no_optimize != 0 )
+    p  is untrusted  (unsigned char *p = sig;)
+
+*mbedtls_rsa_rsassa_verify_ext* - 1 occurrence
+  rsa.c line 1244 - if( buf[siglen - 1] != 0xBC )
+    calls to rsa_public/rsa_private have sig interact with buf
+    sig and buf are untrusted
+  rsa.c line 1278 -  if( buf[0] >> ( 8 - siglen * 8 + msb ) )
+    buf is untrusted
+  rsa.c line 1288 -  while( p < buf + siglen && *p == 0 )
+    p = buf makes p untrusted
+    buf is untrusted
+  rsa.c line 1291 - if( p == buf + siglen || *p++ != 0x01 )
+    buf is untrusted
+** TODO Fix
+   In mbedtls_rsa_context, not all fields are used resulting in using the offset as a key to be inaccurate
+* Taint.txt with actual LLVM IR value
+  Taint value "  %P1 = alloca %struct.mbedtls_mpi, align 8"
+  Untrust value "  %P1 = alloca %struct.mbedtls_mpi, align 8"
+  bignum.c line 84   - if ( X == NULL )
+  bignum.c line 97   - if( X == NULL )
+  bignum.c line 185  - mbedtls_mpi_copy: if( X == Y )
+  bignum.c line 893  - mbedtls_mpi_add_abs: if( X == B )
+  bignum.c line 898  - mbedtls_mpi_add_abs: if( X != A )
+  bignum.c line 975  - mbedtls_mpi_sub_abs: if( X == B )
+  bignum.c line 981  - mbedtls_mpi_sub_abs: if( X != A )
+  bignum.c line 1181 - mbedtls_mpi_mul_mpi: if( X == A ) { MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &TA, A ) ); A = &TA; }

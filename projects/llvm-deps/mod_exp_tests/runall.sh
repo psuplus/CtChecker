@@ -2,16 +2,13 @@
 
 # Make output directories
 CUR=$(pwd)
-PROJ_DIR=../..
+PROJ_DIR=..
 OUT_DIR=results
 OUT_FULL_DIR=$OUT_DIR/full
 OUT_MIN_DIR=$OUT_DIR/min
 mkdir -p $OUT_FULL_DIR
-# mkdir -p $OUT_FULL_DIR/raw
 mkdir -p $OUT_MIN_DIR
-# mkdir -p $OUT_MIN_DIR/raw
 
-#
 rm_file_if_exists()
 {
     if [ -f $1 ]; then
@@ -21,9 +18,9 @@ rm_file_if_exists()
 
 pool_results()
 {
-    # mkdir -p ${2}/${1}
     mkdir -p ${2}/${1}/raw
     mv ${1}/results_with_source*.txt ${2}/${1}
+    mv ${1}/constraints*.con ${2}/${1}
     mv ${1}/tmp*.dat  ${2}/${1}/raw
 }
 
@@ -44,9 +41,9 @@ execute_test()
         $2 $3 true true $5      # WL/FlS/SRC
     else 
         $2 $3 false false $5    # Base 
-        $2 $3 false true $5     # FlS
-        $2 $3 true false $5     # WL
-        $2 $3 true true $5      # WL/FlS
+        # $2 $3 false true $5     # FlS
+        # $2 $3 true false $5     # WL
+        # $2 $3 true true $5      # WL/FlS
     fi
 
     cd $CUR
@@ -55,18 +52,32 @@ execute_test()
 
 full_library_tests()
 {
-    execute_test "BearSSL0.5" "./run.sh" "testall.bc" $OUT_FULL_DIR true
-    execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
-    execute_test "mbedtls2.9.0" "./run.sh" "test2.bc" $OUT_FULL_DIR true
-    execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    printf "\n==== Running full library tests ====\n"
+	
+	# execute_test "BearSSL0.5" "./run.sh" "testall.bc" $OUT_FULL_DIR true
+    #execute_test "mbedtls2.9.0" "./run.sh" "test2.bc" $OUT_FULL_DIR true
+    #execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    #execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
+	
+    execute_test "BearSSL0.6" "./run.sh" "testall.bc" $OUT_FULL_DIR true
+    execute_test "mbedtls3.2.1" "./run.sh" "test2.bc" $OUT_FULL_DIR true
+    execute_test "libgcrypt1.10.1" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    execute_test "openSSL_1_1_1q" "./run.sh" "test4.bc" $OUT_FULL_DIR true
 }
 
 min_library_tests()
 {
-    execute_test "BearSSL0.5" "./run.sh" "test2.bc" $OUT_MIN_DIR false
-    execute_test "openSSL_1_1_0g" "./run.sh" "test1.bc" $OUT_MIN_DIR false
-    execute_test "mbedtls2.9.0" "./run.sh" "test1.bc" $OUT_MIN_DIR false
-    execute_test "libgcrypt1.8.2" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
+    printf "\n==== Running min library tests ====\n"
+	
+	# execute_test "BearSSL0.5" "./run.sh" "test2.bc" $OUT_MIN_DIR false
+    #execute_test "mbedtls2.9.0" "./run.sh" "test1.bc" $OUT_MIN_DIR false
+    #execute_test "libgcrypt1.8.2" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
+    #execute_test "openSSL_1_1_0g" "./run.sh" "test1.bc" $OUT_MIN_DIR false
+	
+    execute_test "BearSSL0.6" "./run.sh" "test2.bc" $OUT_MIN_DIR false
+    execute_test "mbedtls3.2.1" "./run.sh" "test1.bc" $OUT_MIN_DIR false
+    execute_test "libgcrypt1.10.1" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
+    execute_test "openSSL_1_1_1q" "./run.sh" "test1.bc" $OUT_MIN_DIR false
 }
 
 ct_verif_tests()
@@ -99,12 +110,17 @@ ct_verif_tests()
 
 main()
 {
+    cd $PROJ_DIR/../poolalloc/
+    pwd
+    make
+    cd -
     cd $PROJ_DIR
+    pwd
     make
     cd $CUR
 
-    full_library_tests
     min_library_tests
+    full_library_tests
     # ct_verif_tests
 }
 

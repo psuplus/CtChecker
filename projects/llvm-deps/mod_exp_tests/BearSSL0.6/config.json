@@ -1,0 +1,32 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "br_i32_modpow",
+      "type": "variable",
+      "name": "e",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [{ "name": "len" }, { "name": "m_bitlen" }, { "name": "mlen" }],
+  "entry": ["br_i32_modpow"]
+}

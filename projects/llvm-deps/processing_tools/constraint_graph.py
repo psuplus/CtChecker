@@ -7,8 +7,8 @@ import os
 import platform
 
 CONST_STR = "CONST"
-# HOTSPOT_MATCH = ["*Constant*", "*SummSource*", "*SummSink*"]
-HOTSPOT_MATCH = ["*Constant*"]
+HOTSPOT_MATCH = ["*Constant*", "*SummSource*", "*SummSink*"]
+# HOTSPOT_MATCH = ["*Constant*"]
 
 
 class CE:

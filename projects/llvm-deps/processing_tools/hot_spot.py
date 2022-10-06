@@ -26,7 +26,8 @@ def main():
                 graph.nodes[node]["function"] = re.search(
                     r"Function::(.*?)&", label
                 ).group(1)
-                graph.nodes[node]["arg"] = re.search(r"&Arg::(.*?)::", label).group(1)
+                graph.nodes[node]["arg"] = re.search(
+                    r"&Arg::(.*?)::", label).group(1)
                 existing_functions.append(graph.nodes[node]["function"])
 
     existing_functions = list(dict.fromkeys(existing_functions))
@@ -36,7 +37,8 @@ def main():
         print(func)
     print("-------------------------\n")
 
-    print(f"{(time.time() - start_time):.2f}s : Finding Func & Arg nodes", flush=True)
+    print(f"{(time.time() - start_time):.2f}s : Finding Func & Arg nodes",
+          flush=True)
     start_time = time.time()
 
     candidates = set()
@@ -71,7 +73,8 @@ def main():
             # print("1", graph.nodes[succ]["label"])
             candidates.add(succ)
             # elif (
-            #     graph.nodes[node]["function"] != graph.nodes[succ]["function"]
+            #     graph.nodes[node]["function"] !=
+            #               graph.nodes[succ]["function"]
             #     or graph.nodes[node]["arg"] != graph.nodes[succ]["arg"]
             # ):
             #     # print("2", graph.nodes[succ]["label"])
@@ -88,7 +91,8 @@ def main():
         print(graph.nodes[candidate]["label"])
     print()
 
-    print(f"{(time.time() - start_time):.2f}s : Finding candidates", flush=True)
+    print(f"{(time.time() - start_time):.2f}s : Finding candidates",
+          flush=True)
     start_time = time.time()
 
     hotspot = set()
@@ -112,8 +116,7 @@ def main():
                 # if total_in > 1:
                 if taint_string not in graph.predecessors(pred):
                     hotspot.add(candidate)
-                    break
-
+        print("=====================")
     # roots = [n for n, d in graph.in_degree() if d == 0]
     # roots.remove(taint_string)
 
@@ -121,7 +124,8 @@ def main():
     # start_time = time.time()
 
     # for root in roots:
-    #     next_nodes = networkx.dfs_preorder_nodes(graph, source=root, depth_limit=1)
+    #     next_nodes = networkx.dfs_preorder_nodes(graph, source=root,
+    #       depth_limit=1)
     #     for node in next_nodes:
     #         if node in candidates:
     #             roots.remove(root)
@@ -135,7 +139,8 @@ def main():
     #     for node in networkx.dfs_preorder_nodes(graph, source=root):
     #         pool.add(node)
 
-    # print(f"{(time.time() - start_time):.2f}s : Getting the pool", flush=True)
+    # print(f"{(time.time() - start_time):.2f}s : Getting the pool",
+    #   flush=True)
     # start_time = time.time()
 
     # for node in pool:
@@ -143,13 +148,15 @@ def main():
     #         hotspot.add(node)
 
     print(f"{(time.time() - start_time):.2f}s : Finding hotspots")
-    print(f"{(time.time() - total_time):.2f}s : Total running time", flush=True)
+    print(f"{(time.time() - total_time):.2f}s : Total running time",
+          flush=True)
 
     functions = []
     print("\nHotspot nodes\n-------------------------")
     for node in hotspot:
         functions.append(graph.nodes[node]["function"])
-        print(node, graph.nodes[node]["function"], graph.nodes[node]["arg"], sep=" | ")
+        print(node, graph.nodes[node]["function"],
+              graph.nodes[node]["arg"], sep=" | ")
     print("-------------------------")
 
     functions = list(dict.fromkeys(functions))

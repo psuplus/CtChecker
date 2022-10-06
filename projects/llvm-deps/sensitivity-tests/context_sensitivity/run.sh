@@ -22,10 +22,9 @@ pwd
 make
 cd -
 
-
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
-$LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.c -o test.bc
+$LEVEL/Debug+Asserts/bin/clang $INCLUDES $CPPFLAGS -c main.c -o $1
 $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.c
 
 # $LEVEL/Debug+Asserts/bin/opt -mem2reg -inline -inline-threshold=0 $1 -o $1
@@ -39,21 +38,8 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < test.bc 2> tmp.dat > /dev/null
+  -vulnerablebranch -debug < $1 2> tmp.dat > /dev/null
 
 cat tmp.dat | grep '<:' > constraints.con
-
-## link instrumentation module
-#llvm-link welcome.bc sample.bc -o welcome.linked.bc
-
-## compile to native object file
-#llc -filetype=obj welcome.linked.bc -o=welcome.o
-
-## generate native executable
-#g++ welcome.o $LLVMLIBS $LDFLAGS -o welcome
-
-#./welcome
-
-
-CONS_FILENAME=$( echo 'constraints.con' | tr '/' '-')
-cat tmp.dat | grep '<:' > $CONS_FILENAME
+python3 ../../processing_tools/constraint_graph.py constraints.con tmp.dot -hotspot 1
+python3 ../../processing_tools/hot_spot.py tmp.dot

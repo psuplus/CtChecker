@@ -62,6 +62,7 @@ FILE="bn_exp.c"
 #use makefile
 make $1
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
+$LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=0 $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;

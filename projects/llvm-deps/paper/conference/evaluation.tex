@@ -457,6 +457,7 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
     \ref{tbl:allpositives}. After each libraries results are discussed to
     understand both the false positives and the high-risk results.
 
+\iffalse
 \begin{table*}[!t]
   \centering
   \begin{tabular}{@{}lrr|crrrcrr@{}}
@@ -478,6 +479,30 @@ small even for the larger libraries such as libgcrypt and OpenSSL.
 \caption{Result Classifications: Base - Baseline Positives, Improved - WL/FS/SRC
 Positives}
   \label{tbl:allpositives}
+\end{table*}
+\fi
+
+\begin{table*}[!t]
+	\centering
+	\begin{tabular}{@{}lrr|crrrcrr@{}}
+		\toprule
+		&  &  &&  & \multicolumn{2}{c}{Low-Risk} && \multicolumn{2}{c}{High-Risk}\\
+		\cmidrule{6-7} \cmidrule{9-10}
+		Library& Base & Improved&& FP& Error-Handling & Low Leakage && Looped & Controllable \\
+		\midrule
+		\textbf{Libgcrypt 1.10.0}& 46 & 20 && 13 &  1  &  1 &&  5 & 0 \\
+		\textbf{mbedTLS 3.2.1}  & 41 & 20 && 9 &  2  & 5  && 4   & 0 \\
+		\textbf{BearSSL 0.6}    & 1 & 1   && 1 & 0  & 0   &&  0  & 0 \\
+		\textbf{OpenSSL 1.1.1q}\\
+		\hspace{0.25cm}Reciprocal              & 14 & 3 &&  1    &  0   & 0  &&  2 & 0 \\
+		\hspace{0.25cm}Montgomery              & 35 & 15 &&  1    &  4   &  6 &&  2  & 2 \\
+		\hspace{0.25cm}Montgomery Const. Time  & 29 & 13 &&  9    &  0  & 4  &&  0   & 0 \\
+		\hspace{0.25cm}Montgomery Word         & 4 & 2 &&   1   &   0  & 0  &&   1  & 0 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Result Classifications: Base - Baseline Positives, Improved - WL/FS/SRC
+		Positives}
+	\label{tbl:allpositives}
 \end{table*}
 
 

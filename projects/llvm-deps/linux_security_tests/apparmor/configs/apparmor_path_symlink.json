@@ -130,7 +130,7 @@
       "number": 2,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -141,7 +141,7 @@
       "number": 5,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }

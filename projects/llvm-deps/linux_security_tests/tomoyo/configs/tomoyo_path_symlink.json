@@ -96,7 +96,7 @@
       "number": 0,
       "index": 3,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -107,7 +107,7 @@
       "number": 0,
       "index": 0,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }

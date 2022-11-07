@@ -1,0 +1,2 @@
+C purpose subject object
+L secrect public private

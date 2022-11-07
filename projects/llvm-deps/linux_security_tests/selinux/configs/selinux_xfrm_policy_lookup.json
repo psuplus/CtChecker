@@ -1,0 +1,98 @@
+{
+  "signature_mode": {
+    "direction": 1,
+    "pointer": 0,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "source",
+        "level": ["mediator", "input", "external"]
+      },
+      {
+        "name": "value",
+        "level": ["static", "k-static", "dynamic"]
+      }
+    ],
+    "compartments": [
+      {
+        "name": "purpose",
+        "set": ["subject", "object", "operation", "policy"]
+      }
+    ]
+  },
+  "source": [
+    {
+      "function": "selinux_xfrm_policy_lookup",
+      "type": "variable",
+      "name": "ctx",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "selinux_xfrm_policy_lookup",
+      "type": "variable",
+      "name": "fl_secid",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    }
+  ],
+  "sink": [
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 0,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 1,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 2,
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "avc_has_perm",
+      "type": "argument",
+      "number": 3,
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    }
+  ],
+  "using_whitelist": true,
+  "whitelist": [],
+  "entry": ["selinux_xfrm_policy_lookup"]
+}

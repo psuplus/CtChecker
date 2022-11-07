@@ -166,6 +166,7 @@ private:
 
 class TaintAnalysis;
 class VulnerableBranch;
+class ConstraintGen;
 
 /// A constraint-based, context-sensitive, interprocedural information
 /// flow analysis pass. Exposes information-flow constraints with a
@@ -177,6 +178,7 @@ class Infoflow
   friend class TaintAnalysis;
   friend class VulnerableBranch;
   friend class TaintAnalysisBase;
+  friend class ConstraintGen;
 
 public:
   typedef std::set<const AbstractLoc *> AbsLocSet;
@@ -329,6 +331,7 @@ private:
   std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> sourceVariables;
   std::vector<ConfigVariable> whitelistVariables;
+  std::set<std::tuple<ContextID, RLLabel, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
@@ -343,6 +346,7 @@ private:
   DenseMap<const Value *, const ConsElem *> summarySourceValueConstraintMap;
   DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
   DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;
+  DenseMap<const Value *, std::string> valueStringMap;
 
   DenseMap<const Value *, const ConsElem *> &
   getOrCreateValueConstraintMap(const ContextID);
@@ -375,7 +379,7 @@ private:
                                    bool);
   const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
-  const std::string stringFromValue(const Value &);
+  const std::string getOrCreateStringFromValue(const Value &, bool = true);
   unsigned GEPInstCalculateNumberElements(const GetElementPtrInst *);
   unsigned GEPInstCalculateArrayOffset(const GetElementPtrInst *);
   unsigned GEPInstCalculateStructOffset(const GetElementPtrInst *,

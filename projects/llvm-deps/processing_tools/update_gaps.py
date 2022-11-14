@@ -14,13 +14,16 @@ def main():
     new_table = []
     tags = [""] * 6
     cols = ["subject", "object", "operation"]
+    augment = False
 
     with open(sys.argv[2], "r", encoding=encoding) as gaps:
         with open(sys.argv[1], "r", encoding=encoding) as table:
             for i, line in enumerate(gaps):
                 if i == 0:
                     name = line.strip().strip("[]")
-                    print(name)
+                    if name.endswith(".z"):
+                        augment = True
+                        name = name[:-2]
                 elif line.startswith("explicit:"):
                     state = 1
                 elif line.startswith("implicit:"):
@@ -29,8 +32,8 @@ def main():
                     line = line.strip().split(delim)
                     left = RLLabel(line[0]).compartment["purpose"].pop()
                     right = RLLabel(line[1]).compartment["purpose"].pop()
-                    print(left)
-                    print(right)
+                    # print(left)
+                    # print(right)
                     col = -1
                     if left != right:
                         if left == cols[0]:
@@ -51,7 +54,7 @@ def main():
                                 col += 0
                             elif right == cols[1]:
                                 col += 1
-                        print(col)
+                        # print(col)
                         if col >= 0:
                             if state == 1:
                                 tags[col] = ":red_circle:"
@@ -60,14 +63,24 @@ def main():
 
             for i, line in enumerate(table):
                 if " " + name + " " in line:
-                    line = "| " + name + " |"
                     clean = True
                     print(tags)
-                    for tag in tags:
-                        print(tag)
-                        line += tag + "|"
-                        if len(tag) > 0:
-                            clean = False
+                    if augment:
+                        line = [tag.strip() for tag in line.split("|")]
+                        for j, tag in enumerate(tags):
+                            if tag == ':red_circle:':
+                                line[j + 2] = tag
+                            elif tag == ':large_blue_diamond:' and len(line[j + 2]) == 0:
+                                line[j + 2] = tag
+                        line = "|".join(line[:-1])
+                        print(line)
+                    else:
+                        line = "|" + name + "|"
+                        line += "|".join(tags) + "|"
+
+                    if ':' in line:
+                        clean = False
+
                     if clean:
                         line += ":white_check_mark:|\n"
                     else:

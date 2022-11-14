@@ -64,7 +64,7 @@
       "number": 1,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -75,7 +75,7 @@
       "number": 2,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -108,7 +108,7 @@
       "number": 1,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -119,7 +119,7 @@
       "number": 2,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -136,7 +136,12 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/selinux/hooks.c", "line": 2008 },
+    { "file": "security/selinux/hooks.c", "line": 1565 }
+  ],
   "entry": ["selinux_capable"]
 }

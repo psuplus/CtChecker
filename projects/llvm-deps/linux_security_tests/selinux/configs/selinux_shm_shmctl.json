@@ -24,6 +24,97 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "IPC_RMID",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 14,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 13,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 11,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 5342,
+      "value": 12,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_shm_shmctl",
       "type": "variable",
       "name": "shp",
@@ -96,7 +187,7 @@
       "number": 1,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -107,7 +198,7 @@
       "number": 2,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -124,6 +215,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "entry": ["selinux_shm_shmctl"]

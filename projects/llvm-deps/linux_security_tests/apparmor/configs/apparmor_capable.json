@@ -80,6 +80,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [{ "file": "security/apparmor/lsm.c", "line": 145 }],

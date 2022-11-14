@@ -62,7 +62,7 @@
       "name": "flags",
       "index": -1,
       "l": {
-        "source": "external",
+        "source": "input",
         "value": "dynamic"
       },
       "c": { "purpose": ["operation"] }
@@ -118,7 +118,7 @@
       "number": 0,
       "index": 4,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -129,7 +129,7 @@
       "number": 0,
       "index": 5,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -146,6 +146,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [

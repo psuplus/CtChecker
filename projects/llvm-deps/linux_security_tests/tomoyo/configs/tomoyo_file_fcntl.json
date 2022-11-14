@@ -57,17 +57,6 @@
       "c": { "purpose": ["operation"] }
     },
     {
-      "function": "tomoyo_check_open_permission",
-      "type": "variable",
-      "name": "flag",
-      "index": -1,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
       "type": "variable",
       "name": "current_task",
       "index": -1,
@@ -96,7 +85,7 @@
       "number": 0,
       "index": 3,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -107,7 +96,7 @@
       "number": 0,
       "index": 4,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
@@ -124,6 +113,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [

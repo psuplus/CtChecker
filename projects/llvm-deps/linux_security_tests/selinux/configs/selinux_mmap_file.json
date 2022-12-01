@@ -141,8 +141,6 @@
   "implicit_whitelist": [
     { "file": "security/selinux/hooks.c", "line": 3253 },
     { "file": "security/selinux/hooks.c", "line": 3258 },
-    { "file": "security/selinux/hooks.c", "line": 3241 },
-    { "file": "security/selinux/hooks.c", "line": 3242 },
     { "file": "security/selinux/hooks.c", "line": 1611 }
   ],
   "entry": ["selinux_mmap_file"]

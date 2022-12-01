@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MS_NOUSER",
+      "file": "security/apparmor/include/apparmor.h",
+      "line": 117,
+      "value": -2147483648,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
       "function": "apparmor_path_rmdir",
       "type": "variable",
       "name": "dir",

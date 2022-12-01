@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MAY_WRITE",
+      "file": "security/apparmor/lsm.c",
+      "line": 291,
+      "value": 66,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
       "function": "apparmor_path_truncate",
       "type": "variable",
       "name": "path",

@@ -24,6 +24,30 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "INVALID_UID",
+      "file": "include/linux/uidgid.h",
+      "line": 100,
+      "value": -1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "INVALID_GID",
+      "file": "include/linux/uidgid.h",
+      "line": 105,
+      "value": -1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "tomoyo_path_chown",
       "type": "variable",
       "name": "path",

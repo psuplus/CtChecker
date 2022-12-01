@@ -24,6 +24,54 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "F_SETFL",
+      "file": "security/tomoyo/tomoyo.c",
+      "line": 315,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "O_APPEND",
+      "file": "security/tomoyo/tomoyo.c",
+      "line": 315,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "O_APPEND",
+      "file": "security/tomoyo/tomoyo.c",
+      "line": 318,
+      "value": 1024,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "O_WRONLY",
+      "file": "security/tomoyo/tomoyo.c",
+      "line": 318,
+      "value": 1024,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "tomoyo_file_fcntl",
       "type": "variable",
       "name": "file",

@@ -24,6 +24,162 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MAY_NOT_BLOCK",
+      "file": "security/selinux/hooks.c",
+      "line": 2841,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_ACCESS",
+      "file": "security/selinux/hooks.c",
+      "line": 2848,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 2849,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_EXEC",
+      "file": "security/selinux/hooks.c",
+      "line": 2849,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_APPEND",
+      "file": "security/selinux/hooks.c",
+      "line": 2849,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 2849,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_EXEC",
+      "file": "security/selinux/hooks.c",
+      "line": 1875,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 1877,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_APPEND",
+      "file": "security/selinux/hooks.c",
+      "line": 1880,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 1882,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_EXEC",
+      "file": "security/selinux/hooks.c",
+      "line": 1886,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 1888,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 1890,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_inode_permission",
       "type": "variable",
       "name": "inode",

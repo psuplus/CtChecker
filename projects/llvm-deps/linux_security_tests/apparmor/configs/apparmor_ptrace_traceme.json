@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "PTRACE_MODE_ATTACH",
+      "file": "security/apparmor/lsm.c",
+      "line": 112,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "apparmor_ptrace_traceme",
       "type": "variable",
       "name": "parent",

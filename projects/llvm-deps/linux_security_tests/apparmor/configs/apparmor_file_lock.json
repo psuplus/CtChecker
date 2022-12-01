@@ -24,6 +24,30 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "F_WRLCK",
+      "file": "security/apparmor/lsm.c",
+      "line": 463,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_WRITE",
+      "file": "security/apparmor/lsm.c",
+      "line": 464,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "apparmor_file_lock",
       "type": "variable",
       "name": "file",

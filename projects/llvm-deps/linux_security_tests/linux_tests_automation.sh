@@ -2,12 +2,16 @@
 # linking example
 
 ANNOTATION=true
+CONSTANT=true
 if [ $ANNOTATION = true ] ; then
-    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps_Annotated.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps_Other_Annotated.md
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Relaxed.md
+    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Relaxed.md
+elif [ $CONSTANT = true ] ; then
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Strict.md
+    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Strict.md
 else
-    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps_Other.md
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Field.md
+    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Field.md
 fi
 
 OUT_DIR=results
@@ -30,6 +34,13 @@ automation()
         else
             sed -i -r "s/\"using_whitelist\": true/\"using_whitelist\": false/g" "config.json"
         fi
+
+        if [ $CONSTANT = true ] ; then
+            sed -i -r "s/\"using_constant\": false/\"using_constant\": true/g" "config.json"
+        else
+            sed -i -r "s/\"using_constant\": true/\"using_constant\": false/g" "config.json"
+        fi
+
         cp $f $OUT_DIR/$FUNCTION/config.json
 
         ./run.sh $2 $FUNCTION
@@ -73,8 +84,8 @@ main()
     
     echo "Executing automation."
     automation tomoyo test.bc
-    automation apparmor test.bc
-    automation selinux test.bc
+    # automation apparmor test.bc
+    # automation selinux test.bc
     # automation xserver test.bc
 }
 

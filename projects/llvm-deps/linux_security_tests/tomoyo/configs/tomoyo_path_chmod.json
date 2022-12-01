@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "S_IALLUGO",
+      "file": "security/tomoyo/tomoyo.c",
+      "line": 364,
+      "value": 4095,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "tomoyo_path_chmod",
       "type": "variable",
       "name": "path",

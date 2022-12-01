@@ -24,6 +24,174 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MS_KERNMOUNT",
+      "file": "security/selinux/hooks.c",
+      "line": 2615,
+      "value": 4194304,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FS_BINARY_MOUNTDATA",
+      "file": "security/selinux/hooks.c",
+      "line": 1057,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NUM_SEL_MNT_OPTS",
+      "file": "security/selinux/hooks.c",
+      "line": 1006,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_ATOMIC",
+      "file": "security/selinux/hooks.c",
+      "line": 1006,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NUM_SEL_MNT_OPTS",
+      "file": "security/selinux/hooks.c",
+      "line": 1010,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_ATOMIC",
+      "file": "security/selinux/hooks.c",
+      "line": 1010,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FS_BINARY_MOUNTDATA",
+      "file": "security/selinux/hooks.c",
+      "line": 665,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECURITY_LSM_NATIVE_LABELS",
+      "file": "security/selinux/hooks.c",
+      "line": 770,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECURITY_LSM_NATIVE_LABELS",
+      "file": "security/selinux/hooks.c",
+      "line": 772,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_NOFS",
+      "file": "security/selinux/hooks.c",
+      "line": 1337,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_NOFS",
+      "file": "security/selinux/hooks.c",
+      "line": 1357,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "S_IFMT",
+      "file": "security/selinux/hooks.c",
+      "line": 1139,
+      "value": 61440,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_KERNEL",
+      "file": "security/selinux/hooks.c",
+      "line": 1245,
+      "value": 208,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PAGE_SIZE",
+      "file": "security/selinux/hooks.c",
+      "line": 1249,
+      "value": 4096,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_sb_kern_mount",
       "type": "variable",
       "name": "sb",

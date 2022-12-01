@@ -24,6 +24,30 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "XATTR_SELINUX_SUFFIX",
+      "file": "security/selinux/hooks.c",
+      "line": 3075,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CAP_MAC_ADMIN",
+      "file": "security/selinux/hooks.c",
+      "line": 3087,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_capable",
       "type": "variable",
       "name": "cap",

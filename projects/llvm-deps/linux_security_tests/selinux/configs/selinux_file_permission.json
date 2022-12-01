@@ -118,9 +118,10 @@
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/selinux/hooks.c", "line": 1611 },
-    { "file": "security/selinux/hooks.c", "line": 1683 },
     { "file": "security/selinux/hooks.c", "line": 1874 },
-    { "file": "security/selinux/hooks.c", "line": 3151 }
+    { "file": "security/selinux/hooks.c", "line": 3151 },
+    { "file": "security/selinux/hooks.c", "line": 3169 },
+    { "file": "security/selinux/hooks.c", "line": 3165 }
   ],
   "entry": ["selinux_file_permission"]
 }

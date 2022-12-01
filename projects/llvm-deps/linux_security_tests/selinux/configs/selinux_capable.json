@@ -24,6 +24,30 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SECURITY_CAP_AUDIT",
+      "file": "security/selinux/hooks.c",
+      "line": 1580,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "__GFP_ZERO",
+      "file": "include/linux/slab.h",
+      "line": 578,
+      "value": 32768,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_capable",
       "type": "variable",
       "name": "cap",

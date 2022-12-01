@@ -25,9 +25,69 @@
   "source": [
     {
       "type": "constant",
+      "name": "PROT_READ",
+      "file": "security/apparmor/lsm.c",
+      "line": 477,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "MAY_READ",
       "file": "security/apparmor/lsm.c",
       "line": 478,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_WRITE",
+      "file": "security/apparmor/lsm.c",
+      "line": 483,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAP_PRIVATE",
+      "file": "security/apparmor/lsm.c",
+      "line": 483,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_WRITE",
+      "file": "security/apparmor/lsm.c",
+      "line": 484,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_EXEC",
+      "file": "security/apparmor/lsm.c",
+      "line": 485,
       "value": 4,
       "l": {
         "source": "external",

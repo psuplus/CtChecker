@@ -24,6 +24,102 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "ATTR_FORCE",
+      "file": "security/selinux/hooks.c",
+      "line": 2885,
+      "value": 512,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_MODE",
+      "file": "security/selinux/hooks.c",
+      "line": 2886,
+      "value": -6658,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_KILL_SGID",
+      "file": "security/selinux/hooks.c",
+      "line": 2886,
+      "value": -6658,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_KILL_SUID",
+      "file": "security/selinux/hooks.c",
+      "line": 2886,
+      "value": -6658,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_MODE",
+      "file": "security/selinux/hooks.c",
+      "line": 2892,
+      "value": 65927,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_GID",
+      "file": "security/selinux/hooks.c",
+      "line": 2892,
+      "value": 65927,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_UID",
+      "file": "security/selinux/hooks.c",
+      "line": 2892,
+      "value": 65927,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_SIZE",
+      "file": "security/selinux/hooks.c",
+      "line": 2896,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_inode_setattr",
       "type": "variable",
       "name": "iattr",
@@ -116,5 +212,12 @@
   "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/selinux/hooks.c", "line": 2885 },
+    { "file": "security/selinux/hooks.c", "line": 1942 },
+    { "file": "security/selinux/hooks.c", "line": 1945 },
+    { "file": "security/selinux/hooks.c", "line": 1959 },
+    { "file": "security/selinux/hooks.c", "line": 1611 }
+  ],
   "entry": ["selinux_inode_setattr"]
 }

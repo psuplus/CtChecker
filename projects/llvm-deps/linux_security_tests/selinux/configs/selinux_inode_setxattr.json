@@ -24,6 +24,90 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "GFP_KERNEL",
+      "file": "security/selinux/hooks.c",
+      "line": 2962,
+      "value": 208,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CAP_MAC_ADMIN",
+      "file": "security/selinux/hooks.c",
+      "line": 2964,
+      "value": 33,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "AUDIT_SELINUX_ERR",
+      "file": "security/selinux/hooks.c",
+      "line": 2981,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_ATOMIC",
+      "file": "security/selinux/hooks.c",
+      "line": 2981,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "XATTR_SECURITY_PREFIX",
+      "file": "security/selinux/hooks.c",
+      "line": 2917,
+      "value": 9,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CAP_SETFCAP",
+      "file": "security/selinux/hooks.c",
+      "line": 2920,
+      "value": 31,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CAP_SYS_ADMIN",
+      "file": "security/selinux/hooks.c",
+      "line": 2922,
+      "value": 21,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_inode_setxattr",
       "type": "variable",
       "name": "dentry",

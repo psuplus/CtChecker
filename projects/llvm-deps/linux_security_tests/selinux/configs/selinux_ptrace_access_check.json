@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "PTRACE_MODE_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 1945,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_ptrace_access_check",
       "type": "variable",
       "name": "child",
@@ -116,5 +128,9 @@
   "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/selinux/hooks.c", "line": 1942 },
+    { "file": "security/selinux/hooks.c", "line": 1945 }
+  ],
   "entry": ["selinux_ptrace_access_check"]
 }

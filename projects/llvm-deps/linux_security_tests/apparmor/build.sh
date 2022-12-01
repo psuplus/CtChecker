@@ -30,5 +30,5 @@ cd $ANALYSIS_DIR
 pwd
 ls -la test.bc
 
-sudo update-alternatives --set gcc /usr/bin/gcc-10
-sudo update-alternatives --set g++ /usr/bin/g++-10
+sudo update-alternatives --set gcc /usr/bin/gcc-11
+sudo update-alternatives --set g++ /usr/bin/g++-11

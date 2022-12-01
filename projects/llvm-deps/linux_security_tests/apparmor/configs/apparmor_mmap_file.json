@@ -25,10 +25,10 @@
   "source": [
     {
       "type": "constant",
-      "name": "PROT_READ",
+      "name": "MAP_PRIVATE",
       "file": "security/apparmor/lsm.c",
-      "line": 477,
-      "value": 1,
+      "line": 483,
+      "value": 2,
       "l": {
         "source": "external",
         "value": "static"
@@ -49,30 +49,6 @@
     },
     {
       "type": "constant",
-      "name": "PROT_WRITE",
-      "file": "security/apparmor/lsm.c",
-      "line": 483,
-      "value": 2,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "name": "MAP_PRIVATE",
-      "file": "security/apparmor/lsm.c",
-      "line": 483,
-      "value": 2,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
       "name": "MAY_WRITE",
       "file": "security/apparmor/lsm.c",
       "line": 484,
@@ -85,10 +61,46 @@
     },
     {
       "type": "constant",
+      "name": "MS_NOUSER",
+      "file": "security/apparmor/include/apparmor.h",
+      "line": 117,
+      "value": -2147483648,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
       "name": "PROT_EXEC",
       "file": "security/apparmor/lsm.c",
       "line": 485,
       "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_READ",
+      "file": "security/apparmor/lsm.c",
+      "line": 477,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_WRITE",
+      "file": "security/apparmor/lsm.c",
+      "line": 483,
+      "value": 2,
       "l": {
         "source": "external",
         "value": "static"

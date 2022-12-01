@@ -28,7 +28,19 @@
       "name": "MAY_WRITE",
       "file": "security/apparmor/lsm.c",
       "line": 291,
-      "value": 66,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MS_NOUSER",
+      "file": "security/apparmor/include/apparmor.h",
+      "line": 117,
+      "value": -2147483648,
       "l": {
         "source": "external",
         "value": "static"

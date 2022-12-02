@@ -24,6 +24,378 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "BITS_PER_LONG",
+      "file": "include/asm-generic/getorder.h",
+      "line": 19,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_DMA",
+      "file": "include/linux/slab.h",
+      "line": 418,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPPROTO_IP",
+      "file": "security/selinux/hooks.c",
+      "line": 1167,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPPROTO_IP",
+      "file": "security/selinux/hooks.c",
+      "line": 1162,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPPROTO_TCP",
+      "file": "security/selinux/hooks.c",
+      "line": 1162,
+      "value": 6,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPPROTO_UDP",
+      "file": "security/selinux/hooks.c",
+      "line": 1167,
+      "value": 17,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MAX_CACHE_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 415,
+      "value": 8192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 252,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 255,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 257,
+      "value": 192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_SHIFT_LOW",
+      "file": "include/linux/slab.h",
+      "line": 253,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_AUDIT",
+      "file": "security/selinux/hooks.c",
+      "line": 1215,
+      "value": 9,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_DNRTMSG",
+      "file": "security/selinux/hooks.c",
+      "line": 1219,
+      "value": 14,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_FIREWALL",
+      "file": "security/selinux/hooks.c",
+      "line": 1205,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_IP6_FW",
+      "file": "security/selinux/hooks.c",
+      "line": 1217,
+      "value": 13,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_KOBJECT_UEVENT",
+      "file": "security/selinux/hooks.c",
+      "line": 1221,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_NFLOG",
+      "file": "security/selinux/hooks.c",
+      "line": 1209,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_ROUTE",
+      "file": "security/selinux/hooks.c",
+      "line": 1203,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_SELINUX",
+      "file": "security/selinux/hooks.c",
+      "line": 1213,
+      "value": 7,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_SOCK_DIAG",
+      "file": "security/selinux/hooks.c",
+      "line": 1207,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NETLINK_XFRM",
+      "file": "security/selinux/hooks.c",
+      "line": 1211,
+      "value": 6,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PAGE_SHIFT",
+      "file": "include/asm-generic/getorder.h",
+      "line": 18,
+      "value": 12,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_APPLETALK",
+      "file": "security/selinux/hooks.c",
+      "line": 1230,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_INET",
+      "file": "security/selinux/hooks.c",
+      "line": 1182,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_INET6",
+      "file": "security/selinux/hooks.c",
+      "line": 1183,
+      "value": 10,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_KEY",
+      "file": "security/selinux/hooks.c",
+      "line": 1228,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_NETLINK",
+      "file": "security/selinux/hooks.c",
+      "line": 1201,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_PACKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1226,
+      "value": 17,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PF_UNIX",
+      "file": "security/selinux/hooks.c",
+      "line": 1173,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ZERO_SIZE_PTR",
+      "file": "include/linux/slab.h",
+      "line": 422,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "__GFP_ZERO",
+      "file": "include/linux/slab.h",
+      "line": 578,
+      "value": 32768,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_socket_create",
       "type": "variable",
       "name": "family",

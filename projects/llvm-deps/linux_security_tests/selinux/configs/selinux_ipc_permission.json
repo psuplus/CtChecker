@@ -24,6 +24,30 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "S_IRUGO",
+      "file": "security/selinux/hooks.c",
+      "line": 5488,
+      "value": 292,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "S_IWUGO",
+      "file": "security/selinux/hooks.c",
+      "line": 5490,
+      "value": 146,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_ipc_permission",
       "type": "variable",
       "name": "ipcp",

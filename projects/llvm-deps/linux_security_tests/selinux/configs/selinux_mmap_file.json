@@ -24,6 +24,78 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MAP_SHARED",
+      "file": "security/selinux/hooks.c",
+      "line": 3296,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAP_TYPE",
+      "file": "security/selinux/hooks.c",
+      "line": 3296,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_EXEC",
+      "file": "security/selinux/hooks.c",
+      "line": 3242,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_EXEC",
+      "file": "security/selinux/hooks.c",
+      "line": 3261,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 3242,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROT_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 3258,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_mmap_file",
       "type": "variable",
       "name": "file",

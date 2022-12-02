@@ -25,10 +25,46 @@
   "source": [
     {
       "type": "constant",
+      "name": "EINVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 4718,
+      "value": -22,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EINVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 4725,
+      "value": -22,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ENOENT",
+      "file": "security/selinux/hooks.c",
+      "line": 4735,
+      "value": -2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "NLMSG_HDRLEN",
       "file": "security/selinux/hooks.c",
       "line": 4717,
-      "value": 16,
+      "value": 0,
       "l": {
         "source": "external",
         "value": "static"

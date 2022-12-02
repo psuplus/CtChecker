@@ -24,6 +24,114 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "CAP_SETFCAP",
+      "file": "security/selinux/hooks.c",
+      "line": 2920,
+      "value": 31,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CAP_SYS_ADMIN",
+      "file": "security/selinux/hooks.c",
+      "line": 2922,
+      "value": 21,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EACCES",
+      "file": "security/selinux/hooks.c",
+      "line": 3060,
+      "value": -13,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EPERM",
+      "file": "security/selinux/hooks.c",
+      "line": 2921,
+      "value": -1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EPERM",
+      "file": "security/selinux/hooks.c",
+      "line": 2925,
+      "value": -1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "XATTR_NAME_CAPS",
+      "file": "security/selinux/hooks.c",
+      "line": 2919,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "XATTR_NAME_SELINUX",
+      "file": "security/selinux/hooks.c",
+      "line": 3055,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "XATTR_SECURITY_PREFIX",
+      "file": "security/selinux/hooks.c",
+      "line": 2917,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "XATTR_SECURITY_PREFIX",
+      "file": "security/selinux/hooks.c",
+      "line": 2918,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_inode_removexattr",
       "type": "variable",
       "name": "dentry",

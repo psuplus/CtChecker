@@ -24,6 +24,162 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "GETALL",
+      "file": "security/selinux/hooks.c",
+      "line": 5445,
+      "value": 12,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GETNCNT",
+      "file": "security/selinux/hooks.c",
+      "line": 5440,
+      "value": 14,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GETPID",
+      "file": "security/selinux/hooks.c",
+      "line": 5439,
+      "value": 11,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GETVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 5444,
+      "value": 13,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GETZCNT",
+      "file": "security/selinux/hooks.c",
+      "line": 5441,
+      "value": 15,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5435,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC_RMID",
+      "file": "security/selinux/hooks.c",
+      "line": 5452,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC_SET",
+      "file": "security/selinux/hooks.c",
+      "line": 5455,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC_STAT",
+      "file": "security/selinux/hooks.c",
+      "line": 5458,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5436,
+      "value": 19,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM_STAT",
+      "file": "security/selinux/hooks.c",
+      "line": 5459,
+      "value": 18,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SETALL",
+      "file": "security/selinux/hooks.c",
+      "line": 5449,
+      "value": 17,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SETVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 5448,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_sem_semctl",
       "type": "variable",
       "name": "sma",

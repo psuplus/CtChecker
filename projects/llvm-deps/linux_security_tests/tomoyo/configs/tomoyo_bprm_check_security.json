@@ -25,10 +25,10 @@
   "source": [
     {
       "type": "constant",
-      "name": "__GFP_ZERO",
-      "file": "include/linux/slab.h",
-      "line": 578,
-      "value": 32768,
+      "name": "BITS_PER_LONG",
+      "file": "include/asm-generic/getorder.h",
+      "line": 19,
+      "value": 64,
       "l": {
         "source": "external",
         "value": "static"
@@ -37,22 +37,10 @@
     },
     {
       "type": "constant",
-      "name": "_THIS_IP_",
-      "file": "include/linux/rcupdate.h",
-      "line": 418,
-      "value": 0,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "name": "KMALLOC_MAX_CACHE_SIZE",
-      "file": "include/linux/slab.h",
-      "line": 415,
-      "value": 8192,
+      "name": "BITS_PER_LONG",
+      "file": "include/linux/hash.h",
+      "line": 39,
+      "value": 64,
       "l": {
         "source": "external",
         "value": "static"
@@ -73,10 +61,46 @@
     },
     {
       "type": "constant",
-      "name": "_THIS_IP_",
-      "file": "include/linux/rcupdate.h",
-      "line": 423,
-      "value": 1,
+      "name": "GOLDEN_RATIO_PRIME_64",
+      "file": "include/linux/hash.h",
+      "line": 40,
+      "value": -262143,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MAX_CACHE_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 415,
+      "value": 8192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 252,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 255,
+      "value": 64,
       "l": {
         "source": "external",
         "value": "static"
@@ -109,34 +133,10 @@
     },
     {
       "type": "constant",
-      "name": "KMALLOC_MIN_SIZE",
-      "file": "include/linux/slab.h",
-      "line": 255,
-      "value": 64,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "name": "KMALLOC_MIN_SIZE",
-      "file": "include/linux/slab.h",
-      "line": 252,
-      "value": 8,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "name": "GOLDEN_RATIO_PRIME_64",
-      "file": "include/linux/hash.h",
-      "line": 40,
-      "value": -262143,
+      "name": "O_RDONLY",
+      "file": "security/tomoyo/tomoyo.c",
+      "line": 136,
+      "value": 0,
       "l": {
         "source": "external",
         "value": "static"
@@ -149,6 +149,42 @@
       "file": "include/asm-generic/getorder.h",
       "line": 18,
       "value": 12,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PAGE_SIZE",
+      "file": "security/tomoyo/common.h",
+      "line": 1306,
+      "value": 4096,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ZERO_SIZE_PTR",
+      "file": "include/linux/slab.h",
+      "line": 422,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "__GFP_ZERO",
+      "file": "include/linux/slab.h",
+      "line": 578,
+      "value": 32768,
       "l": {
         "source": "external",
         "value": "static"

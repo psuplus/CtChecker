@@ -151,8 +151,7 @@
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/tomoyo/network.c", "line": 548 },
-    { "file": "security/tomoyo/network.c", "line": 560 },
-    { "file": "security/tomoyo/network.c", "line": 596 }
+    { "file": "security/tomoyo/network.c", "line": 560 }
   ],
   "entry": ["tomoyo_check_unix_address"]
 }

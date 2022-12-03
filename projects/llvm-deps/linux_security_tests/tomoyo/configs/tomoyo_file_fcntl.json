@@ -309,9 +309,7 @@
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [
-    { "file": "security/tomoyo/tomoyo.c", "line": 315 },
     { "file": "security/tomoyo/file.c", "line": 151 },
-    { "file": "security/tomoyo/file.c", "line": 761 },
     { "file": "security/tomoyo/file.c", "line": 750 },
     { "file": "security/tomoyo/file.c", "line": 758 },
     { "file": "security/tomoyo/file.c", "line": 761 },

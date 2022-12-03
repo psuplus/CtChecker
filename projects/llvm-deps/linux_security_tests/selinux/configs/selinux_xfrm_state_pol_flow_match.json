@@ -107,7 +107,6 @@
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [
-    { "file": "security/selinux/xfrm.c", "line": 202 },
     { "file": "security/selinux/xfrm.c", "line": 192 },
     { "file": "security/selinux/xfrm.c", "line": 196 },
     { "file": "security/selinux/xfrm.c", "line": 184 }

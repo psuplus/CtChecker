@@ -3,7 +3,12 @@
 
 ANNOTATION=true
 CONSTANT=true
-if [ $ANNOTATION = true ] ; then
+FINAL=true
+
+if [ $FINAL = true ] ; then
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Final.md
+    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Final.md
+elif [ $ANNOTATION = true ] ; then
     TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Relaxed.md
     TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Relaxed.md
 elif [ $CONSTANT = true ] ; then

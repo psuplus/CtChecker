@@ -345,11 +345,7 @@
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/selinux/hooks.c", "line": 4039 },
-    { "file": "security/selinux/hooks.c", "line": 4058 },
-    { "file": "security/selinux/hooks.c", "line": 4068 },
-    { "file": "security/selinux/hooks.c", "line": 4073 },
-    { "file": "security/selinux/hooks.c", "line": 4076 },
-    { "file": "security/selinux/hooks.c", "line": 4048 }
+    { "file": "security/selinux/hooks.c", "line": 4076 }
   ],
   "entry": ["selinux_socket_bind"]
 }

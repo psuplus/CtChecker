@@ -296,12 +296,6 @@
   "implicit_whitelist": [
     { "file": "security/tomoyo/mount.c", "line": 94 },
     { "file": "security/tomoyo/mount.c", "line": 102 },
-    { "file": "security/tomoyo/mount.c", "line": 110 },
-    { "file": "security/tomoyo/mount.c", "line": 112 },
-    { "file": "security/tomoyo/mount.c", "line": 113 },
-    { "file": "security/tomoyo/mount.c", "line": 114 },
-    { "file": "security/tomoyo/mount.c", "line": 115 },
-    { "file": "security/tomoyo/mount.c", "line": 117 },
     { "file": "security/tomoyo/mount.c", "line": 122 },
     { "file": "security/tomoyo/mount.c", "line": 132 },
     { "file": "security/tomoyo/mount.c", "line": 138 },

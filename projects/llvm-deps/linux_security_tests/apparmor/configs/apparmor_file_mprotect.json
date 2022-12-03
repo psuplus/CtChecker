@@ -235,13 +235,9 @@
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/apparmor/lsm.c", "line": 474 },
-    { "file": "security/apparmor/lsm.c", "line": 477 },
-    { "file": "security/apparmor/lsm.c", "line": 483 },
-    { "file": "security/apparmor/lsm.c", "line": 485 },
     { "file": "security/apparmor/lsm.c", "line": 434 },
     { "file": "security/apparmor/lsm.c", "line": 435 },
     { "file": "security/apparmor/lsm.c", "line": 438 },
-    { "file": "security/apparmor/lsm.c", "line": 448 },
     { "file": "security/apparmor/lsm.c", "line": 447 }
   ],
   "entry": ["apparmor_file_mprotect"]

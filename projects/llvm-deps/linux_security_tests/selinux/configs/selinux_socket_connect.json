@@ -309,7 +309,6 @@
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/selinux/hooks.c", "line": 4138 },
-    { "file": "security/selinux/hooks.c", "line": 4169 },
     { "file": "security/selinux/hooks.c", "line": 4166 }
   ],
   "entry": ["selinux_socket_connect"]

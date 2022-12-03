@@ -105,6 +105,6 @@
   "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [{ "file": "security/selinux/xfrm.c", "line": 144 }],
+  "implicit_whitelist": [],
   "entry": ["selinux_xfrm_state_delete"]
 }

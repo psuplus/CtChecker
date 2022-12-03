@@ -240,7 +240,6 @@
     { "file": "security/selinux/hooks.c", "line": 2919 },
     { "file": "security/selinux/hooks.c", "line": 2922 },
     { "file": "security/selinux/hooks.c", "line": 1942 },
-    { "file": "security/selinux/hooks.c", "line": 1945 },
     { "file": "security/selinux/hooks.c", "line": 1959 },
     { "file": "security/selinux/hooks.c", "line": 1611 }
   ],

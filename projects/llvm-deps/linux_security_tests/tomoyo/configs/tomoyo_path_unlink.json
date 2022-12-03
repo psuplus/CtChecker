@@ -263,7 +263,6 @@
   "implicit_whitelist": [
     { "file": "security/tomoyo/file.c", "line": 565 },
     { "file": "security/tomoyo/file.c", "line": 797 },
-    { "file": "security/tomoyo/file.c", "line": 807 },
     { "file": "security/tomoyo/file.c", "line": 814 }
   ],
   "entry": ["tomoyo_path_unlink"]

@@ -153,12 +153,6 @@
   "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [
-    { "file": "security/selinux/hooks.c", "line": 1611 },
-    { "file": "security/selinux/hooks.c", "line": 1683 },
-    { "file": "security/selinux/hooks.c", "line": 1902 },
-    { "file": "security/selinux/hooks.c", "line": 1904 },
-    { "file": "security/selinux/hooks.c", "line": 1905 }
-  ],
+  "implicit_whitelist": [{ "file": "security/selinux/hooks.c", "line": 1611 }],
   "entry": ["selinux_file_open"]
 }

@@ -461,7 +461,6 @@
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [
-    { "file": "security/selinux/hooks.c", "line": 1874 },
     { "file": "security/selinux/hooks.c", "line": 2852 },
     { "file": "security/selinux/hooks.c", "line": 2857 }
   ],

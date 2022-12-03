@@ -177,7 +177,6 @@
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/selinux/hooks.c", "line": 4717 },
-    { "file": "security/selinux/hooks.c", "line": 4724 },
     { "file": "security/selinux/hooks.c", "line": 5070 }
   ],
   "entry": ["selinux_netlink_send"]

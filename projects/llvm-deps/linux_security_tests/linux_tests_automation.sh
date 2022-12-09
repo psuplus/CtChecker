@@ -89,8 +89,8 @@ main()
     
     echo "Executing automation."
     automation tomoyo test.bc
-    # automation apparmor test.bc
-    # automation selinux test.bc
+    automation apparmor test.bc
+    automation selinux test.bc
     # automation xserver test.bc
 }
 

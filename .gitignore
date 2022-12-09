@@ -127,4 +127,4 @@ projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg
 projects/llvm-deps/processing_tools/data/
 projects/llvm-deps/udp_unit_test/
-projects/llvm-deps/linux_security_tests/latex/
+projects/llvm-deps/linux_security_tests/*/old_version/

@@ -816,7 +816,8 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
       else
         span = TD.getTypeStoreSize(type);
     }
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "span [" << span << "]\n";);
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "span [" << span << "]\n";
+                    if (type) type->dump(););
     auto e = elemMap.find(offset);
     while (e != elemMap.end() && e->first < offset + span) {
       elements.insert(e->second);
@@ -2703,6 +2704,9 @@ void Infoflow::constrainSwitchInst(const SwitchInst &inst, Flows &flows) {
   flow.addSourceValue(*inst.getParent());
   // condition
   flow.addSourceValue(*inst.getCondition());
+  for (auto c : inst.cases()) {
+    flow.addSourceValue(*c.getCaseValue());
+  }
 
   constrainConditionalSuccessors(inst, flow);
 

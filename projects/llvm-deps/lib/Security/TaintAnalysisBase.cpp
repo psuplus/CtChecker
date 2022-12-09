@@ -473,13 +473,20 @@ void TaintAnalysisBase::labelValue(std::string kind,
                                    std::vector<ConfigVariable> vars, bool gte) {
   for (auto var : vars) {
     if (var.type == ConfigVariableType::Constant) {
-      std::string loc = var.file + ":" + std::to_string(var.line);
-      auto constantConstraintMap = ifa->constantValueConstraintMap.find(loc);
-      if (constantConstraintMap != ifa->constantValueConstraintMap.end()) {
-        for (auto constraint : constantConstraintMap->second)
-          if (constraint.first->getSExtValue() == var.value)
-            ifa->kit->addConstraint(kind, ifa->kit->constant(var.label),
-                                    *constraint.second);
+      bool useConstant = true;
+      if (ifa->config.contains("using_constant"))
+        useConstant = ifa->config.at("using_constant");
+      if (useConstant) {
+        std::string loc = var.file + ":" + std::to_string(var.line);
+        auto constantConstraintMap = ifa->constantValueConstraintMap.find(loc);
+        if (constantConstraintMap != ifa->constantValueConstraintMap.end()) {
+          for (auto constraint : constantConstraintMap->second)
+            if (constraint.first->getSExtValue() == var.value) {
+              ifa->kit->addConstraint(kind, ifa->kit->constant(var.label),
+                                      *constraint.second);
+              (*constraint.second).dump(errs());
+            }
+        }
       }
       continue;
     }

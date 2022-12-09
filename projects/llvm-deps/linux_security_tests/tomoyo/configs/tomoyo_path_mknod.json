@@ -313,7 +313,7 @@
       "number": 0,
       "index": 2,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }

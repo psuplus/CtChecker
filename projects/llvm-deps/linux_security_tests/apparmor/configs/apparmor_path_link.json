@@ -85,7 +85,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "external",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }

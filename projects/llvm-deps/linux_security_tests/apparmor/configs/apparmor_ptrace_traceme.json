@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "PTRACE_MODE_ATTACH",
+      "file": "security/apparmor/lsm.c",
+      "line": 112,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "apparmor_ptrace_traceme",
       "type": "variable",
       "name": "parent",
@@ -63,7 +75,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -91,6 +103,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [{ "file": "security/apparmor/lsm.c", "line": 109 }],

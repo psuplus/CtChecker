@@ -64,7 +64,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -103,10 +103,10 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [
-    { "file": "security/selinux/xfrm.c", "line": 202 },
     { "file": "security/selinux/xfrm.c", "line": 192 },
     { "file": "security/selinux/xfrm.c", "line": 196 },
     { "file": "security/selinux/xfrm.c", "line": 184 }

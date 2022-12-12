@@ -24,6 +24,174 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "BITS_PER_LONG",
+      "file": "include/asm-generic/getorder.h",
+      "line": 19,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EINVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 1576,
+      "value": -22,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_DMA",
+      "file": "include/linux/slab.h",
+      "line": 418,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MAX_CACHE_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 415,
+      "value": 8192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 252,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 255,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 257,
+      "value": 192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_SHIFT_LOW",
+      "file": "include/linux/slab.h",
+      "line": 253,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "LIST_POISON2",
+      "file": "include/linux/rculist.h",
+      "line": 346,
+      "value": 2097664,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "LIST_POISON2",
+      "file": "include/linux/rculist.h",
+      "line": 366,
+      "value": 2097664,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PAGE_SHIFT",
+      "file": "include/asm-generic/getorder.h",
+      "line": 18,
+      "value": 12,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECURITY_CAP_AUDIT",
+      "file": "security/selinux/hooks.c",
+      "line": 1580,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ZERO_SIZE_PTR",
+      "file": "include/linux/slab.h",
+      "line": 422,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "__GFP_ZERO",
+      "file": "include/linux/slab.h",
+      "line": 568,
+      "value": 32768,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_capable",
       "type": "variable",
       "name": "cap",
@@ -53,7 +221,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -97,7 +265,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -136,11 +304,9 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [
-    { "file": "security/selinux/hooks.c", "line": 2008 },
-    { "file": "security/selinux/hooks.c", "line": 1565 }
-  ],
+  "implicit_whitelist": [{ "file": "security/selinux/hooks.c", "line": 2008 }],
   "entry": ["selinux_capable"]
 }

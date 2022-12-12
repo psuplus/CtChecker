@@ -24,6 +24,150 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "ATTR_ATIME_SET",
+      "file": "security/selinux/hooks.c",
+      "line": 2893,
+      "value": 128,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_FORCE",
+      "file": "security/selinux/hooks.c",
+      "line": 2885,
+      "value": 512,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_FORCE",
+      "file": "security/selinux/hooks.c",
+      "line": 2887,
+      "value": 512,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_GID",
+      "file": "security/selinux/hooks.c",
+      "line": 2892,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_KILL_SGID",
+      "file": "security/selinux/hooks.c",
+      "line": 2886,
+      "value": 4096,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_KILL_SUID",
+      "file": "security/selinux/hooks.c",
+      "line": 2886,
+      "value": 2048,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_MODE",
+      "file": "security/selinux/hooks.c",
+      "line": 2886,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_MODE",
+      "file": "security/selinux/hooks.c",
+      "line": 2892,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_MTIME_SET",
+      "file": "security/selinux/hooks.c",
+      "line": 2893,
+      "value": 256,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_SIZE",
+      "file": "security/selinux/hooks.c",
+      "line": 2896,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_TIMES_SET",
+      "file": "security/selinux/hooks.c",
+      "line": 2893,
+      "value": 65536,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ATTR_UID",
+      "file": "security/selinux/hooks.c",
+      "line": 2892,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_inode_setattr",
       "type": "variable",
       "name": "iattr",
@@ -74,7 +218,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -113,7 +257,14 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/selinux/hooks.c", "line": 2885 },
+    { "file": "security/selinux/hooks.c", "line": 1942 },
+    { "file": "security/selinux/hooks.c", "line": 1959 },
+    { "file": "security/selinux/hooks.c", "line": 1611 }
+  ],
   "entry": ["selinux_inode_setattr"]
 }

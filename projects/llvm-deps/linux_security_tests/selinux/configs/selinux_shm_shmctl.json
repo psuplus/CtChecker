@@ -25,9 +25,21 @@
   "source": [
     {
       "type": "constant",
+      "name": "IPC_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5343,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "IPC_RMID",
       "file": "security/selinux/hooks.c",
-      "line": 5342,
+      "line": 5358,
       "value": 0,
       "l": {
         "source": "external",
@@ -37,10 +49,22 @@
     },
     {
       "type": "constant",
-      "name": "IPC_INFO",
+      "name": "IPC_SET",
       "file": "security/selinux/hooks.c",
-      "line": 5342,
-      "value": 3,
+      "line": 5351,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC_STAT",
+      "file": "security/selinux/hooks.c",
+      "line": 5347,
+      "value": 2,
       "l": {
         "source": "external",
         "value": "static"
@@ -51,7 +75,7 @@
       "type": "constant",
       "name": "SHM_INFO",
       "file": "security/selinux/hooks.c",
-      "line": 5342,
+      "line": 5344,
       "value": 14,
       "l": {
         "source": "external",
@@ -61,41 +85,9 @@
     },
     {
       "type": "constant",
+      "name": "SHM_LOCK",
       "file": "security/selinux/hooks.c",
-      "line": 5342,
-      "value": 2,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "file": "security/selinux/hooks.c",
-      "line": 5342,
-      "value": 13,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "file": "security/selinux/hooks.c",
-      "line": 5342,
-      "value": 1,
-      "l": {
-        "source": "external",
-        "value": "static"
-      },
-      "c": { "purpose": ["operation"] }
-    },
-    {
-      "type": "constant",
-      "file": "security/selinux/hooks.c",
-      "line": 5342,
+      "line": 5354,
       "value": 11,
       "l": {
         "source": "external",
@@ -105,8 +97,21 @@
     },
     {
       "type": "constant",
+      "name": "SHM_STAT",
       "file": "security/selinux/hooks.c",
-      "line": 5342,
+      "line": 5348,
+      "value": 13,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM_UNLOCK",
+      "file": "security/selinux/hooks.c",
+      "line": 5355,
       "value": 12,
       "l": {
         "source": "external",
@@ -176,7 +181,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -215,6 +220,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "entry": ["selinux_shm_shmctl"]

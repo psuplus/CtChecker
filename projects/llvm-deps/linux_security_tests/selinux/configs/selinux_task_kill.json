@@ -24,6 +24,42 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SIGCHLD",
+      "file": "security/selinux/hooks.c",
+      "line": 1477,
+      "value": 17,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SIGKILL",
+      "file": "security/selinux/hooks.c",
+      "line": 1481,
+      "value": 9,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SIGSTOP",
+      "file": "security/selinux/hooks.c",
+      "line": 1485,
+      "value": 19,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_task_kill",
       "type": "variable",
       "name": "p",
@@ -96,7 +132,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -135,6 +171,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "entry": ["selinux_task_kill"]

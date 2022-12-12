@@ -24,6 +24,42 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "FMODE_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 1902,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FMODE_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 1904,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "O_APPEND",
+      "file": "security/selinux/hooks.c",
+      "line": 1905,
+      "value": 1024,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_file_receive",
       "type": "variable",
       "name": "file",
@@ -74,7 +110,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -113,14 +149,9 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [
-    { "file": "security/selinux/hooks.c", "line": 1611 },
-    { "file": "security/selinux/hooks.c", "line": 1683 },
-    { "file": "security/selinux/hooks.c", "line": 1902 },
-    { "file": "security/selinux/hooks.c", "line": 1904 },
-    { "file": "security/selinux/hooks.c", "line": 1905 }
-  ],
+  "implicit_whitelist": [{ "file": "security/selinux/hooks.c", "line": 1611 }],
   "entry": ["selinux_file_receive"]
 }

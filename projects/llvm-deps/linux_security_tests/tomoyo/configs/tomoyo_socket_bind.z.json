@@ -107,7 +107,7 @@
       "number": 0,
       "index": 2,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -168,14 +168,9 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [
-    { "file": "security/tomoyo/network.c", "line": 473 },
-    { "file": "security/tomoyo/network.c", "line": 507 },
-    { "file": "security/tomoyo/network.c", "line": 509 },
-    { "file": "security/tomoyo/network.c", "line": 517 },
-    { "file": "security/tomoyo/network.c", "line": 527 }
-  ],
+  "implicit_whitelist": [{ "file": "security/tomoyo/network.c", "line": 473 }],
   "entry": ["tomoyo_check_inet_address"]
 }

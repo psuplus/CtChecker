@@ -24,6 +24,198 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "BITS_PER_LONG",
+      "file": "security/selinux/hooks.c",
+      "line": 3370,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_GETFL",
+      "file": "security/selinux/hooks.c",
+      "line": 3357,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_GETLK",
+      "file": "security/selinux/hooks.c",
+      "line": 3364,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_GETOWN",
+      "file": "security/selinux/hooks.c",
+      "line": 3358,
+      "value": 9,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_GETOWNER_UIDS",
+      "file": "security/selinux/hooks.c",
+      "line": 3360,
+      "value": 17,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_GETSIG",
+      "file": "security/selinux/hooks.c",
+      "line": 3359,
+      "value": 11,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_OFD_GETLK",
+      "file": "security/selinux/hooks.c",
+      "line": 3367,
+      "value": 36,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_OFD_SETLK",
+      "file": "security/selinux/hooks.c",
+      "line": 3368,
+      "value": 37,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_OFD_SETLKW",
+      "file": "security/selinux/hooks.c",
+      "line": 3369,
+      "value": 38,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_SETFL",
+      "file": "security/selinux/hooks.c",
+      "line": 3349,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_SETLK",
+      "file": "security/selinux/hooks.c",
+      "line": 3365,
+      "value": 6,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_SETLKW",
+      "file": "security/selinux/hooks.c",
+      "line": 3366,
+      "value": 7,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_SETOWN",
+      "file": "security/selinux/hooks.c",
+      "line": 3355,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "F_SETSIG",
+      "file": "security/selinux/hooks.c",
+      "line": 3356,
+      "value": 10,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "O_APPEND",
+      "file": "security/selinux/hooks.c",
+      "line": 3350,
+      "value": 1024,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "O_APPEND",
+      "file": "security/selinux/hooks.c",
+      "line": 3350,
+      "value": 1024,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_file_fcntl",
       "type": "variable",
       "name": "file",
@@ -85,7 +277,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -124,11 +316,9 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [
-    { "file": "security/selinux/hooks.c", "line": 1683 },
-    { "file": "security/selinux/hooks.c", "line": 1611 }
-  ],
+  "implicit_whitelist": [{ "file": "security/selinux/hooks.c", "line": 1611 }],
   "entry": ["selinux_file_fcntl"]
 }

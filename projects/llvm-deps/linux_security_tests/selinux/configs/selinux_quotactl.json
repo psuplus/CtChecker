@@ -24,6 +24,102 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "Q_GETFMT",
+      "file": "security/selinux/hooks.c",
+      "line": 2030,
+      "value": 8388612,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_GETINFO",
+      "file": "security/selinux/hooks.c",
+      "line": 2031,
+      "value": 8388613,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_GETQUOTA",
+      "file": "security/selinux/hooks.c",
+      "line": 2032,
+      "value": 8388615,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_QUOTAOFF",
+      "file": "security/selinux/hooks.c",
+      "line": 2025,
+      "value": 8388611,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_QUOTAON",
+      "file": "security/selinux/hooks.c",
+      "line": 2024,
+      "value": 8388610,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_SETINFO",
+      "file": "security/selinux/hooks.c",
+      "line": 2026,
+      "value": 8388614,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_SETQUOTA",
+      "file": "security/selinux/hooks.c",
+      "line": 2027,
+      "value": 8388616,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "Q_SYNC",
+      "file": "security/selinux/hooks.c",
+      "line": 2023,
+      "value": 8388609,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_quotactl",
       "type": "variable",
       "name": "sb",
@@ -74,7 +170,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -113,7 +209,9 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
+  "implicit_whitelist": [{ "file": "security/selinux/hooks.c", "line": 2019 }],
   "entry": ["selinux_quotactl"]
 }

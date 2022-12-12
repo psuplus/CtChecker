@@ -24,6 +24,54 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "EINVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 4718,
+      "value": -22,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EINVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 4725,
+      "value": -22,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ENOENT",
+      "file": "security/selinux/hooks.c",
+      "line": 4735,
+      "value": -2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "NLMSG_HDRLEN",
+      "file": "security/selinux/hooks.c",
+      "line": 4717,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_nlmsg_perm",
       "type": "variable",
       "name": "perm",
@@ -85,7 +133,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -124,11 +172,11 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "implicit_whitelist": [
     { "file": "security/selinux/hooks.c", "line": 4717 },
-    { "file": "security/selinux/hooks.c", "line": 4724 },
     { "file": "security/selinux/hooks.c", "line": 5070 }
   ],
   "entry": ["selinux_netlink_send"]

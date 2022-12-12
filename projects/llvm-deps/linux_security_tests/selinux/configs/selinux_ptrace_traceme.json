@@ -63,7 +63,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -102,7 +102,12 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
+  "implicit_whitelist": [
+    { "file": "security/selinux/hooks.c", "line": 1942 },
+    { "file": "security/selinux/hooks.c", "line": 1959 }
+  ],
   "entry": ["selinux_ptrace_traceme"]
 }

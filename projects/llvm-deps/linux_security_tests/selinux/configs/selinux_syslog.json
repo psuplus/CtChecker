@@ -24,6 +24,126 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_CLEAR",
+      "file": "security/selinux/hooks.c",
+      "line": 2068,
+      "value": 5,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_CLOSE",
+      "file": "security/selinux/hooks.c",
+      "line": 2064,
+      "value": 0,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_CONSOLE_LEVEL",
+      "file": "security/selinux/hooks.c",
+      "line": 2061,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_CONSOLE_OFF",
+      "file": "security/selinux/hooks.c",
+      "line": 2058,
+      "value": 6,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_CONSOLE_ON",
+      "file": "security/selinux/hooks.c",
+      "line": 2059,
+      "value": 7,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_OPEN",
+      "file": "security/selinux/hooks.c",
+      "line": 2065,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 2066,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_READ_ALL",
+      "file": "security/selinux/hooks.c",
+      "line": 2054,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_READ_CLEAR",
+      "file": "security/selinux/hooks.c",
+      "line": 2067,
+      "value": 4,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSLOG_ACTION_SIZE_BUFFER",
+      "file": "security/selinux/hooks.c",
+      "line": 2055,
+      "value": 10,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_syslog",
       "type": "variable",
       "name": "type",
@@ -74,7 +194,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -113,6 +233,7 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "entry": ["selinux_syslog"]

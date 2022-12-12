@@ -24,6 +24,330 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "BITS_PER_LONG",
+      "file": "include/asm-generic/getorder.h",
+      "line": 19,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CAP_SYS_TTY_CONFIG",
+      "file": "security/selinux/hooks.c",
+      "line": 3221,
+      "value": 26,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "EINVAL",
+      "file": "security/selinux/hooks.c",
+      "line": 1576,
+      "value": -22,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FIBMAP",
+      "file": "security/selinux/hooks.c",
+      "line": 3196,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FIGETBSZ",
+      "file": "security/selinux/hooks.c",
+      "line": 3198,
+      "value": 2,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FIOASYNC",
+      "file": "security/selinux/hooks.c",
+      "line": 3215,
+      "value": 21586,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FIONBIO",
+      "file": "security/selinux/hooks.c",
+      "line": 3213,
+      "value": 21537,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FIONREAD",
+      "file": "security/selinux/hooks.c",
+      "line": 3194,
+      "value": 21531,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FS_IOC_GETFLAGS",
+      "file": "security/selinux/hooks.c",
+      "line": 3200,
+      "value": -2146933247,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FS_IOC_GETVERSION",
+      "file": "security/selinux/hooks.c",
+      "line": 3202,
+      "value": -2146929151,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FS_IOC_SETFLAGS",
+      "file": "security/selinux/hooks.c",
+      "line": 3206,
+      "value": 1074292226,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FS_IOC_SETVERSION",
+      "file": "security/selinux/hooks.c",
+      "line": 3208,
+      "value": 1074296322,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "GFP_DMA",
+      "file": "include/linux/slab.h",
+      "line": 418,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KDSKBENT",
+      "file": "security/selinux/hooks.c",
+      "line": 3219,
+      "value": 19271,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KDSKBSENT",
+      "file": "security/selinux/hooks.c",
+      "line": 3220,
+      "value": 19273,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MAX_CACHE_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 415,
+      "value": 8192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 252,
+      "value": 8,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 255,
+      "value": 64,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_MIN_SIZE",
+      "file": "include/linux/slab.h",
+      "line": 257,
+      "value": 192,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "KMALLOC_SHIFT_LOW",
+      "file": "include/linux/slab.h",
+      "line": 253,
+      "value": 3,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "LIST_POISON2",
+      "file": "include/linux/rculist.h",
+      "line": 346,
+      "value": 2097664,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "LIST_POISON2",
+      "file": "include/linux/rculist.h",
+      "line": 366,
+      "value": 2097664,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PAGE_SHIFT",
+      "file": "include/asm-generic/getorder.h",
+      "line": 18,
+      "value": 12,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECURITY_CAP_AUDIT",
+      "file": "security/selinux/hooks.c",
+      "line": 1580,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECURITY_CAP_AUDIT",
+      "file": "security/selinux/hooks.c",
+      "line": 3222,
+      "value": 1,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ZERO_SIZE_PTR",
+      "file": "include/linux/slab.h",
+      "line": 422,
+      "value": 16,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "__GFP_ZERO",
+      "file": "include/linux/slab.h",
+      "line": 568,
+      "value": 32768,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_file_ioctl",
       "type": "variable",
       "name": "file",
@@ -74,7 +398,7 @@
       "number": 0,
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
@@ -113,11 +437,9 @@
       "c": { "purpose": ["operation"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [
-    { "file": "security/selinux/hooks.c", "line": 1611 },
-    { "file": "security/selinux/hooks.c", "line": 1683 }
-  ],
+  "implicit_whitelist": [{ "file": "security/selinux/hooks.c", "line": 1611 }],
   "entry": ["selinux_file_ioctl"]
 }

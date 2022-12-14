@@ -3,9 +3,9 @@
 
 ANNOTATION=false
 TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Baseline.md
-TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Baseline.md
 
 OUT_DIR=results
+CUR_DIR=$(pwd)
 
 automation()
 {
@@ -51,7 +51,6 @@ automation()
 
         echo 'Updating the detected gaps table...'
         python3 ../../processing_tools/update_gaps.py $TABLE_FILE $OUT_DIR/$FUNCTION/gaps.log
-        python3 ../../processing_tools/update_gaps_other.py $TABLE_FILE_OTHER $OUT_DIR/$FUNCTION/gaps.log
 
     done
     rm -f config.json
@@ -65,7 +64,7 @@ main()
     make
     cd ../poolalloc/
     make
-    cd ../llvm-deps/linux_security_tests/
+    cd $CUR_DIR
     
     echo "Executing automation."
     automation tomoyo test.bc

@@ -1,9 +1,12 @@
-#include <fstream>
+#ifndef DEBUG_TYPE
+#define DEBUG_TYPE "taint"
 
 #include "TaintAnalysisBase.h"
 
 using namespace llvm;
 namespace deps {
+STATISTIC(NumSourceConstrained, "Number of sources constrained");
+STATISTIC(NumSinkConstrained, "Number of sinks constrained");
 
 const Function *findEnclosingFunc(const Value *V) {
   if (const Argument *Arg = dyn_cast<Argument>(V)) {
@@ -56,16 +59,19 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
                                        RLLabel label) {
 
   std::string s = value.getName();
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Trying to constrain ["
-                                           << match_name << "] at offset ["
-                                           << t_offset << "] for value : ";
+  std::string meta = "[" + match_name + ":" + std::to_string(t_offset) +
+                     "] [SrcIdx:" + std::to_string(NumSourceConstrained++) +
+                     "]";
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                  errs() << "Trying to constrain " << meta << " for value : ";
                   value.dump(););
   const AbstractLocSet &locs = ifa->locsForValue(value);
   const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
   if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                     errs() << "SETTING " << s << " TO BE TAINTED\n";);
-    ifa->setLabel(kind, value, label, true);
+    ifa->constrainAllConsElem(kind, value, std::set<const ConsElem *>(), label,
+                              meta);
   }
 
   // Heap nodes not returned from locs For value
@@ -232,13 +238,14 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
         el->dump(errs());
         errs() << " : addr " << el << "\n";
       });
-  ifa->constrainAllConsElem(kind, value, elementsToConstrain, label);
+  ifa->constrainAllConsElem(kind, value, elementsToConstrain, label, meta);
 }
 
 void TaintAnalysisBase::labelSink(std::string kind) {
   // process the sink functions' arguments
   errs() << "\n ========= Labeling Sink Functions ========= \n";
   for (auto ctxValuePair : ifa->sinkValueSet) {
+    NumSinkConstrained++;
     ContextID ctxt;
     RLLabel label;
     Value *v;
@@ -482,8 +489,11 @@ void TaintAnalysisBase::labelValue(std::string kind,
         if (constantConstraintMap != ifa->constantValueConstraintMap.end()) {
           for (auto constraint : constantConstraintMap->second)
             if (constraint.first->getSExtValue() == var.value) {
+              std::string meta = " ;  [ConsDebugTag-*] [Constant:" +
+                                 std::to_string(var.value) + "] [SrcIdx:" +
+                                 std::to_string(NumSourceConstrained++) + "]";
               ifa->kit->addConstraint(kind, ifa->kit->constant(var.label),
-                                      *constraint.second);
+                                      *constraint.second, meta);
               (*constraint.second).dump(errs());
             }
         }
@@ -680,3 +690,5 @@ unsigned TaintAnalysisBase::getNumElements(const Value &value) {
 }
 
 } // namespace deps
+
+#endif

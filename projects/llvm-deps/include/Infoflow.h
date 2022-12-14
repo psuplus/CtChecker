@@ -241,7 +241,7 @@ public:
   /// solving for an information flow solution, the user
   /// may specify a set of constraints to include.
 
-  void setLabel(std::string, const Value &, RLLabel, bool);
+  void setLabel(std::string, const Value &, RLLabel, bool, std::string = "");
   /// Adds the constraint "TAINTED <= VALUE" to the given kind
   void setUntainted(std::string, const Value &);
   /// Adds the constraint "VALUE <= UNTAINTED" to the given kind
@@ -424,7 +424,7 @@ private:
                               const Value &, const ConsElem &);
   const ConsElem &getOrCreateConsElemSummarySource(const Value &);
   void putOrConstrainConsElemSummarySource(std::string, const Value &,
-                                           const ConsElem &);
+                                           const ConsElem &, std::string = "");
   const ConsElem &getOrCreateConsElemSummarySink(const Value &);
   void putOrConstrainConsElemSummarySink(std::string, const Value &,
                                          const ConsElem &);
@@ -467,11 +467,13 @@ private:
                                  std::map<unsigned, const ConsElem *>, int);
   bool matchImplicitWhitelist(const Instruction &inst);
   void constrainAllConsElem(std::string kind,
-                            std::map<unsigned, const ConsElem *>, RLLabel);
+                            std::map<unsigned, const ConsElem *>, RLLabel,
+                            std::string = "");
   void constrainAllConsElem(std::string kind, std::set<const ConsElem *>,
-                            RLLabel);
+                            RLLabel, std::string = "");
   void constrainAllConsElem(std::string kind, const Value &,
-                            std::set<const ConsElem *>, RLLabel);
+                            std::set<const ConsElem *>, RLLabel,
+                            std::string = "");
   void constrainOffsetFromIndex(std::string, const AbstractLoc *, const Value *,
                                 std::map<unsigned, const ConsElem *>, int);
 

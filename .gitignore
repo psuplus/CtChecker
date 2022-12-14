@@ -120,8 +120,8 @@ results_with_source*.txt
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
 !/projects/llvm-deps/linux_security_tests/apparmor/*.bc
 
-projects/llvm-deps/linux_security_tests/**/configs.bak
-projects/llvm-deps/linux_security_tests/**/results
+projects/llvm-deps/**/**/configs.bak
+projects/llvm-deps/**/**/results
 projects/llvm-deps/udp_tests/results
 projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg

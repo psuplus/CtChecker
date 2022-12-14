@@ -33,14 +33,8 @@ class CE:
         """Full string form of a constraint element"""
         if CONST_STR in self.addr:
             return self.addr + "\n"
-        return (
-            self.addr
-            + ' [shape=record,shape=Mrecord,label="{'
-            + self.addr
-            + "|"
-            + self.label
-            + '}"]\n'
-        )
+        return (self.addr + ' [shape=record,shape=Mrecord,label="{' +
+                self.addr + "|" + self.label + '}"]\n')
 
 
 def main():
@@ -71,10 +65,16 @@ def main():
                 ce_set = set()
                 con_set = set()
                 for line in file:
-                    line = re.split(r" +<: +| +;.*", line)
+                    line = re.split(r" +<: +| +;+", line)
                     if line[0].startswith(CONST_STR):
+                        print(line[2].strip())
+                        try:
+                            found = re.search(r"(\[SrcIdx:\d+\])",
+                                              line[2]).group(1)
+                        except AttributeError:
+                            found = ''
                         ce_str = re.split(r"\[|\]", line[1])
-                        ce1 = CE('"' + line[0] + '"')
+                        ce1 = CE('"' + line[0] + found + '"')
                         ce2 = CE(ce_str[0], ce_str[1])
                     elif line[1].startswith(CONST_STR):
                         ce_str = re.split(r"\[|\]", line[0])
@@ -86,11 +86,10 @@ def main():
                         ce_str = re.split(r"\[|\]", line[1])
                         ce2 = CE(ce_str[0], ce_str[1])
 
-                    if (
-                        hotspot
-                        and not any(sub in ce1.label for sub in HOTSPOT_MATCH)
-                        and not any(sub in ce2.label for sub in HOTSPOT_MATCH)
-                    ) or not hotspot:
+                    if (hotspot and not any(sub in ce1.label
+                                            for sub in HOTSPOT_MATCH) and
+                            not any(sub in ce2.label
+                                    for sub in HOTSPOT_MATCH)) or not hotspot:
                         ce_set.add(ce1)
                         ce_set.add(ce2)
                         con_set.add(ce1.addr + " -> " + ce2.addr + "\n")

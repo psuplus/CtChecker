@@ -2,6 +2,7 @@
     Requires the networkx package and graphviz support for python.
 """
 
+import re
 import sys
 import networkx
 from lattice import RLLabel, RLLattice
@@ -34,9 +35,12 @@ def main():
             sink_set.append(node)
     for start in source_set:
         for end in sink_set:
-            if networkx.has_path(graph, source=start, target=end) and start != end:
-                left = RLLabel(start)
-                right = RLLabel(end)
+            if networkx.has_path(graph, source=start,
+                                 target=end) and start != end:
+                left = re.sub(r"(\[SrcIdx:\d+\])", "", start)
+                right = re.sub(r"(\[SrcIdx:\d+\])", "", end)
+                left = RLLabel(left)
+                right = RLLabel(right)
                 if not lattice.check_sub(left, right):
                     print_path(graph, start, end)
 

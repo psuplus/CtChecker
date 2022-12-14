@@ -5,6 +5,7 @@ import copy
 
 
 class Expr:
+
     def __init__(self, name, desc="", file="", line=""):
         self.name = name
         self.desc = desc
@@ -19,6 +20,7 @@ class Expr:
 
 
 class Label(Expr):
+
     def __init__(self, name, desc="", file="", line=""):
         self.name = name
         self.desc = desc
@@ -32,6 +34,7 @@ class Label(Expr):
 
 
 class RLLabel(Label):
+
     def __init__(self, lString="", level={}, compartment={}):
         self.name = "CONST"
         self.level = {}
@@ -43,14 +46,12 @@ class RLLabel(Label):
             self.compartment = compartment
 
     def __eq__(self, other):
-        return (
-            isinstance(other, RLLabel)
-            and self.level == other.level
-            and self.compartment == other.compartment
-        )
+        return (isinstance(other, RLLabel) and self.level == other.level
+                and self.compartment == other.compartment)
 
     def __str__(self):
-        return "[" + self.level.__str__() + "][" + self.compartment.__str__() + "]"
+        return "[" + self.level.__str__() + "][" + self.compartment.__str__(
+        ) + "]"
 
     def __hash__(self):
         return hash(self.__str__())
@@ -67,10 +68,9 @@ class RLLabel(Label):
                 elif self.level[key] < other.level[key]:
                     lt = True
             for key in self.compartment:
-                if (
-                    len(self.compartment[key] - other.compartment[key]) > 0
-                    and len(other.compartment[key] - self.compartment[key]) > 0
-                ):
+                if (len(self.compartment[key] - other.compartment[key]) > 0
+                        and len(other.compartment[key] - self.compartment[key])
+                        > 0):
                     gt = True
                     lt = True
                 elif self.compartment[key] > other.compartment[key]:
@@ -84,9 +84,8 @@ class RLLabel(Label):
             elif (not gt) and lt:
                 return -1
             else:
-                raise Exception(
-                    "This shouldn't happen, it should be dealt with in the previous branch"
-                )
+                raise Exception("This shouldn't happen, \
+                        it should be dealt with in the previous branch")
 
     def join(self, other):
         if self == other:
@@ -100,7 +99,8 @@ class RLLabel(Label):
                 else:
                     level[key] = other.level[key]
             for key in self.compartment:
-                compartment[key] = self.compartment[key].union(other.compartment[key])
+                compartment[key] = self.compartment[key].union(
+                    other.compartment[key])
             return RLLabel(level=level, compartment=compartment)
 
     def parseConstString(self, str):
@@ -109,14 +109,15 @@ class RLLabel(Label):
             level = re_match.group(1)
             compartment = re_match.group(2)
             level = re.split(",", level)
-            for l in level:
-                l_match = re.compile(r"([a-zA-Z0-9]*):([0-9]*)\(.*\)").match(l)
+            for lvl in level:
+                l_match = re.compile(r"([a-zA-Z0-9]*):([0-9]*)\(.*\)").match(
+                    lvl)
                 self.level[l_match.group(1)] = int(l_match.group(2))
-            compartment = re.compile(r"([a-zA-Z0-9]*:\{[a-zA-Z0-9,]*\})").findall(
-                compartment
-            )
+            compartment = re.compile(
+                r"([a-zA-Z0-9]*:\{[a-zA-Z0-9,]*\})").findall(compartment)
             for c in compartment:
-                c_match = re.compile(r"([a-zA-Z0-9]*):\{([a-zA-Z0-9,]*)\}").match(c)
+                c_match = re.compile(
+                    r"([a-zA-Z0-9]*):\{([a-zA-Z0-9,]*)\}").match(c)
                 self.compartment[c_match.group(1)] = set()
                 if c_match.group(2) == "":
                     c_set = []
@@ -135,6 +136,7 @@ def powerset(iterable):
 
 
 class Lattice:
+
     def __init__(self):
         self.sub = []
         self.top = Label("Top")
@@ -219,10 +221,10 @@ class RLLattice(Lattice):
                             c.add(line[i].rstrip())
                         self.compartments[line[1]] = c
                     elif line[0] == "L":
-                        l = []
+                        lvl = []
                         for i in range(2, len(line)):
-                            l.append(line[i].rstrip())
-                        self.levels[line[1]] = l
+                            lvl.append(line[i].rstrip())
+                        self.levels[line[1]] = lvl
         labels = set()
         labels.add(RLLabel())
         temp = set()

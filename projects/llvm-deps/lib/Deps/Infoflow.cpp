@@ -984,15 +984,17 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
 bool Infoflow::DropAtSinks() const { return DepsDropAtSink; }
 
 void Infoflow::setLabel(std::string kind, const Value &value, RLLabel label,
-                        bool gte) {
+                        bool gte, std::string meta) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
 
   if (gte)
-    putOrConstrainConsElemSummarySource(kind, value, kit->constant(label));
+    putOrConstrainConsElemSummarySource(kind, value, kit->constant(label),
+                                        meta);
   else {
     const ConsElem &current = getOrCreateConsElemSummarySink(value);
-    kit->addConstraint(kind, current, kit->constant(label));
+    kit->addConstraint(kind, current, kit->constant(label),
+                       " ;  [ConsDebugTag-1] " + meta);
   }
 }
 
@@ -1203,7 +1205,7 @@ const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
   if (auto I = dyn_cast<Instruction>(&value)) {
     if (I->hasName()) {
       if (withParent) {
-        valueString = I->getParent()->getParent()->getName().str() + ": " +
+        valueString = I->getParent()->getParent()->getName().str() + ":" +
                       I->getName().str();
       } else {
         valueString = I->getName();
@@ -1216,7 +1218,7 @@ const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
     if (A->hasName()) {
       if (withParent) {
         valueString =
-            A->getParent()->getName().str() + ": " + A->getName().str();
+            A->getParent()->getName().str() + ":" + A->getName().str();
       } else {
         valueString = A->getName();
       }
@@ -1227,13 +1229,13 @@ const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
   } else if (auto BB = dyn_cast<BasicBlock>(&value)) {
     if (withParent) {
       valueString =
-          BB->getParent()->getName().str() + ": " + BB->getName().str();
+          BB->getParent()->getName().str() + ":" + BB->getName().str();
     } else {
       valueString = BB->getName();
     }
   } else {
     if (isa<GlobalValue>(value)) {
-      valueString = "GLOBAL: ";
+      valueString = "GLOBAL:";
     }
     if (value.hasName()) {
       valueString += value.getName();
@@ -1272,10 +1274,11 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
 
 void Infoflow::putOrConstrainConsElemSummarySource(std::string kind,
                                                    const Value &value,
-                                                   const ConsElem &lub) {
+                                                   const ConsElem &lub,
+                                                   std::string meta) {
   // errs() << "Adding a constraint...\n";
   const ConsElem &current = getOrCreateConsElemSummarySource(value);
-  kit->addConstraint(kind, lub, current);
+  kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-3] " + meta);
 }
 
 const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
@@ -2958,33 +2961,35 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
 
 void Infoflow::constrainAllConsElem(
     std::string kind, std::map<unsigned, const ConsElem *> elemMap,
-    RLLabel label) {
+    RLLabel label, std::string meta) {
   for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                       end = elemMap.end();
        it != end; ++it) {
     // it->second->dump(errs());
     if ((it->second) != NULL)
-      kit->addConstraint(kind, kit->constant(label), *(it->second));
+      kit->addConstraint(kind, kit->constant(label), *(it->second),
+                         " ;  [ConsDebugTag-22]" + meta);
   }
 }
 
 void Infoflow::constrainAllConsElem(std::string kind,
                                     std::set<const ConsElem *> elems,
-                                    RLLabel label) {
+                                    RLLabel label, std::string meta) {
   for (std::set<const ConsElem *>::iterator it = elems.begin(),
                                             end = elems.end();
        it != end; ++it) {
-    kit->addConstraint(kind, kit->constant(label), *(*it));
+    kit->addConstraint(kind, kit->constant(label), *(*it),
+                       " ;  [ConsDebugTag-19] " + meta);
   }
 }
 
 void Infoflow::constrainAllConsElem(std::string kind, const Value &v,
                                     std::set<const ConsElem *> elems,
-                                    RLLabel label) {
+                                    RLLabel label, std::string meta) {
   if (elems.size() == 0) {
-    setLabel(kind, v, label, true);
+    setLabel(kind, v, label, true, meta);
   } else {
-    constrainAllConsElem(kind, elems, label);
+    constrainAllConsElem(kind, elems, label, meta);
   }
 }
 

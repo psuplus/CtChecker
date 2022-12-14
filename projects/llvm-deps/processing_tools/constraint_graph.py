@@ -67,7 +67,7 @@ def main():
                 for line in file:
                     line = re.split(r" +<: +| +;+", line)
                     if line[0].startswith(CONST_STR):
-                        print(line[2].strip())
+                        # print(line[2].strip())
                         try:
                             found = re.search(r"(\[SrcIdx:\d+\])",
                                               line[2]).group(1)

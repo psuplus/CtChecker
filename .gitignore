@@ -122,9 +122,9 @@ results_with_source*.txt
 
 projects/llvm-deps/**/**/configs.bak
 projects/llvm-deps/**/**/results
+projects/llvm-deps/**/**/old_version/
 projects/llvm-deps/udp_tests/results
 projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg
 projects/llvm-deps/processing_tools/data/
 projects/llvm-deps/udp_unit_test/
-projects/llvm-deps/linux_security_tests/*/old_version/

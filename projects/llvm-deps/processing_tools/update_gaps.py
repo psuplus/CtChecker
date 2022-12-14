@@ -5,6 +5,60 @@ import sys
 import re
 from lattice import RLLabel
 
+cols = ["subject", "object", "operation"]
+explicit_gaps = set()
+src_records = [set() for i in range(6)]
+
+
+def update_tags(left, right, state, counts, src_idx):
+    """Update tags"""
+    col = -1
+    if left.join(right).compartment["purpose"] != left.compartment["purpose"]:
+        for src in left.compartment["purpose"]:
+            for dst in right.compartment["purpose"]:
+                if src != dst:
+                    if src == cols[0]:
+                        if dst == cols[1]:
+                            col = 0
+                        elif dst == cols[2]:
+                            col = 1
+                    elif src == cols[1]:
+                        if dst == cols[0]:
+                            col = 2
+                        elif dst == cols[2]:
+                            col = 3
+                    elif src == cols[2]:
+                        if dst == cols[0]:
+                            col = 4
+                        elif dst == cols[1]:
+                            col = 5
+                # print(col)
+                if col >= 0:
+                    record = left.__str__() + str(src_idx) + right.__str__()
+                    if record not in src_records[col]:
+                        src_records[col].add(record)
+                        if state == 1:
+                            counts[col][0] += 1
+                        elif state == 2:
+                            counts[col][1] += 1
+    others = [0] * 4
+    if left.level["value"] > right.level["value"]:
+        others[0] = 1
+    if left.level["source"] > right.level["source"]:
+        if left.level["source"] == 1:
+            others[1] = 1
+        elif right.level["source"] == 1:
+            others[2] = 1
+        else:
+            others[3] = 1
+
+    for i, other in enumerate(others):
+        if other == 1:
+            if state == 1:
+                counts[i + 6][0] += 1
+            elif state == 2:
+                counts[i + 6][1] += 1
+
 
 def main():
     """main function"""
@@ -13,8 +67,8 @@ def main():
     state = 0
     delim = "  ->  "
     new_table = []
-    tags = [""] * 6
-    cols = ["subject", "object", "operation"]
+    tags = [""] * 10
+    counts = [[0] * 2 for i in range(10)]
     augment = False
     name = ''
 
@@ -32,94 +86,48 @@ def main():
                 elif line.startswith("implicit:"):
                     state = 2
                 if delim in line:
+                    if state == 1:
+                        explicit_gaps.add(line)
+                    elif state == 2:
+                        if line in explicit_gaps:
+                            # print(line)
+                            continue
                     line = line.strip().split(delim)
-                    left = RLLabel(line[0]).compartment["purpose"].pop()
-                    right = RLLabel(line[1]).compartment["purpose"].pop()
-                    # print(left)
-                    # print(right)
-                    col = -1
-                    if left != right:
-                        if left == cols[0]:
-                            col = 0
-                            if right == cols[1]:
-                                col += 0
-                            elif right == cols[2]:
-                                col += 1
-                        elif left == cols[1]:
-                            col = 2
-                            if right == cols[0]:
-                                col += 0
-                            elif right == cols[2]:
-                                col += 1
-                        elif left == cols[2]:
-                            col = 4
-                            if right == cols[0]:
-                                col += 0
-                            elif right == cols[1]:
-                                col += 1
-                        # print(col)
-                        if col >= 0:
-                            if state == 1:
-                                tags[col] += ":red_circle:"
-                            elif state == 2 and (len(tags[col]) == 0
-                                                 or tags[col].startswith(
-                                                     ":large_blue_diamond:")):
-                                tags[col] += ":large_blue_diamond:"
+                    # print(line)
+                    src_idx = int(
+                        re.search(r"\[SrcIdx:(\d+)\]", line[0]).group(1))
+                    line[0] = re.sub(r"(\[SrcIdx:\d+\])", "", line[0])
+                    left = RLLabel(line[0])
+                    right = RLLabel(line[1])
+                    update_tags(left, right, state, counts, src_idx)
 
-            for i, tag in enumerate(tags):
-                exp = len(re.findall(r":red_circle:", tag))
-                imp = len(re.findall(r":large_blue_diamond:", tag))
-                if exp > 0:
-                    tags[i] = ":red_circle:" + "*" + str(exp)
-                elif imp > 0:
-                    tags[i] = ":large_blue_diamond:" + \
-                        "*" + str(imp)
+            for i, cnt in enumerate(counts):
+                tags[i] = (str(cnt[0]) if cnt[0] > 0 else '-') + "/" + (str(
+                    cnt[1]) if cnt[1] > 0 else '-')
 
             for i, line in enumerate(table):
                 if name in line:
-                    clean = True
-                    print(tags)
+                    # print(tags)
                     if augment:
                         line = [tag.strip() for tag in line.split("|")]
                         for j, tag in enumerate(tags):
-                            if ':red_circle:' in line[j + 2]:
-                                count = int(
-                                    re.search(r'\d+', line[j + 2]).group())
-                                if ':red_circle:' in tag:
-                                    count += int(
-                                        re.search(r'\d+', tag).group())
-                                line[j + 2] = ':red_circle:' + "*" + str(count)
-                            elif ':large_blue_diamond:' in line[j + 2]:
-                                count = int(
-                                    re.search(r'\d+', line[j + 2]).group())
-                                if ':red_circle:' in tag:
-                                    line[j + 2] = tag
-                                elif ':large_blue_diamond:' in tag:
-                                    count += int(
-                                        re.search(r'\d+', tag).group())
-                                    line[j + 2] = ':large_blue_diamond:' + \
-                                        "*" + str(count)
-                            else:
-                                line[j + 2] = tag
+                            tag = re.sub(r"-", "0", tag).split("/")
+                            tag[0] = int(tag[0]) + counts[j][0]
+                            tag[1] = int(tag[1]) + counts[j][1]
+                            line[j + 2] = (str(tag[0]) if tag[0] > 0 else
+                                           '-') + "/" + (str(tag[1]) if
+                                                         tag[1] > 0 else '-')
                         line = "|".join(line[:-1])
-                        print(line)
+                        # print(line)
                     else:
                         line = "|" + name + "|"
-                        line += "|".join(tags) + "|"
-
-                    if ':' in line:
-                        clean = False
-
-                    if clean:
-                        line += ":white_check_mark:|\n"
-                    else:
-                        line += "|\n"
-                    new_table.append(line)
-                else:
-                    new_table.append(line)
+                        line += "|".join(tags)
+                    line += "|\n"
+                line = re.sub(r"-/-", "", line)
+                new_table.append(line)
             table.close()
         gaps.close()
-
+    # print(src_records)
     with open(sys.argv[1], "w", encoding=encoding) as table:
         table.writelines(new_table)
         table.close()

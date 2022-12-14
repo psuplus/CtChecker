@@ -26,6 +26,8 @@
 */result_log/*.log
 */result_log/*.eps
 
+.vscode
+
 #==============================================================================#
 # Explicit files to ignore (only matches one).
 #==============================================================================#
@@ -103,5 +105,3 @@ ocaml
 tmp*.dat
 results_with_source*.txt
 /projects/llvm-deps/mod_exp_tests/results/
-.vscode
-projects/llvm-deps/linux_security_tests/*/results

@@ -2252,13 +2252,17 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
         for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
           if (var.number == -1 || var.number == arg_idx) {
             Value *value = (*op_i).get();
-            std::tuple<ContextID, RLLabel, Value *, int> valueOffsetPair =
-                std::make_tuple(this->getCurrentContext(), var.label, value,
-                                var.index);
-            sinkValueSet.insert(valueOffsetPair);
-            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "inserted: ";
-                            value->dump();
-                            errs() << "at offset: " << var.index << "\n";);
+            auto sinkVar = var;
+            sinkVar.ctxt = this->getCurrentContext();
+            sinkVar.val = value;
+            if (auto meta = dyn_cast<Value>(cs.getInstruction())) {
+              sinkVar.callsite = getOrCreateStringFromValue(*meta);
+            }
+            indexedSinkVariables.push_back(sinkVar);
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                            errs() << "\tinserted ["
+                                   << getOrCreateStringFromValue(*value)
+                                   << "] at offset: " << var.index << "\n";);
           }
         }
         callResult = false;

@@ -105,8 +105,11 @@ public:
   int index;
   std::string file;
   unsigned int line;
-  long value;
+  long value; // field storing value of the constant
   RLLabel label;
+  ContextID ctxt;       // field added by the analysis for sink labeling
+  Value *val;           // field added by the analysis for sink labeling
+  std::string callsite; // field added by the analysis for sink labeling
 
   ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
                  int num, int idx, std::string file, int line, int value,
@@ -328,10 +331,10 @@ private:
 
   bool offsetForValue(const Value &value, unsigned *Offset);
 
-  std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> sourceVariables;
+  std::vector<ConfigVariable> sinkVariables;
+  std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
-  std::set<std::tuple<ContextID, RLLabel, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;

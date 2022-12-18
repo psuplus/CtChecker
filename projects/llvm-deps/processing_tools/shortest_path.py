@@ -33,12 +33,13 @@ def main():
         if "CONST[" in node:
             source_set.append(node)
             sink_set.append(node)
+
     for start in source_set:
         for end in sink_set:
             if networkx.has_path(graph, source=start,
                                  target=end) and start != end:
-                left = re.sub(r"(\[SrcIdx:\d+\])", "", start)
-                right = re.sub(r"(\[SrcIdx:\d+\])", "", end)
+                left = re.sub(r"(\[(Src|Snk)Idx:\d+\])", "", start)
+                right = re.sub(r"(\[(Src|Snk)Idx:\d+\])", "", end)
                 left = RLLabel(left)
                 right = RLLabel(right)
                 if not lattice.check_sub(left, right):

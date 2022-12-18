@@ -58,8 +58,8 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
   std::string s = value.getName();
   std::string meta = "[" + match_name + ":" + std::to_string(t_offset) +
-                     "] [SrcIdx:" + std::to_string(NumSourceConstrained++) +
-                     "]";
+                     "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
+
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                   errs() << "Trying to constrain " << meta << " for value : ";
                   value.dump(););
@@ -144,18 +144,20 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
 void TaintAnalysisBase::labelSink(std::string kind) {
   // process the sink functions' arguments
-  DEBUG(errs() << "\n ========= Labeling Sink Functions ========= \n";);
-  for (auto ctxValuePair : ifa->sinkValueSet) {
-    NumSinkConstrained++;
-    ContextID ctxt;
-    RLLabel label;
-    Value *v;
-    int t_offset;
-    std::tie(ctxt, label, v, t_offset) = ctxValuePair;
-    Value &value = *v;
+  DEBUG_WITH_TYPE(DEBUG_TYPE,
+                  errs() << "\n========= Labeling Sink Functions ========= \n");
+  for (auto var : ifa->indexedSinkVariables) {
+    Value &value = *var.val;
+    int t_offset = var.index;
 
-    DEBUG(errs() << "\tLabeling \n\t"; v->dump();
-          errs() << "\tat offset: " << t_offset << "\n";);
+    DEBUG_WITH_TYPE(DEBUG_TYPE, errs() << "Labeling: "
+                                       << ifa->getOrCreateStringFromValue(value)
+                                       << " at offset: " << t_offset << "\n";);
+
+    std::string meta = "[" + var.name + ":" + std::to_string(t_offset) + "] [" +
+                       var.callsite + ":" + std::to_string(var.number) +
+                       "] [SnkIdx:" + std::to_string(NumSinkConstrained++) +
+                       "]";
 
     const AbstractLocSet &locs = ifa->locsForValue(value);
     const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
@@ -163,7 +165,7 @@ void TaintAnalysisBase::labelSink(std::string kind) {
     // TODO: confirm the correctness of the [t_offset < 0] condition
     // It was removed for a while because we believed it was unnecessary
     if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
-      ifa->setLabel(kind, value, label, false);
+      ifa->setLabel(kind, value, var.label, false, meta);
     }
 
     // Heap nodes not returned from locsForValue(v)
@@ -174,22 +176,22 @@ void TaintAnalysisBase::labelSink(std::string kind) {
       }
     }
 
-#if 0
-    errs() << "\n --------- locs --------- \n";
-    for (auto &l : locs) {
-      l->dump();
-      errs() << " --------- \n";
-    }
-    errs() << " --------- rlocs --------- \n";
-    for (auto &rl : rlocs) {
-      rl->dump();
-      errs() << " --------- \n";
-    }
-    errs() << " locs size : " << locs.size() << "\n";
-    errs() << " rlocs size : " << rlocs.size() << "\n";
-    errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
-    errs() << " --------- end --------- \n\n";
-#endif
+    DEBUG_WITH_TYPE(
+        DEBUG_TYPE_TAINT, errs() << "\n--------- locs ---------\n";
+        for (auto &l
+             : locs) {
+          l->dump();
+          errs() << "---------\n";
+        };
+        errs() << "--------- rlocs ---------\n"; for (auto &rl
+                                                      : rlocs) {
+          rl->dump();
+          errs() << "---------\n";
+        };
+        errs() << "locs size : " << locs.size() << "\n";
+        errs() << "rlocs size : " << rlocs.size() << "\n";
+        errs() << "relevantLocs size : " << relevantLocs.size() << "\n";
+        errs() << "--------- end ---------\n\n";);
 
     unsigned offset = 0, span = 0;
     bool hasOffset = ifa->offsetForValue(value, &offset);
@@ -207,7 +209,7 @@ void TaintAnalysisBase::labelSink(std::string kind) {
     for (auto loc = relevantLocs.begin(); loc != relevantLocs.end(); ++loc) {
       DEBUG(errs() << "\nUntaint node at:\n"; (*loc)->dump(););
       DSNode::TyMapTy allFields{(*loc)->type_begin(), (*loc)->type_end()};
-      DEBUG(v->getType()->dump(););
+      DEBUG(value.getType()->dump(););
 
       if (t_offset >= 0) {
         fieldIndexToByteOffset(t_offset, &value, *loc);
@@ -255,10 +257,10 @@ void TaintAnalysisBase::labelSink(std::string kind) {
           });
 
     if (elementsToUntaint.size() == 0) {
-      ifa->setLabel(kind, value, label, false);
+      ifa->setLabel(kind, value, var.label, false, meta);
     } else {
-      std::string debugTag = " ;  [ConsDebugTag-*]  sink location";
-      const ConsElem *constant = &(ifa->kit->constant(label));
+      std::string debugTag = " ;  [ConsDebugTag-*]  sink " + meta;
+      const ConsElem *constant = &(ifa->kit->constant(var.label));
       for (auto e : elementsToUntaint) {
         ifa->kit->addConstraint(kind, *e, *constant, debugTag);
       }
@@ -338,6 +340,7 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 void TaintAnalysisBase::labelValue(std::string kind,
                                    std::vector<ConfigVariable> vars, bool gte) {
   for (auto var : vars) {
+    NumSourceConstrained++;
     DEBUG(errs() << "Labeling value\n";);
     for (DenseMap<const Value *, const ConsElem *>::const_iterator
              entry = ifa->summarySourceValueConstraintMap.begin(),
@@ -367,7 +370,10 @@ void TaintAnalysisBase::labelValue(std::string kind,
           std::string name = ifa->getOrCreateStringFromValue(value, false);
           if (name.find(var.name) == 0 && var.name.find(name) == 0) {
             DEBUG(errs() << "Match Detected for " << name << "\n";);
-            ifa->setLabel(kind, value, var.label, gte);
+            std::string meta =
+                "[" + name + ":" + std::to_string(var.index) +
+                "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
+            ifa->setLabel(kind, value, var.label, gte, meta);
           }
         }
       }

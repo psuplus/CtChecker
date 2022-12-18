@@ -10,7 +10,7 @@ explicit_gaps = set()
 src_records = [set() for i in range(6)]
 
 
-def update_tags(left, right, state, counts, src_idx):
+def update_tags(left, right, state, counts, src_idx, sink_idx):
     """Update tags"""
     col = -1
     if left.join(right).compartment["purpose"] != left.compartment["purpose"]:
@@ -34,7 +34,8 @@ def update_tags(left, right, state, counts, src_idx):
                             col = 5
                 # print(col)
                 if col >= 0:
-                    record = left.__str__() + str(src_idx) + right.__str__()
+                    record = left.__str__() + right.__str__() + '[' + str(
+                        src_idx) + ',' + str(sink_idx) + ']'
                     if record not in src_records[col]:
                         src_records[col].add(record)
                         if state == 1:
@@ -96,10 +97,13 @@ def main():
                     # print(line)
                     src_idx = int(
                         re.search(r"\[SrcIdx:(\d+)\]", line[0]).group(1))
+                    sink_idx = int(
+                        re.search(r"\[SnkIdx:(\d+)\]", line[1]).group(1))
                     line[0] = re.sub(r"(\[SrcIdx:\d+\])", "", line[0])
+                    line[1] = re.sub(r"(\[SnkIdx:\d+\])", "", line[1])
                     left = RLLabel(line[0])
                     right = RLLabel(line[1])
-                    update_tags(left, right, state, counts, src_idx)
+                    update_tags(left, right, state, counts, src_idx, sink_idx)
 
             for i, cnt in enumerate(counts):
                 tags[i] = (str(cnt[0]) if cnt[0] > 0 else '-') + "/" + (str(

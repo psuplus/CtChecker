@@ -77,9 +77,14 @@ def main():
                         ce1 = CE('"' + line[0] + found + '"')
                         ce2 = CE(ce_str[0], ce_str[1])
                     elif line[1].startswith(CONST_STR):
+                        try:
+                            found = re.search(r"(\[SnkIdx:\d+\])",
+                                              line[2]).group(1)
+                        except AttributeError:
+                            found = ''
                         ce_str = re.split(r"\[|\]", line[0])
                         ce1 = CE(ce_str[0], ce_str[1])
-                        ce2 = CE('"' + line[1] + '"')
+                        ce2 = CE('"' + line[1] + found + '"')
                     else:
                         ce_str = re.split(r"\[|\]", line[0])
                         ce1 = CE(ce_str[0], ce_str[1])

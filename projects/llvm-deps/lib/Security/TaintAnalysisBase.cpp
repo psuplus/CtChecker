@@ -564,7 +564,7 @@ void TaintAnalysisBase::labelValue(std::string kind,
             std::string meta =
                 "[" + name + ":" + std::to_string(var.index) +
                 "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
-            ifa->setLabel(kind, value, var.label, gte);
+            ifa->setLabel(kind, value, var.label, gte, meta);
           }
         }
       }

@@ -24,6 +24,102 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "PROCESS__SIGCHLD",
+      "file": "security/selinux/hooks.c",
+      "line": 1479,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SIGKILL",
+      "file": "security/selinux/hooks.c",
+      "line": 1483,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SIGSTOP",
+      "file": "security/selinux/hooks.c",
+      "line": 1487,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SIGNAL",
+      "file": "security/selinux/hooks.c",
+      "line": 1491,
+      "value": 64,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SIGIO",
+      "file": "security/selinux/hooks.c",
+      "line": 3404,
+      "value": 29,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SIGCHLD",
+      "file": "security/selinux/hooks.c",
+      "line": 1477,
+      "value": 17,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SIGSTOP",
+      "file": "security/selinux/hooks.c",
+      "line": 1485,
+      "value": 19,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SIGKILL",
+      "file": "security/selinux/hooks.c",
+      "line": 1481,
+      "value": 9,
+      "l": {
+        "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_file_send_sigiotask",
       "type": "variable",
       "name": "tsk",

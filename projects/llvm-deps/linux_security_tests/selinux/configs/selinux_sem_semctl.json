@@ -25,6 +25,102 @@
   "source": [
     {
       "type": "constant",
+      "name": "SYSTEM__IPC_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5438,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__GETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 5476,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 5476,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 5478,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__DESTROY",
+      "file": "security/selinux/hooks.c",
+      "line": 5478,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__SETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 5478,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__GETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 5478,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__ASSOCIATE",
+      "file": "security/selinux/hooks.c",
+      "line": 5478,
+      "value": 64,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "GETALL",
       "file": "security/selinux/hooks.c",
       "line": 5445,

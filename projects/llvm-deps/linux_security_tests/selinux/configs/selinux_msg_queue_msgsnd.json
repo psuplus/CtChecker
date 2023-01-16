@@ -25,6 +25,54 @@
   "source": [
     {
       "type": "constant",
+      "name": "MSGQ__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 5253,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MSG__SEND",
+      "file": "security/selinux/hooks.c",
+      "line": 5257,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MSGQ__ENQUEUE",
+      "file": "security/selinux/hooks.c",
+      "line": 5261,
+      "value": 512,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECINITSID_UNLABELED",
+      "file": "security/selinux/hooks.c",
+      "line": 5237,
+      "value": 3,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,

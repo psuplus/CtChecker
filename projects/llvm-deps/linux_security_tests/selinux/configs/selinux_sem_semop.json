@@ -24,6 +24,42 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SEM__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 5476,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 5476,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SEM__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 5478,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_sem_semop",
       "type": "variable",
       "name": "sma",

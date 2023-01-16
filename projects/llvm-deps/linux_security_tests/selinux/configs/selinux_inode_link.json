@@ -24,6 +24,126 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MAY_LINK",
+      "file": "security/selinux/hooks.c",
+      "line": 2769,
+      "value": 0,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DIR__SEARCH",
+      "file": "security/selinux/hooks.c",
+      "line": 1775,
+      "value": 8388608,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DIR__REMOVE_NAME",
+      "file": "security/selinux/hooks.c",
+      "line": 1776,
+      "value": 2097152,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DIR__ADD_NAME",
+      "file": "security/selinux/hooks.c",
+      "line": 1776,
+      "value": 1048576,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_LINK",
+      "file": "security/selinux/hooks.c",
+      "line": 1782,
+      "value": 0,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_UNLINK",
+      "file": "security/selinux/hooks.c",
+      "line": 1785,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "MAY_RMDIR",
+      "file": "security/selinux/hooks.c",
+      "line": 1788,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__LINK",
+      "file": "security/selinux/hooks.c",
+      "line": 1783,
+      "value": 2048,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__UNLINK",
+      "file": "security/selinux/hooks.c",
+      "line": 1786,
+      "value": 1024,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DIR__RMDIR",
+      "file": "security/selinux/hooks.c",
+      "line": 1789,
+      "value": 16777216,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_inode_link",
       "type": "variable",
       "name": "dir",

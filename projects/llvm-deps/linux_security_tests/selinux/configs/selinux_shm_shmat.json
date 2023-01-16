@@ -25,6 +25,42 @@
   "source": [
     {
       "type": "constant",
+      "name": "SHM__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 5375,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 5377,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 5377,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "SHM_RDONLY",
       "file": "security/selinux/hooks.c",
       "line": 5374,

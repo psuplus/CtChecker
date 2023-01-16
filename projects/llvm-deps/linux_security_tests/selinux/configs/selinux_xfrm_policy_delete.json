@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "ASSOCIATION__SETCONTEXT",
+      "file": "security/selinux/xfrm.c",
+      "line": 148,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_xfrm_policy_delete",
       "type": "variable",
       "name": "ctx",
@@ -50,7 +62,7 @@
       "name": "tsec",
       "index": -1,
       "l": {
-        "source": "mediator",
+        "source": "external",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }

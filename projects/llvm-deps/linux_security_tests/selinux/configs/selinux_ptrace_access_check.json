@@ -25,6 +25,30 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 1948,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__PTRACE",
+      "file": "security/selinux/hooks.c",
+      "line": 1951,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "PTRACE_MODE_READ",
       "file": "security/selinux/hooks.c",
       "line": 1945,

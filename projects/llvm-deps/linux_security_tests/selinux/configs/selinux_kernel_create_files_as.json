@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "KERNEL_SERVICE__CREATE_FILES_AS",
+      "file": "security/selinux/hooks.c",
+      "line": 3550,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_kernel_create_files_as",
       "type": "variable",
       "name": "inode",

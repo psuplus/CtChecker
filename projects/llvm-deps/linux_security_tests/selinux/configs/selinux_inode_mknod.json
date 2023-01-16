@@ -25,6 +25,54 @@
   "source": [
     {
       "type": "constant",
+      "name": "DIR__ADD_NAME",
+      "file": "security/selinux/hooks.c",
+      "line": 1723,
+      "value": 1048576,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DIR__SEARCH",
+      "file": "security/selinux/hooks.c",
+      "line": 1723,
+      "value": 8388608,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__CREATE",
+      "file": "security/selinux/hooks.c",
+      "line": 1735,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILESYSTEM__ASSOCIATE",
+      "file": "security/selinux/hooks.c",
+      "line": 1741,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,

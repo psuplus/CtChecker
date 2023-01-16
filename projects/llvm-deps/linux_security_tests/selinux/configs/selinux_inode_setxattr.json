@@ -25,6 +25,42 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__RELABELFROM",
+      "file": "security/selinux/hooks.c",
+      "line": 2958,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__RELABELTO",
+      "file": "security/selinux/hooks.c",
+      "line": 2994,
+      "value": 256,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILESYSTEM__ASSOCIATE",
+      "file": "security/selinux/hooks.c",
+      "line": 3006,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "AUDIT_SELINUX_ERR",
       "file": "security/selinux/hooks.c",
       "line": 2981,

@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "MSGQ__ASSOCIATE",
+      "file": "security/selinux/hooks.c",
+      "line": 5192,
+      "value": 64,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_msg_queue_associate",
       "type": "variable",
       "name": "msq",

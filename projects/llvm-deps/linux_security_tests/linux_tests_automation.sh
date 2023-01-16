@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 # linking example
 
-ANNOTATION=true
+ANNOTATION=false
 CONSTANT=true
-FINAL=true
+FINAL=false
 
 if [ $FINAL = true ] ; then
     TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Final.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Final.md
 elif [ $ANNOTATION = true ] ; then
     TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Relaxed.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Relaxed.md
 elif [ $CONSTANT = true ] ; then
     TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Strict.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Strict.md
 else
     TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Field.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Other-Field.md
 fi
 
 OUT_DIR=results
+CUR_DIR=$(pwd)
 
 automation()
 {
@@ -71,7 +68,6 @@ automation()
 
         echo 'Updating the detected gaps table...'
         python3 ../../processing_tools/update_gaps.py $TABLE_FILE $OUT_DIR/$FUNCTION/gaps.log
-        python3 ../../processing_tools/update_gaps_other.py $TABLE_FILE_OTHER $OUT_DIR/$FUNCTION/gaps.log
 
     done
     rm -f config.json
@@ -85,7 +81,7 @@ main()
     make
     cd ../poolalloc/
     make
-    cd ../llvm-deps/linux_security_tests/
+    cd $CUR_DIR
     
     echo "Executing automation."
     automation tomoyo test.bc

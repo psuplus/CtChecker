@@ -131,6 +131,17 @@
       "c": { "purpose": ["object"] }
     },
     {
+      "function": "selinux_quotactl",
+      "type": "variable",
+      "name": "cmds",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "superblock_has_perm",
       "type": "variable",
       "name": "perms",

@@ -5,7 +5,7 @@ BASE_DIR=/home/quan/Documents
 LINUX_DIR=$BASE_DIR/linux
 CUR_DIR=$BASE_DIR/LLVM-Deps
 BIN_DIR=$CUR_DIR/Debug+Asserts/bin
-ANALYSIS_DIR=$CUR_DIR/projects/llvm-deps/linux_security_tests/apparmor
+ANALYSIS_DIR=$CUR_DIR/projects/llvm-deps/linux_security_tests_strict/apparmor
 
 sudo update-alternatives --set gcc /usr/bin/gcc-5
 sudo update-alternatives --set g++ /usr/bin/g++-5
@@ -22,7 +22,7 @@ make V=0 \
 cd security/apparmor
 pwd
 $BIN_DIR/llvm-link \
-    lsm.bc file.bc ipc.bc\
+    lsm.bc file.bc ipc.bc resource.bc\
     -o test.bc
 
 mv test.bc $ANALYSIS_DIR/

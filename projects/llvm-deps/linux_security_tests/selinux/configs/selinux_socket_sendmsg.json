@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SOCKET__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 4215,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_socket_sendmsg",
       "type": "variable",
       "name": "sock",

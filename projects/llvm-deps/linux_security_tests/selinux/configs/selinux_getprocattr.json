@@ -25,6 +25,18 @@
   "source": [
     {
       "type": "constant",
+      "name": "PROCESS__GETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 65536,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,
@@ -153,6 +165,17 @@
         "value": "dynamic"
       },
       "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "selinux_getprocattr",
+      "type": "variable",
+      "name": "name",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
     },
     {
       "function": "current_has_perm",

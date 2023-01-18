@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SOCKET__SENDTO",
+      "file": "security/selinux/hooks.c",
+      "line": 4302,
+      "value": 262144,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_socket_unix_may_send",
       "type": "variable",
       "name": "other",

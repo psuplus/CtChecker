@@ -25,6 +25,114 @@
   "source": [
     {
       "type": "constant",
+      "name": "SOCKET__BIND",
+      "file": "security/selinux/hooks.c",
+      "line": 4038,
+      "value": 1024,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SOCKET__NAME_BIND",
+      "file": "security/selinux/hooks.c",
+      "line": 4084,
+      "value": 2097152,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_TCP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 4091,
+      "value": 15,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_UDP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 4095,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_DCCP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 4099,
+      "value": 44,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "TCP_SOCKET__NODE_BIND",
+      "file": "security/selinux/hooks.c",
+      "line": 4092,
+      "value": 33554432,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "UDP_SOCKET__NODE_BIND",
+      "file": "security/selinux/hooks.c",
+      "line": 4096,
+      "value": 4194304,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DCCP_SOCKET__NODE_BIND",
+      "file": "security/selinux/hooks.c",
+      "line": 4100,
+      "value": 4194304,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "RAWIP_SOCKET__NODE_BIND",
+      "file": "security/selinux/hooks.c",
+      "line": 4104,
+      "value": 4194304,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,

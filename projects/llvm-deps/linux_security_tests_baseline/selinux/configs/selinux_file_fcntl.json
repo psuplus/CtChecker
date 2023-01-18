@@ -25,6 +25,53 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 3351,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 3362,
+      "value": 0,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__LOCK",
+      "file": "security/selinux/hooks.c",
+      "line": 3375,
+      "value": 64,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FD__USE",
+      "file": "security/selinux/hooks.c",
+      "line": 1686,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "security/selinux/hooks.c",
       "line": 3370,
@@ -234,6 +281,17 @@
       "l": {
         "source": "input",
         "value": "dynamic"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "function": "file_has_perm",
+      "type": "variable",
+      "name": "av",
+      "index": -1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
       },
       "c": { "purpose": ["operation"] }
     },

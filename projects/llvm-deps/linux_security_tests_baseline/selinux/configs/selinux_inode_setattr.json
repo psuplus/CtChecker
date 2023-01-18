@@ -25,6 +25,42 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 2882,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__SETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 2882,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__OPEN",
+      "file": "security/selinux/hooks.c",
+      "line": 2882,
+      "value": 262144,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "ATTR_ATIME_SET",
       "file": "security/selinux/hooks.c",
       "line": 2893,

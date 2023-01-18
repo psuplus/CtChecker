@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "SOCKET__READ",
+      "file": "security/selinux/hooks.c",
+      "line": 4221,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_socket_recvmsg",
       "type": "variable",
       "name": "sock",

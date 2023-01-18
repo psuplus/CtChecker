@@ -25,6 +25,54 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__EXECMOD",
+      "file": "security/selinux/hooks.c",
+      "line": 3339,
+      "value": 524288,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__EXECSTACK",
+      "file": "security/selinux/hooks.c",
+      "line": 3339,
+      "value": 67108864,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__EXECHEAP",
+      "file": "security/selinux/hooks.c",
+      "line": 3339,
+      "value": 134217728,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FD__USE",
+      "file": "security/selinux/hooks.c",
+      "line": 1686,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "PROT_EXEC",
       "file": "security/selinux/hooks.c",
       "line": 3242,

@@ -25,6 +25,18 @@
   "source": [
     {
       "type": "constant",
+      "name": "MEMPROTECT__MMAP_ZERO",
+      "file": "security/selinux/hooks.c",
+      "line": 3283,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "CONFIG_LSM_MMAP_MIN_ADDR",
       "file": "security/selinux/hooks.c",
       "line": 3280,
@@ -65,7 +77,7 @@
         "source": "mediator",
         "value": "dynamic"
       },
-      "c": { "purpose": ["subject", "object"] }
+      "c": { "purpose": ["subject"] }
     }
   ],
   "sink": [
@@ -78,7 +90,7 @@
         "source": "mediator",
         "value": "dynamic"
       },
-      "c": { "purpose": ["subject", "object"] }
+      "c": { "purpose": ["subject"] }
     },
     {
       "function": "avc_has_perm",
@@ -89,7 +101,7 @@
         "source": "mediator",
         "value": "dynamic"
       },
-      "c": { "purpose": ["subject", "object"] }
+      "c": { "purpose": ["object"] }
     },
     {
       "function": "avc_has_perm",

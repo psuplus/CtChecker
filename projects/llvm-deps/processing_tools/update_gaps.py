@@ -113,11 +113,20 @@ def main():
                 if name in line:
                     # print(tags)
                     if augment:
-                        line = [tag.strip() for tag in line.split("|")]
+                        line = [
+                            tag.strip()
+                            for tag in re.sub(r"-", "0", line).split("|")
+                        ]
+                        for j, cell in enumerate(line[2:]):
+                            if cell == "":
+                                line[j + 2] = "0/0"
+                        print(line)
                         for j, tag in enumerate(tags):
                             tag = re.sub(r"-", "0", tag).split("/")
-                            tag[0] = int(tag[0]) + counts[j][0]
-                            tag[1] = int(tag[1]) + counts[j][1]
+                            original = re.sub(r"-", "0",
+                                              line[j + 2]).split("/")
+                            tag[0] = int(original[0]) + counts[j][0]
+                            tag[1] = int(original[1]) + counts[j][1]
                             line[j + 2] = (str(tag[0]) if tag[0] > 0 else
                                            '-') + "/" + (str(tag[1]) if
                                                          tag[1] > 0 else '-')

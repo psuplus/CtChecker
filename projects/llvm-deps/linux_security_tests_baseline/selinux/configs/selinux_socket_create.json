@@ -25,6 +25,294 @@
   "source": [
     {
       "type": "constant",
+      "name": "SOCKET__CREATE",
+      "file": "security/selinux/hooks.c",
+      "line": 3995,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_UNIX_STREAM_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1177,
+      "value": 23,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_UNIX_DGRAM_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1179,
+      "value": 24,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_TCP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1187,
+      "value": 15,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_RAWIP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1189,
+      "value": 17,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_UDP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1192,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_RAWIP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1194,
+      "value": 17,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_DCCP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1196,
+      "value": 44,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_RAWIP_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1198,
+      "value": 17,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_ROUTE_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1204,
+      "value": 30,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_FIREWALL_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1206,
+      "value": 31,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_TCPDIAG_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1208,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_NFLOG_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1210,
+      "value": 33,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_XFRM_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1212,
+      "value": 34,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_SELINUX_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1214,
+      "value": 35,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_AUDIT_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1216,
+      "value": 36,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_IP6FW_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1218,
+      "value": 37,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_DNRT_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1220,
+      "value": 38,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_KOBJECT_UEVENT_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1222,
+      "value": 40,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_NETLINK_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1224,
+      "value": 20,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_PACKET_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1227,
+      "value": 21,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_KEY_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1229,
+      "value": 22,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_APPLETALK_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1231,
+      "value": 41,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
+      "name": "SECCLASS_SOCKET",
+      "file": "security/selinux/hooks.c",
+      "line": 1234,
+      "value": 14,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,
@@ -442,12 +730,23 @@
       "function": "selinux_socket_create",
       "type": "variable",
       "name": "tsec",
-      "index": -1,
+      "index": 1,
       "l": {
         "source": "mediator",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }
+    },
+    {
+      "function": "selinux_socket_create",
+      "type": "variable",
+      "name": "tsec",
+      "index": 5,
+      "l": {
+        "source": "mediator",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
     }
   ],
   "sink": [

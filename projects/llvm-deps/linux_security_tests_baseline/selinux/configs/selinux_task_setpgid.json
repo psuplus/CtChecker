@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "PROCESS__SETPGID",
+      "file": "security/selinux/hooks.c",
+      "line": 3574,
+      "value": 4096,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_task_setpgid",
       "type": "variable",
       "name": "p",

@@ -25,6 +25,18 @@
   "source": [
     {
       "type": "constant",
+      "name": "ASSOCIATION__SETCONTEXT",
+      "file": "security/selinux/xfrm.c",
+      "line": 112,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,
@@ -204,7 +216,7 @@
       "name": "tsec",
       "index": -1,
       "l": {
-        "source": "mediator",
+        "source": "external",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }

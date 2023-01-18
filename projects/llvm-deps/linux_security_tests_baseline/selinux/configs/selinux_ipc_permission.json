@@ -30,6 +30,54 @@
       "line": 5488,
       "value": 292,
       "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "S_IWUGO",
+      "file": "security/selinux/hooks.c",
+      "line": 5490,
+      "value": 146,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC__UNIX_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 5489,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "IPC__UNIX_WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 5491,
+      "value": 256,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "S_IRUGO",
+      "file": "security/selinux/hooks.c",
+      "line": 5488,
+      "value": 292,
+      "l": {
         "source": "external",
         "value": "static"
       },

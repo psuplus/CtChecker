@@ -25,6 +25,53 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__GETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 3203,
+      "value": 16,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__SETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 3209,
+      "value": 32,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "file": "security/selinux/hooks.c",
+      "line": 3216,
+      "value": 0,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__IOCTL",
+      "file": "security/selinux/hooks.c",
+      "line": 3229,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,
@@ -343,6 +390,17 @@
       "value": 32768,
       "l": {
         "source": "external",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "function": "file_has_perm",
+      "type": "variable",
+      "name": "av",
+      "index": -1,
+      "l": {
+        "source": "mediator",
         "value": "static"
       },
       "c": { "purpose": ["operation"] }

@@ -25,6 +25,54 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILE__OPEN",
+      "file": "security/selinux/hooks.c",
+      "line": 1929,
+      "value": 262144,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__APPEND",
+      "file": "security/selinux/hooks.c",
+      "line": 1906,
+      "value": 512,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__WRITE",
+      "file": "security/selinux/hooks.c",
+      "line": 1908,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FD__USE",
+      "file": "security/selinux/hooks.c",
+      "line": 1686,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "FMODE_READ",
       "file": "security/selinux/hooks.c",
       "line": 1902,

@@ -25,6 +25,78 @@
   "source": [
     {
       "type": "constant",
+      "name": "SYSTEM__IPC_INFO",
+      "file": "security/selinux/hooks.c",
+      "line": 5438,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__GETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 5349,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__ASSOCIATE",
+      "file": "security/selinux/hooks.c",
+      "line": 5349,
+      "value": 64,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__SETATTR",
+      "file": "security/selinux/hooks.c",
+      "line": 5352,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__LOCK",
+      "file": "security/selinux/hooks.c",
+      "line": 5356,
+      "value": 512,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SHM__DESTROY",
+      "file": "security/selinux/hooks.c",
+      "line": 5359,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "IPC_INFO",
       "file": "security/selinux/hooks.c",
       "line": 5343,

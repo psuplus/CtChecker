@@ -24,6 +24,30 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "TUN_SOCKET__RELABELFROM",
+      "file": "security/selinux/hooks.c",
+      "line": 4698,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "TUN_SOCKET__RELABELTO",
+      "file": "security/selinux/hooks.c",
+      "line": 4702,
+      "value": 256,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_tun_dev_open",
       "type": "variable",
       "name": "security",

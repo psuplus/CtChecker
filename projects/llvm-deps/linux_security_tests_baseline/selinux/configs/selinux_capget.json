@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "PROCESS__GETCAP",
+      "file": "security/selinux/hooks.c",
+      "line": 1970,
+      "value": 8192,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_capget",
       "type": "variable",
       "name": "target",

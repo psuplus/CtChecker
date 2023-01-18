@@ -25,6 +25,18 @@
   "source": [
     {
       "type": "constant",
+      "name": "SHM__CREATE",
+      "file": "security/selinux/hooks.c",
+      "line": 5308,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,

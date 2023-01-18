@@ -25,6 +25,42 @@
   "source": [
     {
       "type": "constant",
+      "name": "SYSTEM__SYSLOG_READ",
+      "file": "security/selinux/hooks.c",
+      "line": 2056,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSTEM__SYSLOG_CONSOLE",
+      "file": "security/selinux/hooks.c",
+      "line": 2062,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "SYSTEM__SYSLOG_MOD",
+      "file": "security/selinux/hooks.c",
+      "line": 2070,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "SYSLOG_ACTION_CLEAR",
       "file": "security/selinux/hooks.c",
       "line": 2068,
@@ -181,7 +217,7 @@
       "name": "tsk",
       "index": -1,
       "l": {
-        "source": "input",
+        "source": "external",
         "value": "dynamic"
       },
       "c": { "purpose": ["subject"] }

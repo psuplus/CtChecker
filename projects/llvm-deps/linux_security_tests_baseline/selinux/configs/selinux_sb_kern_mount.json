@@ -25,6 +25,66 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILESYSTEM__MOUNT",
+      "file": "security/selinux/hooks.c",
+      "line": 2620,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FSCONTEXT_MNT",
+      "file": "security/selinux/hooks.c",
+      "line": 1018,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "CONTEXT_MNT",
+      "file": "security/selinux/hooks.c",
+      "line": 1022,
+      "value": 1,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "ROOTCONTEXT_MNT",
+      "file": "security/selinux/hooks.c",
+      "line": 1026,
+      "value": 4,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "DEFCONTEXT_MNT",
+      "file": "security/selinux/hooks.c",
+      "line": 1030,
+      "value": 8,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "BITS_PER_LONG",
       "file": "include/asm-generic/getorder.h",
       "line": 19,

@@ -24,6 +24,18 @@
   },
   "source": [
     {
+      "type": "constant",
+      "name": "FILE__QUOTAON",
+      "file": "security/selinux/hooks.c",
+      "line": 5192,
+      "value": 32768,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
       "function": "selinux_quota_on",
       "type": "variable",
       "name": "dentry",

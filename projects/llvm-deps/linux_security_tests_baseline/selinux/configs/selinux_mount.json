@@ -25,6 +25,30 @@
   "source": [
     {
       "type": "constant",
+      "name": "FILESYSTEM__REMOUNT",
+      "file": "security/selinux/hooks.c",
+      "line": 2643,
+      "value": 2,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "FILE__MOUNTON",
+      "file": "security/selinux/hooks.c",
+      "line": 2645,
+      "value": 65536,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "MS_REMOUNT",
       "file": "security/selinux/hooks.c",
       "line": 2641,

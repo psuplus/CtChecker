@@ -25,6 +25,90 @@
   "source": [
     {
       "type": "constant",
+      "name": "PROCESS__SETEXEC",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 131072,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SETFSCREATE",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 262144,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SETKEYCREATE",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 268435456,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SETSOCKCREATE",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 536870912,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__SETCURRENT",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 16777216,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__DYNTRANSITION",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 8388608,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
+      "name": "PROCESS__PTRACE",
+      "file": "security/selinux/hooks.c",
+      "line": 218,
+      "value": 128,
+      "l": {
+        "source": "mediator",
+        "value": "static"
+      },
+      "c": { "purpose": ["operation"] }
+    },
+    {
+      "type": "constant",
       "name": "AUDIT_SELINUX_ERR",
       "file": "security/selinux/hooks.c",
       "line": 5611,

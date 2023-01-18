@@ -26,6 +26,17 @@
     {
       "function": "apparmor_capable",
       "type": "variable",
+      "name": "ns",
+      "index": -1,
+      "l": {
+        "source": "input",
+        "value": "dynamic"
+      },
+      "c": { "purpose": ["object"] }
+    },
+    {
+      "function": "apparmor_capable",
+      "type": "variable",
       "name": "cred",
       "index": -1,
       "l": {
@@ -35,7 +46,7 @@
       "c": { "purpose": ["subject"] }
     },
     {
-      "function": "aa_ptrace",
+      "function": "apparmor_capable",
       "type": "variable",
       "name": "cap",
       "index": -1,
@@ -83,6 +94,27 @@
   "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
-  "implicit_whitelist": [{ "file": "security/apparmor/lsm.c", "line": 145 }],
+  "implicit_whitelist": [
+    { "file": "security/apparmor/lsm.c", "line": 100 },
+    { "file": "security/apparmor/lsm.c", "line": 109 },
+    { "file": "security/apparmor/lsm.c", "line": 145 },
+    { "file": "security/apparmor/lsm.c", "line": 229 },
+    { "file": "security/apparmor/lsm.c", "line": 253 },
+    { "file": "security/apparmor/lsm.c", "line": 288 },
+    { "file": "security/apparmor/lsm.c", "line": 327 },
+    { "file": "security/apparmor/lsm.c", "line": 396 },
+    { "file": "security/apparmor/lsm.c", "line": 434 },
+    { "file": "security/apparmor/lsm.c", "line": 435 },
+    { "file": "security/apparmor/lsm.c", "line": 447 },
+    { "file": "security/apparmor/lsm.c", "line": 448 },
+    { "file": "security/apparmor/lsm.c", "line": 474 },
+    { "file": "security/apparmor/lsm.c", "line": 308 },
+    { "file": "security/apparmor/lsm.c", "line": 323 },
+    { "file": "security/apparmor/lsm.c", "line": 349 },
+    { "file": "security/apparmor/lsm.c", "line": 361 },
+    { "file": "security/apparmor/lsm.c", "line": 369 },
+    { "file": "security/apparmor/lsm.c", "line": 382 },
+    { "file": "security/apparmor/lsm.c", "line": 435 }
+  ],
   "entry": ["apparmor_capable"]
 }

@@ -52,6 +52,19 @@ execute_test()
     pool_results $1 $4
 }
 
+execute_ct_verif()
+{
+    echo
+    echo ":::: Changing to $1 directory"
+    cd $1
+    echo "::::: Running $2 $3"
+        
+    $2 $3 $5
+
+    cd $CUR
+    pool_results $1 $4
+}
+
 full_library_tests()
 {
     printf "\n==== Running full library tests ====\n"
@@ -61,9 +74,9 @@ full_library_tests()
     #execute_test "libgcrypt1.8.2" "./run.sh" "full.bc" $OUT_FULL_DIR true
     #execute_test "openSSL_1_1_0g" "./run.sh" "test4.bc" $OUT_FULL_DIR true
 	
-    execute_test "BearSSL0.6" "./run.sh" "testall.bc" $OUT_FULL_DIR true
+    #execute_test "BearSSL0.6" "./run.sh" "testall.bc" $OUT_FULL_DIR true
     execute_test "mbedtls3.2.1" "./run.sh" "test2.bc" $OUT_FULL_DIR true
-    execute_test "libgcrypt1.10.1" "./run.sh" "full.bc" $OUT_FULL_DIR true
+    #execute_test "libgcrypt1.10.1" "./run.sh" "full.bc" $OUT_FULL_DIR true
     execute_test "openSSL_1_1_1q" "./run.sh" "test4.bc" $OUT_FULL_DIR true
 }
 
@@ -76,38 +89,89 @@ min_library_tests()
     #execute_test "libgcrypt1.8.2" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
     #execute_test "openSSL_1_1_0g" "./run.sh" "test1.bc" $OUT_MIN_DIR false
 	
-    execute_test "BearSSL0.6" "./run.sh" "test2.bc" $OUT_MIN_DIR false
+    #execute_test "BearSSL0.6" "./run.sh" "test2.bc" $OUT_MIN_DIR false
     execute_test "mbedtls3.2.1" "./run.sh" "test1.bc" $OUT_MIN_DIR false
-    execute_test "libgcrypt1.10.1" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
+    #execute_test "libgcrypt1.10.1" "./run.sh" "mpi-pow.bc" $OUT_MIN_DIR false
     execute_test "openSSL_1_1_1q" "./run.sh" "test1.bc" $OUT_MIN_DIR false
 }
 
 ct_verif_tests()
 {
-     execute_test "ct-verif-files/BearSSL0.5" "make" "v4_testall" $OUT_MIN_DIR "v4"
-#     execute_test "ct-verif-files/BearSSL0.5" "make" "v3_testall" $OUT_MIN_DIR "v3"
-#     execute_test "ct-verif-files/BearSSL0.5" "make" "v2_testall" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/BearSSL0.6" "./run.sh" "v4_testall.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/BearSSL0.6" "./run.sh" "v2_testall.bc" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/BearSSL0.6" "./run.sh" "v1_testall.bc" $OUT_MIN_DIR "v1"
 
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v4_test" $OUT_MIN_DIR "v4"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v3_test" $OUT_MIN_DIR "v3"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v2_test" $OUT_MIN_DIR "v2"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v4_test_mont_recp" $OUT_MIN_DIR "v4"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v3_test_mont_recp" $OUT_MIN_DIR "v3"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v2_test_mont_recp" $OUT_MIN_DIR "v2"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v4_test_mont_word" $OUT_MIN_DIR "v4"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v3_test_mont_word" $OUT_MIN_DIR "v3"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v2_test_mont_word" $OUT_MIN_DIR "v2"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v4_test_mont_consttime" $OUT_MIN_DIR "v4"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v3_test_mont_consttime" $OUT_MIN_DIR "v3"
-#     execute_test "ct-verif-files/openSSL_1_1_0g" "make" "v2_test_mont_consttime" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v4_test.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v2_test.bc" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v1_test.bc" $OUT_MIN_DIR "v1"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v4_test_mont_recp.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v2_test_mont_recp.bc" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v1_test_mont_recp.bc" $OUT_MIN_DIR "v1" # no rule for this one
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v4_test_mont_word.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v2_test_mont_word.bc" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v1_test_mont_word.bc" $OUT_MIN_DIR "v1"
+    execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v4_test_mont_consttime.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v2_test_mont_consttime.bc" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "./run.sh" "v1_test_mont_consttime.bc" $OUT_MIN_DIR "v1"
 
-#     execute_test "ct-verif-files/libgcrypt1.8.2" "make" "v4_test" $OUT_MIN_DIR "v4"
-#     execute_test "ct-verif-files/libgcrypt1.8.2" "make" "v3_test" $OUT_MIN_DIR "v3"
-#     execute_test "ct-verif-files/libgcrypt1.8.2" "make" "v2_test" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/libgcrypt1.10.1" "./run.sh" "v4_test.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/libgcrypt1.10.1" "./run.sh" "v2_test.bc" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/libgcrypt1.10.1" "./run.sh" "v1_test.bc" $OUT_MIN_DIR "v1"
 
-#     execute_test "ct-verif-files/mbedtls2.9.0" "make" "v4_bign2_4_25_test" $OUT_MIN_DIR "v4"
-#    execute_test "ct-verif-files/mbedtls2.9.0" "make" "v3_bign2_4_25_test" $OUT_MIN_DIR "v3"
-#    execute_test "ct-verif-files/mbedtls2.9.0" "make" "v2_bign2_4_25_test" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/mbedtls3.2.1" "./run.sh" "v4_bign2_4_25_test.bc" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/mbedtls3.2.1" "./run.sh" "v3_bign2_4_25_test.bc" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/mbedtls3.2.1" "./run.sh" "v2_bign2_4_25_test.bc" $OUT_MIN_DIR "v2"
+
+    # execute_ct_verif "ct-verif-files/BearSSL0.6" "make" "v4_testall" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/BearSSL0.6" "make" "v3_testall" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/BearSSL0.6" "make" "v2_testall" $OUT_MIN_DIR "v2"
+
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v4_test" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v3_test" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v2_test" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v4_test_mont_recp" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v3_test_mont_recp" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v2_test_mont_recp" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v4_test_mont_word" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v3_test_mont_word" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v2_test_mont_word" $OUT_MIN_DIR "v2"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v4_test_mont_consttime" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v3_test_mont_consttime" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/openSSL_1_1_1q" "make" "v2_test_mont_consttime" $OUT_MIN_DIR "v2"
+
+    # execute_ct_verif "ct-verif-files/libgcrypt1.10.1" "make" "v4_test" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/libgcrypt1.10.1" "make" "v3_test" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/libgcrypt1.10.1" "make" "v2_test" $OUT_MIN_DIR "v2"
+
+    # execute_ct_verif "ct-verif-files/mbedtls3.2.1" "make" "v4_bign2_4_25_test" $OUT_MIN_DIR "v4"
+    # execute_ct_verif "ct-verif-files/mbedtls3.2.1" "make" "v3_bign2_4_25_test" $OUT_MIN_DIR "v3"
+    # execute_ct_verif "ct-verif-files/mbedtls3.2.1" "make" "v2_bign2_4_25_test" $OUT_MIN_DIR "v2"
+
+
+#     execute_ct_verif "ct-verif-files/BearSSL0.5" "make" "v4_testall" $OUT_MIN_DIR "v4"
+#     execute_ct_verif "ct-verif-files/BearSSL0.5" "make" "v3_testall" $OUT_MIN_DIR "v3"
+#     execute_ct_verif "ct-verif-files/BearSSL0.5" "make" "v2_testall" $OUT_MIN_DIR "v2"
+
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v4_test" $OUT_MIN_DIR "v4"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v3_test" $OUT_MIN_DIR "v3"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v2_test" $OUT_MIN_DIR "v2"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v4_test_mont_recp" $OUT_MIN_DIR "v4"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v3_test_mont_recp" $OUT_MIN_DIR "v3"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v2_test_mont_recp" $OUT_MIN_DIR "v2"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v4_test_mont_word" $OUT_MIN_DIR "v4"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v3_test_mont_word" $OUT_MIN_DIR "v3"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v2_test_mont_word" $OUT_MIN_DIR "v2"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v4_test_mont_consttime" $OUT_MIN_DIR "v4"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v3_test_mont_consttime" $OUT_MIN_DIR "v3"
+#     execute_ct_verif "ct-verif-files/openSSL_1_1_0g" "make" "v2_test_mont_consttime" $OUT_MIN_DIR "v2"
+
+#     execute_ct_verif "ct-verif-files/libgcrypt1.8.2" "make" "v4_test" $OUT_MIN_DIR "v4"
+#     execute_ct_verif "ct-verif-files/libgcrypt1.8.2" "make" "v3_test" $OUT_MIN_DIR "v3"
+#     execute_ct_verif "ct-verif-files/libgcrypt1.8.2" "make" "v2_test" $OUT_MIN_DIR "v2"
+
+#     execute_ct_verif "ct-verif-files/mbedtls2.9.0" "make" "v4_bign2_4_25_test" $OUT_MIN_DIR "v4"
+#    execute_ct_verif "ct-verif-files/mbedtls2.9.0" "make" "v3_bign2_4_25_test" $OUT_MIN_DIR "v3"
+#    execute_ct_verif "ct-verif-files/mbedtls2.9.0" "make" "v2_bign2_4_25_test" $OUT_MIN_DIR "v2"
 }
 
 main()
@@ -121,9 +185,9 @@ main()
     make
     cd $CUR
 
-    min_library_tests
-    full_library_tests
-    # ct_verif_tests
+    #min_library_tests
+    #full_library_tests
+    ct_verif_tests
 }
 
 # Run the actual tests

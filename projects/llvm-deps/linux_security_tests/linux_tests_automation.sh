@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 # linking example
 
-ANNOTATION=true
-if [ $ANNOTATION = true ] ; then
-    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps_Annotated.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps_Other_Annotated.md
+ANNOTATION=false
+CONSTANT=true
+FINAL=false
+
+if [ $FINAL = true ] ; then
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Final.md
+elif [ $ANNOTATION = true ] ; then
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Relaxed.md
+elif [ $CONSTANT = true ] ; then
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Strict.md
 else
-    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps.md
-    TABLE_FILE_OTHER=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Detected_Gaps_Other.md
+    TABLE_FILE=../../../../../Mediator-Documentation/Mediator-Analysis-Data/Gaps/Purpose-Field.md
 fi
 
 OUT_DIR=results
+CUR_DIR=$(pwd)
 
 automation()
 {
@@ -30,6 +36,13 @@ automation()
         else
             sed -i -r "s/\"using_whitelist\": true/\"using_whitelist\": false/g" "config.json"
         fi
+
+        if [ $CONSTANT = true ] ; then
+            sed -i -r "s/\"using_constant\": false/\"using_constant\": true/g" "config.json"
+        else
+            sed -i -r "s/\"using_constant\": true/\"using_constant\": false/g" "config.json"
+        fi
+
         cp $f $OUT_DIR/$FUNCTION/config.json
 
         ./run.sh $2 $FUNCTION
@@ -55,7 +68,6 @@ automation()
 
         echo 'Updating the detected gaps table...'
         python3 ../../processing_tools/update_gaps.py $TABLE_FILE $OUT_DIR/$FUNCTION/gaps.log
-        python3 ../../processing_tools/update_gaps_other.py $TABLE_FILE_OTHER $OUT_DIR/$FUNCTION/gaps.log
 
     done
     rm -f config.json
@@ -69,7 +81,7 @@ main()
     make
     cd ../poolalloc/
     make
-    cd ../llvm-deps/linux_security_tests/
+    cd $CUR_DIR
     
     echo "Executing automation."
     automation tomoyo test.bc

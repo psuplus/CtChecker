@@ -99,8 +99,11 @@ public:
   int index;
   std::string file;
   unsigned int line;
-  long value;
+  long value; // field storing value of the constant
   RLLabel label;
+  ContextID ctxt;       // field added by the analysis for sink labeling
+  Value *val;           // field added by the analysis for sink labeling
+  std::string callsite; // field added by the analysis for sink labeling
 
   ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
                  int num, int idx, std::string file, int line, int value,
@@ -241,7 +244,7 @@ public:
   /// solving for an information flow solution, the user
   /// may specify a set of constraints to include.
 
-  void setLabel(std::string, const Value &, RLLabel, bool);
+  void setLabel(std::string, const Value &, RLLabel, bool, std::string = "");
   /// Adds the constraint "TAINTED <= VALUE" to the given kind
   void setUntainted(std::string, const Value &);
   /// Adds the constraint "VALUE <= UNTAINTED" to the given kind
@@ -337,10 +340,10 @@ private:
   const MDLocation *findVar(const Value *V, const Function *F) const;
   const MDLocalVariable *findVarNode(const Value *V, const Function *F) const;
 
-  std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> sourceVariables;
+  std::vector<ConfigVariable> sinkVariables;
+  std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
-  std::set<std::tuple<ContextID, RLLabel, Value *, int>> sinkValueSet;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
@@ -424,7 +427,7 @@ private:
                               const Value &, const ConsElem &);
   const ConsElem &getOrCreateConsElemSummarySource(const Value &);
   void putOrConstrainConsElemSummarySource(std::string, const Value &,
-                                           const ConsElem &);
+                                           const ConsElem &, std::string = "");
   const ConsElem &getOrCreateConsElemSummarySink(const Value &);
   void putOrConstrainConsElemSummarySink(std::string, const Value &,
                                          const ConsElem &);
@@ -467,11 +470,13 @@ private:
                                  std::map<unsigned, const ConsElem *>, int);
   bool matchImplicitWhitelist(const Instruction &inst);
   void constrainAllConsElem(std::string kind,
-                            std::map<unsigned, const ConsElem *>, RLLabel);
+                            std::map<unsigned, const ConsElem *>, RLLabel,
+                            std::string = "");
   void constrainAllConsElem(std::string kind, std::set<const ConsElem *>,
-                            RLLabel);
+                            RLLabel, std::string = "");
   void constrainAllConsElem(std::string kind, const Value &,
-                            std::set<const ConsElem *>, RLLabel);
+                            std::set<const ConsElem *>, RLLabel,
+                            std::string = "");
   void constrainOffsetFromIndex(std::string, const AbstractLoc *, const Value *,
                                 std::map<unsigned, const ConsElem *>, int);
 

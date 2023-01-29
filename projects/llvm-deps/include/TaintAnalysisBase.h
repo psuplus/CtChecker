@@ -2,6 +2,7 @@
 #define TAINT_ANALYSIS_BASE_H
 
 #include "Infoflow.h"
+#include "llvm/ADT/Statistic.h"
 
 using namespace llvm;
 

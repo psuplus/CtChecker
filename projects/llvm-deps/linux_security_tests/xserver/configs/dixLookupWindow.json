@@ -135,6 +135,7 @@
       "c": { "purpose": ["subject"] }
     }
   ],
+  "using_constant": true,
   "using_whitelist": true,
   "whitelist": [],
   "entry": ["dixLookupWindow"]

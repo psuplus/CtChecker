@@ -816,7 +816,8 @@ Infoflow::ConsElemSet Infoflow::findRelevantConsElem(
       else
         span = TD.getTypeStoreSize(type);
     }
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "span [" << span << "]\n";);
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "span [" << span << "]\n";
+                    if (type) type->dump(););
     auto e = elemMap.find(offset);
     while (e != elemMap.end() && e->first < offset + span) {
       elements.insert(e->second);
@@ -1401,16 +1402,17 @@ bool InfoflowSolution::isVargTainted(const Function &fun) {
 bool Infoflow::DropAtSinks() const { return DepsDropAtSink; }
 
 void Infoflow::setLabel(std::string kind, const Value &value, RLLabel label,
-                        bool gte) {
+                        bool gte, std::string meta) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
 
   if (gte)
-    putOrConstrainConsElemSummarySource(kind, value, kit->constant(label));
+    putOrConstrainConsElemSummarySource(kind, value, kit->constant(label),
+                                        meta);
   else {
     const ConsElem &current = getOrCreateConsElemSummarySink(value);
     kit->addConstraint(kind, current, kit->constant(label),
-                       " ;  [ConsDebugTag-1]");
+                       " ;  [ConsDebugTag-1] " + meta);
     getOriginalLocation(&value);
   }
 }
@@ -1633,7 +1635,7 @@ const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
   if (auto I = dyn_cast<Instruction>(&value)) {
     if (I->hasName()) {
       if (withParent) {
-        valueString = I->getParent()->getParent()->getName().str() + ": " +
+        valueString = I->getParent()->getParent()->getName().str() + ":" +
                       I->getName().str();
       } else {
         valueString = I->getName();
@@ -1646,7 +1648,7 @@ const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
     if (A->hasName()) {
       if (withParent) {
         valueString =
-            A->getParent()->getName().str() + ": " + A->getName().str();
+            A->getParent()->getName().str() + ":" + A->getName().str();
       } else {
         valueString = A->getName();
       }
@@ -1657,13 +1659,13 @@ const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
   } else if (auto BB = dyn_cast<BasicBlock>(&value)) {
     if (withParent) {
       valueString =
-          BB->getParent()->getName().str() + ": " + BB->getName().str();
+          BB->getParent()->getName().str() + ":" + BB->getName().str();
     } else {
       valueString = BB->getName();
     }
   } else {
     if (isa<GlobalValue>(value)) {
-      valueString = "GLOBAL: ";
+      valueString = "GLOBAL:";
     }
     if (value.hasName()) {
       valueString += value.getName();
@@ -1704,10 +1706,11 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
 
 void Infoflow::putOrConstrainConsElemSummarySource(std::string kind,
                                                    const Value &value,
-                                                   const ConsElem &lub) {
+                                                   const ConsElem &lub,
+                                                   std::string meta) {
   // errs() << "Adding a constraint...\n";
   const ConsElem &current = getOrCreateConsElemSummarySource(value);
-  kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-3]");
+  kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-3] " + meta);
   getOriginalLocation(&value);
 }
 
@@ -2703,6 +2706,9 @@ void Infoflow::constrainSwitchInst(const SwitchInst &inst, Flows &flows) {
   flow.addSourceValue(*inst.getParent());
   // condition
   flow.addSourceValue(*inst.getCondition());
+  for (auto c : inst.cases()) {
+    flow.addSourceValue(*c.getCaseValue());
+  }
 
   constrainConditionalSuccessors(inst, flow);
 
@@ -2959,13 +2965,17 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
         for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
           if (var.number == -1 || var.number == arg_idx) {
             Value *value = (*op_i).get();
-            std::tuple<ContextID, RLLabel, Value *, int> valueOffsetPair =
-                std::make_tuple(this->getCurrentContext(), var.label, value,
-                                var.index);
-            sinkValueSet.insert(valueOffsetPair);
-            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "inserted: ";
-                            value->dump();
-                            errs() << "at offset: " << var.index << "\n";);
+            auto sinkVar = var;
+            sinkVar.ctxt = this->getCurrentContext();
+            sinkVar.val = value;
+            if (auto meta = dyn_cast<Value>(cs.getInstruction())) {
+              sinkVar.callsite = getOrCreateStringFromValue(*meta);
+            }
+            indexedSinkVariables.push_back(sinkVar);
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                            errs() << "\tinserted ["
+                                   << getOrCreateStringFromValue(*value)
+                                   << "] at offset: " << var.index << "\n";);
           }
         }
         callResult = false;
@@ -3497,12 +3507,12 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
                            << "], and in the function: [" << fn_name
                            << "]\n\n";);
 
-    const Function *fn = findEnclosingFunc(&value);
-    bool function_matches = false;
-    if (fn_name.size() == 0 ||
-        (fn && fn->hasName() && fn->getName() == fn_name)) {
-      function_matches = true;
-    }
+    // const Function *fn = findEnclosingFunc(&value);
+    // bool function_matches = false;
+    // if (fn_name.size() == 0 ||
+    //     (fn && fn->hasName() && fn->getName() == fn_name)) {
+    //   function_matches = true;
+    // }
 
     bool remove_reg = true, remove_mem = true;
     // if(function_matches && value.hasName() && value.getName() ==
@@ -3618,36 +3628,36 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
 
 void Infoflow::constrainAllConsElem(
     std::string kind, std::map<unsigned, const ConsElem *> elemMap,
-    RLLabel label) {
+    RLLabel label, std::string meta) {
   for (std::map<unsigned, const ConsElem *>::iterator it = elemMap.begin(),
                                                       end = elemMap.end();
        it != end; ++it) {
     // it->second->dump(errs());
     if ((it->second) != NULL) {
       kit->addConstraint(kind, kit->constant(label), *(it->second),
-                         " ;  [ConsDebugTag-22]");
+                         " ;  [ConsDebugTag-22]" + meta);
     }
   }
 }
 
 void Infoflow::constrainAllConsElem(std::string kind,
                                     std::set<const ConsElem *> elems,
-                                    RLLabel label) {
+                                    RLLabel label, std::string meta) {
   for (std::set<const ConsElem *>::iterator it = elems.begin(),
                                             end = elems.end();
        it != end; ++it) {
     kit->addConstraint(kind, kit->constant(label), *(*it),
-                       " ;  [ConsDebugTag-19]");
+                       " ;  [ConsDebugTag-19] " + meta);
   }
 }
 
 void Infoflow::constrainAllConsElem(std::string kind, const Value &v,
                                     std::set<const ConsElem *> elems,
-                                    RLLabel label) {
+                                    RLLabel label, std::string meta) {
   if (elems.size() == 0) {
-    setLabel(kind, v, label, true);
+    setLabel(kind, v, label, true, meta);
   } else {
-    constrainAllConsElem(kind, elems, label);
+    constrainAllConsElem(kind, elems, label, meta);
   }
 }
 

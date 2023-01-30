@@ -1,11 +1,9 @@
-Table 1: Comparison with cache-channels excluded
-
 |             ||        ct-verif      |||      ct-checker     ||
 |-------------|-------|-------|--------|-------|-------|-------|
 |             |  V1   | V2    | V4     |  V1   | V2    | V4    |
 |**BearSSL**  |  9    |   8   |   0    |     3 |     3 |     1 |
 |**libgcrypt**|   36  |   22  |   0    |    26 |     7 |     0 |
-|**mbedtls**  |   -   |   -   |   -    |     - |     - |     - |
+|**mbedtls**  | 35(36)|   -   |   0    |     - |     - |     - |
 |**openSSL**  |       |       |        |       |       |       |
 | recp        |   24  |  9    |   0    |     3 |     2 |     0 |
 | mont        |   27  |  11   |   0    |    25 |     2 |     0 |
@@ -103,6 +101,51 @@ v2.c line  749- if ( negative_result && rsize )
 v2.c line  751- if ( mod_shift_cnt )  
 v2.c line  756- MPN_NORMALIZE(rp, rsize);  
 v2.c line  758- gcry_assert (res->d == rp);  
+
+# mbedtls
+
+### V1: 36
+
+bign2/v1_min.c line  418 - if( mbedtls_mpi_cmp_int( N, 0 ) <= 0 || ( N->p[0] & 1 ) == 0 )  
+bign2/v1_min.c line  421 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 )  
+bign2/v1_min.c line  424 - if( mbedtls_mpi_bitlen( E ) > MBEDTLS_MPI_MAX_BITS ||  
+bign2/v1_min.c line  425 - mbedtls_mpi_bitlen( N ) > MBEDTLS_MPI_MAX_BITS )  
+bign2/v1_min.c line  439 - wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :  
+bign2/v1_min.c line  440 - ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;  
+bign2/v1_min.c line  453 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( X, j ) );  
+bign2/v1_min.c line  454 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[1],  j ) );  
+bign2/v1_min.c line  455 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &T, j * 2 ) );  
+bign2/v1_min.c line  463 - MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &Apos, A ) );  
+bign2/v1_min.c line  473 - MBEDTLS_MPI_CHK( mbedtls_mpi_lset( &RR, 1 ) );  
+bign2/v1_min.c line  474 - MBEDTLS_MPI_CHK( mbedtls_mpi_shift_l( &RR, N->n * 2 * biL ) );  
+bign2/v1_min.c line  475 - MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &RR, &RR, N ) );  
+bign2/v1_min.c line  486 - if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 )  
+bign2/v1_min.c line  488 - MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &W[1], A, N ) );  
+bign2/v1_min.c line  492 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[1], N->n + 1 ) );  
+bign2/v1_min.c line  495 - MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[1], A ) );  
+bign2/v1_min.c line  504 - MBEDTLS_MPI_CHK( mbedtls_mpi_copy( X, &RR ) );  
+bign2/v1_min.c line  507 - if( wsize > 1 )  
+bign2/v1_min.c line  514 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[j], N->n + 1 ) );  
+bign2/v1_min.c line  515 - MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[j], &W[1]    ) );  
+bign2/v1_min.c line  517 - for( i = 0; i < wsize - 1; i++ )  
+bign2/v1_min.c line  523 - for( i = j + 1; i < ( one << wsize ); i++ )  
+bign2/v1_min.c line  525 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[i], N->n + 1 ) );  
+bign2/v1_min.c line  526 - MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[i], &W[i - 1] ) );  
+bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )  
+bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )  
+bign2/v1_min.c line  560 - if( ei == 0 && state == 1 )  
+bign2/v1_min.c line  577 - if( nbits == wsize )  
+bign2/v1_min.c line  582 - for( i = 0; i < wsize; i++ )  
+bign2/v1_min.c line  588 - MBEDTLS_MPI_CHK( mpi_select( &WW, W, (size_t) 1 << wsize, wbits ) );  
+bign2/v1_min.c line  606 - if( ( wbits & ( one << wsize ) ) != 0 )  
+bign2/v1_min.c line  615 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )  
+bign2/v1_min.c line  623 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )  
+bign2/v1_min.c line  624 - mbedtls_mpi_free( &W[i] );  
+bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
+
+### V2: ---
+
+
 
 # OpenSSL
 

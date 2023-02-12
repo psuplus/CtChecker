@@ -50,7 +50,6 @@ br_i32_modpow (uint32_t *x,
 	 * Note that there is no need to call br_i32_from_monty().
 	 */
 	memcpy(t1, x, mlen);
-
 	br_i32_to_monty(t1, m, public_0, public_1, public_2);
 	br_i32_zero(x, m[0]);
 	x[1] = 1;

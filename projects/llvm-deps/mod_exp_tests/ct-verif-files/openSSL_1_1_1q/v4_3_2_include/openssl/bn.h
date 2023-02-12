@@ -281,7 +281,7 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx);
 int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
                const BIGNUM *m, BN_CTX *ctx);
 int BN_mod_exp_mont(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+                    const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx,BIGNUM *pub_BIGNUM0,BIGNUM *pub_BIGNUM1,BIGNUM *pub_BIGNUM2,int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL0,int taint_VAL1,int taint_VAL2,int taint_VAL3);
 int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                               const BIGNUM *m, BN_CTX *ctx,
                               BN_MONT_CTX *in_mont);

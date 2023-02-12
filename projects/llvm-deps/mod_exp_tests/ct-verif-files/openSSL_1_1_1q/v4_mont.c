@@ -24,7 +24,7 @@ int dummy = 0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-//#include "v4_4_mont_lib/bn_lib.c"
+
 #include "v4_3_2_include/rsaz_exp.h"
 
 #undef SPARC_T4_MONT
@@ -1404,7 +1404,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
 // }
 
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../ct-verif.h"
 
@@ -1599,4 +1599,4 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
 //                               pub_VAL0,pub_VAL1,pub_VAL2,pub_VAL3,
 //                               pub_VAL4,taint_VAL5,taint_VAL6,taint_VAL7,taint_VAL8);
 // }
-// /***********************/
+/***********************/

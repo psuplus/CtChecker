@@ -9,10 +9,10 @@
 
 #include <assert.h>
 #include <limits.h>
-#include "internal/cryptlib.h"
-#include "bn_local.h"
-#include <openssl/opensslconf.h>
-#include "internal/constant_time.h"
+#include "../v4_3_2_include/internal/cryptlib.h"
+#include "../v4_3_2_include/bn_local.h"
+#include "../v4_3_2_include/openssl/opensslconf.h"
+#include "../v4_3_2_include/internal/constant_time.h"
 
 /* This stuff appears to be completely unused, so is deprecated */
 #if OPENSSL_API_COMPAT < 0x00908000L

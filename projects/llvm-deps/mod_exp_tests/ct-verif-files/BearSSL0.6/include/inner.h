@@ -979,8 +979,7 @@ void br_i32_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
  * x[] MUST be distinct from m[].
  */
 void br_i32_decode_reduce(uint32_t *x,
-	const void *src, size_t len, const uint32_t *m,
-		uint32_t public_0,uint32_t public_1,uint32_t public_2);
+	const void *src, size_t len, const uint32_t *m, uint32_t public_0,uint32_t public_1,uint32_t public_2);
 
 /*
  * Encode an integer into its big-endian unsigned representation. The
@@ -1020,7 +1019,7 @@ br_i32_word(const uint32_t *a, uint32_t off, uint32_t global_public_2)
 	if (j == 0) {
 		return a[u];
 	} else {
-		return (a[0] >> j) | (a[0] << (32 - j));//return (a[u] >> j) | (a[u + 1] << (32 - j));
+/*cache channel*/	return (a[u] >> j) | (a[u + 1] << (32 - j));
 	}
 }
 
@@ -1068,7 +1067,7 @@ static inline void
 br_i32_zero(uint32_t *x, uint32_t bit_len)
 {
 	*x ++ = bit_len;
-	//memset_0(x, 0, ((bit_len + 31) >> 5) * sizeof *x);
+memset(x, 0, (5) * sizeof *x);	///	memset(x, 0, ((bit_len + 31) >> 5) * sizeof *x);
 }
 
 /*

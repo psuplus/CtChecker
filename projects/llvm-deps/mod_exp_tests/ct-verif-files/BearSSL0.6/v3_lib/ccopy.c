@@ -33,7 +33,7 @@ br_ccopy(uint32_t ctl, void *dst, const void *src, size_t len)
 
 	d = dst;
 	s = src;
-	if (len -- > 0) { //while (len -- > 0) {
+	while (len -- > 0) {
 		uint32_t x, y;
 
 		x = *s ++;

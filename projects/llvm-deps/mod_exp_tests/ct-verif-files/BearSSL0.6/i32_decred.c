@@ -27,8 +27,7 @@
 /* see inner.h */
 void
 br_i32_decode_reduce(uint32_t *x,
-	const void *src, size_t len, const uint32_t *m,
-		uint32_t public_0,uint32_t public_1,uint32_t public_2)
+	const void *src, size_t len, const uint32_t *m, uint32_t public_0,uint32_t public_1,uint32_t public_2)
 {
 	uint32_t m_bitlen;
 	size_t mblen, k, q;

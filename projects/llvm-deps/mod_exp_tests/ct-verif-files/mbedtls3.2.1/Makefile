@@ -1,19 +1,71 @@
-export WD =${PWD}
+LEVEL=../../../../../
 
-verify-v1:
-	ENTRYPOINTS=fragment_wrapper EXAMPLE=bign2/v1.c make -C ../../../bin verify
+CC=$(LEVEL)Debug+Asserts/bin/clang
+LD=$(LEVEL)Debug+Asserts/bin/llvm-link
+NM=$(LEVEL)Debug+Asserts/bin/llvm-nm
 
-verify-v2:
-	ENTRYPOINTS=fragment_wrapper EXAMPLE=bign2/v2.c make -C ../../../bin verify
+CFLAGS= -isystem newv4/v4_lib -O0 -emit-llvm -g
 
-verify-v3:
-	ENTRYPOINTS=fragment_wrapper EXAMPLE=bign2/v3.c make -C ../../../bin verify
+###################
+LEVEL=../../../../../
 
-verify-v4:
-	ENTRYPOINTS=fragment_wrapper EXAMPLE=bign2/v4.c make -C ../../../bin verify
+CC=$(LEVEL)Debug+Asserts/bin/clang
+LD=$(LEVEL)Debug+Asserts/bin/llvm-link
+NM=$(LEVEL)Debug+Asserts/bin/llvm-nm
+
+CFLAGS= -isystem newv4/v4_lib -O0 -emit-llvm -g
+
+###################
+v4_bign2_4_25_test.bc: bign2/v4_bign2_4_25.bc
+	$(LD) $^ -o $@
+
+v4_bign2_4_25_test: v4_bign2_4_25_test.bc
+	./run.sh $< results_with_source_v4_bign2_4_25.txt
+
+v3_bign2_4_25_test.bc: bign2/v3_bign2_4_25.bc
+	$(LD) $^ -o $@
+
+v3_bign2_4_25_test: v3_bign2_4_25_test.bc
+	./run.sh $< results_with_source_v3_bign2_4_25.txt
+
+v2_bign2_4_25_test.bc: bign2/v2_bign2_4_25.bc
+	$(LD) $^ -o $@
+
+v2_bign2_4_25_test: v2_bign2_4_25_test.bc
+	./run.sh $< results_with_source_v2_bign2_4_25.txt
+
+###############################################################
+
+v4_min_test.bc: bign2/v4_min.bc
+	$(LD) $^ -o $@
+
+v4_min_test: v4_min_test.bc
+	./run.sh $< results_with_source_v4_min.txt
+
+v3_min_test.bc: bign2/v3_min.bc
+	$(LD) $^ -o $@
+
+v3_min_test: v3_min_test.bc
+	./run.sh $< results_with_source_v3_min.txt
+
+v2_min_test.bc: bign2/v2_min.bc
+	$(LD) $^ -o $@
+
+v2_min_test: v2_min_test.bc
+	./run.sh $< results_with_source_v2_min.txt
+
+v1_min_test.bc: bign2/v1_min.bc
+	$(LD) $^ -o $@
+
+v1_min_test: v1_min_test.bc
+	./run.sh $< results_with_source_v1_min.txt
+###################
+
+
+%.bc: %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
 
 clean:
-	rm -f v1.bpl v1-instrumented.bpl
-	rm -f v2.bpl v2-instrumented.bpl
-	rm -f v3.bpl v3-instrumented.bpl
-	rm -f v4.bpl v4-instrumented.bpl
+	$(RM) *.bc
+	$(RM) bign2/*.bc

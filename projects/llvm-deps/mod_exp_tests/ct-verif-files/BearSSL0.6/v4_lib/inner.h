@@ -1018,7 +1018,7 @@ br_i32_word(const uint32_t *a, uint32_t off, uint32_t global_public_2)
 	if(global_public_2) { ///*+*/if (j == 0) {
 		return a[u];
 	} else {
-		return (a[0] >> j) | (a[0] << (32 - j));//return (a[u] >> j) | (a[u + 1] << (32 - j));
+/*cache channel*/		return (a[0] >> j) | (a[0] << (32 - j));//return (a[u] >> j) | (a[u + 1] << (32 - j));
 	}
 }
 

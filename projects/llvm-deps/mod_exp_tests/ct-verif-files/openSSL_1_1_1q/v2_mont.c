@@ -26,7 +26,7 @@
 #endif
 int dummy=0;
 #include "v4_3_2_include/rsaz_exp.h"
-//#include "v2_4_mont_lib/bn_lib.c"
+
 #undef SPARC_T4_MONT
 #if defined(OPENSSL_BN_ASM_MONT) && (defined(__sparc__) || defined(__sparc))
 # include "sparc_arch.h"
@@ -385,9 +385,9 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 /*excluded*/        if (pub_BRANCH15)//        if (bn_wexpand(r, j) == NULL)
             goto err;
         /* 2^(top*BN_BITS2) - m */
-        dummy++; //r->d[0] = (0 - m->d[0]) & BN_MASK2;
+/*cache*/    r->d[0] = (0 - m->d[0]) & BN_MASK2;
         for (i = 1; i < j; i++)
-            dummy++; //r->d[i] = (~m->d[i]) & BN_MASK2;
+/*cache*/       r->d[i] = (~m->d[i]) & BN_MASK2;
         r->top = j;
 /*excluded*/        PRINT;//        r->flags |= BN_FLG_FIXED_TOP;
     } else
@@ -1404,7 +1404,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
 // }
 
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../ct-verif.h"
 

@@ -24,7 +24,7 @@ int dummy = 0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-#include "bn_lib.c"
+
 #include "v4_3_2_include/rsaz_exp.h"
 
 #undef SPARC_T4_MONT
@@ -615,7 +615,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
         BNerr(BN_F_BN_MOD_EXP_MONT_CONSTTIME, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
-
+    
     top = m->top;
 
     /*
@@ -712,8 +712,8 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
      */
     numPowers = 1 << window;
     powerbufLen += sizeof(m->d[0]) * (top * numPowers +
-                                      ((2 * top) >
-                                       numPowers ? (2 * top) : numPowers));
+                                     ((2 * top) >
+                                      numPowers ? (2 * top) : numPowers));
 #ifdef alloca
     if (powerbufLen < 3072)
         powerbufFree =
@@ -747,9 +747,9 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
         /* 2^(top*BN_BITS2) - m */
         tmp.d[0] = (0 - m->d[0]) & BN_MASK2;
         for (i = 1; i < top; i++)
-/*array*/          tmp.d[i] = (~m->d[i]) & BN_MASK2;//tmp.d[i] = (~m->d[i]) & BN_MASK2;
+/*cache*/     tmp.d[i] = (~m->d[i]) & BN_MASK2;
         tmp.top = top;
-    } else {}
+    } else
 #endif
     if (!bn_to_mont_fixed_top(&tmp, BN_value_one(), mont, ctx))
         goto err;
@@ -1067,7 +1067,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
         bits -= window0;
         wvalue = bn_get_bits(p, bits) & wmask;
         if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&tmp, top, powerbuf, wvalue,
-                                           window))
+                                         window))
             goto err;
 
         wmask = (1 << window) - 1;
@@ -1098,7 +1098,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
              * Fetch the appropriate pre-computed value from the pre-buf
              */
             if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&am, top, powerbuf, wvalue,
-                                               window))
+                                             window))
                 goto err;
 
             /* Multiply the result into the intermediate result */
@@ -1403,7 +1403,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../../ct-verif.h"
 

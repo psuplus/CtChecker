@@ -853,7 +853,9 @@ int mbedtls_mpi_mod_int( mbedtls_mpi_uint *r, const mbedtls_mpi *A,
  */
 int mbedtls_mpi_exp_mod( mbedtls_mpi *X, const mbedtls_mpi *A,
                          const mbedtls_mpi *E, const mbedtls_mpi *N,
-                         mbedtls_mpi *prec_RR );
+                         mbedtls_mpi *prec_RR, int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,int pub_branch39,int pub_branch40,
+                size_t pub_n0,size_t pub_n1,size_t pub_n2,size_t pub_n3,size_t pub_n4,size_t pub_n5,size_t pub_n6,
+                mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14,mbedtls_mpi_uint *pub_ptr15, size_t pub_VAL0,size_t pub_VAL1,size_t pub_VAL2,mbedtls_mpi_uint pub_VAL3  );
 
 /**
  * \brief          Fill an MPI with a number of random bytes.

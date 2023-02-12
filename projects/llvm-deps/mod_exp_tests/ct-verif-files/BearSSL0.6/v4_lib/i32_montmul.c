@@ -57,7 +57,7 @@ br_i32_montymul(uint32_t *d, const uint32_t *x, const uint32_t *y,
 			}
 		// }
 		zh = dh + r1 + r2;
-		// d[len] = (uint32_t)zh;
+/*cache channel*/		// d[len] = (uint32_t)zh;
 		dh = zh >> 32;
 	// }
 

@@ -24,7 +24,7 @@ int dummy = 0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-//#include "v4_4_mont_consttime_lib/bn_lib.c"
+
 #include "v4_3_2_include/rsaz_exp.h"
 
 #undef SPARC_T4_MONT
@@ -1408,7 +1408,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 }
 
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../../ct-verif.h"
 

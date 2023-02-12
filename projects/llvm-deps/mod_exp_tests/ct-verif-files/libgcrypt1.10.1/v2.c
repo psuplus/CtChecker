@@ -556,7 +556,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
 /*excluded*/    xp = xp_marker = pub_l4;//xp = xp_marker = mpi_alloc_limb_space( size, msec );
 
     memset( &karactx, 0, sizeof karactx );
-/*excluded*/    negative_result = (ep[0] & 1) & bsign;//negative_result = (ep[0] & 1) && bsign;
+/*cache*/    negative_result = (ep[0] & 1) && bsign;
 
     /* Precompute PRECOMP[], BASE^(2 * i + 1), BASE^1, ^3, ^5, ... */
     if (W > 1)                  /* X := BASE^2 */
@@ -718,7 +718,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
         rp = res->d;
         if ( carry_limb )
           {
-/*cache*/            printf("p");//            rp[rsize] = carry_limb;
+/*cache*/           rp[rsize] = carry_limb;
             rsize++;
           }
       }

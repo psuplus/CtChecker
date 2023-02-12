@@ -27,6 +27,6 @@
   ],
   "sink": [],
   "using_whitelist": true,
-  "whitelist": [{ "name": "wsize" }],
+  "whitelist": [],
   "entry": ["mbedtls_mpi_exp_mod"]
 }

@@ -3,30 +3,30 @@ Table 1: without cache side channel
 |-------------|-------|-------|--------|-------|-------|-------|
 |             |  V1   | V2    | V4     |  V1   | V2    | V4    |
 |**BearSSL**  |  9    |   8   |   0    |     3 |     3 |     1 |
-|**libgcrypt**|   36  |   22  |   0    |    26 |     7 |     0 |
-|**mbedtls**  |   35  |   -   |   0    |     - |     - |     - |
+|**libgcrypt**|   36  |   22  |   0    |    25 |     6 |     0 |
+|**mbedtls**  |   34  |   5   |   0    |    31 |     4 |     0 |
 |**openSSL**  |       |       |        |       |       |       |
 | recp        |   24  |  9    |   0    |     3 |     2 |     0 |
 | mont        |   27  |  11   |   0    |    25 |     2 |     0 |
 | word        |   20  |  3    |   0    |     2 |     1 |     0 |
-| consttime   |   18  |  3    |   0    |    23 |     1 |     1 |
+| consttime   |   18  |  4    |   0    |    23 |     1 |     1 |
 
 Table 2: with cache side channel
-|             ||        ct-verif      |||      ct-checker     ||
+|             ||      ct-verif        |||      ct-checker     ||
 |-------------|-------|-------|--------|-------|-------|-------|
 |             |  V1   | V2    | V4     |  V1   | V2    | V4    |
-|**BearSSL**  |  9    |   8   |   0    |     3 |     3 |     1 |
-|**libgcrypt**|   36  |   22  |   0    |    26 |     7 |     0 |
-|**mbedtls**  |   36  |   -   |   0    |     - |     - |     - |
+|**BearSSL**  |  12   |   11  |   0    |     3 |     3 |     1 |
+|**libgcrypt**|   38  |   24  |   0    |    26 |     7 |     0 |
+|**mbedtls**  |   35  |   5   |   0    |    31 |     4 |     0 |
 |**openSSL**  |       |       |        |       |       |       |
 | recp        |   24  |  9    |   0    |     3 |     2 |     0 |
-| mont        |   27  |  11   |   0    |    25 |     2 |     0 |
+| mont        |   29  |  13   |   0    |    25 |     2 |     0 |
 | word        |   20  |  3    |   0    |     2 |     1 |     0 |
-| consttime   |   18  |  3    |   0    |    23 |     1 |     1 |
+| consttime   |   19  |  4    |   0    |    23 |     1 |     1 |
 
 # BearSSL
 
-### V1: 9
+### V1: 12
 
 include/inner.h line 1018 - if (j == 0) {  
 **(cache)** include/inner.h line 1021 - return (a[u] >> j) | (a[u + 1] << (32 - j));  
@@ -42,7 +42,7 @@ i32_muladd.c line  108 - for (u = 1; u <= mlen; u ++) {
 i32_tmont.c line   33 - for (k = (m[0] + 31) >> 5; k > 0; k --) {  
 
 
-### V2: 8
+### V2: 11
 
 v2_lib/inner.h line 1018 - if (j == 0) {  
 **(cache)** include/inner.h line 1021 - return (a[u] >> j) | (a[u + 1] << (32 - j));  
@@ -75,11 +75,11 @@ v1.c line  566 - MPN_COPY (precomp[0], bp, bsize);
 v1.c line  567 - for (i = 1; i < (1 << (W - 1)); i++)  
 v1.c line  569 - if (xsize >= base_u_size)  
 v1.c line  577 - if (max_u_size < base_u_size)  
-v1.c line  579- MPN_COPY (precomp[i], rp, rsize);  
-v1.c line  582- if (msize > max_u_size)  
-v1.c line  585- MPN_ZERO_2 (base_u, max_u_size);  
-v1.c line  605- MPN_ZERO_2 (rp, rsize);  
-v1.c line  607- MPN_COPY_2 ( rp, bp, bsize );  
+v1.c line  579 - MPN_COPY (precomp[i], rp, rsize);  
+v1.c line  582 - if (msize > max_u_size)  
+v1.c line  585 - MPN_ZERO_2 (base_u, max_u_size);  
+v1.c line  605 - MPN_ZERO_2 (rp, rsize);  
+v1.c line  607 - MPN_COPY_2 ( rp, bp, bsize );  
 v1.c line  617 - if (e == 0)  
 v1.c line  641 - if (c >= W)  
 v1.c line  667 - for (j += W - c0; j >= 0; j--)  
@@ -128,7 +128,7 @@ v2.c line  758- gcry_assert (res->d == rp);
 
 # mbedtls
 
-### V1: 36
+### V1: 35
 
 bign2/v1_min.c line  418 - if( mbedtls_mpi_cmp_int( N, 0 ) <= 0 || ( N->p[0] & 1 ) == 0 )  
 bign2/v1_min.c line  421 - if( mbedtls_mpi_cmp_int( E, 0 ) < 0 )  
@@ -155,8 +155,7 @@ bign2/v1_min.c line  517 - for( i = 0; i < wsize - 1; i++ )
 bign2/v1_min.c line  523 - for( i = j + 1; i < ( one << wsize ); i++ )  
 bign2/v1_min.c line  525 - MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[i], N->n + 1 ) );  
 bign2/v1_min.c line  526 - MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[i], &W[i - 1] ) );  
-bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )  
-bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )  
+bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )   
 bign2/v1_min.c line  560 - if( ei == 0 && state == 1 )  
 bign2/v1_min.c line  577 - if( nbits == wsize )  
 bign2/v1_min.c line  582 - for( i = 0; i < wsize; i++ )  
@@ -164,106 +163,114 @@ bign2/v1_min.c line  588 - MBEDTLS_MPI_CHK( mpi_select( &WW, W, (size_t) 1 << ws
 bign2/v1_min.c line  606 - if( ( wbits & ( one << wsize ) ) != 0 )  
 bign2/v1_min.c line  615 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )  
 bign2/v1_min.c line  623 - for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )  
-bign2/v1_min.c line  624 - mbedtls_mpi_free( &W[i] );  
+**(cache)**bign2/v1_min.c line  624 - mbedtls_mpi_free( &W[i] );  
 bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
 
-### V2: ---
+### V2: 5
 
-
+bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )   
+bign2/v1_min.c line  560 - if( ei == 0 && state == 1 )  
+bign2/v1_min.c line  606 - if( ( wbits & ( one << wsize ) ) != 0 )  
+bign2/v1_min.c line  615 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )  
+bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
 
 # OpenSSL
 
 ## mont
 
-### V1: 27
+### V1: 29
 
-v1.c line  308 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0  
-v1.c line  309 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0  
-v1.c line  310 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {  
-v1.c line  318 - if (!BN_is_odd(m)) {  
-v1.c line  323 - if (bits == 0) {  
-v1.c line  325 - if (BN_abs_is_word(m, 1)) {  
-v1.c line  338 - if (val[0] == NULL)  
-v1.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
-v1.c line  355 - if (!BN_nnmod(val[0], a, m, ctx))  
-v1.c line  360 - if (!bn_to_mont_fixed_top(val[0], aa, mont, ctx))  
-v1.c line  364 - if (window > 1) {  
-v1.c line  365 - if (!bn_mul_mont_fixed_top(d, val[0], val[0], mont, ctx))  
-v1.c line  368 - for (i = 1; i < j; i++) {  
-v1.c line  369 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
-v1.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
-v1.c line  385 - if (bn_wexpand(r, j) == NULL)  
-v1.c line  395 - if (!bn_to_mont_fixed_top(r, BN_value_one(), mont, ctx))  
-v1.c line  398 - if (BN_is_bit_set(p, wstart) == 0) {  
-v1.c line  400 - if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))  
-v1.c line  403 - if (wstart == 0)  
-v1.c line  416 - for (i = 1; i < window; i++) {  
-v1.c line  417 - if (wstart - i < 0)  
-v1.c line  419 - if (BN_is_bit_set(p, wstart - i)) {  
-v1.c line  431 - if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))  
-v1.c line  436 - if (!bn_mul_mont_fixed_top(r, r, val[wvalue >> 1], mont, ctx))  
-v1.c line  443 - if (wstart < 0)  
-v1.c line  462 - if (!BN_from_montgomery(rr, r, mont, ctx))  
+v1_mont.c line  308 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0  
+v1_mont.c line  309 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0  
+v1_mont.c line  310 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {  
+v1_mont.c line  318 - if (!BN_is_odd(m)) {  
+v1_mont.c line  323 - if (bits == 0) {  
+v1_mont.c line  325 - if (BN_abs_is_word(m, 1)) {  
+v1_mont.c line  338 - if (val[0] == NULL)  
+v1_mont.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
+v1_mont.c line  355 - if (!BN_nnmod(val[0], a, m, ctx))  
+v1_mont.c line  360 - if (!bn_to_mont_fixed_top(val[0], aa, mont, ctx))  
+v1_mont.c line  364 - if (window > 1) {  
+v1_mont.c line  365 - if (!bn_mul_mont_fixed_top(d, val[0], val[0], mont, ctx))  
+v1_mont.c line  368 - for (i = 1; i < j; i++) {  
+v1_mont.c line  369 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
+v1_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
+v1_mont.c line  385 - if (bn_wexpand(r, j) == NULL)  
+**(cache)**v1_mont.c line  388 - r->d[0] = (0 - m->d[0]) & BN_MASK2;  
+**(cache)**v1_mont.c line  390 - r->d[i] = (~m->d[i]) & BN_MASK2;  
+v1_mont.c line  395 - if (!bn_to_mont_fixed_top(r, BN_value_one(), mont, ctx))  
+v1_mont.c line  398 - if (BN_is_bit_set(p, wstart) == 0) {  
+v1_mont.c line  400 - if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))  
+v1_mont.c line  403 - if (wstart == 0)  
+v1_mont.c line  416 - for (i = 1; i < window; i++) {  
+v1_mont.c line  417 - if (wstart - i < 0)  
+v1_mont.c line  419 - if (BN_is_bit_set(p, wstart - i)) {  
+v1_mont.c line  431 - if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))  
+v1_mont.c line  436 - if (!bn_mul_mont_fixed_top(r, r, val[wvalue >> 1], mont, ctx))  
+v1_mont.c line  443 - if (wstart < 0)  
+v1_mont.c line  462 - if (!BN_from_montgomery(rr, r, mont, ctx))  
 
-### V2: 11
+### V2: 13
 
-bn_exp.c line  323 - if (bits == 0) {c
-bn_exp.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
-bn_exp.c line  364 - if (window > 1) {  
-bn_exp.c line  368 - for (i = 1; i < j; i++) {  
-bn_exp.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
-bn_exp.c line  398 - if (BN_is_bit_set(p, wstart) == 0) {  
-bn_exp.c line  403 - if (wstart == 0)  
-bn_exp.c line  416 - for (i = 1; i < window; i++) {  
-bn_exp.c line  417 - if (wstart - i < 0)  
-bn_exp.c line  419 - if (BN_is_bit_set(p, wstart - i)) {  
-bn_exp.c line  443 - if (wstart < 0)  
+v2_mont.c line  323 - if (bits == 0) {c
+v2_mont.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
+v2_mont.c line  364 - if (window > 1) {  
+v2_mont.c line  368 - for (i = 1; i < j; i++) {  
+v2_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
+**(cache)**v2_mont.c line  388 - r->d[0] = (0 - m->d[0]) & BN_MASK2;  
+**(cache)**v2_mont.c line  390 - r->d[i] = (~m->d[i]) & BN_MASK2;  
+v2_mont.c line  398 - if (BN_is_bit_set(p, wstart) == 0) {  
+v2_mont.c line  403 - if (wstart == 0)  
+v2_mont.c line  416 - for (i = 1; i < window; i++) {  
+v2_mont.c line  417 - if (wstart - i < 0)  
+v2_mont.c line  419 - if (BN_is_bit_set(p, wstart - i)) {  
+v2_mont.c line  443 - if (wstart < 0)  
 
 ## mont_recp
 
 ### V1: 24
 
-bn_exp.c line  171 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0){  
-bn_exp.c line  172 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0  
-bn_exp.c line  173 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {  
-bn_exp.c line  180 - if (bits == 0) {  
-bn_exp.c line  182 - if (BN_abs_is_word(m, 1)) {  
-bn_exp.c line  196 - if (val[0] == NULL)  
-bn_exp.c line  201 - if (!BN_copy(aa, m))  
-bn_exp.c line  204 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)  
-bn_exp.c line  207 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)  
-bn_exp.c line  211 - if (!BN_nnmod(val[0], a, m, ctx))  
-bn_exp.c line  213 - if (BN_is_zero(val[0])) {  
-bn_exp.c line  220 - if (window > 1) {  
-bn_exp.c line  221 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))  
-bn_exp.c line  224 - for (i = 1; i < j; i++) {  
-bn_exp.c line  225 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
-bn_exp.c line  238 - if (!BN_one(r))  
-bn_exp.c line  241 - for (;;) {  
-bn_exp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {  
-bn_exp.c line  246 - if (wstart == 0)  
-bn_exp.c line  259 - for (i = 1; i < window; i++) {  
-bn_exp.c line  260 - if (wstart - i < 0)  
-bn_exp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
-bn_exp.c line  279 - if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))  
-bn_exp.c line  286 - if (wstart < 0)  
+v1_recp.c line  171 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0){  
+v1_recp.c line  172 - || BN_get_flags(a, BN_FLG_CONSTTIME) != 0  
+v1_recp.c line  173 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {  
+v1_recp.c line  180 - if (bits == 0) {  
+v1_recp.c line  182 - if (BN_abs_is_word(m, 1)) {  
+v1_recp.c line  196 - if (val[0] == NULL)  
+v1_recp.c line  201 - if (!BN_copy(aa, m))  
+v1_recp.c line  204 - if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)  
+v1_recp.c line  207 - if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)  
+v1_recp.c line  211 - if (!BN_nnmod(val[0], a, m, ctx))  
+v1_recp.c line  213 - if (BN_is_zero(val[0])) {  
+v1_recp.c line  220 - if (window > 1) {  
+v1_recp.c line  221 - if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))  
+v1_recp.c line  224 - for (i = 1; i < j; i++) {  
+v1_recp.c line  225 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
+v1_recp.c line  238 - if (!BN_one(r))  
+v1_recp.c line  241 - for (;;) {  
+v1_recp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {  
+v1_recp.c line  246 - if (wstart == 0)  
+v1_recp.c line  259 - for (i = 1; i < window; i++) {  
+v1_recp.c line  260 - if (wstart - i < 0)  
+v1_recp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
+v1_recp.c line  279 - if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))  
+v1_recp.c line  286 - if (wstart < 0)  
 
 ### V2: 9
 
-bn_exp.c line  180 - if (bits == 0) {  
-bn_exp.c line  220 - if (window > 1) {  
-bn_exp.c line  224 - for (i = 1; i < j; i++) {  
-bn_exp.c line  225 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
-bn_exp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {  
-bn_exp.c line  246 - if (wstart == 0)  
-bn_exp.c line  259 - for (i = 1; i < window; i++) {  
-bn_exp.c line  260 - if (wstart - i < 0)  
-bn_exp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
+v2_recp.c line  180 - if (bits == 0) {  
+v2_recp.c line  220 - if (window > 1) {  
+v2_recp.c line  224 - for (i = 1; i < j; i++) {  
+v2_recp.c line  225 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
+v2_recp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {  
+v2_recp.c line  246 - if (wstart == 0)  
+v2_recp.c line  259 - for (i = 1; i < window; i++) {  
+v2_recp.c line  260 - if (wstart - i < 0)  
+v2_recp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
 
 
 ## mont_consttime
 
-### V1: 18
+### V1: 19
 
 v1_consttime.c line  614 - if (!BN_is_odd(m)) {  
 v1_consttime.c line  628 - if (BN_abs_is_word(m, 1)) {  
@@ -273,6 +280,7 @@ v1_consttime.c line  655 - || !BN_nnmod(reduced, a, m, ctx)) {
 v1_consttime.c line  723 - if ((powerbufFree =  
 v1_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
 v1_consttime.c line  749 - for (i = 1; i < top; i++)  
+**(cache)**v1_consttime.c line  750 - tmp.d[i] = (~m->d[i]) & BN_MASK2;  
 v1_consttime.c line  754 - if (!bn_to_mont_fixed_top(&tmp, BN_value_one(), mont, ctx))  
 v1_consttime.c line  758 - if (!bn_to_mont_fixed_top(&am, a, mont, ctx))  
 v1_consttime.c line 1044 - if (!bn_mul_mont_fixed_top(&tmp, &am, &am, mont, ctx))  
@@ -286,39 +294,40 @@ v1_consttime.c line 1130 - if (powerbuf != NULL) {
 
 
 
-### V2: 3
+### V2: 4
 
-v1_consttime.c line  652 - if (a->neg || BN_ucmp(a, m) >= 0) {  
-v1_consttime.c line  654 - if (reduced == NULL  
-v1_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
+v2_consttime.c line  652 - if (a->neg || BN_ucmp(a, m) >= 0) {  
+v2_consttime.c line  654 - if (reduced == NULL  
+v2_consttime.c line  723 - if ((powerbufFree =  
+v2_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
 
 ## mont_word
 
 ### V1: 20
 
-bn_exp.c line 1164 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0  
-bn_exp.c line 1165 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {  
-bn_exp.c line 1174 - if (!BN_is_odd(m)) {  
-bn_exp.c line 1182 - if (bits == 0) {  
-bn_exp.c line 1184 - if (BN_abs_is_word(m, 1)) {  
-bn_exp.c line 1192 - if (a == 0) {  
-bn_exp.c line 1201 - if (t == NULL)  
-bn_exp.c line 1219 - for (b = bits - 2; b >= 0; b--) {  
-bn_exp.c line 1222 - if ((next_w / w) != w) { /\* overflow \*/  
-bn_exp.c line 1224 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))  
-bn_exp.c line 1235 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))  
-bn_exp.c line 1240 - if (BN_is_bit_set(p, b)) {  
-bn_exp.c line 1242 - if ((next_w / a) != w) { /\* overflow \*/  
-bn_exp.c line 1244 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))  
-bn_exp.c line 1248 - if (!BN_MOD_MUL_WORD(r, w, m))  
-bn_exp.c line 1258 - if (w != 1) {  
-bn_exp.c line 1260 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))  
-bn_exp.c line 1264 - if (!BN_MOD_MUL_WORD(r, w, m))  
-bn_exp.c line 1270 - if (!BN_one(rr))  
-bn_exp.c line 1273 - if (!BN_from_montgomery(rr, r, mont, ctx))  
+v1_word.c line 1164 - if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0  
+v1_word.c line 1165 - || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {  
+v1_word.c line 1174 - if (!BN_is_odd(m)) {  
+v1_word.c line 1182 - if (bits == 0) {  
+v1_word.c line 1184 - if (BN_abs_is_word(m, 1)) {  
+v1_word.c line 1192 - if (a == 0) {  
+v1_word.c line 1201 - if (t == NULL)  
+v1_word.c line 1219 - for (b = bits - 2; b >= 0; b--) {  
+v1_word.c line 1222 - if ((next_w / w) != w) { /\* overflow \*/  
+v1_word.c line 1224 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))  
+v1_word.c line 1235 - if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))  
+v1_word.c line 1240 - if (BN_is_bit_set(p, b)) {  
+v1_word.c line 1242 - if ((next_w / a) != w) { /\* overflow \*/  
+v1_word.c line 1244 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))  
+v1_word.c line 1248 - if (!BN_MOD_MUL_WORD(r, w, m))  
+v1_word.c line 1258 - if (w != 1) {  
+v1_word.c line 1260 - if (!BN_TO_MONTGOMERY_WORD(r, w, mont))  
+v1_word.c line 1264 - if (!BN_MOD_MUL_WORD(r, w, m))  
+v1_word.c line 1270 - if (!BN_one(rr))  
+v1_word.c line 1273 - if (!BN_from_montgomery(rr, r, mont, ctx))  
 
 ### V2: 3
 
-bn_exp.c line 1182 - if (bits == 0) {  
-bn_exp.c line 1219 - for (b = bits - 2; b >= 0; b--) {  
-bn_exp.c line 1240 - if (BN_is_bit_set(p, b)) {  
+v2_word.c line 1182 - if (bits == 0) {  
+v2_word.c line 1219 - for (b = bits - 2; b >= 0; b--) {  
+v2_word.c line 1240 - if (BN_is_bit_set(p, b)) {  

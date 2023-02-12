@@ -24,7 +24,7 @@ int dummy = 0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-//#include "v2_4_mont_consttime_lib/bn_lib.c"
+
 #include "v4_3_2_include/rsaz_exp.h"
 
 #undef SPARC_T4_MONT
@@ -720,10 +720,10 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
 /*X*/            chr0;//            alloca(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH);
     else
 #endif
-        // if ((powerbufFree =
-        //      OPENSSL_malloc(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH))
-        //     == NULL)
-        // goto err;
+        if ((powerbufFree =
+            OPENSSL_malloc(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH))
+            == NULL)
+        goto err;
 
 /*X*/    powerbuf = chr1;//    powerbuf = MOD_EXP_CTIME_ALIGN(powerbufFree);
 ///*L?*/    memset(powerbuf, 0, powerbufLen);
@@ -1403,7 +1403,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../../ct-verif.h"
 

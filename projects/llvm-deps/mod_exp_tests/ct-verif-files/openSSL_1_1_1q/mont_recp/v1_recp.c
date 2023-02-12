@@ -24,7 +24,7 @@ int dummy=0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-//#include "bn_lib.c"
+
 #include "v4_3_2_include/rsaz_exp.h"
 
 #undef SPARC_T4_MONT

@@ -435,7 +435,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
   msize = mod->nlimbs;
   size = 2 * msize;
   msign = mod->sign;
-
+  // MPN_NORMALIZE_0(mod->d, msize); // for testing flow sensitive
   ep = expo->d;
   MPN_NORMALIZE(ep, esize);
   // W = esize; // W = 5 * (esize * BITS_PER_MPI_LIMB > 512) + 4 * (esize * BITS_PER_MPI_LIMB > 256 && esize * BITS_PER_MPI_LIMB <= 512) + 3 * (esize * BITS_PER_MPI_LIMB > 128 && esize * BITS_PER_MPI_LIMB <= 256) + 2 * (esize * BITS_PER_MPI_LIMB > 64 && esize * BITS_PER_MPI_LIMB <= 128) + 1 * (esize * BITS_PER_MPI_LIMB <= 64);
@@ -556,7 +556,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
 /*excluded*/    xp = xp_marker = pub_l4;//xp = xp_marker = mpi_alloc_limb_space( size, msec );
 
     memset( &karactx, 0, sizeof karactx );
-/*cache*/    negative_result = (ep[0] & 1) & bsign;//negative_result = (ep[0] & 1) && bsign;
+/*cache*/    negative_result = (ep[0] & 1) && bsign;
 
     /* Precompute PRECOMP[], BASE^(2 * i + 1), BASE^1, ^3, ^5, ... */
     if (W > 1)                  /* X := BASE^2 */
@@ -718,7 +718,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
         rp = res->d;
         if ( carry_limb )
           {
-            dummy++;// rp[rsize] = carry_limb;
+/*cache*/     rp[rsize] = carry_limb;
             rsize++;
           }
       }

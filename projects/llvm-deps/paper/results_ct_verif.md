@@ -24,6 +24,19 @@ Table 2: with cache side channel
 | word        |   20  |  3    |   0    |     2 |     1 |     0 |
 | consttime   |   19  |  4    |   0    |    23 |     1 |     1 |
 
+Table 3: with cache side channel (no whitelist)
+|             ||      ct-verif        |||      ct-checker     ||
+|-------------|-------|-------|--------|-------|-------|-------|
+|             |  V1   | V2    | V4     |  V1   | V2    | V4    |
+|**BearSSL**  |  12   |   11  |   0    |     9 |    10 |     2 |
+|**libgcrypt**|   38  |   24  |   0    |    35 |    19 |     0 |
+|**mbedtls**  |   35  |   5   |   0    |    37 |     4 |     0 |
+|**openSSL**  |       |       |        |       |       |       |
+| recp        |   24  |  9    |   0    |    10 |     8 |     0 |
+| mont        |   29  |  13   |   0    |    32 |     9 |     0 |
+| word        |   20  |  3    |   0    |     4 |     3 |     0 |
+| consttime   |   19  |  4    |   0    |    23 |     1 |     1 |
+
 # BearSSL
 
 ### V1: 12

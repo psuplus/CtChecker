@@ -62,9 +62,12 @@ def get_lines_from_source(positives, positives2):
     return [results, results2]
 
 
-def output_results(lines):
+def output_results(lines1, lines2):
     """Writes out to stdout ex. fn.c line # - source"""
-    for fname, result_pair in lines.items():
+    for fname, result_pair in lines1.items():
+        for line, src in result_pair:
+            print("{} line {:4d} - {}".format(fname, line, src))
+    for fname, result_pair in lines2.items():
         for line, src in result_pair:
             print("{} line {:4d} - {}".format(fname, line, src))
 
@@ -123,78 +126,6 @@ def update_table(lines):
                 if fname == interested_file:
                     count = count + 1
 
-    # table = []
-    # with open("../../paper/conference/benchmark-array-access.tex", "r") as f:
-    #     for i, line in enumerate(f):
-    #         l = line.split("&")
-    #         if len(l) == 12:
-    #             table.append(
-    #                 [
-    #                     s.replace("\\", "")
-    #                     .replace("hspace{0.25cm}", "")
-    #                     .replace("textbf{", "")
-    #                     .replace("}", "")
-    #                     .strip()
-    #                     for s in l
-    #                 ]
-    #             )
-
-    # for idx, label in enumerate(table[0]):
-    #     if label == sys.argv[4]:
-    #         table[row_idx][idx] = count
-
-    # with open("../../paper/conference/benchmark-array-access.tex", "w") as f:
-    #     f.write((" & ".join(table[0]) + " \\\\\n").replace("%", "\%"))
-    #     f.write("\\midrule\n")
-    #     for i in range(1, 4):
-    #         table[i][0] = "\\textbf{" + table[i][0] + "}"
-    #         f.write((" & ".join(map(str, table[i])) + " \\\\\n").replace("%", "\%"))
-    #     f.write("\\textbf{OpenSSL 1.1.0g} \\\\\n")
-    #     for i in range(4, 8):
-    #         table[i][0] = "\\hspace{0.25cm}" + table[i][0]
-    #         f.write((" & ".join(map(str, table[i])) + " \\\\\n").replace("%", "\%"))
-    #     f.close()
-
-    # running_time_table = []
-    # with open("../../paper/conference/benchmark-running-time.tex", "r") as f:
-    #     for i, line in enumerate(f):
-    #         l = line.split("&")
-    #         if len(l) == 12:
-    #             running_time_table.append(
-    #                 [
-    #                     s.replace("\\", "")
-    #                     .replace("hspace{0.25cm}", "")
-    #                     .replace("textbf{", "")
-    #                     .replace("}", "")
-    #                     .strip()
-    #                     for s in l
-    #                 ]
-    #             )
-
-    # for idx, label in enumerate(running_time_table[0]):
-    #     if label == sys.argv[4]:
-    #         running_time_table[row_idx][idx] = running_time
-
-    # with open("../../paper/conference/benchmark-running-time.tex", "w") as f:
-    #     f.write((" & ".join(running_time_table[0]) + " \\\\\n").replace("%", "\%"))
-    #     f.write("\\midrule\n")
-    #     for i in range(1, 4):
-    #         running_time_table[i][0] = "\\textbf{" + running_time_table[i][0] + "}"
-    #         f.write(
-    #             (" & ".join(map(str, running_time_table[i])) + " \\\\\n").replace(
-    #                 "%", "\%"
-    #             )
-    #         )
-    #     f.write("\\textbf{OpenSSL 1.1.0g} \\\\\n")
-    #     for i in range(4, 8):
-    #         running_time_table[i][0] = "\\hspace{0.25cm}" + running_time_table[i][0]
-    #         f.write(
-    #             (" & ".join(map(str, running_time_table[i])) + " \\\\\n").replace(
-    #                 "%", "\%"
-    #             )
-    #         )
-    #     f.close()
-
 
 def main():
     """Looks at results from Vulnerable/Taint Analysis and records the associated
@@ -219,7 +150,7 @@ def main():
             positives2[fn].add(int(ln) - 1)
 
     res = get_lines_from_source(positives, positives2)
-    output_results(res[0])
+    output_results(res[0], res[1])
     # update_table(res)
 
 

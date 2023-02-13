@@ -34,15 +34,15 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
+  -vulnerablebranch  -debug < $1 2> tmp-$2.dat > /dev/null
 
 CONS_FILENAME=$( echo 'constraints-'$2'.con' | tr '/' '-')
-cat tmp.dat | grep '<:' > $CONS_FILENAME
+cat tmp-$2.dat | grep '<:' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$2'.txt' | tr '/' '-')
 
 export PATH="$PATH:../../../processing_tools" # tmp change to path to have post-processing tools
-python ../../../processing_tools/post_analysis_ct_verif.py tmp.dat $START $END $FILE > $FILENAME
+python ../../../processing_tools/post_analysis_ct_verif.py tmp-$2.dat $START $END $FILE > $FILENAME
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc
 

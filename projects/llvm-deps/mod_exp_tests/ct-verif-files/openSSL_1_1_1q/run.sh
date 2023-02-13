@@ -52,15 +52,15 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
+  -vulnerablebranch  -debug < $1 2>tmp-$FUNC-$2.dat > /dev/null
 
 CONS_FILENAME=$( echo 'constraints-'$FUNC'-'$2'.con' | tr '/' '-')
-cat tmp.dat | grep '<:' > $CONS_FILENAME
+cat tmp-$FUNC-$2.dat | grep '<:' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$FUNC'-'$2'.txt' | tr '/' '-')
 
 export PATH="$PATH:../../../processing_tools" # tmp change to path to have post-processing tools
-python ../../../processing_tools/post_analysis_ct_verif.py tmp.dat $START $END $FILE > $FILENAME
+python ../../../processing_tools/post_analysis_ct_verif.py tmp-$FUNC-$2.dat $START $END $FILE > $FILENAME
 #SPLITPY="../utils/split.py"
 #$SPLITPY > split.txt
 #mv split.txt results_with_source.txt

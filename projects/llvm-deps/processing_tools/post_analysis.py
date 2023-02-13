@@ -87,7 +87,7 @@ def update_table(lines):
                     count = count + 1
 
     table = []
-    with open("../../paper/conference/merge-benchmark.tex", "r") as f:
+    with open("../../paper/conference/benchmark-table.tex", "r") as f:
         for i, line in enumerate(f):
             l = line.split("&")
             if len(l) == 12:
@@ -106,7 +106,7 @@ def update_table(lines):
         if label == sys.argv[4]:
             table[row_idx][idx] = count
 
-    with open("../../paper/conference/merge-benchmark.tex", "w") as f:
+    with open("../../paper/conference/benchmark-table.tex", "w") as f:
         f.write((" & ".join(table[0]) + " \\\\\n").replace("%", "\%"))
         f.write("\\midrule\n")
         for i in range(1, 4):
@@ -127,7 +127,7 @@ def update_table(lines):
                     count = count + 1
 
     table = []
-    with open("../../paper/conference/merge-array-access.tex", "r") as f:
+    with open("../../paper/conference/benchmark-array-access.tex", "r") as f:
         for i, line in enumerate(f):
             l = line.split("&")
             if len(l) == 12:
@@ -146,7 +146,7 @@ def update_table(lines):
         if label == sys.argv[4]:
             table[row_idx][idx] = count
 
-    with open("../../paper/conference/merge-array-access.tex", "w") as f:
+    with open("../../paper/conference/benchmark-array-access.tex", "w") as f:
         f.write((" & ".join(table[0]) + " \\\\\n").replace("%", "\%"))
         f.write("\\midrule\n")
         for i in range(1, 4):
@@ -159,7 +159,7 @@ def update_table(lines):
         f.close()
 
     running_time_table = []
-    with open("../../paper/conference/merge-time.tex", "r") as f:
+    with open("../../paper/conference/benchmark-running-time.tex", "r") as f:
         for i, line in enumerate(f):
             l = line.split("&")
             if len(l) == 12:
@@ -178,7 +178,7 @@ def update_table(lines):
         if label == sys.argv[4]:
             running_time_table[row_idx][idx] = running_time
 
-    with open("../../paper/conference/merge-time.tex", "w") as f:
+    with open("../../paper/conference/benchmark-running-time.tex", "w") as f:
         f.write((" & ".join(running_time_table[0]) + " \\\\\n").replace("%", "\%"))
         f.write("\\midrule\n")
         for i in range(1, 4):

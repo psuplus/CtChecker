@@ -126,16 +126,20 @@ bool VulnerableBranch::runOnModule(Module &M) {
     for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
          ++I) {
       if (const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&*I)) {
-        if (ArrayType *a = dyn_cast<ArrayType>(gep->getSourceElementType())) {
-          const MDLocation *loc = gep->getDebugLoc();
-          // get the index value and lookup in the tainted set
-          const Value *v = gep->getOperand(2);
-          if (!isa<Constant>(v) && tainted.find(v) != tainted.end()) {
-            errs() << loc->getFilename() << " at "
-                   << std::to_string(loc->getLine()) << "\n";
-            gep->dump();
-            gep->getOperand(2)->dump();
-          }
+        // get the index value and lookup in the tainted set
+        const Value *v;
+        if (isa<ArrayType>(gep->getSourceElementType())) {
+          v = gep->getOperand(2);
+        } else {
+          v = gep->getOperand(1);
+        }
+
+        const MDLocation *loc = gep->getDebugLoc();
+        if (!isa<Constant>(v) && tainted.find(v) != tainted.end()) {
+          errs() << loc->getFilename() << " at "
+                 << std::to_string(loc->getLine()) << "\n";
+          gep->dump();
+          v->dump();
         }
       }
     }

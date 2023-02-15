@@ -24,7 +24,6 @@
  *	 of an optional secure memory allocation which may be used
  *	 to avoid revealing of sensitive data due to paging etc.
  */
-
 #include "v4_4_include/rewrite_MPN.h"
 #include "v4_4_include/config.h"
 #include <stdio.h>
@@ -35,7 +34,6 @@
 #include "v4_4_include/longlong.h"
 
 int dummy = 0;
-
 /*
  * When you need old implementation, please add compilation option
  * -DUSE_ALGORITHM_SIMPLE_EXPONENTIATION
@@ -376,14 +374,14 @@ mul_mod (mpi_ptr_t xp, mpi_size_t *xsize_p,
          mpi_ptr_t mp, mpi_size_t msize,
          struct karatsuba_ctx *karactx_p,int pub_branch0)
 {
-  if( ssize < KARATSUBA_THRESHOLD )
+  if( pub_branch0 == 4)//if( ssize < KARATSUBA_THRESHOLD )
 /*excluded*/    printf("print");// //_gcry_mpih_mul ( xp, rp, rsize, sp, ssize );
   else
-/*excluded*/    printf("p");//_gcry_mpih_mul_karatsuba_case (xp, rp, rsize, sp, ssize, karactx_p);
+/*excluded*/    dummy*=2;//_gcry_mpih_mul_karatsuba_case (xp, rp, rsize, sp, ssize, karactx_p);
 
-   if (rsize + ssize > msize)
+   if(pub_branch0 == 3)//   if (rsize + ssize > msize)
     {
-/*excluded*/      printf("p"); //_gcry_mpih_divrem (xp + msize, 0, xp, rsize + ssize, mp, msize);
+/*excluded*/      dummy++;//_gcry_mpih_divrem (xp + msize, 0, xp, rsize + ssize, mp, msize);
       *xsize_p = msize;
     }
    else
@@ -439,8 +437,8 @@ _gcry_mpi_powm (gcry_mpi_t res,
   msign = mod->sign;
 
   ep = expo->d;
-  	/*loop*/ MPN_NORMALIZE_0(ep, esize);
-
+  MPN_NORMALIZE_1 (ep, esize);
+// W = esize; // W = 5 * (esize * BITS_PER_MPI_LIMB > 512) + 4 * (esize * BITS_PER_MPI_LIMB > 256 && esize * BITS_PER_MPI_LIMB <= 512) + 3 * (esize * BITS_PER_MPI_LIMB > 128 && esize * BITS_PER_MPI_LIMB <= 256) + 2 * (esize * BITS_PER_MPI_LIMB > 64 && esize * BITS_PER_MPI_LIMB <= 128) + 1 * (esize * BITS_PER_MPI_LIMB <= 64);
   if (esize * BITS_PER_MPI_LIMB > 512)
     W = 5;
   else if (esize * BITS_PER_MPI_LIMB > 256)
@@ -452,14 +450,14 @@ _gcry_mpi_powm (gcry_mpi_t res,
   else
     W = 1;
 
-/*excluded*/  esec = pub_int0; //   esec = mpi_is_secure(expo);
-/*excluded*/  msec = pub_int1; //   msec = mpi_is_secure(mod);
-/*excluded*/  bsec = pub_int2; //   bsec = mpi_is_secure(base);
+/*excluded*/  esec = pub_int0;//esec = mpi_is_secure(expo);
+/*excluded*/  msec = pub_int1;//msec = mpi_is_secure(mod);
+/*excluded*/  bsec = pub_int2;//bsec = mpi_is_secure(base);
 
   rp = res->d;
 
   if (!msize)
-/*excluded*/    printf("p"); // _gcry_divide_by_zero();
+    /*excluded*/    printf("p"); // _gcry_divide_by_zero();
 
   if (!esize)
     {
@@ -483,7 +481,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
   mp_nlimbs = msec? msize:0;
 /*excluded*/  mp = mp_marker = pub_l0;
   count_leading_zeros (mod_shift_cnt, mod->d[msize-1]);
-  if (pub_branch1)//if (mod_shift_cnt)
+  if (pub_branch0) //if (mod_shift_cnt)
 /*excluded*/    print("p");//_gcry_mpih_lshift (mp, mod->d, msize, mod_shift_cnt);
   else
     MPN_COPY( mp, mod->d, msize );
@@ -505,7 +503,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
       bsize = msize;
       /* Canonicalize the base, since we are going to multiply with it
          quite a few times.  */
-      	/*loop*/MPN_NORMALIZE_0( bp, bsize );
+      MPN_NORMALIZE_1( bp, bsize );
     }
   else
     bp = base->d;
@@ -523,7 +521,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
   if ( rp == bp )
     {
       /* RES and BASE are identical.  Allocate temp. space for BASE.  */
-      gcry_assert (!bp_marker);
+      // gcry_assert (!bp_marker);
       bp_nlimbs = bsec? bsize:0;
 /*excluded*/      bp = bp_marker = pub_l2;//bp = bp_marker = mpi_alloc_limb_space( bsize, bsec );
       MPN_COPY(bp, rp, bsize);
@@ -533,7 +531,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
       /* RES and EXPO are identical.  Allocate temp. space for EXPO.  */
       ep_nlimbs = esec? esize:0;
 /*excluded*/      ep = ep_marker = pub_l3;//ep = ep_marker = mpi_alloc_limb_space( esize, esec );
-      MPN_COPY(ep, rp, esize);
+      MPN_COPY (ep, rp, esize);
     }
 
   /* Copy base to the result.  */
@@ -554,37 +552,37 @@ _gcry_mpi_powm (gcry_mpi_t res,
     struct karatsuba_ctx karactx;
     mpi_ptr_t tp;
 
-    xp_nlimbs = msec? size:0;
+   xp_nlimbs = msec? size:0;
 /*excluded*/    xp = xp_marker = pub_l4;//xp = xp_marker = mpi_alloc_limb_space( size, msec );
 
     memset( &karactx, 0, sizeof karactx );
-/*excluded*/    negative_result = (ep[0] & 1) & bsign;//negative_result = (ep[0] & 1) && bsign;
+/*cache*/    negative_result = (ep[0] & 1) & bsign;//negative_result = (ep[0] & 1) && bsign;
 
     /* Precompute PRECOMP[], BASE^(2 * i + 1), BASE^1, ^3, ^5, ... */
     if (W > 1)                  /* X := BASE^2 */
-      mul_mod (xp, &xsize, bp, bsize, bp, bsize, mp, msize, &karactx, pub_branch0);
+      mul_mod (xp, &xsize, bp, bsize, bp, bsize, mp, msize, &karactx, pub_branch20);
 /*excluded*/    base_u = precomp[0] = pub_l5; // base_u = precomp[0] = mpi_alloc_limb_space (bsize, esec);
     base_u_size = max_u_size = precomp_size[0] = bsize;
-    	/*loop*/ MPN_COPY_0 (precomp[0], bp, bsize);
-    i = 1; if((1 << (W - 1))) /*loop*/ //for (i = 1; i < (1 << (W - 1)); i++)
+    MPN_COPY (precomp[0], bp, bsize);
+    for (i = 1; i < (1 << (W - 1)); i++)
       {                         /* PRECOMP[i] = BASE^(2 * i + 1) */
-        if (xsize >= base_u_size)
+        if (pub_branch3) //if (xsize >= base_u_size)
           mul_mod (rp, &rsize, xp, xsize, base_u, base_u_size,
-                   mp, msize, &karactx, pub_branch20);
+                   mp, msize, &karactx, pub_branch21);
         else
           mul_mod (rp, &rsize, base_u, base_u_size, xp, xsize,
-                   mp, msize, &karactx, pub_branch21);
+                   mp, msize, &karactx, pub_branch22);
 /*excluded*/        base_u = precomp[i] = pub_l6;//base_u = precomp[i] = mpi_alloc_limb_space (rsize, esec);
         base_u_size = precomp_size[i] = rsize;
-        if (max_u_size < base_u_size)
+        if (pub_branch4) //if (max_u_size < base_u_size)
           max_u_size = base_u_size;
-      /*loop*/  MPN_COPY_0 (precomp[i], rp, rsize);
+        MPN_COPY_2 (precomp[i], rp, rsize);
       }
 
-    if (msize > max_u_size)
+    if (pub_branch5) //if (msize > max_u_size)
       max_u_size = msize;
 /*excluded*/    base_u = pub_l7;//base_u = mpi_alloc_limb_space (max_u_size, esec);
-    /*loop*/MPN_ZERO_0 (base_u, max_u_size);
+    MPN_ZERO_2 (base_u, max_u_size);
 
     i = esize - 1;
 
@@ -604,9 +602,9 @@ _gcry_mpi_powm (gcry_mpi_t res,
     else
       {
         rsize = msize;
-        /*loop*/MPN_ZERO_0 (rp, rsize);
+        MPN_ZERO (rp, rsize);
       }
-    /*loop*/MPN_COPY_0 ( rp, bp, bsize );
+    MPN_COPY ( rp, bp, bsize );
 
     e = ep[i];
     count_leading_zeros (c, e);
@@ -615,12 +613,12 @@ _gcry_mpi_powm (gcry_mpi_t res,
 
     j = 0;
 
-    /*loop*/ //for (;;)
-      if (e == 0)
+    for (;;)
+      if (pub_branch6) //if (e == 0)
         {
           j += c;
           if ( --i < 0 )
-            print("p");
+            break;
 
           e = ep[i];
           c = BITS_PER_MPI_LIMB;
@@ -640,7 +638,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
           j += c0;
 
           e0 = (e >> (BITS_PER_MPI_LIMB - W));
-          if (c >= W)
+          if (pub_branch7) //if (c >= W)
             c0 = 0;
           else
             {
@@ -666,7 +664,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
           count_trailing_zeros (c0, e0);
           e0 = (e0 >> c0) >> 1;
 
-          if(j) /*loop*/ //for (j += W - c0; j >= 0; j--)
+          j += W - c0; //for (j += W - c0; j >= 0; j--)
             {
 
               /*
@@ -674,7 +672,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
                *  base_u_size <= precomp_size[e0]
                */
               base_u_size = 0;
-              k = 0; if(1<< (W - 1)) /*loop*/ //for (k = 0; k < (1<< (W - 1)); k++)
+              for (k = 0; k < (1<< (W - 1)); k++)
                 {
                   w.alloced = w.nlimbs = precomp_size[k];
                   u.alloced = u.nlimbs = precomp_size[k];
@@ -691,19 +689,19 @@ _gcry_mpi_powm (gcry_mpi_t res,
               base_u_size ^= ((base_u_size ^ rsize)  & (0UL - (j != 0)));
 
               mul_mod (xp, &xsize, rp, rsize, base_u, base_u_size,
-                       mp, msize, &karactx, pub_branch22);
+                       mp, msize, &karactx, pub_branch23);
               tp = rp; rp = xp; xp = tp;
               rsize = xsize;
             }
 
           j = c0;
           if ( i < 0 )
-            dummy++;//break;
+            break;
         }
 
-    if(j--)/*loop*/ //while (j--)
+    if (pub_branch8) //while (j--)
       {
-        mul_mod (xp, &xsize, rp, rsize, rp, rsize, mp, msize, &karactx,pub_branch23);
+        mul_mod (xp, &xsize, rp, rsize, rp, rsize, mp, msize, &karactx,pub_branch24);
         tp = rp; rp = xp; xp = tp;
         rsize = xsize;
       }
@@ -714,7 +712,7 @@ _gcry_mpi_powm (gcry_mpi_t res,
 
        Also make sure the result is put in RES->d (where it already
        might be, see above).  */
-    if ( mod_shift_cnt )
+    if (pub_branch9) //if ( mod_shift_cnt )
       {
 /*excluded*/        carry_limb = pub_l8;//        carry_limb = _gcry_mpih_lshift( res->d, rp, rsize, mod_shift_cnt);
         rp = res->d;
@@ -726,38 +724,38 @@ _gcry_mpi_powm (gcry_mpi_t res,
       }
     else if (res->d != rp)
       {
-        /*loop*/MPN_COPY_0 (res->d, rp, rsize);
+        MPN_COPY_2 (res->d, rp, rsize);
         rp = res->d;
       }
 
-    if ( rsize >= msize )
-      {
-/*excluded*/        dummy++;//        _gcry_mpih_divrem(rp + msize, 0, rp, rsize, mp, msize);
+    if (pub_branch10) //if ( rsize >= msize )
+      { 
+/*excluded*/        printf("p");//        _gcry_mpih_divrem(rp + msize, 0, rp, rsize, mp, msize);
         rsize = msize;
       }
 
     /* Remove any leading zero words from the result.  */
-    if ( mod_shift_cnt )
+    if (pub_branch11) //if ( mod_shift_cnt )
 /*excluded*/      printf("p");//      _gcry_mpih_rshift( rp, rp, rsize, mod_shift_cnt);
-    /*loop*/MPN_NORMALIZE_0 (rp, rsize);
+    MPN_NORMALIZE_1 (rp, rsize);
 
 /*excluded*/      printf("p");//    _gcry_mpih_release_karatsuba_ctx (&karactx );
-i = 0; if(1 << (W - 1))printf("p"); /*loop*/ //    for (i = 0; i < (1 << (W - 1)); i++)
+    for (i = 0; i < (1 << (W - 1)); i++)
 /*excluded*/      printf("p");//      _gcry_mpi_free_limb_space( precomp[i], esec ? precomp_size[i] : 0 );
 /*excluded*/      printf("p");//    _gcry_mpi_free_limb_space (base_u, esec ? max_u_size : 0);
   }
 
   /* Fixup for negative results.  */
-  if ( negative_result && rsize )
+  if (pub_branch12) //if ( negative_result && rsize )
     {
-      if ( mod_shift_cnt )
+      if (pub_branch13) //if ( mod_shift_cnt )
 /*excluded*/      printf("p");//        _gcry_mpih_rshift( mp, mp, msize, mod_shift_cnt);
 /*excluded*/      printf("p");//      _gcry_mpih_sub( rp, mp, msize, rp, rsize);
       rsize = msize;
       rsign = msign;
-      /*loop*/MPN_NORMALIZE_0(rp, rsize);
+      MPN_NORMALIZE_1(rp, rsize);
     }
-  gcry_assert (res->d == rp);
+  // gcry_assert (res->d == rp);
   res->nlimbs = rsize;
   res->sign = rsign;
 
@@ -772,3 +770,124 @@ i = 0; if(1 << (W - 1))printf("p"); /*loop*/ //    for (i = 0; i < (1 << (W - 1)
 /*excluded*/      printf("p");//    _gcry_mpi_free_limb_space( xp_marker, xp_nlimbs );
 }
 #endif
+
+/*************************/
+// #include <smack.h>
+// #include "../../ct-verif.h"
+
+// void
+// fragment_wrapper(int alloced, int nlimbs, int sign, unsigned int flags, mpi_limb_t *d,
+//                 int alloced0, int nlimbs0, int sign0, unsigned int flags0, mpi_limb_t *d0,
+//                 int alloced1, int nlimbs1, int sign1, unsigned int flags1, mpi_limb_t *d1,
+//                 int alloced2, int nlimbs2, int sign2, unsigned int flags2, mpi_limb_t *d2,
+//                 int pub_int0,int pub_int1,int pub_int2,
+//                 mpi_limb_t *pub_l0,mpi_limb_t *pub_l1,mpi_limb_t *pub_l2,mpi_limb_t *pub_l3,mpi_limb_t *pub_l4,mpi_limb_t *pub_l5,mpi_limb_t *pub_l6,mpi_limb_t *pub_l7,mpi_limb_t pub_l8,
+//                 int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24) {
+   
+   
+//    public_in(__SMACK_value(pub_branch0));
+//    public_in(__SMACK_value(pub_branch1));
+//    public_in(__SMACK_value(pub_branch2));
+//    public_in(__SMACK_value(pub_branch3));
+//    public_in(__SMACK_value(pub_branch4));
+//    public_in(__SMACK_value(pub_branch5));
+//    public_in(__SMACK_value(pub_branch6));
+//    public_in(__SMACK_value(pub_branch7));
+//    public_in(__SMACK_value(pub_branch8));
+//    public_in(__SMACK_value(pub_branch9));
+//    public_in(__SMACK_value(pub_branch10));
+//    public_in(__SMACK_value(pub_branch11));
+//    public_in(__SMACK_value(pub_branch12));
+//    public_in(__SMACK_value(pub_branch13));
+//    public_in(__SMACK_value(pub_branch14));
+//    public_in(__SMACK_value(pub_branch15));
+//    public_in(__SMACK_value(pub_branch16));
+//    public_in(__SMACK_value(pub_branch17));
+//    public_in(__SMACK_value(pub_branch18));
+//    public_in(__SMACK_value(pub_branch19));
+//    public_in(__SMACK_value(pub_branch20));
+//    public_in(__SMACK_value(pub_branch21));
+//    public_in(__SMACK_value(pub_branch22));
+//    public_in(__SMACK_value(pub_branch23));
+//    public_in(__SMACK_value(pub_branch24));
+
+   
+//    public_in(__SMACK_value(pub_int0));
+//    public_in(__SMACK_value(pub_int1));
+//    public_in(__SMACK_value(pub_int2));
+   
+//    public_in(__SMACK_value(pub_l0));
+//    public_in(__SMACK_value(pub_l1));
+//    public_in(__SMACK_value(pub_l2));
+//    public_in(__SMACK_value(pub_l3));
+//    public_in(__SMACK_value(pub_l4));
+//    public_in(__SMACK_value(pub_l5));
+//    public_in(__SMACK_value(pub_l6));
+//    public_in(__SMACK_value(pub_l7));
+//    public_in(__SMACK_value(pub_l8));
+   
+//    public_in(__SMACK_values(pub_l0,32));
+//    public_in(__SMACK_values(pub_l1,32));
+//    public_in(__SMACK_values(pub_l2,32));
+//    public_in(__SMACK_values(pub_l3,32));
+//    public_in(__SMACK_values(pub_l4,32));
+//    public_in(__SMACK_values(pub_l5,32));
+//    public_in(__SMACK_values(pub_l6,32));
+//    public_in(__SMACK_values(pub_l7,32));
+   
+   
+//    public_in(__SMACK_value(alloced));
+//    public_in(__SMACK_value(nlimbs));
+//    public_in(__SMACK_value(sign));
+//    public_in(__SMACK_value(flags));
+//    public_in(__SMACK_value(d));
+   
+//    public_in(__SMACK_value(alloced0));
+//    public_in(__SMACK_value(nlimbs0));
+//    public_in(__SMACK_value(sign0));
+//    public_in(__SMACK_value(flags0));
+//    public_in(__SMACK_value(d0));
+   
+//    public_in(__SMACK_value(alloced1));
+//    public_in(__SMACK_value(nlimbs1));
+//    public_in(__SMACK_value(sign1));
+//    public_in(__SMACK_value(flags1));
+//    public_in(__SMACK_value(d1));
+   
+//    public_in(__SMACK_value(alloced2));
+//    public_in(__SMACK_value(nlimbs2));
+//    public_in(__SMACK_value(sign2));
+//    public_in(__SMACK_value(flags2));
+//    public_in(__SMACK_value(d2));
+   
+//    // show tainted variable *d
+//    //    public_in(__SMACK_values(d,32));
+//    public_in(__SMACK_values(d0,32));
+//    public_in(__SMACK_values(d1,32));
+//    public_in(__SMACK_values(d2,32));
+   
+//    struct gcry_mpi OBJ = {alloced,nlimbs,sign,flags,d};
+//    struct gcry_mpi OBJ2 = {alloced2,nlimbs2,sign2,flags2,d2};
+   
+//    gcry_mpi_t expo = &OBJ;
+//    gcry_mpi_t mod = &OBJ2;
+   
+//    struct gcry_mpi OBJ0 = {alloced0,nlimbs0,sign0,flags0,d0};
+//    struct gcry_mpi OBJ1 = {alloced1,nlimbs1,sign1,flags1,d1};
+   
+//    gcry_mpi_t res = &OBJ0;
+//    gcry_mpi_t base = &OBJ1;
+   
+//    _gcry_mpi_powm_algorithm (res,base,expo,mod,
+//                              pub_int0,pub_int1,pub_int2,
+//                              pub_l0,pub_l1,pub_l2,
+//                              pub_l3,pub_l4,pub_l5,
+//                              pub_l6,pub_l7,pub_l8,
+//                              pub_branch0,pub_branch1,pub_branch2,pub_branch3,
+//                              pub_branch4,pub_branch5,pub_branch6,pub_branch7,
+//                              pub_branch8,pub_branch9,pub_branch10,pub_branch11,
+//                              pub_branch12,pub_branch13,pub_branch14,pub_branch15,pub_branch16,pub_branch17,pub_branch18,pub_branch19,pub_branch20,pub_branch21,pub_branch22,pub_branch23,pub_branch24);
+   
+   
+// }
+/*************************/

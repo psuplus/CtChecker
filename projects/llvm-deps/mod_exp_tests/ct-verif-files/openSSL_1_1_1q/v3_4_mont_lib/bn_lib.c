@@ -9,10 +9,10 @@
 
 #include <assert.h>
 #include <limits.h>
-#include "internal/cryptlib.h"
-#include "bn_local.h"
-#include <openssl/opensslconf.h>
-#include "internal/constant_time.h"
+#include "../v4_3_2_include/internal/cryptlib.h"
+#include "../v4_3_2_include/bn_local.h"
+#include "../v4_3_2_include/openssl/opensslconf.h"
+#include "../v4_3_2_include/internal/constant_time.h"
 
 /* This stuff appears to be completely unused, so is deprecated */
 #if OPENSSL_API_COMPAT < 0x00908000L
@@ -606,7 +606,7 @@ int BN_ucmp_0(const BIGNUM *a, const BIGNUM *b, int pub_BRANCH0)
         return i;
     ap = a->d;
     bp = b->d;
-    i = a->top - 1; if(i)dummy++; {/*loop*/ //for (i = a->top - 1; i >= 0; i--) {
+    for (i = a->top - 1; i >= 0; i--) {
         t1 = ap[i];
         t2 = bp[i];
         if (t1 != t2)
@@ -708,13 +708,13 @@ int BN_is_bit_set_0(const BIGNUM *a, int n, int pub_BRANCH0)
 /**/    int i, j; int dummy = 0;
 
 /*excluded*/    dummy++;//    bn_check_top(a);
-    if (n < 0)
+    if (pub_BRANCH0 == 0) //if (n < 0)
         return 0;
     i = n / BN_BITS2;
     j = n % BN_BITS2;
-    if (a->top <= i)
+    if (pub_BRANCH0 == 1) //if (a->top <= i)
         return 0;
-    return (int)(((a->d[i]) >> j) & ((BN_ULONG)1));
+    return (int)(((a->d[0]) >> j) & ((BN_ULONG)1)); //return (int)(((a->d[i]) >> j) & ((BN_ULONG)1));
 }
 
 // int BN_mask_bits(BIGNUM *a, int n)

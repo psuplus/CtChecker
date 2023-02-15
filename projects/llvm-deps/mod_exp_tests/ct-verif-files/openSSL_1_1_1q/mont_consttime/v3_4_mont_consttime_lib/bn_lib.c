@@ -9,10 +9,10 @@
 
 #include <assert.h>
 #include <limits.h>
-#include "internal/cryptlib.h"
-#include "bn_local.h"
-#include <openssl/opensslconf.h>
-#include "internal/constant_time.h"
+#include "../v4_3_2_include/internal/cryptlib.h"
+#include "../v4_3_2_include/bn_local.h"
+#include "../v4_3_2_include/openssl/opensslconf.h"
+#include "../v4_3_2_include/internal/constant_time.h"
 
 /* This stuff appears to be completely unused, so is deprecated */
 #if OPENSSL_API_COMPAT < 0x00908000L
@@ -606,7 +606,7 @@ int BN_ucmp_0(const BIGNUM *a, const BIGNUM *b, int pub_BRANCH0)
         return i;
     ap = a->d;
     bp = b->d;
-    i = 0; if(a->top)dummy++; {/*loop*/ //for (i = a->top - 1; i >= 0; i--) {
+    for (i = a->top - 1; i >= 0; i--) {
         t1 = ap[i];
         t2 = bp[i];
         if (t1 != t2)

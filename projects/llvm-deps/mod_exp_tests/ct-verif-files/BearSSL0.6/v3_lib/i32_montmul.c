@@ -35,7 +35,7 @@ br_i32_montymul(uint32_t *d, const uint32_t *x, const uint32_t *y,
 	len = (m[0] + 31) >> 5;
 	br_i32_zero(d, m[0]);
 	dh = 0;
-	for (u = 0; u < len; u ++) {
+	u = 0; { //for (u = 0; u < len; u ++) {
 		uint32_t f, xu;
 		uint64_t r1, r2, zh;
 
@@ -43,7 +43,7 @@ br_i32_montymul(uint32_t *d, const uint32_t *x, const uint32_t *y,
 		f = (d[1] + x[u + 1] * y[1]) * m0i;
 		r1 = 0;
 		r2 = 0;
-		for (v = 0; v < len; v ++) {
+		v = 0; {//for (v = 0; v < len; v ++) {
 			uint64_t z;
 			uint32_t t;
 
@@ -57,7 +57,7 @@ br_i32_montymul(uint32_t *d, const uint32_t *x, const uint32_t *y,
 			}
 		}
 		zh = dh + r1 + r2;
-		d[len] = (uint32_t)zh;
+/*cache channel*/ // d[len] = (uint32_t)zh;
 		dh = zh >> 32;
 	}
 

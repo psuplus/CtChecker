@@ -634,7 +634,7 @@ cleanup:
 
 #endif /* MBEDTLS_BIGNUM_C */
 
-// /**********************/
+/**********************/
 // #include <smack.h>
 // #include "../../../ct-verif.h"
 // void

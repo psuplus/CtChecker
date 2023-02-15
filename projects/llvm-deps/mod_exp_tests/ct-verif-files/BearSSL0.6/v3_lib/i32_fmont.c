@@ -31,13 +31,13 @@ br_i32_from_monty(uint32_t *x, const uint32_t *m, uint32_t m0i)
 	size_t len, u, v;
 
 	len = (m[0] + 31) >> 5;
-	u = 0;    /*loop*/ if(u < len) {///*$*/for (u = 0; u < len; u ++) {/*$*/
+	for (u = 0; u < len; u ++) {
 		uint32_t f;
 		uint64_t cc;
 
 		f = x[1] * m0i;
 		cc = 0;
-		v = 0;    /*loop*/ if(v < len) {///*$*/for (v = 0; v < len; v ++) {/*$*/
+		for (v = 0; v < len; v ++) {
 			uint64_t z;
 
 			z = (uint64_t)x[v + 1] + MUL(f, m[v + 1]) + cc;
@@ -46,7 +46,7 @@ br_i32_from_monty(uint32_t *x, const uint32_t *m, uint32_t m0i)
 				x[v] = (uint32_t)z;
 			}
 		}
-	///cache-based**/		x[len] = (uint32_t)cc;
+		x[len] = (uint32_t)cc;
 	}
 
 	/*

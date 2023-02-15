@@ -10,7 +10,7 @@
 #include "v4_3_2_include/internal/cryptlib.h"
 #include "v4_3_2_include/internal/constant_time.h"
 #include "v4_3_2_include/bn_local.h"
-int dummy = 0;
+#define PRINT printf(" ")
 #include <stdlib.h>
 #ifdef _WIN32
 # include <malloc.h>
@@ -24,7 +24,7 @@ int dummy = 0;
 #elif defined(__sun)
 # include <alloca.h>
 #endif
-
+int dummy=0;
 #include "v4_3_2_include/rsaz_exp.h"
 
 #undef SPARC_T4_MONT
@@ -320,7 +320,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         return 0;
     }
     bits = BN_num_bits(p);
-    if (bits == 0) {
+    if (pub_BRANCH1){//if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
 /*excluded*/        if (pub_BRANCH2){//        if (BN_abs_is_word(m, 1)) {
             ret = 1;
@@ -351,21 +351,21 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             goto err;
     }
 
-    if (a->neg || BN_ucmp_0(a, m, pub_BRANCH5) >= 0) {
+    if (pub_BRANCH5) {//if (a->neg || BN_ucmp_0(a, m, pub_BRANCH5) >= 0) {
 /*excluded*/        if (pub_BRANCH7)//        if (!BN_nnmod(val[0], a, m, ctx))
             goto err;
         aa = val[0];
     } else
         aa = a;
 /*excluded*/    if (pub_BRANCH8) {//    if (!bn_to_mont_fixed_top(val[0], aa, mont, ctx))
-        goto err;}               /* 1 */
+        goto err; }              /* 1 */
 
     window = BN_window_bits_for_exponent_size(bits);
-    if (window > 1) {
+    if (pub_BRANCH6) {//if (window > 1) {
 /*excluded*/    if (pub_BRANCH9)//        if (!bn_mul_mont_fixed_top(d, val[0], val[0], mont, ctx))
             goto err;           /* 2 */
         j = 1 << (window - 1);
-        i = 1; if(j) {/*loop*/ //for (i = 1; i < j; i++) {
+        i = 1; {// for (i = 1; i < j; i++) {
 /*excluded*/            if (pub_BRANCH13//            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
                 ){//!bn_mul_mont_fixed_top(val[i], val[i - 1], d, mont, ctx))
                 goto err;}
@@ -381,29 +381,29 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
 #if 1                           /* by Shay Gueron's suggestion */
     j = m->top;                 /* borrow j */
-    if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+    if (pub_BRANCH14) {//if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
 /*excluded*/        if (pub_BRANCH15)//        if (bn_wexpand(r, j) == NULL)
             goto err;
         /* 2^(top*BN_BITS2) - m */
-        r->d[0] = (0 - m->d[0]) & BN_MASK2;
-        i = 1; if(j) /*loop*/ //for (i = 1; i < j; i++)
-            r->d[i] = (~m->d[i]) & BN_MASK2;
+/*cache*/        dummy++; //r->d[0] = (0 - m->d[0]) & BN_MASK2;
+        for (i = 1; i < j; i++)
+/*cache*/            dummy++; //r->d[i] = (~m->d[i]) & BN_MASK2;
         r->top = j;
-	/*excluded*/        dummy++;//        r->flags |= BN_FLG_FIXED_TOP;
+/*excluded*/        PRINT;//        r->flags |= BN_FLG_FIXED_TOP;
     } else
 #endif
 /*excluded*/    if (pub_BRANCH16)//    if (!bn_to_mont_fixed_top(r, BN_value_one(), mont, ctx))
         goto err;
-    { /*loop*/ //for (;;) {
-        if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH26) == 0) {
+    for (;;) {
+        BN_is_bit_set_0(p, wstart - i, pub_BRANCH26);if (pub_BRANCH17) {//if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH26) == 0) {
             if (!start) {
 /*excluded*/                if (pub_BRANCH18)//                if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))
                     goto err;
             }
-            if (wstart == 0)
-                dummy++;//break;
+            if (pub_BRANCH19)//if (wstart == 0)
+                PRINT;//break;
             wstart--;
-            dummy++;//continue;
+            PRINT;//continue;
         }
         /*
          * We now have wstart on a 'set' bit, we now need to work out how bit
@@ -413,10 +413,10 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         j = wstart;
         wvalue = 1;
         wend = 0;
-        i = 1; if(window) {/*loop*/ //for (i = 1; i < window; i++) {
-            if (wstart - i < 0)
-                dummy++;//break;
-            if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH27)) {
+        i=1; {//for (i = 1; i < window; i++) {
+            if (pub_BRANCH20)//if (wstart - i < 0)
+                PRINT;//break;
+            BN_is_bit_set_0(p, wstart - i, pub_BRANCH27);if (pub_BRANCH21) {//if (BN_is_bit_set_0(p, wstart - i, pub_BRANCH27)) {
                 wvalue <<= (i - wend);
                 wvalue |= 1;
                 wend = i;
@@ -427,7 +427,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         j = wend + 1;
         /* add the 'bytes above' */
         if (!start){
-            i = j - 1; if(i < j) {/*loop*/ //for (i = 0; i < j; i++) {
+            for (i = 0; i < j; i++) {
 /*excluded*/    if (pub_BRANCH22)//                if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))
                     goto err;
             }
@@ -440,8 +440,8 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         wstart -= wend + 1;
         wvalue = 0;
         start = 0;
-        if (wstart < 0)
-            dummy++;//break;
+        if (pub_BRANCH24)//if (wstart < 0)
+            PRINT;//break;
     }
     /*
      * Done with zero-padded intermediate BIGNUMs. Final BN_from_montgomery
@@ -462,9 +462,9 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 /*excluded*/    if (pub_BRANCH25)//    if (!BN_from_montgomery(rr, r, mont, ctx))
         goto err;
     ret = 1;
-dummy++; err:
+ err:
     if (in_mont == NULL)
-/*excluded*/        dummy++;//        BN_MONT_CTX_free(mont);
+/*excluded*/        PRINT;//        BN_MONT_CTX_free(mont);
 /*excluded*/    //    BN_CTX_end(ctx);
 /*excluded*/    //    bn_check_top(rr);
     return ret;
@@ -1401,4 +1401,201 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
 //     BN_CTX_end(ctx);
 //     bn_check_top(r);
 //     return ret;
+// }
+
+
+/***********************/
+// #include <smack.h>
+// #include "../../ct-verif.h"
+
+// #define ARRAY_SIZE 32
+// void
+// fragment_wrapper (BN_ULONG *d_r, int top_r, int dmax_r, int neg_r, int flags_r,
+//                  BN_ULONG *d_a, int top_a, int dmax_a, int neg_a, int flags_a,
+//                  BN_ULONG *d_p, int top_p, int dmax_p, int neg_p, int flags_p,
+//                  BN_ULONG *d_m, int top_m, int dmax_m, int neg_m, int flags_m,
+//                  int ri_inmont, int flags_inmont,BN_ULONG n0_inmont_0,BN_ULONG n0_inmont_1,BN_ULONG n0_inmont_2,
+//                  BN_ULONG *d_inmont_RR, int top_inmont_RR, int dmax_inmont_RR, int neg_inmont_RR, int flags_inmont_RR,
+//                  BN_ULONG *d_inmont_N, int top_inmont_N, int dmax_inmont_N, int neg_inmont_N, int flags_inmont_N,
+//                  BN_ULONG *d_inmont_Ni, int top_inmont_Ni, int dmax_inmont_Ni, int neg_inmont_Ni, int flags_inmont_Ni,
+//                  BN_ULONG *d_pub0, int top_pub0, int dmax_pub0, int neg_pub0, int flags_pub0,
+//                  BN_ULONG *d_pub1, int top_pub1, int dmax_pub1, int neg_pub1, int flags_pub1,
+//                  BN_ULONG *d_pub2, int top_pub2, int dmax_pub2, int neg_pub2, int flags_pub2,
+//                  int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,
+//                  int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL5,int taint_VAL6,int taint_VAL7,int taint_VAL8) {
+//    //                  unsigned int used, int err_stack, int too_many, int flags, unsigned int *indexes, unsigned int depth, unsigned int size
+   
+//    public_in(__SMACK_value(pub_BRANCH0));
+//    public_in(__SMACK_value(pub_BRANCH1));
+//    public_in(__SMACK_value(pub_BRANCH2));
+//    public_in(__SMACK_value(pub_BRANCH3));
+//    public_in(__SMACK_value(pub_BRANCH4));
+//    public_in(__SMACK_value(pub_BRANCH5));
+//    public_in(__SMACK_value(pub_BRANCH6));
+//    public_in(__SMACK_value(pub_BRANCH7));
+//    public_in(__SMACK_value(pub_BRANCH8));
+//    public_in(__SMACK_value(pub_BRANCH9));
+//    public_in(__SMACK_value(pub_BRANCH10));
+//    public_in(__SMACK_value(pub_BRANCH11));
+//    public_in(__SMACK_value(pub_BRANCH12));
+//    public_in(__SMACK_value(pub_BRANCH13));
+//    public_in(__SMACK_value(pub_BRANCH14));
+//    public_in(__SMACK_value(pub_BRANCH15));
+//    public_in(__SMACK_value(pub_BRANCH16));
+//    public_in(__SMACK_value(pub_BRANCH17));
+//    public_in(__SMACK_value(pub_BRANCH18));
+//    public_in(__SMACK_value(pub_BRANCH19));
+//    public_in(__SMACK_value(pub_BRANCH20));
+//    public_in(__SMACK_value(pub_BRANCH21));
+//    public_in(__SMACK_value(pub_BRANCH22));
+//    public_in(__SMACK_value(pub_BRANCH23));
+//    public_in(__SMACK_value(pub_BRANCH24));
+//    public_in(__SMACK_value(pub_BRANCH25));
+//    public_in(__SMACK_value(pub_BRANCH26));
+//    public_in(__SMACK_value(pub_BRANCH27));
+   
+//    public_in(__SMACK_value(pub_VAL0));
+//    public_in(__SMACK_value(pub_VAL1));
+//    public_in(__SMACK_value(pub_VAL2));
+//    public_in(__SMACK_value(pub_VAL3));
+//    public_in(__SMACK_value(pub_VAL4));
+// //    public_in(__SMACK_value(taint_VAL5));
+// //    public_in(__SMACK_value(taint_VAL6));
+// //    public_in(__SMACK_value(taint_VAL7));
+// //    public_in(__SMACK_value(taint_VAL8));
+   
+//    public_in(__SMACK_value(d_pub0));
+//    public_in(__SMACK_value(top_pub0));
+//    public_in(__SMACK_value(dmax_pub0));
+//    public_in(__SMACK_value(neg_pub0));
+//    public_in(__SMACK_value(flags_pub0));
+//    public_in(__SMACK_values(d_pub0,ARRAY_SIZE));
+//    struct bignum_st OBJpub0 = {d_pub0,top_pub0,dmax_pub0,neg_pub0,flags_pub0};
+   
+//    BIGNUM *pub_BIGNUM0 = &OBJpub0;
+   
+//    public_in(__SMACK_value(d_pub1));
+//    public_in(__SMACK_value(top_pub1));
+//    public_in(__SMACK_value(dmax_pub1));
+//    public_in(__SMACK_value(neg_pub1));
+//    public_in(__SMACK_value(flags_pub1));
+//    public_in(__SMACK_values(d_pub1,ARRAY_SIZE));
+//    struct bignum_st OBJpub1 = {d_pub1,top_pub1,dmax_pub1,neg_pub1,flags_pub1};
+   
+//    BIGNUM *pub_BIGNUM1 = &OBJpub1;
+   
+//    public_in(__SMACK_value(d_pub2));
+//    public_in(__SMACK_value(top_pub2));
+//    public_in(__SMACK_value(dmax_pub2));
+//    public_in(__SMACK_value(neg_pub2));
+//    public_in(__SMACK_value(flags_pub2));
+//    public_in(__SMACK_values(d_pub2,ARRAY_SIZE));
+//    struct bignum_st OBJpub2 = {d_pub2,top_pub2,dmax_pub2,neg_pub2,flags_pub2};
+   
+//    BIGNUM *pub_BIGNUM2 = &OBJpub2;
+
+//    /***************/
+   
+//    public_in(__SMACK_value(d_a));
+//    public_in(__SMACK_value(d_r));
+//    public_in(__SMACK_value(d_p));
+//    public_in(__SMACK_value(d_m));
+   
+//    public_in(__SMACK_values(d_r,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_a,ARRAY_SIZE));
+//    // show tainted variables *p and *m
+//    // public_in(__SMACK_values(d_p,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_m,ARRAY_SIZE));
+   
+//    public_in(__SMACK_value(top_r));
+//    public_in(__SMACK_value(dmax_r));
+//    public_in(__SMACK_value(neg_r));
+//    public_in(__SMACK_value(flags_r));
+   
+//    public_in(__SMACK_value(top_a));
+//    public_in(__SMACK_value(dmax_a));
+//    public_in(__SMACK_value(neg_a));
+//    public_in(__SMACK_value(flags_a));
+   
+//    public_in(__SMACK_value(top_p));
+//    public_in(__SMACK_value(dmax_p));
+//    public_in(__SMACK_value(neg_p));
+//    public_in(__SMACK_value(flags_p));
+   
+//    public_in(__SMACK_value(top_m));
+//    public_in(__SMACK_value(dmax_m));
+//    public_in(__SMACK_value(neg_m));
+//    public_in(__SMACK_value(flags_m));
+   
+//    struct bignum_st OBJr = {d_r,top_r,dmax_r,neg_r,flags_r};
+//    struct bignum_st OBJa = {d_a,top_a,dmax_a,neg_a,flags_a};
+//    struct bignum_st OBJp = {d_p,top_p,dmax_p,neg_p,flags_p};
+//    struct bignum_st OBJm = {d_m,top_m,dmax_m,neg_m,flags_m};
+   
+//    BIGNUM *r = &OBJr;
+//    BIGNUM *a = &OBJa;
+//    BIGNUM *p = &OBJp;
+//    BIGNUM *m = &OBJm;
+   
+//    /* inmont */
+   
+//    public_in(__SMACK_value(ri_inmont));
+//    public_in(__SMACK_value(flags_inmont));
+//    public_in(__SMACK_value(n0_inmont_0));
+//    public_in(__SMACK_value(n0_inmont_1));
+//    public_in(__SMACK_value(n0_inmont_2));
+
+//    public_in(__SMACK_value(d_inmont_RR));
+//    public_in(__SMACK_value(d_inmont_N));
+//    public_in(__SMACK_value(d_inmont_Ni));
+
+//    public_in(__SMACK_values(d_inmont_RR,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_inmont_N,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_inmont_Ni,ARRAY_SIZE));
+   
+//    public_in(__SMACK_value(top_inmont_RR));
+//    public_in(__SMACK_value(dmax_inmont_RR));
+//    public_in(__SMACK_value(neg_inmont_RR));
+//    public_in(__SMACK_value(flags_inmont_RR));
+
+//    public_in(__SMACK_value(top_inmont_N));
+//    public_in(__SMACK_value(dmax_inmont_N));
+//    public_in(__SMACK_value(neg_inmont_N));
+//    public_in(__SMACK_value(flags_inmont_N));
+
+//    public_in(__SMACK_value(top_inmont_Ni));
+//    public_in(__SMACK_value(dmax_inmont_Ni));
+//    public_in(__SMACK_value(neg_inmont_Ni));
+//    public_in(__SMACK_value(flags_inmont_Ni));
+   
+//    struct bignum_st OBJinmont_RR = {d_inmont_RR,top_inmont_RR,dmax_inmont_RR,neg_inmont_RR,flags_inmont_RR};
+//    struct bignum_st OBJinmont_N = {d_inmont_N,top_inmont_N,dmax_inmont_N,neg_inmont_N,flags_inmont_N};
+//    struct bignum_st OBJinmont_Ni = {d_inmont_Ni,top_inmont_Ni,dmax_inmont_Ni,neg_inmont_Ni,flags_inmont_Ni};
+
+//    BIGNUM inmont_RR = OBJinmont_RR;
+//    BIGNUM inmont_N = OBJinmont_N;
+//    BIGNUM inmont_Ni = OBJinmont_Ni;
+
+//    BN_ULONG n0_inmont[] = {n0_inmont_0,n0_inmont_1,n0_inmont_2};
+   
+//    struct bn_mont_ctx_st OBJinmont = { ri_inmont, inmont_RR, inmont_N, inmont_Ni,n0_inmont,flags_inmont };
+
+//    BN_MONT_CTX *in_mont = &OBJinmont;
+//    /**********/
+   
+//    BN_CTX *ctx = NULL;
+   
+//    BN_mod_exp_mont_algorithm (r,a,p,m,ctx,in_mont,
+//                               pub_BIGNUM0,pub_BIGNUM1,pub_BIGNUM2,
+//                               pub_BRANCH0,pub_BRANCH1,pub_BRANCH2,
+//                               pub_BRANCH3,pub_BRANCH4,pub_BRANCH5,
+//                               pub_BRANCH6,pub_BRANCH7,pub_BRANCH8,
+//                               pub_BRANCH9,pub_BRANCH10,pub_BRANCH11,
+//                               pub_BRANCH12,pub_BRANCH13,pub_BRANCH14,
+//                               pub_BRANCH15,pub_BRANCH16,pub_BRANCH17,
+//                               pub_BRANCH18,pub_BRANCH19,pub_BRANCH20,
+//                               pub_BRANCH21,pub_BRANCH22,pub_BRANCH23,
+//                               pub_BRANCH24,pub_BRANCH25,pub_BRANCH26,pub_BRANCH27,
+//                               pub_VAL0,pub_VAL1,pub_VAL2,pub_VAL3,
+//                               pub_VAL4,taint_VAL5,taint_VAL6,taint_VAL7,taint_VAL8);
 // }

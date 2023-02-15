@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#include "v4_lib/inner.h"
-
+#include "v3_lib/inner.h"
+/**/int dummy = 0;
 /* see inner.h */
 void
 br_i32_modpow(uint32_t *x,
@@ -64,9 +64,7 @@ br_i32_modpow(uint32_t *x,
 	}
 }
 
-// #define ARRAY_SIZE 32
-// static uint32_t public_0;static uint32_t public_1;static uint32_t public_2;
-// /**********************/
+/**********************/
 // #include <smack.h>
 // #include "../../ct-verif.h"
 
@@ -107,20 +105,20 @@ br_i32_modpow(uint32_t *x,
 // }
 // /**********************/
 // /* link down here to keep code aligned with original */
-// #include "v4_lib/i32_tmont.c"
-// #include "v4_lib/i32_montmul.c"
-// #include "v4_lib/i32_muladd.c"
+// #include "v3_lib/i32_tmont.c"
+// #include "v3_lib/i32_montmul.c"
+// #include "v3_lib/i32_muladd.c"
 
-// #include "v4_lib/i32_add.c"
-// #include "v4_lib/i32_bitlen.c"
-// #include "v4_lib/i32_decmod.c"
-// #include "v4_lib/i32_decode.c"
-// #include "v4_lib/i32_decred.c"
-// #include "v4_lib/i32_div32.c"
-// #include "v4_lib/i32_encode.c"
-// #include "v4_lib/i32_fmont.c"
-// #include "v4_lib/i32_iszero.c"
-// #include "v4_lib/i32_mulacc.c"
-// #include "v4_lib/i32_ninv32.c"
+// #include "v3_lib/i32_add.c"
+// #include "v3_lib/i32_bitlen.c"
+// #include "v3_lib/i32_decmod.c"
+// #include "v3_lib/i32_decode.c"
+// #include "v3_lib/i32_decred.c"
+// #include "v3_lib/i32_div32.c"
+// #include "v3_lib/i32_encode.c"
+// #include "v3_lib/i32_fmont.c"
+// #include "v3_lib/i32_iszero.c"
+// #include "v3_lib/i32_mulacc.c"
+// #include "v3_lib/i32_ninv32.c"
 // // #include "i32_reduce.c"
-// #include "v4_lib/i32_sub.c"
+// #include "v3_lib/i32_sub.c"

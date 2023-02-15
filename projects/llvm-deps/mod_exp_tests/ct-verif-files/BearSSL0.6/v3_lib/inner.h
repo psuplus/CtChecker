@@ -978,9 +978,9 @@ void br_i32_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
  *
  * x[] MUST be distinct from m[].
  */
-void br_i32_decode_reduce(uint32_t *x,const void *src, size_t len, const uint32_t *m,
-						  uint32_t public_0,uint32_t public_1,uint32_t public_2);
-
+void br_i32_decode_reduce(uint32_t *x,
+	const void *src, size_t len, const uint32_t *m, uint32_t public_0,uint32_t public_1,uint32_t public_2);
+	
 /*
  * Encode an integer into its big-endian unsigned representation. The
  * output length in bytes is provided (parameter 'len'); if the length
@@ -1016,10 +1016,10 @@ br_i32_word(const uint32_t *a, uint32_t off, uint32_t global_public_2)
 
 	u = (size_t)(off >> 5) + 1;
 	j = (unsigned)off & 31;
-	if (j == 0) {
+	if(global_public_2) { //if (j == 0) {
 		return a[u];
 	} else {
-		return (a[u] >> j) | (a[u + 1] << (32 - j));
+/*cache channel*/ return (a[0] >> j) | (a[0 + 1] << (32 - j)); //return (a[u] >> j) | (a[u + 1] << (32 - j));
 	}
 }
 
@@ -1244,7 +1244,8 @@ void br_i31_reduce(uint32_t *x, const uint32_t *a, const uint32_t *m);
  * x[] MUST be distinct from m[].
  */
 void br_i31_decode_reduce(uint32_t *x,
-	const void *src, size_t len, const uint32_t *m);
+	const void *src, size_t len, const uint32_t *m,
+						  uint32_t public_0,uint32_t public_1,uint32_t public_2);
 
 /*
  * Multiply x[] by 2^31 and then add integer z, modulo m[]. This

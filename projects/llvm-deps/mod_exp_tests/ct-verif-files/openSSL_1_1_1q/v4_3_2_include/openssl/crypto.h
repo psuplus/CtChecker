@@ -412,7 +412,7 @@ typedef LONG CRYPTO_ONCE;
 #    define CRYPTO_ONCE_STATIC_INIT 0
 #   endif
 #  else
-#   include <pthread.h>
+// #   include <pthread.h>
 typedef pthread_once_t CRYPTO_ONCE;
 typedef pthread_key_t CRYPTO_THREAD_LOCAL;
 typedef pthread_t CRYPTO_THREAD_ID;

@@ -40,10 +40,10 @@ br_i32_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m,
 	 * leak that length.
 	 */
 	m_bitlen = m[0];
-	if (m_bitlen == 0) {
+	if (public_0) { //if (m_bitlen == 0) {
 		return;
 	}
-	if (m_bitlen <= 32) {
+	if (public_1) { //if (m_bitlen <= 32) {
 		x[1] = br_rem(x[1], z, m[1]);
 		return;
 	}
@@ -75,11 +75,11 @@ br_i32_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m,
 	 *   0 <= u <= w
 	 *   u-2 <= q <= u
 	 */
-	a0 = br_i32_word(x, m_bitlen - 32, public_0);
-	hi = x[mlen];
+	a0 = br_i32_word(x, m_bitlen - 32, public_2);
+/*cache channel*/	// hi = x[mlen];
 	memmove(x + 2, x + 1, (mlen - 1) * sizeof *x);
 	x[1] = z;
-	a1 = br_i32_word(x, m_bitlen - 32, public_1);
+	a1 = br_i32_word(x, m_bitlen - 32, public_2);
 	b0 = br_i32_word(m, m_bitlen - 32, public_2);
 
 	/*
@@ -106,7 +106,7 @@ br_i32_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m,
 	 */
 	cc = 0;
 	tb = 1;
-	u = 1; if(u <= mlen){ /*for (u = 1; u <= mlen; u ++) {*/
+	u = 1; { //for (u = 1; u <= mlen; u ++) {
 		uint32_t mw, zw, xw, nxw;
 		uint64_t zl;
 

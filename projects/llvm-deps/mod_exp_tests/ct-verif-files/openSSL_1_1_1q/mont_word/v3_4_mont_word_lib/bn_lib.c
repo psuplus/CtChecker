@@ -606,7 +606,7 @@ static int bn_limit_num_mont = 8; /* (1<<bn_limit_bits_mont) */
 //         return i;
 //     ap = a->d;
 //     bp = b->d;
-//     i = a->top - 1; if(i)dummy++; {/*loop*/ //for (i = a->top - 1; i >= 0; i--) {
+//     for (i = a->top - 1; i >= 0; i--) {
 //         t1 = ap[i];
 //         t2 = bp[i];
 //         if (t1 != t2)

@@ -593,27 +593,27 @@ static int bn_limit_num_mont = 8; /* (1<<bn_limit_bits_mont) */
 //     return bn2binpad(a, to, tolen, little);
 // }
 
-// int BN_ucmp_0(const BIGNUM *a, const BIGNUM *b, int pub_BRANCH0)
-// {
-//     int i; int dummy = 0;
-//     BN_ULONG t1, t2, *ap, *bp;
+int BN_ucmp_0(const BIGNUM *a, const BIGNUM *b, int pub_BRANCH0)
+{
+    int i; int dummy = 0;
+    BN_ULONG t1, t2, *ap, *bp;
 
-// /*excluded*/    dummy++;//    bn_check_top(a);
-// /*excluded*/    dummy++;//    bn_check_top(b);
+/*excluded*/    dummy++;//    bn_check_top(a);
+/*excluded*/    dummy++;//    bn_check_top(b);
 
-//     i = a->top - b->top;
-//     if (i != 0)
-//         return i;
-//     ap = a->d;
-//     bp = b->d;
-//     for (i = a->top - 1; i >= 0; i--) {
-//         t1 = ap[i];
-//         t2 = bp[i];
-//         if (t1 != t2)
-//             return ((t1 > t2) ? 1 : -1);
-//     }
-//     return 0;
-// }
+    i = a->top - b->top;
+    if (i != 0)
+        return i;
+    ap = a->d;
+    bp = b->d;
+    for (i = a->top - 1; i >= 0; i--) {
+        t1 = ap[i];
+        t2 = bp[i];
+        if (t1 != t2)
+            return ((t1 > t2) ? 1 : -1);
+    }
+    return 0;
+}
 
 // int BN_cmp(const BIGNUM *a, const BIGNUM *b)
 // {
@@ -708,11 +708,11 @@ int BN_is_bit_set_0(const BIGNUM *a, int n, int pub_BRANCH0)
     int i, j; int dummy = 0;
 
 /*X*/    dummy++;//    bn_check_top(a);
-    if (n < 0)
+    if (pub_BRANCH0 == 0)///*+*/if (n < 0)
         return 0;
     i = n / BN_BITS2;
     j = n % BN_BITS2;
-    if (a->top <= i)
+    if (pub_BRANCH0 == 1)///*+*/if (a->top <= i)
         return 0;
     return (int)(((a->d[i]) >> j) & ((BN_ULONG)1));
 }

@@ -598,8 +598,8 @@ int BN_ucmp_0(const BIGNUM *a, const BIGNUM *b, int pub_BRANCH0)
     int i; int dummy = 0;
     BN_ULONG t1, t2, *ap, *bp;
 
-/*excluded*/    dummy++;//    bn_check_top(a);
-/*excluded*/    dummy++;//    bn_check_top(b);
+/*excluded*/    bn_check_top(a);
+/*excluded*/    bn_check_top(b);
 
     i = a->top - b->top;
     if (i != 0)
@@ -707,7 +707,7 @@ int BN_is_bit_set_0(const BIGNUM *a, int n, int pub_BRANCH0)
 {
 /**/    int i, j; int dummy = 0;
 
-/*excluded*/    dummy++;//    bn_check_top(a);
+/*excluded*/    bn_check_top(a);
     if (pub_BRANCH0 == 0)///*+*/if (n < 0)
         return 0;
     i = n / BN_BITS2;

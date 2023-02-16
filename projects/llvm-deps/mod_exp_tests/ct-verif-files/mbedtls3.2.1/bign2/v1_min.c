@@ -346,12 +346,12 @@ static void mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_m
 /*cache channel*/        //u0 = A->p[i];
 /*cache channel*/        //u1 = ( d[0] + u0 * B->p[0] ) * mm;
 
-        // (void) mbedtls_mpi_core_mla( d, n + 2,
-        //                              B->p, m,
-        //                              u0 );
-        // (void) mbedtls_mpi_core_mla( d, n + 2,
-        //                              N->p, n,
-        //                              u1 );
+        (void) mbedtls_mpi_core_mla( d, n + 2,
+                                     B->p, m,
+                                     u0 );
+        (void) mbedtls_mpi_core_mla( d, n + 2,
+                                     N->p, n,
+                                     u1 );
         d++;
     }
 
@@ -361,12 +361,12 @@ static void mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_m
 
     /* Copy the n least significant limbs of d to A, so that
      * A = d if d < N (recall that N has n limbs). */
-    //memcpy( A->p, d, (n+1) * ciL );
+    // memcpy( A->p, d, (n+1) * ciL );
     /* If d >= N then we want to set A to d - N. To prevent timing attacks,
      * do the calculation without using conditional tests. */
     /* Set d to d0 + (2^biL)^n - N where d0 is the current value of d. */
-    // d[n] += 1;
-    // d[n] -= mpi_sub_hlp( n, d, d, N->p );
+/*cache channel*/    // d[n] += 1;
+/*cache channel*/    // d[n] -= mpi_sub_hlp( n, d, d, N->p );
     // /* If d0 < N then d < (2^biL)^n
     //  * so d[n] == 0 and we want to keep A as it is.
     //  * If d0 >= N then d >= (2^biL)^n, and d <= (2^biL)^n + N < 2 * (2^biL)^n

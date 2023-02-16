@@ -27,8 +27,8 @@ def parse_number(num):
 
 def filter_lines_from_results(fname):
     """Filters through vulnerable branch dat file for tainted lines"""
-    match = "[a-zA-Z0-9/_-]+.(c|h|cpp|hpp) line [0-9]+"
-    match2 = "[a-zA-Z0-9/_-]+.(c|h|cpp|hpp) at [0-9]+"
+    match = "[.a-zA-Z0-9/_-]+.(c|h|cpp|hpp) line [0-9]+"
+    match2 = "[.a-zA-Z0-9/_-]+.(c|h|cpp|hpp) at [0-9]+"
     filtered_lines = []
     filtered_lines2 = []
     with open(fname, "r") as f:

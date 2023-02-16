@@ -1302,12 +1302,12 @@ caused by engineering issues; we assume the best setting for each tool.
 
 \subsubsection{Limitations of Ct-verif}
 Although the approach is theoretically sound and complete, the results of
-a practical interpretation, must be carefully analyzed.  To perform
+a practical interpretation, must be carefully analyzed. To perform
 a reasonable comparison, we avoid key limitations not present in CtChecker by
 revising the analyzed source to accommodate Ct-verif's technical flaws.  For
 instance, loops and non-static length arrays are not supported.
 
-Loop invariants are automatically computed to verify program loops.  When
+Loop invariants are automatically computed to verify program loops. When
 counters are used to index arrays, a proof of security would require Ct-verif
 to infer that the memory accesses are in the range of public values.  \sout{Although
 there are options to avoid this difficulty, such as enforcing a loop limit or
@@ -1357,69 +1357,55 @@ if ( carry_limb )
 We note that all true positives were reported among both tools, so we
 observed comparable accuracy.  Mainly, the results explain a couple of
 reasons for the significant difference between the precision observed.
-Several versions of the  cryptography algorithms were created before
-comparing the precision of the two tools against one another.  There
-are three versions (version 2, version 3 and version 4, where version
-1 is the original file), each of which was developed from the version
-number before it.
+Several versions of the cryptography algorithms were created before
+comparing the precision of the two tools against one another. There are
+three versions (version 1, version 2 and version 3), each of which was
+developed from the version number before it.
 
-First, a baseline version was created to accommodate minor limitations
-or differences between the tools, such as the way in which they operate
-with some undefined values. Any assignment statement with excluded
-source was rewritten to assign the variable to a public or private
-input, depending on the function return value. If any of the function’s
-parameters were tainted, we conservatively tainted its return value.
-Thus, a function call inside of a branch condition was counted as a
-positive when any of its parameters were tainted. These positives were
-counted the same for each tool, and were only observed in OpenSSL.
+First, a baseline version (version 1) was created to bridge the gap between
+the tools in terms of how they operate. To run CtChecker, we feed the whole program
+to it. CtChecker will output the exact lines that are positive. On the other
+hand, Ct-verif doesn't tell which line is positive exactly. Therefore, in
+order to know which line is reported by Ct-verif, we feed the program line
+by line. At the beginning, the first line of code is input to Ct-verif, if
+it is not reported positive, we add the next line, otherwise, we change 
+the branch condition to a public value and add the next line. However, this
+introduces a problem. To maintain consistency among libraries under investigation,
+we include certain functions with same purpose, such as decryption.
+So, there will be some positive lines out if this scope due to function calls.
+When operating Ct-verif in an aforementioned manner, we have to change some of
+the out of scope code. Even though we carefully do the changes so that the 
+information flow remains the same, there still a chance the flow might be
+changed. For a fair comparison, in version 1, those positives out of scope 
+will remain changed for CtChecker.
 
-The second version was constructed from the first, and it allowed us to
-examine the number of positives introduced from computing loop invariants.
-Each erroneous loop was replaced, and each variable array access was
-changed to a fixed one. Loops were replaced by a model that leaked the
-same information as the loop: a \codevar{if (e) then} statement where
-\codevar{e} contains the loop bounds. Figure 30 is an example of two
-revisions in Libgcrypt, one for a loop and one for an array access.
-Ct-verif supports an annotation for a static number of values to be
-marked as public.  Variable length arrays are not supported, so variable
-array element accesses needed to be removed. Every array index was fixed
-within the bounds of the array.
+The second version (version 2) was constructed from the first, the reasons are
+twofold. First reason is to accommodate the difference of how the tools treat
+excluded source. The bottom line is, in this version, we should have no function
+calls whose source is excluded, which could be achieved by either adding all the
+source or removing all the excluded function calls. As mentioned before, the
+consistency among libraries requires us to include source with same purpose, which
+results in a full source incorporation of BearSSL. So, version 1 and version 2 of
+BearSSL are the same. Since the code base of BearSSL is small, Ct-verif runs 
+without problem. For other three libraries, when we try to include full source
+and feed into Ct-verif, the tool ran out of memory, for which we remove all
+the function calls without source. The second reason is to make the comparison
+more meaningful. Both tools taint a function call without source conservatively.
+This leads to a great portion of false positives. These positives does not reflect
+how CtChecker performs since it can reduce such positives by simply including full
+source. To this end, ruling out this kind of false positives is necessary for a
+meaningful comparison.
 
-The difference in the number of positives reported by Ct-verif in the
-baseline and no loops versions is the number of positives caused by
-computing loop invariants only.  The number is a significant portion
-of the total positives reported on each version. As expected, CtChecker reported the
-same number of positives after removing loops.
-
-The third version was created from the second to remove each erroneous
-line reported by Ct-verif, resulting in a subset of the original file
+The third version was created from the second to remove all erroneous
+lines reported by Ct-verif, resulting in a subset of the original file
 that was free of any constant time violation. This final version allowed
 us to evaluate the precision of CtChecker in another way; any positive
 reported on this version was exclusive to CtChecker, and was expected
-to be a false one.
-
-Ct-verif is flow sensitive; the order of statements in a program may
-affect the analysis.  CtChecker's flow insensitivity is one cause of
-false positives in the results.
-
-Version 4 was constructed by replacing non-constant time code to
-intentionally observe 0 positives by Ct-verif. The positives reported
-by CtChecker in this final version was the result two design choices
-distinct from Ct-verif. First, CtChecker is a flow insensitive analysis
-(the order of statements in a program does not matter). In figure 29,
-variable \codevar{i} is not tainted until line 851, but flow
-insensitivity causes CtChecker to flag line 1041 since \codevar{i} is
-assigned to a tainted value, \codevar{bits}. Second, rather than
-tainting a range of values, CtChecker taints the variable pointing to
-them. In figure 32, \codevar{ep} is a pointer to sensitive data.
+to be a false one. 
 
 Overall, CtChecker exhibited a large improvement precision over
 Ct-verif, a result apparent in the difference between the number of
-positives reported by each tool in version 2. CtChecker showed equal
-or improved precision over Ct-verif when disregarding significant
-limitations, such as loop invariants. This result is apparent in the
-difference between the number of positives reported by each tool in
-version 3.
+positives reported by each tool in version 2.
 
 \begin{figure}[h!]
 \begin{lstlisting}

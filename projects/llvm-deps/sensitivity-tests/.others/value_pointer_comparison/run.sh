@@ -10,14 +10,14 @@ fi
 CPPFLAGS="-O0 -g -emit-llvm"
 LLVMLIBS=
 LDFLAGS=
-LEVEL="../../../.."
+LEVEL="../../../../.."
 
 # if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
 #CPPFLAGS=`llvm-config --cppflags`
 #LLVMLIBS=`llvm-config --libs`
 #LDFLAGS=`llvm-config --ldflags`
 
-cd ../../
+cd ../../../
 pwd
 make
 cd -

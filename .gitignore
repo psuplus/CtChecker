@@ -128,3 +128,11 @@ projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg
 projects/llvm-deps/processing_tools/data/
 projects/llvm-deps/udp_unit_test/
+projects/llvm-deps/linux_security_tests/constant.sh
+projects/llvm-deps/linux_security_tests/imp_wl.py
+projects/llvm-deps/linux_security_tests/test.py
+projects/llvm-deps/linux_security_tests/test.txt
+projects/llvm-deps/processing_tools/add_constant.py
+projects/llvm-deps/linux_security_tests_field/
+projects/llvm-deps/linux_security_tests_final/
+projects/llvm-deps/linux_security_tests_relaxed/

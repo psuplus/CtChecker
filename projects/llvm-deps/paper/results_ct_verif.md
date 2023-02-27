@@ -11,7 +11,7 @@ Table 1: without cache side channel
 | word        |   20  |  3    |   0    |     4 |     3 |     0 |
 | consttime   |   18  |  4    |   0    |    23 |     1 |     1 |
 
-Table 2: with cache side channel
+Table 2: cache side channel
 |             ||      ct-verif        |||      ct-checker     ||
 |-------------|-------|-------|--------|-------|-------|-------|
 |             |  V1   | V2    | V3     |  V1   | V2    | V3    |

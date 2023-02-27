@@ -58,11 +58,18 @@ int regular_func(struct KeyS *a1, int a2) {
   return a1->u.s0.f1;
 }
 
-int foo(int x, union UU *uu, struct KeyS *key) {
+int foo(int n, int x, union UU *uu, struct KeyS *key) {
   // struct Data *dataStruct = malloc(sizeof(struct Data));
   // dataStruct->f0 = key;
   // dataStruct->f1 = &i;
 
+  int a[10];
+  int b[n];
+  int *c;
+
+  a[x] = 1;
+  b[x] = 1;
+  c[x] = 1;
   int *ptr = &x;
   int val = x;
 

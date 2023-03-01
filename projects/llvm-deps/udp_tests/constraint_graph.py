@@ -33,13 +33,33 @@ def main():
                 edges = set()
                 for line in file:
                     line = re.split(r"\|+|[\r\n]+", line)
-                    if IGNORED not in line[0] and IGNORED not in line[2]:
-                        left = '"' + line[0] + '"'
-                        right = '"' + line[2] + '"'
+                    print(line)
+                    if line[0] == '[SCG]':
+                        if len(line) == 5:
+                            left = '"' + line[1] + '"'
+                        else:
+                            left = '"' + line[1] + ": " + line[4] + '"'
+                        right = '"' + line[3] + '"'
                         nodes.add(left)
                         nodes.add(right)
-                        edge_label = '\t[ label = " ' + line[1] + '" ] '
+                        edge_label = '\t[ label = " ' + line[2] + '" ] '
                         edges.add(left + " -> " + right + edge_label + "\n")
+                    elif line[0] == '[UB]':
+                        left = '"' + line[1] + ": " + line[2] + '"'
+                        nodes.add(left)
+                        if len(line) > 4:
+                            for i in range(3, len(line) - 1):
+                                right = '"' + line[1] + ": " + line[i] + '"'
+                                nodes.add(right)
+                                edges.add(left + " -> " + right + "\n")
+                    elif line[0] == '[TB]':
+                        left = '"' + line[1] + ": " + line[2] + '"'
+                        nodes.add(left + ' [color="red"]')
+                        if len(line) > 4:
+                            for i in range(3, len(line) - 1):
+                                right = '"' + line[1] + ": " + line[i] + '"'
+                                nodes.add(right)
+                                edges.add(left + " -> " + right + "\n")
 
                 for node in nodes:
                     tmp_file.write("\t" + node + "\n")

@@ -2,8 +2,9 @@
     Generate information flow graph in .dot format from constraint file.
 """
 import sys
+import re
 
-TAG = "[SCG] "
+TAG = "\\[(SCG|UB|TB)\\]\\|.*"
 
 
 def main():
@@ -14,11 +15,12 @@ def main():
         print("\t [dat_file]: The *.dat file for use")
 
     else:
+        pattern = re.compile(TAG)
         with open("./call-stack", "w") as stack:
             with open(sys.argv[1], "r") as dat:
                 for line in dat:
-                    if line.startswith(TAG):
-                        stack.write(line[len(TAG) :])
+                    if pattern.match(line):
+                        stack.write(line)
                 dat.close()
         stack.close()
 

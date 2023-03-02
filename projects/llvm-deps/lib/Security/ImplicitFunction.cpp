@@ -145,20 +145,25 @@ bool ImplicitFunction::runOnModule(Module &M) {
       errs() << "---- Tainted Values END ----\n\n";);
 
   errs() << "#------------------Results------------------#\n";
+  std::set<const Function *> criticalFuncs;
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {
-    std::list<json> entries = ifa->config.at("entry");
-    for (auto e : entries) {
-      if (e == F->getName()) {
-        for (auto &bb : *F) {
-          const Value *v = dyn_cast<Value>(&bb);
-          errs() << (tainted.find(v) != tainted.end() ? "[TB]|" : "[UB]|");
-          errs() << bb.getParent()->getName() << "|"
-                 << (bb.hasName() ? bb.getName().str() : std::to_string(i));
-          for (auto succ : successors(&bb)) {
-            errs() << "|" << succ->getName();
-          }
-          errs() << "\n";
+    for (auto &bb : *F) {
+      const Value *v = dyn_cast<Value>(&bb);
+      if (tainted.find(v) == tainted.end()) {
+        criticalFuncs.insert(F);
+      }
+    }
+
+    if (criticalFuncs.find(F) != criticalFuncs.end()) {
+      for (auto &bb : *F) {
+        const Value *v = dyn_cast<Value>(&bb);
+        errs() << (tainted.find(v) != tainted.end() ? "[TB]|" : "[UB]|");
+        errs() << bb.getParent()->getName() << "|"
+               << (bb.hasName() ? bb.getName().str() : std::to_string(i));
+        for (auto succ : successors(&bb)) {
+          errs() << "|" << succ->getName();
         }
+        errs() << "\n";
       }
     }
 
@@ -190,8 +195,8 @@ bool ImplicitFunction::runOnModule(Module &M) {
                        << loc->getFilename() << ", L"
                        << std::to_string(loc->getLine()) << "|"
                        << callee->getName();
-                for (auto e : entries) {
-                  if (e == parent->getParent()->getName()) {
+                for (auto cf : criticalFuncs) {
+                  if (cf == parent->getParent()) {
                     errs() << "|" << parent->getName();
                   }
                 }

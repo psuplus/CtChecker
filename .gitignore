@@ -102,6 +102,7 @@ ocaml
 *.llvmbuild
 *.con
 *.dat
+*.svg
 
 #==============================================================================#
 # Adding more files that should be ignored - 3/31/2020
@@ -127,7 +128,6 @@ projects/llvm-deps/udp_tests/results
 projects/llvm-deps/processing_tools/*.pdf
 projects/llvm-deps/processing_tools/*.svg
 projects/llvm-deps/processing_tools/data/
-projects/llvm-deps/udp_unit_test/
 projects/llvm-deps/linux_security_tests/constant.sh
 projects/llvm-deps/linux_security_tests/imp_wl.py
 projects/llvm-deps/linux_security_tests/test.py

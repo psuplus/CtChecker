@@ -2394,6 +2394,18 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
   imp.addSinkValue(inst);
 
   flows.push_back(exp);
+
+  // Handles the case where the instruction is the condition of a branch or
+  // switch, in which case we don't want to add it to the implicit flow pool.
+  if (auto term = inst.getParent()->getTerminator()) {
+    if (auto br = dyn_cast<const BranchInst>(term))
+      if (br->isConditional() && br->getCondition() == &inst)
+        return;
+    if (auto sw = dyn_cast<const SwitchInst>(term))
+      if (sw->getCondition() == &inst)
+        return;
+    // Do we need to handle indirect branches?
+  }
   flows.push_back(imp);
 }
 

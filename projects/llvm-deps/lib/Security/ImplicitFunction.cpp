@@ -113,17 +113,11 @@ bool ImplicitFunction::runOnModule(Module &M) {
            : tainted) {
         if (auto bb = dyn_cast<BasicBlock>(i)) {
           // continue;
-          std::list<json> entries = ifa->config.at("entry");
-          for (auto e : entries) {
-            if (e == bb->getParent()->getName()) {
-              if (bb->hasName())
-                errs() << "[BB] " << bb->getParent()->getName() << "|"
-                       << bb->getName() << "\n";
-              else
-                errs() << "[BB] " << bb->getParent()->getName() << "|" << i
-                       << "\n";
-            }
-          }
+          if (bb->hasName())
+            errs() << "[BB] " << bb->getParent()->getName() << "|"
+                   << bb->getName() << "\n";
+          else
+            errs() << "[BB] " << bb->getParent()->getName() << "|" << i << "\n";
           // Example of value printing filtering (by type).
           // } else if (auto global = dyn_cast<GlobalVariable>(i)) {
           //   errs() << "GLOBAL: " << global->getName() << "\n";
@@ -147,12 +141,12 @@ bool ImplicitFunction::runOnModule(Module &M) {
   errs() << "#------------------Results------------------#\n";
   std::set<const Function *> criticalFuncs;
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {
-    for (auto &bb : *F) {
-      const Value *v = dyn_cast<Value>(&bb);
-      if (tainted.find(v) == tainted.end()) {
-        criticalFuncs.insert(F);
-      }
-    }
+    // for (auto &bb : *F) {
+    // const Value *v = dyn_cast<Value>(&bb);
+    // if (tainted.find(v) == tainted.end()) {
+    criticalFuncs.insert(F);
+    // }
+    // }
 
     if (criticalFuncs.find(F) != criticalFuncs.end()) {
       for (auto &bb : *F) {

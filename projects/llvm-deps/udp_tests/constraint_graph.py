@@ -39,9 +39,9 @@ def main():
                             left = '"' + line[1] + '"'
                         else:
                             left = '"' + line[1] + ": " + line[4] + '"'
-                        right = '"' + line[3] + '"'
+                        right = '"' + line[3] + ': entry"'
                         nodes.add(left)
-                        nodes.add(right)
+                        nodes.add(right + ' [color="red"]')
                         edge_label = '\t[ label = " ' + line[2] + '" ] '
                         edges.add(left + " -> " + right + edge_label + "\n")
                     elif line[0] == '[UB]':

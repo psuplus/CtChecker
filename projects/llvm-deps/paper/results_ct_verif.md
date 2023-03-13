@@ -1,28 +1,28 @@
 Table 1: without cache side channel
-|             ||        ct-verif      |||      ct-checker     ||
-|-------------|-------|-------|--------|-------|-------|-------|
-|             |  V1   | V2    | V3     |  V1   | V2    | V3    |
-|**BearSSL**  |  8    |   8   |   0    |    10 |    10 |     2 |
-|**libgcrypt**|   36  |   22  |   0    |    35 |    22 |     3 |
-|**mbedtls**  |   34  |   5   |   0    |    37 |     4 |     0 |
-|**openSSL**  |       |       |        |       |       |       |
-| recp        |   24  |  9    |   0    |    10 |     8 |     0 |
-| mont        |   27  |  11   |   0    |    32 |     9 |     0 |
-| word        |   20  |  3    |   0    |     4 |     3 |     0 |
-| consttime   |   18  |  4    |   0    |    23 |     1 |     1 |
+|             ||        ct-verif           |||        ct-checker        ||
+|-------------|----------|---------|--------|----------|---------|-------|
+|             | Baseline |Excluded | Removed| Baseline |Excluded |Removed|
+|**BearSSL**  |    8     |    8    |   0    |    10    |    10   |     2 |
+|**libgcrypt**|    36    |    22   |   0    |    35    |    22   |     3 |
+|**mbedtls**  |    34    |    5    |   0    |    37    |     4   |     0 |
+|**openSSL**  |          |         |        |          |         |       |
+| recp        |    24    |    9    |   0    |    10    |     8   |     0 |
+| mont        |    27    |    11   |   0    |    32    |     9   |     0 |
+| word        |    20    |    3    |   0    |     4    |     3   |     0 |
+| consttime   |    18    |    4    |   0    |    23    |     1   |     1 |
 
 Table 2: cache side channel
-|             ||      ct-verif        |||      ct-checker     ||
-|-------------|-------|-------|--------|-------|-------|-------|
-|             |  V1   | V2    | V3     |  V1   | V2    | V3    |
-|**BearSSL**  |   3   |    3  |   0    |     4 |     4 |     1 |
-|**libgcrypt**|    3  |    3  |   0    |  3[1] |     0 |     0 |
-|**mbedtls**  |    1  |   0   |   0    |  5[2] |     0 |     0 |
-|**openSSL**  |       |       |        |       |       |       |
-| recp        |    0  |  0    |   0    |     0 |     0 |     0 |
-| mont        |    0  |   0   |   0    |  1[3] |     0 |     0 |
-| word        |    0  |   0   |   0    |     0 |     0 |     0 |
-| consttime   |    0  |  0    |   0    |  4[4] |     0 |     0 |
+|             ||        ct-verif           |||        ct-checker        ||
+|-------------|----------|---------|--------|----------|---------|-------|
+|             | Baseline |Excluded | Removed| Baseline |Excluded |Removed|
+|**BearSSL**  |    3     |    3    |   0    |     4    |     4   |     1 |
+|**libgcrypt**|     3    |    3    |   0    |  3[1]    |     0   |     0 |
+|**mbedtls**  |     1    |    0    |   0    |  5[2]    |     0   |     0 |
+|**openSSL**  |          |         |        |          |         |       |
+| recp        |     0    |    0    |   0    |     0    |     0   |     0 |
+| mont        |     0    |    0    |   0    |  1[3]    |     0   |     0 |
+| word        |     0    |    0    |   0    |     0    |     0   |     0 |
+| consttime   |     0    |    0    |   0    |  4[4]    |     0   |     0 |
 
 *[1]* v1.c line  740 - MPN_NORMALIZE (rp, rsize);  
 v1.c line  756 - MPN_NORMALIZE(rp, rsize);  

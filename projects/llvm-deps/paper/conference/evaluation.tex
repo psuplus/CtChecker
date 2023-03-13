@@ -160,6 +160,7 @@ If there is no type information at all, then the improved and baseline analysis
 function the same way, there is one element that represents that type and that
 one element is constrained regardless of offset. The points-to analysis denotes
 unsafe type information by collapsing the node in the memory graph.
+
 \subsection{Benchmarks}
 
 The baseline analysis had many false positives and low-risk positives. Improving
@@ -1359,10 +1360,10 @@ observed comparable accuracy.  Mainly, the results explain a couple of
 reasons for the significant difference between the precision observed.
 Several versions of the cryptography algorithms were created before
 comparing the precision of the two tools against one another. There are
-three versions (version 1, version 2 and version 3), each of which was
+three versions (baseline, excluded and removed), each of which was
 developed from the version number before it.
 
-First, a baseline version (version 1) was created to bridge the gap between
+First, a baseline version was created to bridge the gap between
 the tools in terms of how they operate. To run CtChecker, we feed the whole program
 to it. CtChecker will output the exact lines that are positive. On the other
 hand, Ct-verif doesn't tell which line is positive exactly. Therefore, in
@@ -1379,7 +1380,7 @@ information flow remains the same, there still a chance the flow might be
 changed. For a fair comparison, in version 1, those positives out of scope 
 will remain changed for CtChecker.
 
-The second version (version 2) was constructed from the first, the reasons are
+The second version (excluded) was constructed from the first, the reasons are
 twofold. First reason is to accommodate the difference of how the tools treat
 excluded source. The bottom line is, in this version, we should have no function
 calls whose source is excluded, which could be achieved by either adding all the
@@ -1396,7 +1397,7 @@ how CtChecker performs since it can reduce such positives by simply including fu
 source. To this end, ruling out this kind of false positives is necessary for a
 meaningful comparison.
 
-The third version was created from the second to remove all erroneous
+The third version (removed) was created from the second to remove all erroneous
 lines reported by Ct-verif, resulting in a subset of the original file
 that was free of any constant time violation. This final version allowed
 us to evaluate the precision of CtChecker in another way; any positive

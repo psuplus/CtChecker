@@ -112,12 +112,12 @@ bool ImplicitFunction::runOnModule(Module &M) {
       for (auto i
            : tainted) {
         if (auto bb = dyn_cast<BasicBlock>(i)) {
-          continue;
+          // continue;
           if (bb->hasName())
-            errs() << bb->getParent()->getName() << ": " << bb->getName()
-                   << "\n";
+            errs() << "[BB] " << bb->getParent()->getName() << "|"
+                   << bb->getName() << "\n";
           else
-            errs() << bb->getParent()->getName() << ": " << i << "\n";
+            errs() << "[BB] " << bb->getParent()->getName() << "|" << i << "\n";
           // Example of value printing filtering (by type).
           // } else if (auto global = dyn_cast<GlobalVariable>(i)) {
           //   errs() << "GLOBAL: " << global->getName() << "\n";
@@ -139,9 +139,46 @@ bool ImplicitFunction::runOnModule(Module &M) {
       errs() << "---- Tainted Values END ----\n\n";);
 
   errs() << "#------------------Results------------------#\n";
+  std::set<const Function *> criticalFuncs;
   for (Module::const_iterator F = M.begin(); F != M.end(); ++F) {
+    // for (auto &bb : *F) {
+    // const Value *v = dyn_cast<Value>(&bb);
+    // if (tainted.find(v) == tainted.end()) {
+    criticalFuncs.insert(F);
+    // }
+    // }
+
+    if (criticalFuncs.find(F) != criticalFuncs.end()) {
+      for (auto &bb : *F) {
+        const Value *v = dyn_cast<Value>(&bb);
+        std::string tag = "[UB]|";
+        if (auto term = bb.getTerminator()) {
+          if (auto br = dyn_cast<const BranchInst>(term))
+            if (br->isConditional() &&
+                tainted.find(br->getCondition()) != tainted.end())
+              tag = "[TB]|";
+          if (auto sw = dyn_cast<const SwitchInst>(term))
+            if (tainted.find(sw->getCondition()) != tainted.end())
+              tag = "[TB]|";
+        }
+
+        errs() << tag;
+        // errs() << (tainted.find(v) != tainted.end() ? "[TB]|" : "[UB]|");
+
+        errs() << bb.getParent()->getName() << "|"
+               << (bb.hasName() ? bb.getName().str() : std::to_string(i));
+        for (auto succ : successors(&bb)) {
+          errs() << "|" << succ->getName();
+        }
+        errs() << "\n";
+      }
+    }
+
     for (const_inst_iterator I = inst_begin(*F); I != inst_end(*F); ++I) {
       if (const CallInst *callInst = dyn_cast<CallInst>(&*I)) {
+        if (isa<DbgInfoIntrinsic>(callInst))
+          continue;
+
         auto parent = callInst->getParent();
         if (tainted.find(parent) != tainted.end()) {
           if (const MDLocation *loc = callInst->getDebugLoc()) {
@@ -153,22 +190,52 @@ bool ImplicitFunction::runOnModule(Module &M) {
                 callee = cast<Function>(CExpr->getOperand(0));
             }
             if (callee) {
+              bool print = true;
               if (!callee->isDeclaration()) {
                 auto &BB = *(callee->begin());
                 auto V = dyn_cast<Value>(&BB);
-                if (tainted.find(V) != tainted.end()) {
-                  errs() << "[SCG] ";
-                  errs() << parent->getParent()->getName() << "|"
-                         << loc->getFilename() << ", L"
-                         << std::to_string(loc->getLine()) << "|"
-                         << callee->getName() << "\n";
-                }
-              } else {
-                errs() << "[SCG] ";
+                print = (tainted.find(V) != tainted.end());
+              }
+              if (print) {
+                errs() << "[SCG]|";
                 errs() << parent->getParent()->getName() << "|"
                        << loc->getFilename() << ", L"
                        << std::to_string(loc->getLine()) << "|"
-                       << callee->getName() << "\n";
+                       << callee->getName();
+                for (auto cf : criticalFuncs) {
+                  if (cf == parent->getParent()) {
+                    errs() << "|" << parent->getName();
+                  }
+                }
+                errs() << "\n";
+
+                // CFG traversal starts here.
+                // errs() << "  [BR] " << parent->getName() << "\n";
+                // std::deque<const BasicBlock *> worklist{parent};
+                // std::set<const BasicBlock *> visited;
+
+                // while (!worklist.empty()) {
+                //   auto bb = worklist.back();
+                //   worklist.pop_back();
+                //   visited.insert(bb);
+
+                //   for (auto pred : predecessors(bb)) {
+                //     if (const BranchInst *inst =
+                //             dyn_cast<BranchInst>(&pred->back())) {
+                //       if (inst->isConditional()) {
+                //         if (tainted.find(inst->getCondition()) !=
+                //             tainted.end()) {
+                //           worklist.push_front(pred);
+                //           errs() << "  [BR] " << pred->getName() << "\n";
+                //         }
+                //       } else if (tainted.find(pred) != tainted.end()) {
+                //         worklist.push_front(pred);
+                //         errs() << "  [BR] " << pred->getName() << "\n";
+                //       }
+                //     }
+                //   }
+                // }
+                // CFG traversal ends here.
               }
             }
           }

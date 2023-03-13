@@ -23,11 +23,12 @@ def main():
     """main function"""
     graph = networkx.drawing.nx_pydot.read_dot(sys.argv[1])
 
-    source_set = ["CONST[secret:1(private)][]"]
-    sink_set = ["CE0x6429190"]
+    source_set = ["CONST[secret:1(private)][][SrcIdx:1]"]
+    sink_set = ["CE0x19a8eb10"]
     for start in source_set:
         for end in sink_set:
-            if networkx.has_path(graph, source=start, target=end) and start != end:
+            if networkx.has_path(graph, source=start,
+                                 target=end) and start != end:
                 print_path(graph, start, end)
 
 

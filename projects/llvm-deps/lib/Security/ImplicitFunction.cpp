@@ -151,7 +151,20 @@ bool ImplicitFunction::runOnModule(Module &M) {
     if (criticalFuncs.find(F) != criticalFuncs.end()) {
       for (auto &bb : *F) {
         const Value *v = dyn_cast<Value>(&bb);
-        errs() << (tainted.find(v) != tainted.end() ? "[TB]|" : "[UB]|");
+        std::string tag = "[UB]|";
+        if (auto term = bb.getTerminator()) {
+          if (auto br = dyn_cast<const BranchInst>(term))
+            if (br->isConditional() &&
+                tainted.find(br->getCondition()) != tainted.end())
+              tag = "[TB]|";
+          if (auto sw = dyn_cast<const SwitchInst>(term))
+            if (tainted.find(sw->getCondition()) != tainted.end())
+              tag = "[TB]|";
+        }
+
+        errs() << tag;
+        // errs() << (tainted.find(v) != tainted.end() ? "[TB]|" : "[UB]|");
+
         errs() << bb.getParent()->getName() << "|"
                << (bb.hasName() ? bb.getName().str() : std::to_string(i));
         for (auto succ : successors(&bb)) {

@@ -1258,7 +1258,7 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
     \bottomrule
   \end{tabular}
 \caption{ The baseline file (version 2) accommodated the excluded source.  Positives caused by loops were removed from the baseline in a separate file (version 3). A new file removed the remaining positives (version 4).}
-\label{tbl:runtimes}
+\label{tbl:vsctverif}
 \end{table*}
 
 
@@ -1304,11 +1304,28 @@ pinpoint at source code lines that violate the constant-time property. To
 alleviate this limitation of Ct-Verif, whenever Ct-Verif fails, we first log
 the line of source code that causes the violation (i.e., the existance of code
 at and after that line triggers the failure). Then, we replace the errorous
-line with some constant time code and re-ran the tool on the revised code that
-preserves information flow\danfeng{add an example of how we rewrite code} and
-use Ct-Verif on the revised code. During this iterative process, we record all
-errornous lines reported by Ct-Verif and compare them with the locations found
-by \toolname{}.
+line with some constant time code that preserves information flow \danfeng{add
+an example of how we rewrite code} and re-ran Ct-Verif on the revised code.
+During this iterative process, we record all errornous lines reported by
+Ct-Verif and compare them with the ones found by \toolname{}.
+
+\danfeng{the following is moved from a later section. Try to merge it with the
+previous paragraph} To run CtChecker, we feed the whole program
+to it. CtChecker will output the exact lines that are positive. On the other
+hand, Ct-verif doesn't tell which line is positive exactly. Therefore, in order
+to know which line is reported by Ct-verif, we feed the program line by line.
+At the beginning, the first line of code is input to Ct-verif, if it is not
+reported positive, we add the next line, otherwise, we change the branch
+condition to a public value and add the next line. However, this introduces a
+problem. \danfeng{I don't understand the following sentence. Try to rephrase
+it} To maintain consistency among libraries under investigation, we include
+certain functions with same purpose, such as decryption.  So, there will be
+some positive lines out if this scope due to function calls.  When operating
+Ct-verif in an aforementioned manner, we have to change some of the out of
+scope code\danfeng{why there are out of scope code?}. Even though we carefully
+do the changes so that the information flow remains the same, there still a
+chance the flow might be changed. For a fair comparison, in version 1, those
+positives out of scope will remain changed for CtChecker.
 
 \subsubsection{Limitations of Ct-verif}
 Although the approach is theoretically sound and complete, the results of
@@ -1364,30 +1381,17 @@ if ( carry_limb )
 \end{figure}
 
 \subsubsection{Results}
-We note that all true positives were reported among both tools, so we
-observed comparable accuracy.  Mainly, the results explain a couple of
-reasons for the significant difference between the precision observed.
-Several versions of the cryptography algorithms were created before
-comparing the precision of the two tools against one another. There are
-three versions (baseline, excluded and removed), each of which was
-developed from the version number before it.
 
-First, a baseline version was created to bridge the gap between
-the tools in terms of how they operate. To run CtChecker, we feed the whole program
-to it. CtChecker will output the exact lines that are positive. On the other
-hand, Ct-verif doesn't tell which line is positive exactly. Therefore, in
-order to know which line is reported by Ct-verif, we feed the program line
-by line. At the beginning, the first line of code is input to Ct-verif, if
-it is not reported positive, we add the next line, otherwise, we change 
-the branch condition to a public value and add the next line. However, this
-introduces a problem. To maintain consistency among libraries under investigation,
-we include certain functions with same purpose, such as decryption.
-So, there will be some positive lines out if this scope due to function calls.
-When operating Ct-verif in an aforementioned manner, we have to change some of
-the out of scope code. Even though we carefully do the changes so that the 
-information flow remains the same, there still a chance the flow might be
-changed. For a fair comparison, in version 1, those positives out of scope 
-will remain changed for CtChecker.
+Both Ct-Verif and \toolname{} are sound analyses and we did observe that all
+true positives are being reported by both tools. The differences are on false
+negtives, which is summerized in Table~\ref{tbl:vsctverif}.
+
+
+First, a \emph{baseline version} was created to bridge the gap between the
+tools in terms of how they operate. \danfeng{here, we should explain what's the
+difference between baseline and the code that we analyzed in Table 1 and 2,
+something similar to 4.4.2. We should update 4.4.2 according to what Sixuan did
+and merge 4.4.2 to this paragraph.}
 
 The second version (excluded) was constructed from the first, the reasons are
 twofold. First reason is to accommodate the difference of how the tools treat
@@ -1398,13 +1402,15 @@ consistency among libraries requires us to include source with same purpose, whi
 results in a full source incorporation of BearSSL. So, version 1 and version 2 of
 BearSSL are the same. Since the code base of BearSSL is small, Ct-verif runs 
 without problem. For other three libraries, when we try to include full source
-and feed into Ct-verif, the tool ran out of memory, for which we remove all
-the function calls without source. The second reason is to make the comparison
-more meaningful. Both tools taint a function call without source conservatively.
-This leads to a great portion of false positives. These positives does not reflect
-how CtChecker performs since it can reduce such positives by simply including full
-source. To this end, ruling out this kind of false positives is necessary for a
-meaningful comparison.
+and feed into Ct-verif, the tool ran out of memory\danfeng{I'm confused. Does
+the description belong to baseline? If not, why baseline does not say out of
+memory?}, for which we remove all the function calls without source. The second
+reason is to make the comparison more meaningful. Both tools taint a function
+call without source conservatively.  This leads to a great portion of false
+positives. These positives does not reflect how CtChecker performs since it can
+reduce such positives by simply including full source. To this end, ruling out
+this kind of false positives is necessary for a meaningful
+comparison.\danfeng{there used to be a no-loop version. Is it still there?}
 
 The third version (removed) was created from the second to remove all erroneous
 lines reported by Ct-verif, resulting in a subset of the original file
@@ -1412,6 +1418,9 @@ that was free of any constant time violation. This final version allowed
 us to evaluate the precision of CtChecker in another way; any positive
 reported on this version was exclusive to CtChecker, and was expected
 to be a false one. 
+
+\danfeng{Similar to the third version, we need a fouth version where we remove
+all errors reported by our tool and see if Ct-Verif reports any positive}
 
 Overall, CtChecker exhibited a large improvement precision over
 Ct-verif, a result apparent in the difference between the number of

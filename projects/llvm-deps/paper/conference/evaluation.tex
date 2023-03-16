@@ -1236,7 +1236,7 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
        \label{openssl:simple}
      \end{figure}
 
-\subsection{Verifying a 2-safety Property}
+\subsection{Comparision with Ct-Verif}
 
 \begin{table*}[!t]
   \centering
@@ -1261,45 +1261,54 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
 \label{tbl:runtimes}
 \end{table*}
 
-In this section, we discuss another approach to verify constant time code,
-and compare the precision and accuracy between it and CtChecker. We consider
-a recent effort that verifies a 2-property, expressing the security of a
-program as a set of logical statements or conditions, and verifying them
-automatically using a theorem solver. Our goal was to perform a reasonable
-comparison that focuses on the advantages of each method, and not the
-engineering details associated with implementing them.
+
+To verify constant-time property, one popular approach is to use the
+self-composition technique~\cite{} to convert the constant-time property into a
+classical program verification problem. To compare static information flow
+analysis apporach and self-compositoin approach, we compare \toolname{} with
+Ct-Verif~\cite{almeida2016verifying}, one of the first tools that verify
+constant-time properties via self-composition. One reason of comparing with
+Ct-Verif is that it is also built on top of the DSA~\cite{dsa} points-to
+ananalysis; hence, the comparison focuses on the advantages of each approach,
+rather than some engineering details, such as the difference in the points-to
+analysis, in their implementations.
 
 \subsubsection{Background}
-The paper of Almeida et al. uses an approach based on a reduction of the
-security of a program \textit{P} to the assertion-safety of a program
-\textit{Q}, and implements it in a prototype, Ct-verif.
-\cite{almeida2016verifying}. The reduction is inspired by prior work
-on self-composition and product programs.  A product program \textit{Q}
-verifies the security of \textit{P} by simulating two executions in lockstep.
-It asserts the equality of each public input with its renamed copy at each
-branching instruction. Public outputs are not taken into consideration, and
-the technique constructs an output-insensitive product program.  Theoretically,
-the approach is sound and complete in that all safe programs have a correct
-security verdict, and all unsafe programs have a correct insecurity verdict.
 
-Ct-verif verifies optimized LLVM by implementing their reduction
-technique.  The SMACK verification tool is used as a front-end to compile the
-annotated C-code via Clang and the resulting compiled and optimized LLVM code
-is translated to Boogie code.  The reduction is performed on the Boogie code and
-then applied to the Boogie verifier, which uses an SMT logic solver.  Ct-verif
-provides an annotation interface for public inputs.
+Ct-Verif~\cite{almeida2016verifying} reduces the constant-time property of a
+program \textit{P} to the assertion-safety of a program \textit{Q}. The
+reduction is inspired by prior work on self-composition and product programs.
+In particular, Ct-Verif simulates two program executions (with different secret
+inputs) in lockstep.  It assures constant-time property by assuring that all
+branch conditions and array indexes are identical across the two simulated
+executions. \danfeng{add an example here} Theoretically, the reduction is sound
+and complete in that all safe programs have a correct security verdict, and all
+unsafe programs have a correct insecurity verdict. But in practice, verifying
+the recuded code is typically incomplete, due to loops in the code as well as
+incompleteness of SMT solvers.
 
-The implementation does not provide results for the entire source. During its
-product program verification, if an error state is reached (a violation is
-found), no transition is enabled and the system will stop its execution. Constant
-time violations that occurred first in sequence were reported, but
-identification of violations that occurred afterwards was not guaranteed.
-To identify all violations, we replaced each error with some constant time
-code and re-ran the tool on the revised code.
+Simialr to \toolname{}, Ct-Verif analyzes LLVM IR code. Moreover, it uses the
+SMACK verification tool~\cite{} as a front-end to analyze the semantics of IR
+code and generate verification conditions which is further analyzed by
+Boogie~\cite{}. We emphasize that both SMACK and \toolname{} uses the DSA
+points-to analysis. Hence, neither of them take any advantange of the points-to
+analysis, which ususally makes a big impact on the precision of C code
+analysis.
 
-We perform a reasonable comparison between the two tools to better understand
-the distinct advantages of each method. We aim to avoid the drawbacks of the tools
-caused by engineering issues; we assume the best setting for each tool.
+
+We note that as a verification tool, Ct-Verif only reports if the source code
+satisfies constant-time property or not\footnote{When verification fails,
+Ct-Verify does generate some error messages. But it is hard to decypher those
+messages and link them to the source code.}, while \toolname{} can also
+pinpoint at source code lines that violate the constant-time property. To
+alleviate this limitation of Ct-Verif, whenever Ct-Verif fails, we first log
+the line of source code that causes the violation (i.e., the existance of code
+at and after that line triggers the failure). Then, we replace the errorous
+line with some constant time code and re-ran the tool on the revised code that
+preserves information flow\danfeng{add an example of how we rewrite code} and
+use Ct-Verif on the revised code. During this iterative process, we record all
+errornous lines reported by Ct-Verif and compare them with the locations found
+by \toolname{}.
 
 \subsubsection{Limitations of Ct-verif}
 Although the approach is theoretically sound and complete, the results of

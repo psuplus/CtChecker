@@ -13,7 +13,7 @@
 \usepackage{float}
 \usepackage{url}
 \usepackage{xcolor}
-\usepackage[xfp]{spreadtab}
+\usepackage{spreadtab}
 
 %testtk
 \lstdefinestyle{codestyle}{
@@ -49,6 +49,10 @@
 \newcommand{\codefile}[1]{\textit{#1}}
 \newcommand{\ruleabove}{}
 \newcommand{\rulebelow}{}
+\newcommand{\toolname}{CtChecker}
+
+\newcommand{\authnote}[2]{({\bf \textcolor{blue}{#1}: \em \textcolor{red}{#2}})}
+\newcommand{\danfeng}[1]{\authnote{Danfeng}{#1}}
 
 %Tables
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
@@ -105,23 +109,23 @@
 \title{\sysname: a Highly Precise and Efficient Static Information Analysis for
 Detecting Non-Constant Time Code}
 
-\author{Adam Mohammed}
-\affiliation{%
-  \institution{The Pennsylvania State University}
-}
-\email{aqm5498@psu.edu}
+%\author{Adam Mohammed}
+%\affiliation{%
+%  \institution{The Pennsylvania State University}
+%}
+%\email{aqm5498@psu.edu}
 
-\author{Ernest DeFoy III}
-\affiliation{%
-  \institution{The Pennsylvania State University}
-}
-\email{edd5103@psu.edu}
+%\author{Ernest DeFoy III}
+%\affiliation{%
+%  \institution{The Pennsylvania State University}
+%}
+%\email{edd5103@psu.edu}
 
-\author{Danfeng Zhang}
-\affiliation{%
-  \institution{The Pennsylvania State University}
-}
-\email{zhang@psu.edu}
+%\author{Danfeng Zhang}
+%\affiliation{%
+%  \institution{The Pennsylvania State University}
+%}
+%\email{zhang@psu.edu}
 
 % \renewcommand\shortauthors{Zhou, G. et al}
 

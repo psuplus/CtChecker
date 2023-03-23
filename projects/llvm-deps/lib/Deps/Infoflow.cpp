@@ -2406,7 +2406,26 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
         return;
     // Do we need to handle indirect branches?
   }
-  flows.push_back(imp);
+
+  // More sophisticated handling of based on users of variables. If all users
+  // are within the same block, we don't add it to the implicit flow pool.
+  bool useImp = false;
+  if (inst.getNumUses() == 0)
+    useImp = true;
+  for (auto user : inst.users()) {
+    if (auto userInst = dyn_cast<Instruction>(user)) {
+      if (userInst->getParent() != inst.getParent()) {
+        useImp = true;
+        break;
+      }
+    } else {
+      useImp = true;
+      break;
+    }
+  }
+  if (useImp) {
+    flows.push_back(imp);
+  }
 }
 
 void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
@@ -3052,9 +3071,19 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
     // Only create a flow when the parameter
     // being passed is not a pointer
     // if (!(*formal).getType()->isPointerTy()) {
-    const Value &actual = *cs.getArgument(i);
+    const Value *actual = cs.getArgument(i)->stripPointerCasts();
+    errs() << "qqqqqq: ";
+    actual->getType()->dump();
+    actual->stripPointerCasts()->dump();
+    // errs() << "Actual: " << isa<Pointer>(actual) << "\n";
+
+    if (auto bit = dyn_cast<BitCastInst>(actual)) {
+      bit->getOperand(0)->dump();
+      actual = bit->getOperand(0);
+    }
+
     FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
-    argFlow.addSourceValue(actual);
+    argFlow.addSourceValue(*actual);
     argFlow.addSinkValue(*formal);
     flows.push_back(argFlow);
 

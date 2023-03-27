@@ -36,6 +36,12 @@ v2_bign2_4_25_test: v2_bign2_4_25_test.bc
 
 ###############################################################
 
+v4_min_test.bc: bign2/v4_min.bc
+	$(LD) $^ -o $@
+
+v4_min_test: v4_min_test.bc
+	./run.sh $< results_with_source_v4_min.txt
+
 v3_min_test.bc: bign2/v3_min.bc
 	$(LD) $^ -o $@
 

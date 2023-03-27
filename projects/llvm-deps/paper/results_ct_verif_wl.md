@@ -1,28 +1,28 @@
 Table 1: without cache side channel
-|             ||        ct-verif           |||        ct-checker        ||
-|-------------|----------|---------|--------|----------|---------|-------|
-|             | Baseline |Excluded | Removed| Baseline |Excluded |Removed|
-|**BearSSL**  |  7       |    7    |   0    |     3    |     1   |     1 |
-|**libgcrypt**|   32     |    19   |   0    |    26    |     7   |     1 |
-|**mbedtls**  |   34     |    5    |   0    |    31    |     4   |     0 |
-|**openSSL**  |          |         |        |          |         |       |
-| recp        |   18     |    4    |   0    |     3    |     2   |     0 |
-| mont        |   21     |    5    |   0    |    25    |     2   |     0 |
-| word        |   18     |    1    |   0    |     2    |     1   |     0 |
-| consttime   |   18     |    4    |   0    |    23    |     1   |     1 |
+|             ||        Ct-Verif                    ||||           CtChecker            |||
+|-------------|----------|---------|--------|--------|----------|---------|-------|-------|
+|             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
+|**BearSSL**  |  7       |    7    |   0    |   4    |     3    |     1   |     1 |     0 |
+|**libgcrypt**|   32     |    19   |   0    |   10   |    26    |     7   |     1 |     0 |
+|**mbedtls**  |   34     |    5    |   0    |   1    |    31    |     4   |     0 |     0 |
+|**openSSL**  |          |         |        |        |          |         |       |     0 |
+| recp        |   18     |    3    |   0    |   0    |     3    |     2   |     0 |     0 |
+| mont        |   21     |    5    |   0    |   2    |    25    |     2   |     0 |     0 |
+| word        |   18     |    1    |   0    |   0    |     2    |     1   |     0 |     0 |
+| consttime   |   18     |    4    |   0    |   4    |    23    |     1   |     1 |     0 |
 
 Table 2: cache side channel
-|             ||        ct-verif           |||        ct-checker        ||
-|-------------|----------|---------|--------|----------|---------|-------|
-|             | Baseline |Excluded |Removed | Baseline |Excluded |Removed|
-|**BearSSL**  |     1    |    1    |   0    |     0    |     0   |     0 |
-|**libgcrypt**|      2   |    1    |   0    |     0    |     0   |     0 |
-|**mbedtls**  |     1    |    0    |   0    |     1    |     0   |     0 |
-|**openSSL**  |          |         |        |          |         |       |
-| recp        |     0    |    0    |   0    |     0    |     0   |     0 |
-| mont        |     2    |    2    |   0    |  1[1]    |     0   |     0 |
-| word        |    0     |    0    |   0    |     0    |     0   |     0 |
-| consttime   |    1     |    0    |   0    |  4[2]    |     0   |     0 |
+|             ||        Ct-Verif                    ||||           CtChecker            |||
+|-------------|----------|---------|--------|--------|----------|---------|-------|-------|
+|             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
+|**BearSSL**  |     1    |    1    |   0    |   1    |     0    |     0   |     0 |     0 |
+|**libgcrypt**|      2   |    1    |   0    |   0    |     0    |     0   |     0 |     0 |
+|**mbedtls**  |     1    |    0    |   0    |   0    |     1    |     0   |     0 |     0 |
+|**openSSL**  |          |         |        |        |          |         |       |       |
+| recp        |     0    |    0    |   0    |   0    |     0    |     0   |     0 |     0 |
+| mont        |     2    |    2    |   0    |   1    |  1[1]    |     0   |     0 |     0 |
+| word        |    0     |    0    |   0    |   0    |     0    |     0   |     0 |     0 |
+| consttime   |    1     |    0    |   0    |   0    |  4[2]    |     0   |     0 |     0 |
 
 *[1]* v1_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
 *[2]* mont_consttime/v1_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
@@ -52,6 +52,16 @@ v2_lib/i32_sub.c line   36 - for (u = 1; u < m; u ++) {
 v2_lib/i32_muladd.c line  108 - for (u = 1; u <= mlen; u ++) {  
 v2_lib/i32_div32.c line   39 - for (k = 31; k > 0; k --) {
 v2_lib/i32_tmont.c line   33 - for (k = (m[0] + 31) >> 5; k > 0; k --) {  
+
+
+### V4: 5
+
+v4_lib/i32_montmul.c line   38 - for (u = 0; u < len; u ++) {  
+v4_lib/i32_montmul.c line   46 - for (v = 0; v < len; v ++) {  
+**(cache)** v4_lib/i32_montmul.c line   60 - d[len] = (uint32_t)zh;  
+v4_lib/i32_muladd.c line  108 - for (u = 1; u <= mlen; u ++) {  
+v4_lib/i32_div32.c line   39 - for (k = 31; k > 0; k --) { 
+
 
 # libgcrypt
 
@@ -115,6 +125,19 @@ v2.c line  751- if ( mod_shift_cnt )
 v2.c line  756- MPN_NORMALIZE(rp, rsize);  
 v2.c line  758- gcry_assert (res->d == rp);  
 
+### V4: 10
+
+v2.c line  484 - if ( mod_shift_cnt )  
+v2.c line  506 - MPN_NORMALIZE( bp, bsize );  
+v2.c line  524 - gcry_assert (!bp_marker);  
+v2.c line  569 - if (xsize >= base_u_size)   
+v2.c line  715- if ( mod_shift_cnt )  
+v2.c line  738- if ( mod_shift_cnt )  
+v2.c line  740- MPN_NORMALIZE_1 (rp, rsize);  
+v2.c line  751- if ( mod_shift_cnt )  
+v2.c line  756- MPN_NORMALIZE(rp, rsize);  
+v2.c line  758- gcry_assert (res->d == rp);  
+
 # mbedtls
 
 ### V1: 29
@@ -157,6 +180,10 @@ bign2/v1_min.c line  606 - if( ( wbits & ( one << wsize ) ) != 0 )
 bign2/v1_min.c line  615 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )  
 bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
 
+### V4: 1
+
+bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
+
 # OpenSSL
 
 ## mont_recp
@@ -182,12 +209,13 @@ v1_recp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {
 v1_recp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
 v1_recp.c line  279 - if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))  
 
-### V2: 4
+### V2: 3
 
 v2_recp.c line  224 - for (i = 1; i < j; i++) {  
-v2_recp.c line  225 - if (((val[i] = BN_CTX_get(ctx)) == NULL) ||  
 v2_recp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {  
 v2_recp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
+
+### V4: 0
 
 ## mont
 
@@ -227,6 +255,12 @@ v2_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
 v2_mont.c line  398 - if (BN_is_bit_set(p, wstart) == 0) {  
 v2_mont.c line  419 - if (BN_is_bit_set(p, wstart - i)) {  
 
+### V4: 3
+
+v2_mont.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
+v2_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
+**(cache)**v2_mont.c line  390 - r->d[i] = (~m->d[i]) & BN_MASK2;  
+
 ## mont_word
 
 ### V1: 18
@@ -254,6 +288,8 @@ v1_word.c line 1273 - if (!BN_from_montgomery(rr, r, mont, ctx))
 
 v2_word.c line 1240 - if (BN_is_bit_set(p, b)) {  
 
+### V4: 0
+
 ## mont_consttime
 
 ### V1: 19
@@ -279,6 +315,13 @@ v1_consttime.c line 1124 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))
 v1_consttime.c line 1130 - if (powerbuf != NULL) {  
 
 ### V2: 4
+
+v2_consttime.c line  652 - if (a->neg || BN_ucmp(a, m) >= 0) {  
+v2_consttime.c line  654 - if (reduced == NULL  
+v2_consttime.c line  723 - if ((powerbufFree =  
+v2_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
+
+### V4: 4
 
 v2_consttime.c line  652 - if (a->neg || BN_ucmp(a, m) >= 0) {  
 v2_consttime.c line  654 - if (reduced == NULL  

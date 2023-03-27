@@ -1288,9 +1288,9 @@ the recuded code is typically incomplete, due to loops in the code as well as
 incompleteness of SMT solvers.
 
 Simialr to \toolname{}, Ct-Verif analyzes LLVM IR code. Moreover, it uses the
-SMACK verification tool~\cite{} as a front-end to analyze the semantics of IR
+SMACK verification tool~\cite{carter2016smack} as a front-end to analyze the semantics of IR
 code and generate verification conditions which is further analyzed by
-Boogie~\cite{}. We emphasize that both SMACK and \toolname{} uses the DSA
+Boogie~\cite{deline2005boogiepl}. We emphasize that both SMACK and \toolname{} uses the DSA
 points-to analysis. Hence, neither of them take any advantange of the points-to
 analysis, which ususally makes a big impact on the precision of C code
 analysis.
@@ -1305,23 +1305,45 @@ alleviate this limitation of Ct-Verif, whenever Ct-Verif fails, we first log
 the line of source code that causes the violation (i.e., the existance of code
 at and after that line triggers the failure). Then, we replace the errorous
 line with some constant time code that preserves information flow \danfeng{add
-an example of how we rewrite code} and re-ran Ct-Verif on the revised code.
+an example of how we rewrite code} and re-ran Ct-Verif on the revised code. \textbf{For
+example, in Figure~\ref{code:libgcrypt_limb_processing}, \texttt{e} is tainted at 
+the first line and then used in the branch condition at line 4, which makes this 
+branch vulnerable. Ct-Verif will report an error when we approach this line with
+the aforementioned manner. We record this line and rewrite it with a condition that
+is not affected by sensitive information, i.e., \texttt{pub\_branch8}.}
 During this iterative process, we record all errornous lines reported by
 Ct-Verif and compare them with the ones found by \toolname{}.
 
+\begin{figure}[h!]
+    \begin{lstlisting}
+        e = ep[i];
+        e = (e << c) << 1;
+        ...
+        if (pub_branch8) //<@\textcolor{red} {if (e == 0)} @>
+        {
+            j += c;
+            if ( --i < 0 )
+            break;
+            
+            e = ep[i];
+            c = BITS_PER_MPI_LIMB;
+        }
+        else ...
+    \end{lstlisting}
+    \caption{Libgcrypt 1.10.1 - mpi-pow.c lines 609-626}
+    \label{code:libgcrypt_limb_processing}
+\end{figure}
+
 \danfeng{the following is moved from a later section. Try to merge it with the
 previous paragraph} To run CtChecker, we feed the whole program
-to it. CtChecker will output the exact lines that are positive. On the other
-hand, Ct-verif doesn't tell which line is positive exactly. Therefore, in order
-to know which line is reported by Ct-verif, we feed the program line by line.
-At the beginning, the first line of code is input to Ct-verif, if it is not
-reported positive, we add the next line, otherwise, we change the branch
-condition to a public value and add the next line. However, this introduces a
-problem. \danfeng{I don't understand the following sentence. Try to rephrase
-it} To maintain consistency among libraries under investigation, we include
-certain functions with same purpose, such as decryption.  So, there will be
-some positive lines out if this scope due to function calls.  When operating
-Ct-verif in an aforementioned manner, we have to change some of the out of
+to it. CtChecker will output the exact lines that are positive. This difference in
+operation introduces a problem. \danfeng{I don't understand the following sentence. Try to rephrase
+it} \textbf{We exploit both tools on four cryptography libraries, among them, we feed
+part of the code that achieves the same functionality, such as encryption. Positives 
+reported outside of these functions are deemed as out of scope code.}
+\sout{To maintain consistency among libraries under investigation, we include
+certain functions with same purpose, such as decryption.}  These positives are due to function calls. 
+When operating Ct-verif in an aforementioned manner, we have to change some of the out of
 scope code\danfeng{why there are out of scope code?}. Even though we carefully
 do the changes so that the information flow remains the same, there still a
 chance the flow might be changed. For a fair comparison, in version 1, those
@@ -1388,12 +1410,12 @@ negtives, which is summerized in Table~\ref{tbl:vsctverif}.
 
 
 First, a \emph{baseline version} was created to bridge the gap between the
-tools in terms of how they operate. \danfeng{here, we should explain what's the
+tools in terms of how they operate.  \danfeng{here, we should explain what's the
 difference between baseline and the code that we analyzed in Table 1 and 2,
 something similar to 4.4.2. We should update 4.4.2 according to what Sixuan did
 and merge 4.4.2 to this paragraph.}
 
-The second version (excluded) was constructed from the first, the reasons are
+The second version (excluded-undefined-function) was constructed from the first, the reasons are
 twofold. First reason is to accommodate the difference of how the tools treat
 excluded source. The bottom line is, in this version, we should have no function
 calls whose source is excluded, which could be achieved by either adding all the
@@ -1411,8 +1433,9 @@ positives. These positives does not reflect how CtChecker performs since it can
 reduce such positives by simply including full source. To this end, ruling out
 this kind of false positives is necessary for a meaningful
 comparison.\danfeng{there used to be a no-loop version. Is it still there?}
+\sixuan{The no-loop version has been removed since it gives Ct-Verif too much credit.}
 
-The third version (removed) was created from the second to remove all erroneous
+The third version (removed-Ct-Verif) was created from the second to remove all erroneous
 lines reported by Ct-verif, resulting in a subset of the original file
 that was free of any constant time violation. This final version allowed
 us to evaluate the precision of CtChecker in another way; any positive
@@ -1421,6 +1444,11 @@ to be a false one.
 
 \danfeng{Similar to the third version, we need a fouth version where we remove
 all errors reported by our tool and see if Ct-Verif reports any positive}
+
+\textbf{Similar to the third version, we add a fourth version (removed-\toolname) 
+also from version 2, where all the lines reported by \toolname~are removed. The
+modified files are fed into Ct-Verif. All the lines reported this time are
+exclusive to Ct-Verif and also false positives.}
 
 Overall, CtChecker exhibited a large improvement precision over
 Ct-verif, a result apparent in the difference between the number of

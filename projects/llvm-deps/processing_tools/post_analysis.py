@@ -112,7 +112,7 @@ def update_table(lines):
         for i in range(1, 4):
             table[i][0] = "\\textbf{" + table[i][0] + "}"
             f.write((" & ".join(map(str, table[i])) + " \\\\\n").replace("%", "\%"))
-        f.write("\\textbf{OpenSSL 1.1.0g} \\\\\n")
+        f.write("\\textbf{OpenSSL 1.1.1q} \\\\\n")
         for i in range(4, 8):
             table[i][0] = "\\hspace{0.25cm}" + table[i][0]
             f.write((" & ".join(map(str, table[i])) + " \\\\\n").replace("%", "\%"))
@@ -152,7 +152,7 @@ def update_table(lines):
         for i in range(1, 4):
             table[i][0] = "\\textbf{" + table[i][0] + "}"
             f.write((" & ".join(map(str, table[i])) + " \\\\\n").replace("%", "\%"))
-        f.write("\\textbf{OpenSSL 1.1.0g} \\\\\n")
+        f.write("\\textbf{OpenSSL 1.1.1q} \\\\\n")
         for i in range(4, 8):
             table[i][0] = "\\hspace{0.25cm}" + table[i][0]
             f.write((" & ".join(map(str, table[i])) + " \\\\\n").replace("%", "\%"))
@@ -188,7 +188,7 @@ def update_table(lines):
                     "%", "\%"
                 )
             )
-        f.write("\\textbf{OpenSSL 1.1.0g} \\\\\n")
+        f.write("\\textbf{OpenSSL 1.1.1q} \\\\\n")
         for i in range(4, 8):
             running_time_table[i][0] = "\\hspace{0.25cm}" + running_time_table[i][0]
             f.write(

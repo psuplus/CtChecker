@@ -222,8 +222,8 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
             goto err;           /* 2 */
         j = 1 << (window - 1);
         for (i = 1; i < j; i++) {
-/*X*/            if (pub_BRANCH9) //            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-                //!BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
+            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+                !BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
                 goto err;
         }
     }
@@ -239,7 +239,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         goto err;
 
     for (;;) {
-        if (BN_is_bit_set(p, wstart) == 0) {
+        if (pub_BRANCH0) { //if (BN_is_bit_set(p, wstart) == 0) {
             if (!start)
 /*X*/       if (pub_BRANCH13) //                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
                     goto err;
@@ -259,7 +259,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         for (i = 1; i < window; i++) {
             if (wstart - i < 0)
                 dummy++;//break;
-            if (BN_is_bit_set(p, wstart - i)) {
+            if (pub_BRANCH1) { //if (BN_is_bit_set(p, wstart - i)) {
                 wvalue <<= (i - wend);
                 wvalue |= 1;
                 wend = i;

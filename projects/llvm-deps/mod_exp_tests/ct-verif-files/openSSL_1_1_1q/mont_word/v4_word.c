@@ -10,7 +10,7 @@
 #include "v4_3_2_include/internal/cryptlib.h"
 #include "v4_3_2_include/internal/constant_time.h"
 #include "v4_3_2_include/bn_local.h"
-int dummy=0;
+int dummy = 0;
 #include <stdlib.h>
 #ifdef _WIN32
 # include <malloc.h>
@@ -29,7 +29,7 @@ int dummy=0;
 
 #undef SPARC_T4_MONT
 #if defined(OPENSSL_BN_ASM_MONT) && (defined(__sparc__) || defined(__sparc))
-# include "v4_3_2_include/sparc_arch.h"
+# include "sparc_arch.h"
 extern unsigned int OPENSSL_sparcv9cap_P[];
 # define SPARC_T4_MONT
 #endif
@@ -158,8 +158,8 @@ int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
     return ret;
 }
 
-int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx,BIGNUM *pub_BIGNUM0,BIGNUM *pub_BIGNUM1,BIGNUM *pub_BIGNUM2,int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL0,int taint_VAL1,int taint_VAL2,int taint_VAL3)
+int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+                    const BIGNUM *m, BN_CTX *ctx)
 {
     int i, j, bits, ret = 0, wstart, wend, window, wvalue;
     int start = 1;
@@ -168,62 +168,62 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     BIGNUM *val[TABLE_SIZE];
     BN_RECP_CTX recp;
 
- /*X*/   // if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-    //         || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-    //         || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-    //     /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
-    //     BNerr(BN_F_BN_MOD_EXP_RECP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
-    //     return 0;
-    // }
+    if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+            || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+            || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+        BNerr(BN_F_BN_MOD_EXP_RECP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        return 0;
+    }
 
     bits = BN_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
-/*X*/        if (pub_BRANCH1) {//        if (BN_abs_is_word(m, 1)) {
+        if (BN_abs_is_word(m, 1)) {
             ret = 1;
-/*X*/            dummy++;///*X*/            dummy++;//            BN_zero(r);
+            BN_zero(r);
         } else {
-/*X*/            ret = dummy++;//            ret = BN_one(r);
+            ret = BN_one(r);
         }
         return ret;
     }
 
-        BN_RECP_CTX_init(&recp);
+    BN_RECP_CTX_init(&recp);
 
-/*X*/    dummy++; //BN_CTX_start(ctx);
-/*X*/    aa = pub_BIGNUM0; //aa = BN_CTX_get(ctx);
-/*X*/    val[0] = pub_BIGNUM1; //val[0] = BN_CTX_get(ctx);
+    BN_CTX_start(ctx);
+    aa = BN_CTX_get(ctx);
+    val[0] = BN_CTX_get(ctx);
     if (val[0] == NULL)
         goto err;
 
-   if (m->neg) {
+    if (m->neg) {
         /* ignore sign of 'm' */
-/*X*/    if (pub_BRANCH2)//if (!BN_copy(aa, m))
+        if (!BN_copy(aa, m))
             goto err;
         aa->neg = 0;
-/*X*/        if (pub_BRANCH3) //        if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
+        if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
             goto err;
     } else {
-/*X*/        if (pub_BRANCH4) //        if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
+        if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
             goto err;
     }
 
-/*X*/    if (pub_BRANCH5)//if (!BN_nnmod(val[0], a, m, ctx))
+    if (!BN_nnmod(val[0], a, m, ctx))
         goto err;               /* 1 */
-/*X*/    if (pub_BRANCH6){//if (BN_is_zero(val[0])) {
-/*X*/        dummy++;//BN_zero(r);
+    if (BN_is_zero(val[0])) {
+        BN_zero(r);
         ret = 1;
         goto err;
     }
 
     window = BN_window_bits_for_exponent_size(bits);
     if (window > 1) {
-/*X*/        if (pub_BRANCH8) //if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
+        if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
             goto err;           /* 2 */
         j = 1 << (window - 1);
         for (i = 1; i < j; i++) {
-/*X*/            if (pub_BRANCH9) //            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-                //!BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
+            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+                !BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
                 goto err;
         }
     }
@@ -235,13 +235,13 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     wstart = bits - 1;          /* The top bit of the window */
     wend = 0;                   /* The bottom bit of the window */
 
-/*X*/        if (pub_BRANCH11) //    if (!BN_one(r))
+    if (!BN_one(r))
         goto err;
 
     for (;;) {
         if (BN_is_bit_set(p, wstart) == 0) {
             if (!start)
-/*X*/       if (pub_BRANCH13) //                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
                     goto err;
             if (wstart == 0)
                 break;
@@ -258,7 +258,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         wend = 0;
         for (i = 1; i < window; i++) {
             if (wstart - i < 0)
-                dummy++;//break;
+                break;
             if (BN_is_bit_set(p, wstart - i)) {
                 wvalue <<= (i - wend);
                 wvalue |= 1;
@@ -271,26 +271,26 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         /* add the 'bytes above' */
         if (!start)
             for (i = 0; i < j; i++) {
-/*X*/        if (pub_BRANCH19) //                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
                     goto err;
             }
 
         /* wvalue will be an odd number < 2^window */
-/*X*/        if (pub_BRANCH20) //        if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))
+        if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))
             goto err;
 
         /* move the 'window' down further */
         wstart -= wend + 1;
         wvalue = 0;
         start = 0;
-        if (pub_BRANCH21) //if (wstart < 0)
+        if (wstart < 0)
             break;
     }
     ret = 1;
- err: dummy++;
-/*X*/ dummy++; //    BN_CTX_end(ctx);
-/*X*/ dummy++; //    BN_RECP_CTX_free(&recp);
-/*X*/ dummy++; //    bn_check_top(r);
+ err:
+    BN_CTX_end(ctx);
+    BN_RECP_CTX_free(&recp);
+    bn_check_top(r);
     return ret;
 }
 
@@ -1135,8 +1135,8 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
-                         const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+int BN_mod_exp_mont_word_algorithm(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
+                         const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont,BIGNUM *pub_BIGNUM0,BIGNUM *pub_BIGNUM1,BIGNUM *pub_BIGNUM2,int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL0,int taint_VAL1,int taint_VAL2,int taint_VAL3)
 {
     BN_MONT_CTX *mont = NULL;
     int b, bits, ret = 0;
@@ -1161,17 +1161,17 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
 #define BN_TO_MONTGOMERY_WORD(r, w, mont) \
                 (BN_set_word(r, (w)) && BN_to_montgomery(r, r, (mont), ctx))
 
-    if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-            || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
-        BNerr(BN_F_BN_MOD_EXP_MONT_WORD, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
-        return 0;
-    }
+ /*X*///    if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+//             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+//         /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+//         BNerr(BN_F_BN_MOD_EXP_MONT_WORD, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+//         return 0;
+//     }
 
-    bn_check_top(p);
-    bn_check_top(m);
+/*X*/    dummy++;//    bn_check_top(p);
+/*X*/    dummy++;//    bn_check_top(m);
 
-    if (!BN_is_odd(m)) {
+/*X*/    if (pub_BRANCH0) {//    if (!BN_is_odd(m)) {
         BNerr(BN_F_BN_MOD_EXP_MONT_WORD, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
@@ -1181,36 +1181,36 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
     bits = BN_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
-        if (BN_abs_is_word(m, 1)) {
+/*X*/        if (pub_BRANCH2) {//        if (BN_abs_is_word(m, 1)) {
             ret = 1;
-            BN_zero(rr);
+/*X*/            dummy++;//            BN_zero(rr);
         } else {
-            ret = BN_one(rr);
+/*X*/            ret = dummy++;////            ret = BN_one(rr);
         }
         return ret;
     }
     if (a == 0) {
-        BN_zero(rr);
+/*X*/        dummy++;//        BN_zero(rr);
         ret = 1;
         return ret;
     }
 
-    BN_CTX_start(ctx);
-    r = BN_CTX_get(ctx);
-    t = BN_CTX_get(ctx);
+/*X*/    dummy++;//    BN_CTX_start(ctx);
+/*X*/    r = pub_BIGNUM0;//    r = BN_CTX_get(ctx);
+/*X*/    t = pub_BIGNUM1;//    t = BN_CTX_get(ctx);
     if (t == NULL)
         goto err;
 
     if (in_mont != NULL)
         mont = in_mont;
     else {
-        if ((mont = BN_MONT_CTX_new()) == NULL)
-            goto err;
-        if (!BN_MONT_CTX_set(mont, m, ctx))
-            goto err;
+/*X*/        if (pub_BRANCH4) {//        if ((mont = BN_MONT_CTX_new()) == NULL)
+            goto err;}
+/*X*/        if (pub_BRANCH5) {//        if (!BN_MONT_CTX_set(mont, m, ctx))
+            goto err;}
     }
 
-    r_is_one = 1;               /* except for Montgomery factor */
+    r_is_one = pub_VAL0;//1;               /* except for Montgomery factor */
 
     /* bits-1 >= 0 */
 
@@ -1219,34 +1219,34 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
     for (b = bits - 2; b >= 0; b--) {
         /* First, square r*w. */
         next_w = w * w;
-        if ((next_w / w) != w) { /* overflow */
+        if (pub_BRANCH12) {//if ((next_w / w) != w) { /* overflow */
             if (r_is_one) {
-                if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-                    goto err;
+                /*X*/                if (pub_BRANCH7) {//if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+                    goto err;}
                 r_is_one = 0;
             } else {
-                if (!BN_MOD_MUL_WORD(r, w, m))
-                    goto err;
+                /*X*/                if (pub_BRANCH8) {//if (!BN_MOD_MUL_WORD(r, w, m))
+                    goto err;}
             }
             next_w = 1;
         }
         w = next_w;
         if (!r_is_one) {
-            if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
-                goto err;
+            /*X*/            if (pub_BRANCH9) {//if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+                goto err;}
         }
 
         /* Second, multiply r*w by 'a' if exponent bit is set. */
-        if (BN_is_bit_set(p, b)) {
+        if (pub_BRANCH15) { //if (BN_is_bit_set_0(p, b, pub_BRANCH10)) {
             next_w = w * a;
             if ((next_w / a) != w) { /* overflow */
                 if (r_is_one) {
-                    if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-                        goto err;
+                    /*X*/                    if (pub_BRANCH13) {//if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+                        goto err;}
                     r_is_one = 0;
                 } else {
-                    if (!BN_MOD_MUL_WORD(r, w, m))
-                        goto err;
+                    /*X*/                    if (pub_BRANCH14) {//if (!BN_MOD_MUL_WORD(r, w, m))
+                        goto err;}
                 }
                 next_w = a;
             }
@@ -1257,28 +1257,28 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
     /* Finally, set r:=r*w. */
     if (w != 1) {
         if (r_is_one) {
-            if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
-                goto err;
+            /*X*/            if (pub_BRANCH16) {//if (!BN_TO_MONTGOMERY_WORD(r, w, mont))
+                goto err;}
             r_is_one = 0;
         } else {
-            if (!BN_MOD_MUL_WORD(r, w, m))
-                goto err;
+            /*X*/            if (pub_BRANCH17) {//if (!BN_MOD_MUL_WORD(r, w, m))
+                goto err;}
         }
     }
 
     if (r_is_one) {             /* can happen only if a == 1 */
-        if (!BN_one(rr))
-            goto err;
+        	/*X*/        if (pub_BRANCH18) {//if (!BN_one(rr))
+            goto err;}
     } else {
-        if (!BN_from_montgomery(rr, r, mont, ctx))
-            goto err;
+        /*X*/        if (pub_BRANCH19) {//if (!BN_from_montgomery(rr, r, mont, ctx))
+            goto err;}
     }
     ret = 1;
  err:
     if (in_mont == NULL)
-        BN_MONT_CTX_free(mont);
-    BN_CTX_end(ctx);
-    bn_check_top(rr);
+/*X*/        dummy++;//        BN_MONT_CTX_free(mont);
+/*X*/    dummy++;//    BN_CTX_end(ctx);
+/*X*/    dummy++;//    bn_check_top(rr);
     return ret;
 }
 
@@ -1403,16 +1403,20 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../../ct-verif.h"
 
 // #define ARRAY_SIZE 32
 // void
-// fragment_wrapper (BN_ULONG *d_r, int top_r, int dmax_r, int neg_r, int flags_r,
-//                  BN_ULONG *d_a, int top_a, int dmax_a, int neg_a, int flags_a,
+// fragment_wrapper (BN_ULONG *d_rr, int top_rr, int dmax_rr, int neg_rr, int flags_rr,
+//                  BN_ULONG a,
 //                  BN_ULONG *d_p, int top_p, int dmax_p, int neg_p, int flags_p,
 //                  BN_ULONG *d_m, int top_m, int dmax_m, int neg_m, int flags_m,
+//                  int ri_inmont, int flags_inmont,BN_ULONG n0_inmont_0,BN_ULONG n0_inmont_1,BN_ULONG n0_inmont_2,
+//                  BN_ULONG *d_inmont_RR, int top_inmont_RR, int dmax_inmont_RR, int neg_inmont_RR, int flags_inmont_RR,
+//                  BN_ULONG *d_inmont_N, int top_inmont_N, int dmax_inmont_N, int neg_inmont_N, int flags_inmont_N,
+//                  BN_ULONG *d_inmont_Ni, int top_inmont_Ni, int dmax_inmont_Ni, int neg_inmont_Ni, int flags_inmont_Ni,
 //                  BN_ULONG *d_pub0, int top_pub0, int dmax_pub0, int neg_pub0, int flags_pub0,
 //                  BN_ULONG *d_pub1, int top_pub1, int dmax_pub1, int neg_pub1, int flags_pub1,
 //                  BN_ULONG *d_pub2, int top_pub2, int dmax_pub2, int neg_pub2, int flags_pub2,
@@ -1491,26 +1495,20 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
    
 //    /***************/
    
-//    public_in(__SMACK_value(d_a));
-//    public_in(__SMACK_value(d_r));
+//    public_in(__SMACK_value(a));
+//    public_in(__SMACK_value(d_rr));
 //    public_in(__SMACK_value(d_p));
 //    public_in(__SMACK_value(d_m));
    
-//    public_in(__SMACK_values(d_r,ARRAY_SIZE));
-//    public_in(__SMACK_values(d_a,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_rr,ARRAY_SIZE));
 //    // show tainted variables *p and *m
 //    // public_in(__SMACK_values(d_p,ARRAY_SIZE));
 //    public_in(__SMACK_values(d_m,ARRAY_SIZE));
    
-//    public_in(__SMACK_value(top_r));
-//    public_in(__SMACK_value(dmax_r));
-//    public_in(__SMACK_value(neg_r));
-//    public_in(__SMACK_value(flags_r));
-   
-//    public_in(__SMACK_value(top_a));
-//    public_in(__SMACK_value(dmax_a));
-//    public_in(__SMACK_value(neg_a));
-//    public_in(__SMACK_value(flags_a));
+//    public_in(__SMACK_value(top_rr));
+//    public_in(__SMACK_value(dmax_rr));
+//    public_in(__SMACK_value(neg_rr));
+//    public_in(__SMACK_value(flags_rr));
    
 //    public_in(__SMACK_value(top_p));
 //    public_in(__SMACK_value(dmax_p));
@@ -1522,20 +1520,63 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 //    public_in(__SMACK_value(neg_m));
 //    public_in(__SMACK_value(flags_m));
    
-//    struct bignum_st OBJr = {d_r,top_r,dmax_r,neg_r,flags_r};
-//    struct bignum_st OBJa = {d_a,top_a,dmax_a,neg_a,flags_a};
+//    struct bignum_st OBJrr = {d_rr,top_rr,dmax_rr,neg_rr,flags_rr};
 //    struct bignum_st OBJp = {d_p,top_p,dmax_p,neg_p,flags_p};
 //    struct bignum_st OBJm = {d_m,top_m,dmax_m,neg_m,flags_m};
    
-//    BIGNUM *r = &OBJr;
-//    BIGNUM *a = &OBJa;
+//    BIGNUM *rr = &OBJrr;
 //    BIGNUM *p = &OBJp;
 //    BIGNUM *m = &OBJm;
    
+//    /* inmont */
+   
+//    public_in(__SMACK_value(ri_inmont));
+//    public_in(__SMACK_value(flags_inmont));
+//    public_in(__SMACK_value(n0_inmont_0));
+//    public_in(__SMACK_value(n0_inmont_1));
+//    public_in(__SMACK_value(n0_inmont_2));
+   
+//    public_in(__SMACK_value(d_inmont_RR));
+//    public_in(__SMACK_value(d_inmont_N));
+//    public_in(__SMACK_value(d_inmont_Ni));
+   
+//    public_in(__SMACK_values(d_inmont_RR,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_inmont_N,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_inmont_Ni,ARRAY_SIZE));
+   
+//    public_in(__SMACK_value(top_inmont_RR));
+//    public_in(__SMACK_value(dmax_inmont_RR));
+//    public_in(__SMACK_value(neg_inmont_RR));
+//    public_in(__SMACK_value(flags_inmont_RR));
+   
+//    public_in(__SMACK_value(top_inmont_N));
+//    public_in(__SMACK_value(dmax_inmont_N));
+//    public_in(__SMACK_value(neg_inmont_N));
+//    public_in(__SMACK_value(flags_inmont_N));
+   
+//    public_in(__SMACK_value(top_inmont_Ni));
+//    public_in(__SMACK_value(dmax_inmont_Ni));
+//    public_in(__SMACK_value(neg_inmont_Ni));
+//    public_in(__SMACK_value(flags_inmont_Ni));
+   
+//    struct bignum_st OBJinmont_RR = {d_inmont_RR,top_inmont_RR,dmax_inmont_RR,neg_inmont_RR,flags_inmont_RR};
+//    struct bignum_st OBJinmont_N = {d_inmont_N,top_inmont_N,dmax_inmont_N,neg_inmont_N,flags_inmont_N};
+//    struct bignum_st OBJinmont_Ni = {d_inmont_Ni,top_inmont_Ni,dmax_inmont_Ni,neg_inmont_Ni,flags_inmont_Ni};
+   
+//    BIGNUM inmont_RR = OBJinmont_RR;
+//    BIGNUM inmont_N = OBJinmont_N;
+//    BIGNUM inmont_Ni = OBJinmont_Ni;
+   
+//    BN_ULONG n0_inmont[] = {n0_inmont_0,n0_inmont_1,n0_inmont_2};
+   
+//    struct bn_mont_ctx_st OBJinmont = { ri_inmont, inmont_RR, inmont_N, inmont_Ni,n0_inmont,flags_inmont };
+   
+//    BN_MONT_CTX *in_mont = &OBJinmont;
+//    /**********/
    
 //    BN_CTX *ctx = NULL;
    
-//    BN_mod_exp_recp_algorithm (r,a,p,m,ctx,
+//    BN_mod_exp_mont_word_algorithm (rr,a,p,m,ctx,in_mont,
 //                               pub_BIGNUM0,pub_BIGNUM1,pub_BIGNUM2,
 //                               pub_BRANCH0,pub_BRANCH1,pub_BRANCH2,
 //                               pub_BRANCH3,pub_BRANCH4,pub_BRANCH5,

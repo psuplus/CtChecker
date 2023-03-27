@@ -10,7 +10,7 @@
 #include "v4_3_2_include/internal/cryptlib.h"
 #include "v4_3_2_include/internal/constant_time.h"
 #include "v4_3_2_include/bn_local.h"
-int dummy=0;
+int dummy = 0;
 #include <stdlib.h>
 #ifdef _WIN32
 # include <malloc.h>
@@ -29,7 +29,7 @@ int dummy=0;
 
 #undef SPARC_T4_MONT
 #if defined(OPENSSL_BN_ASM_MONT) && (defined(__sparc__) || defined(__sparc))
-# include "v4_3_2_include/sparc_arch.h"
+# include "sparc_arch.h"
 extern unsigned int OPENSSL_sparcv9cap_P[];
 # define SPARC_T4_MONT
 #endif
@@ -158,8 +158,8 @@ int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
     return ret;
 }
 
-int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx,BIGNUM *pub_BIGNUM0,BIGNUM *pub_BIGNUM1,BIGNUM *pub_BIGNUM2,int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL0,int taint_VAL1,int taint_VAL2,int taint_VAL3)
+int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+                    const BIGNUM *m, BN_CTX *ctx)
 {
     int i, j, bits, ret = 0, wstart, wend, window, wvalue;
     int start = 1;
@@ -168,62 +168,62 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     BIGNUM *val[TABLE_SIZE];
     BN_RECP_CTX recp;
 
- /*X*/   // if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
-    //         || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
-    //         || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-    //     /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
-    //     BNerr(BN_F_BN_MOD_EXP_RECP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
-    //     return 0;
-    // }
+    if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
+            || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
+            || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
+        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+        BNerr(BN_F_BN_MOD_EXP_RECP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        return 0;
+    }
 
     bits = BN_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
-/*X*/        if (pub_BRANCH1) {//        if (BN_abs_is_word(m, 1)) {
+        if (BN_abs_is_word(m, 1)) {
             ret = 1;
-/*X*/            dummy++;///*X*/            dummy++;//            BN_zero(r);
+            BN_zero(r);
         } else {
-/*X*/            ret = dummy++;//            ret = BN_one(r);
+            ret = BN_one(r);
         }
         return ret;
     }
 
-        BN_RECP_CTX_init(&recp);
+    BN_RECP_CTX_init(&recp);
 
-/*X*/    dummy++; //BN_CTX_start(ctx);
-/*X*/    aa = pub_BIGNUM0; //aa = BN_CTX_get(ctx);
-/*X*/    val[0] = pub_BIGNUM1; //val[0] = BN_CTX_get(ctx);
+    BN_CTX_start(ctx);
+    aa = BN_CTX_get(ctx);
+    val[0] = BN_CTX_get(ctx);
     if (val[0] == NULL)
         goto err;
 
-   if (m->neg) {
+    if (m->neg) {
         /* ignore sign of 'm' */
-/*X*/    if (pub_BRANCH2)//if (!BN_copy(aa, m))
+        if (!BN_copy(aa, m))
             goto err;
         aa->neg = 0;
-/*X*/        if (pub_BRANCH3) //        if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
+        if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
             goto err;
     } else {
-/*X*/        if (pub_BRANCH4) //        if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
+        if (BN_RECP_CTX_set(&recp, m, ctx) <= 0)
             goto err;
     }
 
-/*X*/    if (pub_BRANCH5)//if (!BN_nnmod(val[0], a, m, ctx))
+    if (!BN_nnmod(val[0], a, m, ctx))
         goto err;               /* 1 */
-/*X*/    if (pub_BRANCH6){//if (BN_is_zero(val[0])) {
-/*X*/        dummy++;//BN_zero(r);
+    if (BN_is_zero(val[0])) {
+        BN_zero(r);
         ret = 1;
         goto err;
     }
 
     window = BN_window_bits_for_exponent_size(bits);
     if (window > 1) {
-/*X*/        if (pub_BRANCH8) //if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
+        if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
             goto err;           /* 2 */
         j = 1 << (window - 1);
         for (i = 1; i < j; i++) {
-/*X*/            if (pub_BRANCH9) //            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
-                //!BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
+            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+                !BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
                 goto err;
         }
     }
@@ -235,13 +235,13 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     wstart = bits - 1;          /* The top bit of the window */
     wend = 0;                   /* The bottom bit of the window */
 
-/*X*/        if (pub_BRANCH11) //    if (!BN_one(r))
+    if (!BN_one(r))
         goto err;
 
     for (;;) {
         if (BN_is_bit_set(p, wstart) == 0) {
             if (!start)
-/*X*/       if (pub_BRANCH13) //                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
                     goto err;
             if (wstart == 0)
                 break;
@@ -258,7 +258,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         wend = 0;
         for (i = 1; i < window; i++) {
             if (wstart - i < 0)
-                dummy++;//break;
+                break;
             if (BN_is_bit_set(p, wstart - i)) {
                 wvalue <<= (i - wend);
                 wvalue |= 1;
@@ -271,26 +271,26 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         /* add the 'bytes above' */
         if (!start)
             for (i = 0; i < j; i++) {
-/*X*/        if (pub_BRANCH19) //                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
+                if (!BN_mod_mul_reciprocal(r, r, r, &recp, ctx))
                     goto err;
             }
 
         /* wvalue will be an odd number < 2^window */
-/*X*/        if (pub_BRANCH20) //        if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))
+        if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))
             goto err;
 
         /* move the 'window' down further */
         wstart -= wend + 1;
         wvalue = 0;
         start = 0;
-        if (pub_BRANCH21) //if (wstart < 0)
+        if (wstart < 0)
             break;
     }
     ret = 1;
- err: dummy++;
-/*X*/ dummy++; //    BN_CTX_end(ctx);
-/*X*/ dummy++; //    BN_RECP_CTX_free(&recp);
-/*X*/ dummy++; //    bn_check_top(r);
+ err:
+    BN_CTX_end(ctx);
+    BN_RECP_CTX_free(&recp);
+    bn_check_top(r);
     return ret;
 }
 
@@ -514,9 +514,9 @@ static int MOD_EXP_CTIME_COPY_TO_PREBUF(const BIGNUM *b, int top,
     return 1;
 }
 
-static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
+static int MOD_EXP_CTIME_COPY_FROM_PREBUF_0(BIGNUM *b, int top,
                                           unsigned char *buf, int idx,
-                                          int window)
+                                          int window, int pub_BRANCH0)
 {
     int i, j;
     int width = 1 << window;
@@ -530,7 +530,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
      */
     volatile BN_ULONG *table = (volatile BN_ULONG *)buf;
 
-    if (bn_wexpand(b, top) == NULL)
+/*X*/    if (pub_BRANCH0 == 30)//    if (bn_wexpand(b, top) == NULL)
         return 0;
 
     if (window <= 3) {
@@ -572,7 +572,7 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
     }
 
     b->top = top;
-    b->flags |= BN_FLG_FIXED_TOP;
+/*X*/    dummy++;//    b->flags |= BN_FLG_FIXED_TOP;
     return 1;
 }
 
@@ -590,14 +590,14 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
  * out by Colin Percival,
  * http://www.daemonology.net/hyperthreading-considered-harmful/)
  */
-int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                               const BIGNUM *m, BN_CTX *ctx,
-                              BN_MONT_CTX *in_mont)
+                              BN_MONT_CTX *in_mont,BIGNUM *pub_BIGNUM0,BIGNUM *pub_BIGNUM1,BIGNUM *pub_BIGNUM2,int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL0,int taint_VAL1,int taint_VAL2,int taint_VAL3)
 {
     int i, bits, ret = 0, window, wvalue, wmask, window0;
-    int top;
+/*L*/    int top; unsigned char aa = 'a'; unsigned char bb = 'b';
     BN_MONT_CTX *mont = NULL;
-
+/*L*/ unsigned char *chr0 = &aa;unsigned char *chr1 = &bb;
     int numPowers;
     unsigned char *powerbufFree = NULL;
     int powerbufLen = 0;
@@ -607,11 +607,11 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     unsigned int t4 = 0;
 #endif
 
-    bn_check_top(a);
-    bn_check_top(p);
-    bn_check_top(m);
+/*X*/    dummy++;//    bn_check_top(a);
+/*X*/    dummy++;//    bn_check_top(p);
+/*X*/    dummy++;//    bn_check_top(m);
 
-    if (!BN_is_odd(m)) {
+/*X*/    if(pub_BRANCH0) {//    if (!BN_is_odd(m)) {
         BNerr(BN_F_BN_MOD_EXP_MONT_CONSTTIME, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
@@ -622,19 +622,19 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
      * Use all bits stored in |p|, rather than |BN_num_bits|, so we do not leak
      * whether the top bits are zero.
      */
-    bits = p->top * BN_BITS2;
+/*X*/    bits = p->top * BN_BITS2;
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
-        if (BN_abs_is_word(m, 1)) {
+/*X*/        if(pub_BRANCH2) {//        if (BN_abs_is_word(m, 1)) {
             ret = 1;
-            BN_zero(rr);
+/*X*/            dummy++;//            BN_zero(rr);
         } else {
-            ret = BN_one(rr);
+/*X*/            ret = 0;//            ret = BN_one(rr);
         }
         return ret;
     }
 
-    BN_CTX_start(ctx);
+/*X*/    dummy++;//    BN_CTX_start(ctx);
 
     /*
      * Allocate a montgomery context if it was not supplied by the caller. If
@@ -643,10 +643,10 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     if (in_mont != NULL)
         mont = in_mont;
     else {
-        if ((mont = BN_MONT_CTX_new()) == NULL)
-            goto err;
-        if (!BN_MONT_CTX_set(mont, m, ctx))
-            goto err;
+/*X*/        if(pub_BRANCH3) {//        if ((mont = BN_MONT_CTX_new()) == NULL)
+            goto err;}
+/*X*/        if(pub_BRANCH4) {//        if (!BN_MONT_CTX_set(mont, m, ctx))
+            goto err;}
     }
 
     if (a->neg || BN_ucmp(a, m) >= 0) {
@@ -717,16 +717,16 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 #ifdef alloca
     if (powerbufLen < 3072)
         powerbufFree =
-            alloca(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH);
+/*X*/            chr0;//            alloca(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH);
     else
 #endif
         if ((powerbufFree =
-             OPENSSL_malloc(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH))
+            OPENSSL_malloc(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH))
             == NULL)
         goto err;
 
-    powerbuf = MOD_EXP_CTIME_ALIGN(powerbufFree);
-    memset(powerbuf, 0, powerbufLen);
+/*X*/    powerbuf = chr1;//    powerbuf = MOD_EXP_CTIME_ALIGN(powerbufFree);
+///*L?*/    memset(powerbuf, 0, powerbufLen);
 
 #ifdef alloca
     if (powerbufLen < 3072)
@@ -751,12 +751,12 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         tmp.top = top;
     } else
 #endif
-    if (!bn_to_mont_fixed_top(&tmp, BN_value_one(), mont, ctx))
-        goto err;
+/*X*/    if(pub_BRANCH8) {//    if (!bn_to_mont_fixed_top(&tmp, BN_value_one(), mont, ctx))
+        goto err;}
 
     /* prepare a^1 in Montgomery domain */
-    if (!bn_to_mont_fixed_top(&am, a, mont, ctx))
-        goto err;
+/*X*/        if(pub_BRANCH10) {//    if (!bn_to_mont_fixed_top(&am, a, mont, ctx))
+        goto err;}
 
 #if defined(SPARC_T4_MONT)
     if (t4) {
@@ -1026,7 +1026,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
          * extra reduction step. In the paper's terminology, we replace
          * steps 9 and 10 with MM(h, 1).
          */
-    } else
+   } else
 #endif
     {
         if (!MOD_EXP_CTIME_COPY_TO_PREBUF(&tmp, top, powerbuf, 0, window))
@@ -1041,15 +1041,15 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
          * performance advantage of sqr over mul).
          */
         if (window > 1) {
-            if (!bn_mul_mont_fixed_top(&tmp, &am, &am, mont, ctx))
-                goto err;
+/*X*/            if(pub_BRANCH14) {//            if (!bn_mul_mont_fixed_top(&tmp, &am, &am, mont, ctx))
+                goto err;}
             if (!MOD_EXP_CTIME_COPY_TO_PREBUF(&tmp, top, powerbuf, 2,
                                               window))
                 goto err;
             for (i = 3; i < numPowers; i++) {
                 /* Calculate a^i = a^(i-1) * a */
-                if (!bn_mul_mont_fixed_top(&tmp, &am, &tmp, mont, ctx))
-                    goto err;
+/*X*/                if(pub_BRANCH16) {//                if (!bn_mul_mont_fixed_top(&tmp, &am, &tmp, mont, ctx))
+                    goto err;}
                 if (!MOD_EXP_CTIME_COPY_TO_PREBUF(&tmp, top, powerbuf, i,
                                                   window))
                     goto err;
@@ -1066,8 +1066,8 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         wmask = (1 << window0) - 1;
         bits -= window0;
         wvalue = bn_get_bits(p, bits) & wmask;
-        if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&tmp, top, powerbuf, wvalue,
-                                            window))
+        if (!MOD_EXP_CTIME_COPY_FROM_PREBUF_0(&tmp, top, powerbuf, wvalue,
+                                            window,pub_BRANCH18))
             goto err;
 
         wmask = (1 << window) - 1;
@@ -1079,8 +1079,8 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
             /* Square the result window-size times */
             for (i = 0; i < window; i++)
-                if (!bn_mul_mont_fixed_top(&tmp, &tmp, &tmp, mont, ctx))
-                    goto err;
+/*X*/                if(pub_BRANCH19) {//                if (!bn_mul_mont_fixed_top(&tmp, &tmp, &tmp, mont, ctx))
+                    goto err;}
 
             /*
              * Get a window's worth of bits from the exponent
@@ -1097,13 +1097,13 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             /*
              * Fetch the appropriate pre-computed value from the pre-buf
              */
-            if (!MOD_EXP_CTIME_COPY_FROM_PREBUF(&am, top, powerbuf, wvalue,
-                                                window))
+            if (!MOD_EXP_CTIME_COPY_FROM_PREBUF_0(&am, top, powerbuf, wvalue,
+                                                window, pub_BRANCH19))
                 goto err;
 
             /* Multiply the result into the intermediate result */
-            if (!bn_mul_mont_fixed_top(&tmp, &tmp, &am, mont, ctx))
-                goto err;
+/*X*/            if(pub_BRANCH22) {//            if (!bn_mul_mont_fixed_top(&tmp, &tmp, &am, mont, ctx))
+                goto err;}
         }
     }
 
@@ -1121,17 +1121,17 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             goto err;
     } else
 #endif
-    if (!BN_from_montgomery(rr, &tmp, mont, ctx))
+/*X*/    if (pub_BRANCH22)//    if (!BN_from_montgomery(rr, &tmp, mont, ctx))
         goto err;
     ret = 1;
  err:
     if (in_mont == NULL)
-        BN_MONT_CTX_free(mont);
-    if (powerbuf != NULL) {
+/*X*/        dummy++;//        BN_MONT_CTX_free(mont);
+    if (pub_BRANCH23) { //if (powerbuf != NULL) {
         OPENSSL_cleanse(powerbuf, powerbufLen);
         OPENSSL_free(powerbufFree);
     }
-    BN_CTX_end(ctx);
+/*X*/    dummy++;//    BN_CTX_end(ctx);
     return ret;
 }
 
@@ -1403,23 +1403,27 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-// /***********************/
+/***********************/
 // #include <smack.h>
 // #include "../../../ct-verif.h"
 
 // #define ARRAY_SIZE 32
 // void
-// fragment_wrapper (BN_ULONG *d_r, int top_r, int dmax_r, int neg_r, int flags_r,
+// fragment_wrapper (BN_ULONG *d_rr, int top_rr, int dmax_rr, int neg_rr, int flags_rr,
 //                  BN_ULONG *d_a, int top_a, int dmax_a, int neg_a, int flags_a,
 //                  BN_ULONG *d_p, int top_p, int dmax_p, int neg_p, int flags_p,
 //                  BN_ULONG *d_m, int top_m, int dmax_m, int neg_m, int flags_m,
+//                  int ri_inmont, int flags_inmont,BN_ULONG n0_inmont_0,BN_ULONG n0_inmont_1,BN_ULONG n0_inmont_2,
+//                  BN_ULONG *d_inmont_RR, int top_inmont_RR, int dmax_inmont_RR, int neg_inmont_RR, int flags_inmont_RR,
+//                  BN_ULONG *d_inmont_N, int top_inmont_N, int dmax_inmont_N, int neg_inmont_N, int flags_inmont_N,
+//                  BN_ULONG *d_inmont_Ni, int top_inmont_Ni, int dmax_inmont_Ni, int neg_inmont_Ni, int flags_inmont_Ni,
 //                  BN_ULONG *d_pub0, int top_pub0, int dmax_pub0, int neg_pub0, int flags_pub0,
 //                  BN_ULONG *d_pub1, int top_pub1, int dmax_pub1, int neg_pub1, int flags_pub1,
 //                  BN_ULONG *d_pub2, int top_pub2, int dmax_pub2, int neg_pub2, int flags_pub2,
 //                  int pub_BRANCH0,int pub_BRANCH1,int pub_BRANCH2,int pub_BRANCH3,int pub_BRANCH4,int pub_BRANCH5,int pub_BRANCH6,int pub_BRANCH7,int pub_BRANCH8,int pub_BRANCH9,int pub_BRANCH10,int pub_BRANCH11,int pub_BRANCH12,int pub_BRANCH13,int pub_BRANCH14,int pub_BRANCH15,int pub_BRANCH16,int pub_BRANCH17,int pub_BRANCH18,int pub_BRANCH19,int pub_BRANCH20,int pub_BRANCH21,int pub_BRANCH22,int pub_BRANCH23,int pub_BRANCH24,int pub_BRANCH25,int pub_BRANCH26,int pub_BRANCH27,
 //                  int pub_VAL0,int pub_VAL1,int pub_VAL2,int pub_VAL3,int pub_VAL4,int taint_VAL5,int taint_VAL6,int taint_VAL7,int taint_VAL8) {
 //    //                  unsigned int used, int err_stack, int too_many, int flags, unsigned int *indexes, unsigned int depth, unsigned int size
-   
+
 //    public_in(__SMACK_value(pub_BRANCH0));
 //    public_in(__SMACK_value(pub_BRANCH1));
 //    public_in(__SMACK_value(pub_BRANCH2));
@@ -1448,7 +1452,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 //    public_in(__SMACK_value(pub_BRANCH25));
 //    public_in(__SMACK_value(pub_BRANCH26));
 //    public_in(__SMACK_value(pub_BRANCH27));
-   
+
 //    public_in(__SMACK_value(pub_VAL0));
 //    public_in(__SMACK_value(pub_VAL1));
 //    public_in(__SMACK_value(pub_VAL2));
@@ -1458,7 +1462,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 //    //    public_in(__SMACK_value(taint_VAL6));
 //    //    public_in(__SMACK_value(taint_VAL7));
 //    //    public_in(__SMACK_value(taint_VAL8));
-   
+
 //    public_in(__SMACK_value(d_pub0));
 //    public_in(__SMACK_value(top_pub0));
 //    public_in(__SMACK_value(dmax_pub0));
@@ -1466,9 +1470,9 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 //    public_in(__SMACK_value(flags_pub0));
 //    public_in(__SMACK_values(d_pub0,ARRAY_SIZE));
 //    struct bignum_st OBJpub0 = {d_pub0,top_pub0,dmax_pub0,neg_pub0,flags_pub0};
-   
+
 //    BIGNUM *pub_BIGNUM0 = &OBJpub0;
-   
+
 //    public_in(__SMACK_value(d_pub1));
 //    public_in(__SMACK_value(top_pub1));
 //    public_in(__SMACK_value(dmax_pub1));
@@ -1476,9 +1480,9 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 //    public_in(__SMACK_value(flags_pub1));
 //    public_in(__SMACK_values(d_pub1,ARRAY_SIZE));
 //    struct bignum_st OBJpub1 = {d_pub1,top_pub1,dmax_pub1,neg_pub1,flags_pub1};
-   
+
 //    BIGNUM *pub_BIGNUM1 = &OBJpub1;
-   
+
 //    public_in(__SMACK_value(d_pub2));
 //    public_in(__SMACK_value(top_pub2));
 //    public_in(__SMACK_value(dmax_pub2));
@@ -1486,56 +1490,101 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 //    public_in(__SMACK_value(flags_pub2));
 //    public_in(__SMACK_values(d_pub2,ARRAY_SIZE));
 //    struct bignum_st OBJpub2 = {d_pub2,top_pub2,dmax_pub2,neg_pub2,flags_pub2};
-   
+
 //    BIGNUM *pub_BIGNUM2 = &OBJpub2;
-   
+
 //    /***************/
-   
+
 //    public_in(__SMACK_value(d_a));
-//    public_in(__SMACK_value(d_r));
+//    public_in(__SMACK_value(d_rr));
 //    public_in(__SMACK_value(d_p));
 //    public_in(__SMACK_value(d_m));
-   
-//    public_in(__SMACK_values(d_r,ARRAY_SIZE));
+
+//    public_in(__SMACK_values(d_rr,ARRAY_SIZE));
 //    public_in(__SMACK_values(d_a,ARRAY_SIZE));
 //    // show tainted variables *p and *m
 //    // public_in(__SMACK_values(d_p,ARRAY_SIZE));
 //    public_in(__SMACK_values(d_m,ARRAY_SIZE));
-   
-//    public_in(__SMACK_value(top_r));
-//    public_in(__SMACK_value(dmax_r));
-//    public_in(__SMACK_value(neg_r));
-//    public_in(__SMACK_value(flags_r));
-   
+
+//    public_in(__SMACK_value(top_rr));
+//    public_in(__SMACK_value(dmax_rr));
+//    public_in(__SMACK_value(neg_rr));
+//    public_in(__SMACK_value(flags_rr));
+
 //    public_in(__SMACK_value(top_a));
 //    public_in(__SMACK_value(dmax_a));
 //    public_in(__SMACK_value(neg_a));
 //    public_in(__SMACK_value(flags_a));
-   
+
 //    public_in(__SMACK_value(top_p));
 //    public_in(__SMACK_value(dmax_p));
 //    public_in(__SMACK_value(neg_p));
 //    public_in(__SMACK_value(flags_p));
-   
+
 //    public_in(__SMACK_value(top_m));
 //    public_in(__SMACK_value(dmax_m));
 //    public_in(__SMACK_value(neg_m));
 //    public_in(__SMACK_value(flags_m));
-   
-//    struct bignum_st OBJr = {d_r,top_r,dmax_r,neg_r,flags_r};
+
+//    struct bignum_st OBJrr = {d_rr,top_rr,dmax_rr,neg_rr,flags_rr};
 //    struct bignum_st OBJa = {d_a,top_a,dmax_a,neg_a,flags_a};
 //    struct bignum_st OBJp = {d_p,top_p,dmax_p,neg_p,flags_p};
 //    struct bignum_st OBJm = {d_m,top_m,dmax_m,neg_m,flags_m};
-   
-//    BIGNUM *r = &OBJr;
+
+//    BIGNUM *rr = &OBJrr;
 //    BIGNUM *a = &OBJa;
 //    BIGNUM *p = &OBJp;
 //    BIGNUM *m = &OBJm;
-   
-   
+
+//    /* inmont */
+
+//    public_in(__SMACK_value(ri_inmont));
+//    public_in(__SMACK_value(flags_inmont));
+//    public_in(__SMACK_value(n0_inmont_0));
+//    public_in(__SMACK_value(n0_inmont_1));
+//    public_in(__SMACK_value(n0_inmont_2));
+
+//    public_in(__SMACK_value(d_inmont_RR));
+//    public_in(__SMACK_value(d_inmont_N));
+//    public_in(__SMACK_value(d_inmont_Ni));
+
+//    public_in(__SMACK_values(d_inmont_RR,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_inmont_N,ARRAY_SIZE));
+//    public_in(__SMACK_values(d_inmont_Ni,ARRAY_SIZE));
+
+//    public_in(__SMACK_value(top_inmont_RR));
+//    public_in(__SMACK_value(dmax_inmont_RR));
+//    public_in(__SMACK_value(neg_inmont_RR));
+//    public_in(__SMACK_value(flags_inmont_RR));
+
+//    public_in(__SMACK_value(top_inmont_N));
+//    public_in(__SMACK_value(dmax_inmont_N));
+//    public_in(__SMACK_value(neg_inmont_N));
+//    public_in(__SMACK_value(flags_inmont_N));
+
+//    public_in(__SMACK_value(top_inmont_Ni));
+//    public_in(__SMACK_value(dmax_inmont_Ni));
+//    public_in(__SMACK_value(neg_inmont_Ni));
+//    public_in(__SMACK_value(flags_inmont_Ni));
+
+//    struct bignum_st OBJinmont_RR = {d_inmont_RR,top_inmont_RR,dmax_inmont_RR,neg_inmont_RR,flags_inmont_RR};
+//    struct bignum_st OBJinmont_N = {d_inmont_N,top_inmont_N,dmax_inmont_N,neg_inmont_N,flags_inmont_N};
+//    struct bignum_st OBJinmont_Ni = {d_inmont_Ni,top_inmont_Ni,dmax_inmont_Ni,neg_inmont_Ni,flags_inmont_Ni};
+
+//    BIGNUM inmont_RR = OBJinmont_RR;
+//    BIGNUM inmont_N = OBJinmont_N;
+//    BIGNUM inmont_Ni = OBJinmont_Ni;
+
+//    BN_ULONG n0_inmont[] = {n0_inmont_0,n0_inmont_1,n0_inmont_2};
+
+//    struct bn_mont_ctx_st OBJinmont = { ri_inmont, inmont_RR, inmont_N, inmont_Ni,n0_inmont,flags_inmont };
+
+//    BN_MONT_CTX *in_mont = &OBJinmont;
+//    /**********/
+
 //    BN_CTX *ctx = NULL;
-   
-//    BN_mod_exp_recp_algorithm (r,a,p,m,ctx,
+
+//    BN_mod_exp_mont_consttime_algorithm (rr,a,p,m,ctx,in_mont,
 //                               pub_BIGNUM0,pub_BIGNUM1,pub_BIGNUM2,
 //                               pub_BRANCH0,pub_BRANCH1,pub_BRANCH2,
 //                               pub_BRANCH3,pub_BRANCH4,pub_BRANCH5,

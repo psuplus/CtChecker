@@ -33,7 +33,7 @@ br_i32_add(uint32_t *a, const uint32_t *b, uint32_t ctl)
 
 	cc = 0;
 	m = (a[0] + 63) >> 5;
-	for (u = 1; u < m; u ++) {
+	u = 1; { //for (u = 1; u < m; u ++) {
 		uint32_t aw, bw, naw;
 
 		aw = a[u];

@@ -2,7 +2,7 @@ Table 1: without cache side channel
 |             ||        Ct-Verif                    ||||           CtChecker            |||
 |-------------|----------|---------|--------|--------|----------|---------|-------|-------|
 |             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
-|**BearSSL**  |  7       |    7    |   0    |   4    |     3    |     1   |     1 |     0 |
+|**BearSSL**  |  3       |    3    |   0    |   0    |     3    |     3   |     0 |     0 |
 |**libgcrypt**|   32     |    19   |   0    |   10   |    26    |     7   |     1 |     0 |
 |**mbedtls**  |   34     |    5    |   0    |   1    |    31    |     4   |     0 |     0 |
 |**openSSL**  |          |         |        |        |          |         |       |     0 |
@@ -15,7 +15,7 @@ Table 2: cache side channel
 |             ||        Ct-Verif                    ||||           CtChecker            |||
 |-------------|----------|---------|--------|--------|----------|---------|-------|-------|
 |             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
-|**BearSSL**  |     1    |    1    |   0    |   1    |     0    |     0   |     0 |     0 |
+|**BearSSL**  |     0    |    0    |   0    |   0    |     0    |     0   |     0 |     0 |
 |**libgcrypt**|      2   |    1    |   0    |   0    |     0    |     0   |     0 |     0 |
 |**mbedtls**  |     1    |    0    |   0    |   0    |     1    |     0   |     0 |     0 |
 |**openSSL**  |          |         |        |        |          |         |       |       |
@@ -30,37 +30,22 @@ Table 2: cache side channel
 
 # BearSSL
 
-### V1: 8
+### V1: 3
 
 i32_add.c line   36 - for (u = 1; u < m; u ++) {  
 i32_sub.c line   36 - for (u = 1; u < m; u ++) {  
-i32_montmul.c line   38 - for (u = 0; u < len; u ++) {  
-i32_montmul.c line   46 - for (v = 0; v < len; v ++) {  
-**(cache)** i32_montmul.c line   60 - d[len] = (uint32_t)zh;  
-i32_muladd.c line  108 - for (u = 1; u <= mlen; u ++) {  
-i32_div32.c line   39 - for (k = 31; k > 0; k --) {
 i32_tmont.c line   33 - for (k = (m[0] + 31) >> 5; k > 0; k --) {  
 
 
-### V2: 8
+### V2: 3
 
-v2_lib/i32_montmul.c line   38 - for (u = 0; u < len; u ++) {  
-v2_lib/i32_montmul.c line   46 - for (v = 0; v < len; v ++) {  
-**(cache)** i32_montmul.c line   60 - d[len] = (uint32_t)zh;  
 v2_lib/i32_add.c line   36 - for (u = 1; u < m; u ++) {  
 v2_lib/i32_sub.c line   36 - for (u = 1; u < m; u ++) {  
-v2_lib/i32_muladd.c line  108 - for (u = 1; u <= mlen; u ++) {  
-v2_lib/i32_div32.c line   39 - for (k = 31; k > 0; k --) {
 v2_lib/i32_tmont.c line   33 - for (k = (m[0] + 31) >> 5; k > 0; k --) {  
 
 
-### V4: 5
+### V4: 0
 
-v4_lib/i32_montmul.c line   38 - for (u = 0; u < len; u ++) {  
-v4_lib/i32_montmul.c line   46 - for (v = 0; v < len; v ++) {  
-**(cache)** v4_lib/i32_montmul.c line   60 - d[len] = (uint32_t)zh;  
-v4_lib/i32_muladd.c line  108 - for (u = 1; u <= mlen; u ++) {  
-v4_lib/i32_div32.c line   39 - for (k = 31; k > 0; k --) { 
 
 
 # libgcrypt
@@ -88,18 +73,18 @@ v1.c line  617 - if (e == 0)
 v1.c line  641 - if (c >= W)  
 v1.c line  667 - for (j += W - c0; j >= 0; j--)  
 v1.c line  702 - while (j--)  
-v1.c line  715- if ( mod_shift_cnt )  
-v1.c line  719- if ( carry_limb )  
+v1.c line  715 - if ( mod_shift_cnt )  
+v1.c line  719 - if ( carry_limb )  
 **(cache)** v1.c line  721 - rp[rsize] = carry_limb;  
-v1.c line  725- else if (res->d != rp)  
-v1.c line  727- MPN_COPY (res->d, rp, rsize);  
-v1.c line  738- if ( mod_shift_cnt )  
-v1.c line  740- MPN_NORMALIZE_1 (rp, rsize);  
-v1.c line  743- for (i = 0; i < (1 << (W - 1)); i++)  
-v1.c line  749- if ( negative_result && rsize )  
-v1.c line  751- if ( mod_shift_cnt )  
-v1.c line  756- MPN_NORMALIZE(rp, rsize);  
-v1.c line  758- gcry_assert (res->d == rp);  
+v1.c line  725 - else if (res->d != rp)  
+v1.c line  727 - MPN_COPY (res->d, rp, rsize);  
+v1.c line  738 - if ( mod_shift_cnt )  
+v1.c line  740 - MPN_NORMALIZE (rp, rsize);  
+v1.c line  743 - for (i = 0; i < (1 << (W - 1)); i++)  
+v1.c line  749 - if ( negative_result && rsize )  
+v1.c line  751 - if ( mod_shift_cnt )  
+v1.c line  756 - MPN_NORMALIZE(rp, rsize);  
+v1.c line  758 - gcry_assert (res->d == rp);  
 v1.c line  765 - if (bp_marker)  
 
 ### V2: 20
@@ -110,20 +95,20 @@ v2.c line  506 - MPN_NORMALIZE( bp, bsize );
 v2.c line  524 - gcry_assert (!bp_marker);  
 **(cache)** v1.c line  559 - negative_result = (ep[0] & 1) && bsign;  
 v2.c line  569 - if (xsize >= base_u_size)   
-v2.c line  579- MPN_COPY (precomp[i], rp, rsize);  
-v2.c line  582- if (msize > max_u_size)  
-v2.c line  585- MPN_ZERO_2 (base_u, max_u_size);  
-v2.c line  617- if (e == 0)  
+v2.c line  579 - MPN_COPY (precomp[i], rp, rsize);  
+v2.c line  582 - if (msize > max_u_size)  
+v2.c line  585 - MPN_ZERO_2 (base_u, max_u_size);  
+v2.c line  617 - if (e == 0)  
 v1.c line  641 - if (c >= W)  
-v2.c line  667- for (j += W - c0; j >= 0; j--)  
-v2.c line  702- while (j--)  
-v2.c line  715- if ( mod_shift_cnt )  
-v2.c line  738- if ( mod_shift_cnt )  
-v2.c line  740- MPN_NORMALIZE_1 (rp, rsize);  
-v2.c line  749- if ( negative_result && rsize )  
-v2.c line  751- if ( mod_shift_cnt )  
-v2.c line  756- MPN_NORMALIZE(rp, rsize);  
-v2.c line  758- gcry_assert (res->d == rp);  
+v2.c line  667 - for (j += W - c0; j >= 0; j--)  
+v2.c line  702 - while (j--)  
+v2.c line  715 - if ( mod_shift_cnt )  
+v2.c line  738 - if ( mod_shift_cnt )  
+v2.c line  740 - MPN_NORMALIZE (rp, rsize);  
+v2.c line  749 - if ( negative_result && rsize )  
+v2.c line  751 - if ( mod_shift_cnt )  
+v2.c line  756 - MPN_NORMALIZE(rp, rsize);  
+v2.c line  758 - gcry_assert (res->d == rp);  
 
 ### V4: 10
 
@@ -131,12 +116,12 @@ v2.c line  484 - if ( mod_shift_cnt )
 v2.c line  506 - MPN_NORMALIZE( bp, bsize );  
 v2.c line  524 - gcry_assert (!bp_marker);  
 v2.c line  569 - if (xsize >= base_u_size)   
-v2.c line  715- if ( mod_shift_cnt )  
-v2.c line  738- if ( mod_shift_cnt )  
-v2.c line  740- MPN_NORMALIZE_1 (rp, rsize);  
-v2.c line  751- if ( mod_shift_cnt )  
-v2.c line  756- MPN_NORMALIZE(rp, rsize);  
-v2.c line  758- gcry_assert (res->d == rp);  
+v2.c line  715 - if ( mod_shift_cnt )  
+v2.c line  738 - if ( mod_shift_cnt )  
+v2.c line  740 - MPN_NORMALIZE_1 (rp, rsize);  
+v2.c line  751 - if ( mod_shift_cnt )  
+v2.c line  756 - MPN_NORMALIZE(rp, rsize);  
+v2.c line  758 - gcry_assert (res->d == rp);  
 
 # mbedtls
 

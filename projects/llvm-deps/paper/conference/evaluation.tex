@@ -234,53 +234,8 @@ benchmark. This causes an inferior result to the WL/FS test.
 		\end{tabular}
 		\caption{Number of Warnings based on Features (New-ArgToAllReachable)}
 		\label{tbl:overall-feature-benchmark-new}
-	\end{table*}
-
-\begin{table*}
-	\centering
-	% \begin{tabular}{|p{3.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{2.5cm}| p{2.5cm}|}
-		\begin{tabular}{@{}lrrrrrrrrrrrr@{}}
-			%\toprule
-			
-			\input{benchmark-table.tex}
-			
-			%\bottomrule
-		\end{tabular}
-		\caption{Number of Warnings based on Features (Without-whitelist)}
-		\label{tbl:overall-feature-benchmark-without-wl}
 \end{table*}
 
-\iffalse
-\begin{table*}
-	\centering
-	% \begin{tabular}{|p{3.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{2.5cm}| p{2.5cm}|}
-		\begin{tabular}{@{}lrrrrrrrrrrr@{}}
-			%\toprule
-			
-			\input{benchmark-table-new-libs-1.tex}
-			
-			%\bottomrule
-		\end{tabular}
-		\caption{Number of Warnings based on Features (New-1)}
-		\label{tbl:overall-feature-benchmark-new-1}
-	\end{table*}
-\fi
-
-\iffalse
-\begin{table*}
-	\centering
-	% \begin{tabular}{|p{3.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{2.5cm}| p{2.5cm}|}
-		\begin{tabular}{@{}lrrrrrrrrrrr@{}}
-			%\toprule
-			
-			\input{benchmark-table-new-libs-2.tex}
-			
-			%\bottomrule
-		\end{tabular}
-		\caption{Number of Warnings based on Features (New-2)}
-		\label{tbl:overall-feature-benchmark-new-2}
-	\end{table*}
-\fi
 
 \subsection{Case Study}
 %The case study serves to demonstrate the changes to the results with the
@@ -1263,12 +1218,12 @@ Within the Montgomery word method, 1 high-risk looped branch is reported. The
 
 
 To verify constant-time property, one popular approach is to use the
-self-composition technique~\cite{} to convert the constant-time property into a
+self-composition technique~\cite{barthe2011secure} to convert the constant-time property into a
 classical program verification problem. To compare static information flow
 analysis apporach and self-compositoin approach, we compare \toolname{} with
 Ct-Verif~\cite{almeida2016verifying}, one of the first tools that verify
 constant-time properties via self-composition. One reason of comparing with
-Ct-Verif is that it is also built on top of the DSA~\cite{dsa} points-to
+Ct-Verif is that it is also built on top of the DSA~\cite{lattner2007making} points-to
 ananalysis; hence, the comparison focuses on the advantages of each approach,
 rather than some engineering details, such as the difference in the points-to
 analysis, in their implementations.
@@ -1281,13 +1236,69 @@ reduction is inspired by prior work on self-composition and product programs.
 In particular, Ct-Verif simulates two program executions (with different secret
 inputs) in lockstep.  It assures constant-time property by assuring that all
 branch conditions and array indexes are identical across the two simulated
-executions. \danfeng{add an example here} Theoretically, the reduction is sound
+executions. \danfeng{add an example here} \textbf{Figure~\ref{code:ct_verif_P} and 
+\ref{code:ct_verif_product} show how Ct-Verif construct program \textit{Q} from \textit{P}.
+In general, Ct-Verif doubles the number of variables and instructions. Every variable
+will have a shadow counterpart. When an operation is performed on the original
+variables, a same operation will be carried out on their shadow counterparts.
+At the beginning, Ct-Verif adds a variable called \texttt{shadow\_ok} and initializes
+it to be \texttt{true}. All the public variables are guaranteed to be the same with 
+its shadow counterpart by \texttt{assume}. Then, every assignment will be doubled
+for a shadow assignment. When a branch test or array indexing is reached, 
+\texttt{shadow\_ok} will be updated by adding whether the branch condition or 
+index is the same with its shadow counterpart. At the end of the program, Ct-Verif
+checks if \texttt{shadow\_ok} is \texttt{true}. If it is, all the branch
+conditions and array indices are not dependent on sensitive information, meaning the 
+original program is secure in terms of information flow; otherwise, the program
+has information flow vulnerabilities.}
+
+\begin{figure}[h!]
+    \begin{lstlisting}[mathescape=true]
+a := [0, 1, 2, 3];
+b := c + d;
+        
+if (b) {
+    b := b + 1;
+}
+        
+e = a[i];
+    \end{lstlisting}
+    \caption{Program P}
+    \label{code:ct_verif_P}
+\end{figure}
+
+\begin{figure}[h!]
+    \begin{lstlisting}[mathescape=true]
+shadow_ok := true;
+assume $\forall$ x $\in$ X, x == x_shadow;
+a := [0, 1, 2, 3];
+a_shadow := [0, 1, 2, 3];
+b := c + d;
+b_shadow := c_shadow + d_shadow;
+
+shadow_ok := shadow_ok && (b == b_shadow);
+if (b) {
+    b := b + 1;
+    b_shadow := b_shadow + 1;
+}
+
+shadow_ok := shadow_ok && (i == i_shadow);
+e = a[i];
+e_shadow = a_shadow[i_shadow];
+
+assert shadow_ok;
+    \end{lstlisting}
+    \caption{Program Q constructed by Ct-Verif}
+    \label{code:ct_verif_product}
+\end{figure}
+
+Theoretically, the reduction is sound
 and complete in that all safe programs have a correct security verdict, and all
 unsafe programs have a correct insecurity verdict. But in practice, verifying
 the recuded code is typically incomplete, due to loops in the code as well as
-incompleteness of SMT solvers.
+incompleteness of SMT solvers. 
 
-Simialr to \toolname{}, Ct-Verif analyzes LLVM IR code. Moreover, it uses the
+Similar to \toolname{}, Ct-Verif analyzes LLVM IR code. Moreover, it uses the
 SMACK verification tool~\cite{carter2016smack} as a front-end to analyze the semantics of IR
 code and generate verification conditions which is further analyzed by
 Boogie~\cite{deline2005boogiepl}. We emphasize that both SMACK and \toolname{} uses the DSA
@@ -1340,14 +1351,9 @@ to it. CtChecker will output the exact lines that are positive. This difference 
 operation introduces a problem. \danfeng{I don't understand the following sentence. Try to rephrase
 it} \textbf{We exploit both tools on four cryptography libraries, among them, we feed
 part of the code that achieves the same functionality, such as encryption. Positives 
-reported outside of these functions are deemed as out of scope code.}
-\sout{To maintain consistency among libraries under investigation, we include
-certain functions with same purpose, such as decryption.}  These positives are due to function calls. 
-When operating Ct-verif in an aforementioned manner, we have to change some of the out of
-scope code\danfeng{why there are out of scope code?}. Even though we carefully
-do the changes so that the information flow remains the same, there still a
-chance the flow might be changed. For a fair comparison, in version 1, those
-positives out of scope will remain changed for CtChecker.
+reported outside of these functions are deemed as out of scope code.} These positives are
+due to function calls. When operating Ct-verif in an aforementioned manner,
+we have to change some of the out of scope code\danfeng{why there are out of scope code?}. 
 
 \subsubsection{Limitations of Ct-verif}
 Although the approach is theoretically sound and complete, the results of
@@ -1410,7 +1416,24 @@ negtives, which is summerized in Table~\ref{tbl:vsctverif}.
 
 
 First, a \emph{baseline version} was created to bridge the gap between the
-tools in terms of how they operate.  \danfeng{here, we should explain what's the
+tools in terms of how they operate. \textbf{This version corresponds to the column with 
+header "WL/FS/FlS" in Table~\ref{tbl:overall-feature-benchmark-new} except for
+BearSSL corresponding to column "WL/FS/FlS/SRC". The reason why we only
+include full source for BearSSL is that its code base is small and can be verified
+by Ct-Verif. Other libraries with full source will make Ct-Verif run out of memory,
+so we only include the source code of the functions we are analyzing for other libraries. From the 
+result, one can observe there are small differences in the number of positives for
+\toolname~compared to Table~\ref{tbl:overall-feature-benchmark-new}. This is an adjustment due to the different ways to operate. Ct-Verif 
+would report each line once while \toolname~might report one line more than once
+since there might be multiple vulnerable branch conditions in one line. So for
+those lines that are reported by \toolname~more than once, we only count once
+in this comparison. Also, for the aforementioned "out of scope" code, even 
+though we carefully do the changes so that the information flow remains the same,
+there still a chance the flow might be changed. For a fair comparison,
+in version 1, those positives out of scope will remain changed for \toolname.}
+ 
+
+\danfeng{here, we should explain what's the
 difference between baseline and the code that we analyzed in Table 1 and 2,
 something similar to 4.4.2. We should update 4.4.2 according to what Sixuan did
 and merge 4.4.2 to this paragraph.}
@@ -1419,17 +1442,14 @@ The second version (excluded-undefined-function) was constructed from the first,
 twofold. First reason is to accommodate the difference of how the tools treat
 excluded source. The bottom line is, in this version, we should have no function
 calls whose source is excluded, which could be achieved by either adding all the
-source or removing all the excluded function calls. As mentioned before, the
-consistency among libraries requires us to include source with same purpose, which
-results in a full source incorporation of BearSSL. So, version 1 and version 2 of
-BearSSL are the same. Since the code base of BearSSL is small, Ct-verif runs 
-without problem. For other three libraries, when we try to include full source
-and feed into Ct-verif, the tool ran out of memory\danfeng{I'm confused. Does
+source or removing all the excluded function calls. So, version 1 and version 2 of
+BearSSL are the same since Ct-verif runs without problem on it.
+For other three libraries that could make Ct-Verif run out of memory\danfeng{I'm confused. Does
 the description belong to baseline? If not, why baseline does not say out of
-memory?}, for which we remove all the function calls without source. The second
+memory?}, we remove all the function calls without source. The second
 reason is to make the comparison more meaningful. Both tools taint a function
 call without source conservatively.  This leads to a great portion of false
-positives. These positives does not reflect how CtChecker performs since it can
+positives. These positives does not reflect how \toolname~performs since it can
 reduce such positives by simply including full source. To this end, ruling out
 this kind of false positives is necessary for a meaningful
 comparison.\danfeng{there used to be a no-loop version. Is it still there?}

@@ -41,5 +41,5 @@ TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
 python3 constraint_file.py tmp.dat
-python3 constraint_graph.py call-stack call-stack.dot -graph 1
-rm -f call-stack
+python3 constraint_graph.py call-stack call-stack.dot -graph 0
+# rm -f call-stack

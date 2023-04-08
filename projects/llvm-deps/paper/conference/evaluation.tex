@@ -238,6 +238,7 @@ benchmark. This causes an inferior result to the WL/FS test.
 
 
 \subsection{Case Study}
+\label{sec:casestudy}
 %The case study serves to demonstrate the changes to the results with the
 %improved analysis over the baseline. Each version of the analysis is compared by
 %analyzing the modular exponentiation code used in SSL and TLS libraries.
@@ -1236,24 +1237,24 @@ reduction is inspired by prior work on self-composition and product programs.
 In particular, Ct-Verif simulates two program executions (with different secret
 inputs) in lockstep.  It assures constant-time property by assuring that all
 branch conditions and array indexes are identical across the two simulated
-executions. \danfeng{add an example here} \textbf{Figure~\ref{code:ct_verif_P} and 
-\ref{code:ct_verif_product} show how Ct-Verif construct program \textit{Q} from \textit{P}.
-In general, Ct-Verif doubles the number of variables and instructions. Every variable
-will have a shadow counterpart. When an operation is performed on the original
-variables, a same operation will be carried out on their shadow counterparts.
+executions. 
+
+Figure~\ref{code:ct_verif_product} illustrates how Ct-Verif construct program
+\textit{Q} from \textit{P}.  In general, Ct-Verif doubles the number of
+variables and instructions. Every variable in \textit{P} is associated with its
+shadow counterpart. When an operation is performed on the original
+variables, the same operation will be carried out on their shadow counterparts.
 At the beginning, Ct-Verif adds a variable called \texttt{shadow\_ok} and initializes
-it to be \texttt{true}. All the public variables are guaranteed to be the same with 
-its shadow counterpart by \texttt{assume}. Then, every assignment will be doubled
-for a shadow assignment. When a branch test or array indexing is reached, 
-\texttt{shadow\_ok} will be updated by adding whether the branch condition or 
+it to be \texttt{true}. All public variables are assumed to be the same with 
+its shadow counterpart by \texttt{assume}. Then, every assignment in \textit{P} is associated with an assignment on shadow variables. When a branch test or array indexing is reached, 
+\texttt{shadow\_ok} will be updated by adding asserting that the branch condition or 
 index is the same with its shadow counterpart. At the end of the program, Ct-Verif
-checks if \texttt{shadow\_ok} is \texttt{true}. If it is, all the branch
-conditions and array indices are not dependent on sensitive information, meaning the 
-original program is secure in terms of information flow; otherwise, the program
-has information flow vulnerabilities.}
+checks if \texttt{shadow\_ok} is \texttt{true}. If it is, the original program
+is constant-time; otherwise, side channels are detected.
 
 \begin{figure}[h!]
     \begin{lstlisting}[mathescape=true]
+// original program P
 a := [0, 1, 2, 3];
 b := c + d;
         
@@ -1263,12 +1264,9 @@ if (b) {
         
 e = a[i];
     \end{lstlisting}
-    \caption{Program P}
-    \label{code:ct_verif_P}
-\end{figure}
 
-\begin{figure}[h!]
     \begin{lstlisting}[mathescape=true]
+// transformed program Q
 shadow_ok := true;
 assume $\forall$ x $\in$ X, x == x_shadow;
 a := [0, 1, 2, 3];
@@ -1288,7 +1286,8 @@ e_shadow = a_shadow[i_shadow];
 
 assert shadow_ok;
     \end{lstlisting}
-    \caption{Program Q constructed by Ct-Verif}
+
+    \caption{Program P and its transformed program being verified by Ct-Verif.}
     \label{code:ct_verif_product}
 \end{figure}
 
@@ -1315,15 +1314,15 @@ pinpoint at source code lines that violate the constant-time property. To
 alleviate this limitation of Ct-Verif, whenever Ct-Verif fails, we first log
 the line of source code that causes the violation (i.e., the existance of code
 at and after that line triggers the failure). Then, we replace the errorous
-line with some constant time code that preserves information flow \danfeng{add
-an example of how we rewrite code} and re-ran Ct-Verif on the revised code. \textbf{For
-example, in Figure~\ref{code:libgcrypt_limb_processing}, \texttt{e} is tainted at 
-the first line and then used in the branch condition at line 4, which makes this 
-branch vulnerable. Ct-Verif will report an error when we approach this line with
-the aforementioned manner. We record this line and rewrite it with a condition that
-is not affected by sensitive information, i.e., \texttt{pub\_branch8}.}
-During this iterative process, we record all errornous lines reported by
-Ct-Verif and compare them with the ones found by \toolname{}.
+line with some constant time code that preserves information flow and re-ran
+Ct-Verif on the revised code. For example, in
+Figure~\ref{code:libgcrypt_limb_processing}, \texttt{e} is tainted at the first
+line and is then used in the branch condition at line 4, which makes this
+branch vulnerable. Ct-Verif reports an error on the whole program, which we can
+trace back to line 4. We record this line and rewrite it with a condition that
+only uses public variables, e.g., \texttt{pub\_branch8}. During this iterative
+process, we record all errornous lines reported by Ct-Verif and compare them
+with the ones found by \toolname{}.
 
 \begin{figure}[h!]
     \begin{lstlisting}
@@ -1346,29 +1345,27 @@ Ct-Verif and compare them with the ones found by \toolname{}.
 \end{figure}
 
 \danfeng{the following is moved from a later section. Try to merge it with the
-previous paragraph} To run CtChecker, we feed the whole program
-to it. CtChecker will output the exact lines that are positive. This difference in
-operation introduces a problem. \danfeng{I don't understand the following sentence. Try to rephrase
-it} \textbf{We exploit both tools on four cryptography libraries, among them, we feed
-part of the code that achieves the same functionality, such as encryption. Positives 
-reported outside of these functions are deemed as out of scope code.} These positives are
-due to function calls. When operating Ct-verif in an aforementioned manner,
-we have to change some of the out of scope code\danfeng{why there are out of scope code?}. 
+previous paragraph} To run CtChecker, we feed the whole program to it.
+CtChecker will output the exact lines that are positive. This difference in
+operation introduces a problem. \textbf{We exploit both tools on four
+cryptography libraries, among them, we feed part of the code that achieves the
+same functionality, such as encryption. Positives reported outside of these
+functions are deemed as out of scope code.} These positives are due to function
+calls. When operating Ct-verif in an aforementioned manner, we have to change
+some of the out of scope code\danfeng{I sitll don't fully understand the out of
+scope issue}. 
 
-\subsubsection{Limitations of Ct-verif}
-Although the approach is theoretically sound and complete, the results of
-a practical interpretation, must be carefully analyzed. To perform
-a reasonable comparison, we avoid key limitations not present in CtChecker by
-revising the analyzed source to accommodate Ct-verif's technical flaws.  For
-instance, loops and non-static length arrays are not supported.
+\subsubsection{Limitations of Ct-Verif}\danfeng{I'm not sure how much of the
+following is still relevant. Please check and remove irrelevant parts}
+%Although the approach is theoretically sound and complete, the results of
+%a practical interpretation, must be carefully analyzed. To perform
+%a reasonable comparison, we avoid key limitations not present in CtChecker by
+%revising the analyzed source to accommodate Ct-verif's technical flaws.  For
+%instance, loops and non-static length arrays are not supported.
 
 Loop invariants are automatically computed to verify program loops. When
 counters are used to index arrays, a proof of security would require Ct-verif
-to infer that the memory accesses are in the range of public values.  \sout{Although
-there are options to avoid this difficulty, such as enforcing a loop limit or
-unrolling a loop, the [actually, why doesn't this work?].}  To avoid this
-limitation, loops were replaced with a branch statement that depended on the
-values that affected the loop bounds.
+to infer that the memory accesses are in the range of public values.  
 
 Constant sized arrays are supported by adding an extra annotation, but variable
 sized arrays are not. To ensure memory accesses are not in the range of secret
@@ -1408,71 +1405,101 @@ if ( carry_limb )
 \label{code:libgcrypt_normalize}
 \end{figure}
 
+\subsubsection{Benchmarks}
+
+Both Ct-Verif and \toolname{} are sound analyses; the differences are on false
+negtives. To evaluate the false negtives reported by each tool, we consider
+four variants of the cryptographic libraries that we evaluated in
+Section~\ref{sec:casestudy}.
+
+\begin{itemize}
+
+	\item \emph{WL/FS/FlS/SRC}: this version corresponds to the source code
+		under the header ``WL/FS/FlS/SRC'' in
+		Table~\ref{tbl:overall-feature-benchmark-new}. 
+
+	\item \emph{baseline}: this version corresponds to the source code
+		under the header ``WL/FS/FlS'' in
+		Table~\ref{tbl:overall-feature-benchmark-new} 
+		%except for BearSSL, which corresponds to the column ``WL/FS/FlS/SRC''. 
+		The reason why we cannot include full source for the analysis
+		is that other than BearSSL, Ct-Verif runs out of memory when
+		their full source code is being analyzed. 
+
+	\item \emph{excluded-undefined-function} \danfeng{check the result of
+		our tool when it handles undefined functions in the same way as
+		Ct-Verif does. Then decide if we need this version} was
+		constructed from the first, the reasons are twofold. First
+		reason is to accommodate the difference of how the tools treat
+		excluded source. The bottom line is, in this version, we should
+		have no function calls whose source is excluded, which could be
+		achieved by either adding all the source or removing all the
+		excluded function calls. So, version 1 and version 2 of BearSSL
+		are the same since Ct-verif runs without problem on it.  For
+		other three libraries, we remove all the function calls without
+		source. The second reason is to make the comparison more
+		meaningful. Both tools taint a function call without source
+		conservatively.  This leads to a great portion of false
+		positives. These positives does not reflect how
+		\toolname{} performs since it can reduce such positives by simply
+		including full source. To this end, ruling out this kind of
+		false positives is necessary for a meaningful comparison.
+
+	\item \emph{Ct-Verif-Verified} was created from the second by removing
+		all positives that are reported by Ct-verif, resulting in fully
+		verified code that is constant time. Any positive reported by
+		\toolname on this version is expected to be a false positive. 
+
+	\item \emph{CtChecker-Verified} was created from the second by removing
+		all positives that are reported by \toolname{}, resulting in
+		fully verified code that is constant time. Any positive
+		reported by Ct-Verif on this version is expected to be a false
+		positive. 
+
+\end{itemize}
+ 
+
 \subsubsection{Results}
 
 Both Ct-Verif and \toolname{} are sound analyses and we did observe that all
 true positives are being reported by both tools. The differences are on false
 negtives, which is summerized in Table~\ref{tbl:vsctverif}.
 
+\begin{itemize}
+	\item \emph{WL/FS/FlS/SRC}: other than BearSSL, Ct-Verif fails
+		out-of-memory error since it is not scalable enough to handle
+		the full source code of the majority of crptographic libraries.
+		
+	\item \emph{baseline}: From the result, one can observe there are small
+		differences in the number of positives for \toolname~compared
+		to Table~\ref{tbl:overall-feature-benchmark-new}. This is an
+		adjustment due to the different ways to operate. Ct-Verif would
+		report each line once while \toolname~might report one line
+		more than once since there might be multiple vulnerable branch
+		conditions in one line\danfeng{double check this. Make results
+		in Talbe 1 and 4 consistant}. So for those lines that are
+		reported by \toolname~more than once, we only count once in
+		this comparison. Also, for the aforementioned "out of scope"
+		code, even though we carefully do the changes so that the
+		information flow remains the same, there still a chance the
+		flow might be changed. For a fair comparison, in version 1,
+		those positives out of scope will remain changed for \toolname.
 
-First, a \emph{baseline version} was created to bridge the gap between the
-tools in terms of how they operate. \textbf{This version corresponds to the column with 
-header "WL/FS/FlS" in Table~\ref{tbl:overall-feature-benchmark-new} except for
-BearSSL corresponding to column "WL/FS/FlS/SRC". The reason why we only
-include full source for BearSSL is that its code base is small and can be verified
-by Ct-Verif. Other libraries with full source will make Ct-Verif run out of memory,
-so we only include the source code of the functions we are analyzing for other libraries. From the 
-result, one can observe there are small differences in the number of positives for
-\toolname~compared to Table~\ref{tbl:overall-feature-benchmark-new}. This is an adjustment due to the different ways to operate. Ct-Verif 
-would report each line once while \toolname~might report one line more than once
-since there might be multiple vulnerable branch conditions in one line. So for
-those lines that are reported by \toolname~more than once, we only count once
-in this comparison. Also, for the aforementioned "out of scope" code, even 
-though we carefully do the changes so that the information flow remains the same,
-there still a chance the flow might be changed. For a fair comparison,
-in version 1, those positives out of scope will remain changed for \toolname.}
- 
 
-\danfeng{here, we should explain what's the
-difference between baseline and the code that we analyzed in Table 1 and 2,
-something similar to 4.4.2. We should update 4.4.2 according to what Sixuan did
-and merge 4.4.2 to this paragraph.}
+	\item \emph{Ct-Verif-Verified}: \danfeng{add observation from the result}
 
-The second version (excluded-undefined-function) was constructed from the first, the reasons are
-twofold. First reason is to accommodate the difference of how the tools treat
-excluded source. The bottom line is, in this version, we should have no function
-calls whose source is excluded, which could be achieved by either adding all the
-source or removing all the excluded function calls. So, version 1 and version 2 of
-BearSSL are the same since Ct-verif runs without problem on it.
-For other three libraries that could make Ct-Verif run out of memory\danfeng{I'm confused. Does
-the description belong to baseline? If not, why baseline does not say out of
-memory?}, we remove all the function calls without source. The second
-reason is to make the comparison more meaningful. Both tools taint a function
-call without source conservatively.  This leads to a great portion of false
-positives. These positives does not reflect how \toolname~performs since it can
-reduce such positives by simply including full source. To this end, ruling out
-this kind of false positives is necessary for a meaningful
-comparison.\danfeng{there used to be a no-loop version. Is it still there?}
-\sixuan{The no-loop version has been removed since it gives Ct-Verif too much credit.}
+	\item \emph{CtChecker-Verified} \danfeng{add observation from the result}
 
-The third version (removed-Ct-Verif) was created from the second to remove all erroneous
-lines reported by Ct-verif, resulting in a subset of the original file
-that was free of any constant time violation. This final version allowed
-us to evaluate the precision of CtChecker in another way; any positive
-reported on this version was exclusive to CtChecker, and was expected
-to be a false one. 
+\end{itemize} 
 
-\danfeng{Similar to the third version, we need a fouth version where we remove
-all errors reported by our tool and see if Ct-Verif reports any positive}
-
-\textbf{Similar to the third version, we add a fourth version (removed-\toolname) 
-also from version 2, where all the lines reported by \toolname~are removed. The
-modified files are fed into Ct-Verif. All the lines reported this time are
-exclusive to Ct-Verif and also false positives.}
 
 Overall, CtChecker exhibited a large improvement precision over
 Ct-verif, a result apparent in the difference between the number of
 positives reported by each tool in version 2.
+
+\danfeng{add a discussion on what are the causes of false positives being
+reported by ct-verif}
+
 
 \begin{figure}[h!]
 \begin{lstlisting}
@@ -1486,6 +1513,7 @@ for (wvalue = 0, i = bits % window; i >= 0; i--, bits--)
 \caption{OpenSSL 1.1.0g - bn\_exp.c lines 741-1041}
 \label{code:libgcrypt_normalize}
 \end{figure}
+
 
 \subsubsection{Conclusion}
 Perhaps the simple heuristic used for-loop invariant generation is the

@@ -33,7 +33,7 @@ def main():
                 edges = set()
                 for line in file:
                     line = re.split(r"\|+|[\r\n]+", line)
-                    print(line)
+                    # print(line)
                     if line[0] == '[SCG]':
                         if len(line) == 5:
                             left = '"' + line[1] + '"'

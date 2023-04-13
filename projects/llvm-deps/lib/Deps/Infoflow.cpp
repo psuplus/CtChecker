@@ -3070,13 +3070,7 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
 
     // Only create a flow when the parameter
     // being passed is not a pointer
-    // if (!(*formal).getType()->isPointerTy()) {
     const Value *actual = cs.getArgument(i)->stripPointerCasts();
-    errs() << "qqqqqq: ";
-    actual->getType()->dump();
-    actual->stripPointerCasts()->dump();
-    // errs() << "Actual: " << isa<Pointer>(actual) << "\n";
-
     if (auto bit = dyn_cast<BitCastInst>(actual)) {
       bit->getOperand(0)->dump();
       actual = bit->getOperand(0);
@@ -3086,8 +3080,6 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
     argFlow.addSourceValue(*actual);
     argFlow.addSinkValue(*formal);
     flows.push_back(argFlow);
-
-    // }
   }
 
   // The remaining arguments provide a bound on the vararg structure

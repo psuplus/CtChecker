@@ -120,6 +120,7 @@ results_with_source*.txt
 !/projects/llvm-deps/linux_security_tests/tomoyo/*.bc
 !/projects/llvm-deps/linux_security_tests/selinux/*.bc
 !/projects/llvm-deps/linux_security_tests/apparmor/*.bc
+!/projects/llvm-deps/udp_tests/*.bc
 
 projects/llvm-deps/**/**/configs.bak
 projects/llvm-deps/**/**/results

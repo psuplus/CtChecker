@@ -1,28 +1,28 @@
 Table 1: without cache side channel
-|             ||        Ct-Verif                    ||||           CtChecker            |||
-|-------------|----------|---------|--------|--------|----------|---------|-------|-------|
-|             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
-|**BearSSL**  |  3       |    3    |   0    |   0    |     3    |     3   |     0 |     0 |
-|**libgcrypt**|   32     |    19   |   0    |   10   |    26    |     7   |     1 |     0 |
-|**mbedtls**  |   34     |    5    |   0    |   1    |    31    |     4   |     0 |     0 |
-|**openSSL**  |          |         |        |        |          |         |       |     0 |
-| recp        |   18     |    3    |   0    |   0    |     3    |     2   |     0 |     0 |
-| mont        |   21     |    5    |   0    |   2    |    25    |     2   |     0 |     0 |
-| word        |   18     |    1    |   0    |   0    |     2    |     1   |     0 |     0 |
-| consttime   |   18     |    4    |   0    |   4    |    23    |     1   |     1 |     0 |
+|             ||        Ct-Verif                    ||||               CtChecker               ||||
+|-------------|----------|---------|--------|--------|----------|-------|---------|-------|-------|
+|             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline | Baseline-argToRet | Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
+|**BearSSL**  |  3       |    3    |   0    |   0    |     3    |   3   |     3   |     0 |     0 |
+|**libgcrypt**|   32     |    19   |   0    |   10   |    26    |   7   |     7   |     1 |     0 |
+|**mbedtls**  |   34     |    5    |   0    |   1    |    31    |  10   |     4   |     0 |     0 |
+|**openSSL**  |          |         |        |        |          |       |         |       |     0 |
+| recp        |   18     |    3    |   0    |   0    |     3    |   3   |     2   |     0 |     0 |
+| mont        |   21     |    5    |   0    |   2    |    25    |   3   |     2   |     0 |     0 |
+| word        |   18     |    1    |   0    |   0    |     2    |   2   |     1   |     0 |     0 |
+| consttime   |   18     |    4    |   0    |   4    |    23    |   2   |     1   |     1 |     0 |
 
 Table 2: cache side channel
-|             ||        Ct-Verif                    ||||           CtChecker            |||
-|-------------|----------|---------|--------|--------|----------|---------|-------|-------|
-|             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
-|**BearSSL**  |     0    |    0    |   0    |   0    |     0    |     0   |     0 |     0 |
-|**libgcrypt**|      2   |    1    |   0    |   0    |     0    |     0   |     0 |     0 |
-|**mbedtls**  |     1    |    0    |   0    |   0    |     1    |     0   |     0 |     0 |
-|**openSSL**  |          |         |        |        |          |         |       |       |
-| recp        |     0    |    0    |   0    |   0    |     0    |     0   |     0 |     0 |
-| mont        |     2    |    2    |   0    |   1    |  1[1]    |     0   |     0 |     0 |
-| word        |    0     |    0    |   0    |   0    |     0    |     0   |     0 |     0 |
-| consttime   |    1     |    0    |   0    |   0    |  4[2]    |     0   |     0 |     0 |
+|             ||        Ct-Verif                    ||||               CtChecker               ||||
+|-------------|----------|---------|--------|--------|----------|-------|---------|-------|-------|
+|             | Baseline |Excluded-undefined-function | Removed-Ct-Verif| Removed-CtChecker| Baseline | Baseline-argToRet |Excluded-undefined-function|Removed-Ct-Verif| Removed-CtChecker|
+|**BearSSL**  |     0    |    0    |   0    |   0    |     0    |   0   |     0   |     0 |     0 |
+|**libgcrypt**|      2   |    1    |   0    |   0    |     0    |   0   |     0   |     0 |     0 |
+|**mbedtls**  |     1    |    0    |   0    |   0    |     1    |   1   |     0   |     0 |     0 |
+|**openSSL**  |          |         |        |        |          |       |         |       |       |
+| recp        |     0    |    0    |   0    |   0    |     0    |   0   |     0   |     0 |     0 |
+| mont        |     2    |    2    |   0    |   1    |  1[1]    |   0   |     0   |     0 |     0 |
+| word        |    0     |    0    |   0    |   0    |     0    |   0   |     0   |     0 |     0 |
+| consttime   |    1     |    0    |   0    |   0    |  4[2]    |   0   |     0   |     0 |     0 |
 
 *[1]* v1_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
 *[2]* mont_consttime/v1_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {

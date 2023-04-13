@@ -1246,9 +1246,10 @@ shadow counterpart. When an operation is performed on the original
 variables, the same operation will be carried out on their shadow counterparts.
 At the beginning, Ct-Verif adds a variable called \texttt{shadow\_ok} and initializes
 it to be \texttt{true}. All public variables are assumed to be the same with 
-its shadow counterpart by \texttt{assume}. Then, every assignment in \textit{P} is associated with an assignment on shadow variables. When a branch test or array indexing is reached, 
+its shadow counterpart by \texttt{assume}. Then, every assignment in \textit{P} is 
+associated with an assignment on shadow variables. When a branch test or array indexing is reached, 
 \texttt{shadow\_ok} will be updated by adding asserting that the branch condition or 
-index is the same with its shadow counterpart. At the end of the program, Ct-Verif
+accessed address is the same with its shadow counterpart. At the end of the program, Ct-Verif
 checks if \texttt{shadow\_ok} is \texttt{true}. If it is, the original program
 is constant-time; otherwise, side channels are detected.
 
@@ -1280,9 +1281,11 @@ if (b) {
     b_shadow := b_shadow + 1;
 }
 
-shadow_ok := shadow_ok && (i == i_shadow);
-e = a[i];
-e_shadow = a_shadow[i_shadow];
+addr := a + i * 4;
+addr_shadow := a_shadow + i_shadow * 4;
+shadow_ok := shadow_ok && (addr == addr_shadow);
+e = *addr;
+e_shadow = *addr_shadow;
 
 assert shadow_ok;
     \end{lstlisting}

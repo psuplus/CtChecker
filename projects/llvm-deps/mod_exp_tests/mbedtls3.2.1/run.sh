@@ -50,7 +50,7 @@ if [ $4 = true ] ; then
         fi
 else 
         START=410
-        END=617
+        END=631
         FILE="bignum_min.c"
 fi
 

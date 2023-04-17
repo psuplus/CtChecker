@@ -7,16 +7,8 @@ else
         EXT="so"
 fi
 
-if [ $2 == "v2" ] ; then
-        START=27
-        END=37
-elif [ $2 == "v3" ] ; then
-        START=27
-        END=37
-elif [ $2 == "v4" ] ; then
-        START=27
-        END=37
-fi
+START=27
+END=37
 
 FILE="i32_tmont.c"
 
@@ -25,8 +17,10 @@ LEVEL="../../../../.."
 make clean
 make $1
 
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer $1 -o $1
+
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

@@ -64,12 +64,23 @@ def get_lines_from_source(positives, positives2):
 
 def output_results(lines1, lines2):
     """Writes out to stdout ex. fn.c line # - source"""
+    start = int(sys.argv[2])
+    end = int(sys.argv[3])
+    interested_file = sys.argv[4]
+    branch_count = 0
+    array_count = 0
     for fname, result_pair in lines1.items():
         for line, src in result_pair:
+            if fname == interested_file and line>= start and line <= end:
+                branch_count += 1
             print("{} line {:4d} - {}".format(fname, line, src))
     for fname, result_pair in lines2.items():
         for line, src in result_pair:
+            if fname == interested_file and line>= start and line <= end:
+                array_count += 1
             print("{} line {:4d} - {}".format(fname, line, src))
+    print("Reported Branches: {}".format(branch_count))
+    print("Reported Array Indices: {}".format(array_count))
 
 
 def update_table(lines):
@@ -131,8 +142,8 @@ def main():
     """Looks at results from Vulnerable/Taint Analysis and records the associated
     line with it
     """
-    positives = defaultdict(set)  # only report each line once: set
-    positives2 = defaultdict(set)  # only report each line once: set
+    positives = defaultdict(list)  # only report each line once: set
+    positives2 = defaultdict(list)  # only report each line once: set
     # to keep repeated lines use: list
 
     for line in filter_lines_from_results(sys.argv[1])[0]:
@@ -140,14 +151,14 @@ def main():
         if len(s) == 3:
             fn, _, ln = s
             # Subtract 1 because indices of lines starts at 0
-            positives[fn].add(int(ln) - 1)
+            positives[fn].append(int(ln) - 1)
 
     for line in filter_lines_from_results(sys.argv[1])[1]:
         s = line.strip().split()
         if len(s) == 3:
             fn, _, ln = s
             # Subtract 1 because indices of lines starts at 0
-            positives2[fn].add(int(ln) - 1)
+            positives2[fn].append(int(ln) - 1)
 
     res = get_lines_from_source(positives, positives2)
     output_results(res[0], res[1])

@@ -39,10 +39,16 @@ v2_bign2_4_25_test: v2_bign2_4_25_test.bc
 v4_min_test.bc: bign2/v4_min.bc
 	$(LD) $^ -o $@
 
+v4_test.bc: bign2/v4.bc
+	$(LD) $^ -o $@
+
 v4_min_test: v4_min_test.bc
 	./run.sh $< results_with_source_v4_min.txt
 
 v3_min_test.bc: bign2/v3_min.bc
+	$(LD) $^ -o $@
+
+v3_test.bc: bign2/v3.bc
 	$(LD) $^ -o $@
 
 v3_min_test: v3_min_test.bc
@@ -51,10 +57,16 @@ v3_min_test: v3_min_test.bc
 v2_min_test.bc: bign2/v2_min.bc
 	$(LD) $^ -o $@
 
+v2_test.bc: bign2/v2.bc
+	$(LD) $^ -o $@
+
 v2_min_test: v2_min_test.bc
 	./run.sh $< results_with_source_v2_min.txt
 
 v1_min_test.bc: bign2/v1_min.bc
+	$(LD) $^ -o $@
+
+v1_test.bc: bign2/v1.bc
 	$(LD) $^ -o $@
 
 v1_min_test: v1_min_test.bc

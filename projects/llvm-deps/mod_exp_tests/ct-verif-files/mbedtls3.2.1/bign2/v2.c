@@ -1869,29 +1869,29 @@ static void mpi_montg_init( mbedtls_mpi_uint *mm, const mbedtls_mpi *N )
 static void mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi *N, mbedtls_mpi_uint mm,
                          const mbedtls_mpi *T, int pub_BRANCH0)
 {
-    size_t n, m;
+    size_t i, n, m;
     mbedtls_mpi_uint *d;
 
-    memset( T->p, 0, T->n * ciL );
+    //memset( T->p, 0, T->n * ciL );
 
     d = T->p;
     n = N->n;
-    m = ( B->n < n ) ? B->n : n;
+    m = T->n;///*+*/m = ( B->n < n ) ? B->n : n;
 
-    for( size_t i = 0; i < n; i++ )
+    i = 0; //if(n)/*loop*/ //for( size_t i = 0; i < n; i++ )
     {
         mbedtls_mpi_uint u0, u1;
 
         /*
          * T = (T + u0*B + u1*N) / 2^biL
          */
-        u0 = A->p[i];
-        u1 = ( d[0] + u0 * B->p[0] ) * mm;
+/*cache channel*/        //u0 = A->p[i];
+/*cache channel*/        //u1 = ( d[0] + u0 * B->p[0] ) * mm;
 
-        // (void) mbedtls_mpi_core_mla( d, n + 2,
+/*excluded*/        // (void) mbedtls_mpi_core_mla( d, n + 2,
         //                              B->p, m,
         //                              u0 );
-        // (void) mbedtls_mpi_core_mla( d, n + 2,
+/*excluded*/        // (void) mbedtls_mpi_core_mla( d, n + 2,
         //                              N->p, n,
         //                              u1 );
         d++;
@@ -1903,19 +1903,19 @@ static void mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_m
 
     /* Copy the n least significant limbs of d to A, so that
      * A = d if d < N (recall that N has n limbs). */
-    memcpy_uint_0( A->p, d );//memcpy( A->p, d, n * ciL );
+    //memcpy( A->p, d, (n+1) * ciL );
     /* If d >= N then we want to set A to d - N. To prevent timing attacks,
      * do the calculation without using conditional tests. */
     /* Set d to d0 + (2^biL)^n - N where d0 is the current value of d. */
-    d[n] += 1;
-    d[n] -= mpi_sub_hlp( n, d, d, N->p );
-    /* If d0 < N then d < (2^biL)^n
-     * so d[n] == 0 and we want to keep A as it is.
-     * If d0 >= N then d >= (2^biL)^n, and d <= (2^biL)^n + N < 2 * (2^biL)^n
-     * so d[n] == 1 and we want to set A to the result of the subtraction
-     * which is d - (2^biL)^n, i.e. the n least significant limbs of d.
-     * This exactly corresponds to a conditional assignment. */
-    mbedtls_ct_mpi_uint_cond_assign( n, A->p, d, (unsigned char) d[n] );
+/*cache channel*/    // d[n] += 1;
+/*cache channel*/    // d[n] -= mpi_sub_hlp( n, d, d, N->p );
+    // /* If d0 < N then d < (2^biL)^n
+    //  * so d[n] == 0 and we want to keep A as it is.
+    //  * If d0 >= N then d >= (2^biL)^n, and d <= (2^biL)^n + N < 2 * (2^biL)^n
+    //  * so d[n] == 1 and we want to set A to the result of the subtraction
+    //  * which is d - (2^biL)^n, i.e. the n least significant limbs of d.
+    //  * This exactly corresponds to a conditional assignment. */
+/*excluded*/   // mbedtls_ct_mpi_uint_cond_assign( n, A->p, d, (unsigned char) d[n] );
 }
 
 /*
@@ -1934,7 +1934,6 @@ static void mpi_montred_0( mbedtls_mpi *A, const mbedtls_mpi *N,
 
     mpi_montmul_0( A, &U, N, mm, T, pub_BRANCH0 );
 }
-
 /**
  * Select an MPI from a table without leaking the index.
  *
@@ -1963,13 +1962,14 @@ static int mpi_select( mbedtls_mpi *R, const mbedtls_mpi *T, size_t T_size, size
 cleanup:
     return( ret );
 }
-
 /*
  * Sliding-window exponentiation: X = A^E mod N  (HAC 14.85)
  */
-int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
+int mbedtls_mpi_exp_mod( mbedtls_mpi *X, const mbedtls_mpi *A,
                          const mbedtls_mpi *E, const mbedtls_mpi *N,
-                         mbedtls_mpi *prec_RR,int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14, size_t pub_VAL0, size_t pub_VAL1, size_t pub_VAL2, mbedtls_mpi_uint pub_VAL3 )
+                         mbedtls_mpi *prec_RR, int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,int pub_branch39,int pub_branch40,
+                size_t pub_n0,size_t pub_n1,size_t pub_n2,size_t pub_n3,size_t pub_n4,size_t pub_n5,size_t pub_n6,
+                mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14,mbedtls_mpi_uint *pub_ptr15, size_t pub_VAL0,size_t pub_VAL1,size_t pub_VAL2,mbedtls_mpi_uint pub_VAL3 )
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t wbits, wsize, one = 1;
@@ -1984,26 +1984,26 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
     MPI_VALIDATE_RET( E != NULL );
     MPI_VALIDATE_RET( N != NULL );
 
-    if( mbedtls_mpi_cmp_int_0( N, 0, pub_branch1 ) <= 0 || ( N->p[0] & 1 ) == 0 )
-        return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
+/*exclude*/ //if( mbedtls_mpi_cmp_int( N, 0 ) <= 0 || ( N->p[0] & 1 ) == 0 )
+        //return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
 
-    if( mbedtls_mpi_cmp_int_0( E, 0, pub_branch2 ) < 0 )
-        return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
+/*exclude*/ //if( mbedtls_mpi_cmp_int( E, 0 ) < 0 )
+        //return( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
 
-    if( mbedtls_mpi_bitlen_0( E, pub_branch3 ) > MBEDTLS_MPI_MAX_BITS ||
-        mbedtls_mpi_bitlen_0( N, pub_branch4 ) > MBEDTLS_MPI_MAX_BITS )
-        return ( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
+/*exclude*/ //if( mbedtls_mpi_bitlen( E ) > MBEDTLS_MPI_MAX_BITS ||
+        //mbedtls_mpi_bitlen( N ) > MBEDTLS_MPI_MAX_BITS )
+        //return ( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );
 
     /*
      * Init temps and window size
      */
     mpi_montg_init( &mm, N );
-    mbedtls_mpi_init( &RR ); mbedtls_mpi_init( &T );
-    mbedtls_mpi_init( &Apos );
-    mbedtls_mpi_init( &WW );
+/*exclude*/ //    mbedtls_mpi_init( &RR ); mbedtls_mpi_init( &T );
+/*exclude*/ //    mbedtls_mpi_init( &Apos );
+/*exclude*/ //    mbedtls_mpi_init( &WW );
     memset( W, 0, sizeof( W ) );
 
-    i = mbedtls_mpi_bitlen_0( E, pub_branch5 );
+/*exclude*/     i = pub_n0;//i = mbedtls_mpi_bitlen( E );
 
     wsize = ( i > 671 ) ? 6 : ( i > 239 ) ? 5 :
             ( i >  79 ) ? 4 : ( i >  23 ) ? 3 : 1;
@@ -2019,9 +2019,9 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
      * large enough, and later we'll grow other W[i] to the same length.
      * They must not be shrunk midway through this function!
      */
-    MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( X, j, pub_branch6, pub_ptr0 ) );
-    MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &W[1],  j, pub_branch7, pub_ptr1 ) );
-    MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &T, j * 2, pub_branch8, pub_ptr2 ) );
+/*exclude*/ //    MBEDTLS_MPI_CHK( mbedtls_mpi_grow( X, j ) );
+/*exclude*/ //    MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[1],  j ) );
+/*exclude*/ //    MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &T, j * 2 ) );
 
     /*
      * Compensate for negative A (and correct at the end)
@@ -2029,7 +2029,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
     neg = ( A->s == -1 );
     if( neg )
     {
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( &Apos, A, pub_branch9, pub_ptr3 ) );
+/*exclude*/    //MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &Apos, A ) );
         Apos.s = 1;
         A = &Apos;
     }
@@ -2039,9 +2039,9 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
      */
     if( prec_RR == NULL || prec_RR->p == NULL )
     {
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_lset_0( &RR, 1, pub_branch10, pub_ptr4 ) );
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_shift_l_0( &RR, N->n * 2 * biL, pub_branch11, pub_ptr5 ) );
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_mod_mpi_0( &RR, &RR, N, pub_branch12, pub_ptr6 ) );
+/*exclude*/    //MBEDTLS_MPI_CHK( mbedtls_mpi_lset( &RR, 1 ) );
+/*exclude*/    //MBEDTLS_MPI_CHK( mbedtls_mpi_shift_l( &RR, N->n * 2 * biL ) );
+/*exclude*/    //MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &RR, &RR, N ) );
 
         if( prec_RR != NULL )
             memcpy( prec_RR, &RR, sizeof( mbedtls_mpi ) );
@@ -2052,26 +2052,26 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
     /*
      * W[1] = A * R^2 * R^-1 mod N = A * R mod N
      */
-    if( mbedtls_mpi_cmp_mpi_0( A, N, pub_branch13 ) >= 0 )
+/*exclude*/    //if( mbedtls_mpi_cmp_mpi( A, N ) >= 0 )
     {
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_mod_mpi_0( &W[1], A, N, pub_branch14, pub_ptr7 ) );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_mod_mpi( &W[1], A, N ) );
         /* This should be a no-op because W[1] is already that large before
          * mbedtls_mpi_mod_mpi(), but it's necessary to avoid an overflow
          * in mpi_montmul() below, so let's make sure. */
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &W[1], N->n + 1, pub_branch15, pub_ptr8 ) );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[1], N->n + 1 ) );
     }
-    else
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( &W[1], A, pub_branch16, pub_ptr9 ) );
+    //else
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[1], A ) );
 
     /* Note that this is safe because W[1] always has at least N->n limbs
      * (it grew above and was preserved by mbedtls_mpi_copy()). */
-    mpi_montmul_0( &W[1], &RR, N, mm, &T, pub_branch17 );
+    mpi_montmul_0( &W[1], &RR, N, mm, &T, pub_branch4 );
 
     /*
      * X = R^2 * R^-1 mod N = R mod N
      */
-    MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( X, &RR, pub_branch18, pub_ptr10 ) );
-    mpi_montred_0( X, N, mm, &T, pub_branch19 );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_copy( X, &RR ) );
+    mpi_montred_0( X, N, mm, &T, pub_branch5 );
 
     if( wsize > 1 )
     {
@@ -2080,29 +2080,29 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
          */
         j =  one << ( wsize - 1 );
 
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &W[j], N->n + 1, pub_branch20, pub_ptr11 ) );
-        MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( &W[j], &W[1], pub_branch21, pub_ptr12    ) );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[j], N->n + 1 ) );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[j], &W[1]    ) );
 
         for( i = 0; i < wsize - 1; i++ )
-            mpi_montmul_0( &W[j], &W[j], N, mm, &T, pub_branch22 );
+            mpi_montmul_0( &W[0], &W[0], N, mm, &T, pub_branch7 );
 
         /*
          * W[i] = W[i - 1] * W[1]
          */
         for( i = j + 1; i < ( one << wsize ); i++ )
         {
-            MBEDTLS_MPI_CHK_1( mbedtls_mpi_grow_0( &W[i], N->n + 1, pub_branch23, pub_ptr13 ) );
-            MBEDTLS_MPI_CHK_1( mbedtls_mpi_copy_0( &W[i], &W[i - 1], pub_branch24, pub_ptr14 ) );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[i], N->n + 1 ) );
+/*exclude*/        //MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[i], &W[i - 1] ) );
 
-            mpi_montmul_0( &W[i], &W[1], N, mm, &T, pub_branch25 );
+            mpi_montmul_0( &W[0], &W[1], N, mm, &T, pub_branch8 );
         }
     }
 
     nblimbs = E->n;
-    bufsize = pub_VAL0;//bufsize = 0;
-    nbits   = pub_VAL1;//nbits   = 0;
-    wbits   = pub_VAL2;//wbits   = 0;
-    state   = pub_VAL3;//state   = 0;
+    bufsize = 0;
+    nbits   = 0;
+    wbits   = 0;
+    state   = 0;
 
     while( 1 )
     {
@@ -2118,7 +2118,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
 
         bufsize--;
 
-/*L*/        ei = (E->p[nblimbs] >> bufsize) & 1;
+        ei = (E->p[nblimbs] >> bufsize) & 1;
 
         /*
          * skip leading 0s
@@ -2131,7 +2131,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
             /*
              * out of window, square X
              */
-            mpi_montmul_0( X, X, N, mm, &T, pub_branch26 );
+            mpi_montmul_0( X, X, N, mm, &T, pub_branch10 );
             continue;
         }
 
@@ -2149,13 +2149,13 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
              * X = X^wsize R^-1 mod N
              */
             for( i = 0; i < wsize; i++ )
-                mpi_montmul_0( X, X, N, mm, &T, pub_branch27 );
+                mpi_montmul_0( X, X, N, mm, &T, pub_branch13 );
 
             /*
              * X = X * W[wbits] R^-1 mod N
              */
-            MBEDTLS_MPI_CHK_0( mpi_select( &WW, W, (size_t) 1 << wsize, wbits ) );
-            mpi_montmul_0( X, &WW, N, mm, &T, pub_branch28 );
+/*exclude*/        //MBEDTLS_MPI_CHK( mpi_select( &WW, W, (size_t) 1 << wsize, wbits ) );
+            mpi_montmul_0( X, &WW, N, mm, &T, pub_branch14 );
 
             state--;
             nbits = 0;
@@ -2168,35 +2168,35 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
      */
     for( i = 0; i < nbits; i++ )
     {
-        mpi_montmul_0( X, X, N, mm, &T, pub_branch29 );
+        mpi_montmul_0( X, X, N, mm, &T, pub_branch15 );
 
         wbits <<= 1;
 
         if( ( wbits & ( one << wsize ) ) != 0 )
-            mpi_montmul_0( X, &W[1], N, mm, &T, pub_branch30 );
+            mpi_montmul_0( X, &W[1], N, mm, &T, pub_branch16 );
     }
 
     /*
      * X = A^E * R * R^-1 mod N = A^E mod N
      */
-    mpi_montred_0( X, N, mm, &T, pub_branch31 );
+    mpi_montred_0( X, N, mm, &T, pub_branch18 );
 
     if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
     {
         X->s = -1;
-        MBEDTLS_MPI_CHK_0( mbedtls_mpi_add_mpi( X, N, X ) );
+        MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
     }
 
 cleanup:
 
     for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
-        mbedtls_mpi_free( &W[i] );
+/*exclude*/        dummy++;//mbedtls_mpi_free( &W[i] );
 
-    mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
-    mbedtls_mpi_free( &WW );
+/*exclude*/        //    mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
+/*exclude*/        //    mbedtls_mpi_free( &WW );
 
     if( prec_RR == NULL || prec_RR->p == NULL )
-        mbedtls_mpi_free( &RR );
+/*exclude*/        dummy++;//mbedtls_mpi_free( &RR );
 
     return( ret );
 }
@@ -2610,6 +2610,12 @@ static int mpi_miller_rabin( const mbedtls_mpi *X, size_t rounds,
                              int (*f_rng)(void *, unsigned char *, size_t),
                              void *p_rng )
 {
+    int pub_branch0, pub_branch1, pub_branch2, pub_branch3, pub_branch4, pub_branch5, pub_branch6, pub_branch7, pub_branch8, pub_branch9, pub_branch10, pub_branch11, pub_branch12, pub_branch13, pub_branch14, pub_branch15, pub_branch16, pub_branch17, pub_branch18, pub_branch19, pub_branch20, pub_branch21, pub_branch22, pub_branch23, pub_branch24, pub_branch25, pub_branch26, pub_branch27, pub_branch28, pub_branch29, pub_branch30, pub_branch31, pub_branch32, pub_branch33, pub_branch34, pub_branch35, pub_branch36, pub_branch37, pub_branch38, pub_branch39, pub_branch40;
+    size_t pub_n0, pub_n1, pub_n2, pub_n3, pub_n4, pub_n5, pub_n6;
+    mbedtls_mpi_uint *pub_ptr0, *pub_ptr1, *pub_ptr2, *pub_ptr3, *pub_ptr4, *pub_ptr5, *pub_ptr6, *pub_ptr7, *pub_ptr8, *pub_ptr9, *pub_ptr10, *pub_ptr11, *pub_ptr12, *pub_ptr13, *pub_ptr14, *pub_ptr15;
+    size_t pub_VAL0, pub_VAL1, pub_VAL2;
+    mbedtls_mpi_uint pub_VAL3;
+
     int ret, count;
     size_t i, j, k, s;
     mbedtls_mpi W, R, T, A, RR;
@@ -2656,7 +2662,28 @@ static int mpi_miller_rabin( const mbedtls_mpi *X, size_t rounds,
         /*
          * A = A^R mod |X|
          */
-        MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &A, &A, &R, X, &RR ) );
+        MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &A, &A, &R, X, &RR, pub_branch0,pub_branch1,pub_branch2,
+                                  pub_branch3,pub_branch4,pub_branch5,
+                                  pub_branch6,pub_branch7,pub_branch8,
+                                  pub_branch9,pub_branch10,pub_branch11,
+                                  pub_branch12,pub_branch13,pub_branch14,
+                                  pub_branch15,pub_branch16,pub_branch17,
+                                  pub_branch18,pub_branch19,pub_branch20,
+                                  pub_branch21,pub_branch22,pub_branch23,
+                                  pub_branch24,pub_branch25,pub_branch26,
+                                  pub_branch27,pub_branch28,pub_branch28,pub_branch30,
+                                  pub_branch31,pub_branch32,pub_branch33,
+                                  pub_branch34,pub_branch35,pub_branch36,
+                                  pub_branch37,pub_branch38,pub_branch38,
+                                  pub_branch40,pub_n0,pub_n1,pub_n2,pub_n3,pub_n4,
+                                  pub_n5,pub_n6,
+                                  pub_ptr0,pub_ptr1,pub_ptr2,
+                                  pub_ptr3,pub_ptr4,pub_ptr5,
+                                  pub_ptr6,pub_ptr7,pub_ptr8,
+                                  pub_ptr9,pub_ptr10,pub_ptr11,
+                                  pub_ptr12,pub_ptr13,pub_ptr14,
+                                  pub_ptr15,
+                                  pub_VAL0, pub_VAL1, pub_VAL2, pub_VAL3 ) );
 
         if( mbedtls_mpi_cmp_mpi( &A, &W ) == 0 ||
             mbedtls_mpi_cmp_int( &A,  1 ) == 0 )
@@ -2875,6 +2902,12 @@ static const int gcd_pairs[GCD_PAIR_COUNT][3] =
  */
 int mbedtls_mpi_self_test( int verbose )
 {
+    int pub_branch0, pub_branch1, pub_branch2, pub_branch3, pub_branch4, pub_branch5, pub_branch6, pub_branch7, pub_branch8, pub_branch9, pub_branch10, pub_branch11, pub_branch12, pub_branch13, pub_branch14, pub_branch15, pub_branch16, pub_branch17, pub_branch18, pub_branch19, pub_branch20, pub_branch21, pub_branch22, pub_branch23, pub_branch24, pub_branch25, pub_branch26, pub_branch27, pub_branch28, pub_branch29, pub_branch30, pub_branch31, pub_branch32, pub_branch33, pub_branch34, pub_branch35, pub_branch36, pub_branch37, pub_branch38, pub_branch39, pub_branch40;
+    size_t pub_n0, pub_n1, pub_n2, pub_n3, pub_n4, pub_n5, pub_n6;
+    mbedtls_mpi_uint *pub_ptr0, *pub_ptr1, *pub_ptr2, *pub_ptr3, *pub_ptr4, *pub_ptr5, *pub_ptr6, *pub_ptr7, *pub_ptr8, *pub_ptr9, *pub_ptr10, *pub_ptr11, *pub_ptr12, *pub_ptr13, *pub_ptr14, *pub_ptr15;
+    size_t pub_VAL0, pub_VAL1, pub_VAL2;
+    mbedtls_mpi_uint pub_VAL3;
+
     int ret, i;
     mbedtls_mpi A, E, N, X, Y, U, V;
 
@@ -2950,7 +2983,28 @@ int mbedtls_mpi_self_test( int verbose )
     if( verbose != 0 )
         mbedtls_printf( "passed\n" );
 
-    MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &X, &A, &E, &N, NULL ) );
+    MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &X, &A, &E, &N, NULL, pub_branch0,pub_branch1,pub_branch2,
+                                  pub_branch3,pub_branch4,pub_branch5,
+                                  pub_branch6,pub_branch7,pub_branch8,
+                                  pub_branch9,pub_branch10,pub_branch11,
+                                  pub_branch12,pub_branch13,pub_branch14,
+                                  pub_branch15,pub_branch16,pub_branch17,
+                                  pub_branch18,pub_branch19,pub_branch20,
+                                  pub_branch21,pub_branch22,pub_branch23,
+                                  pub_branch24,pub_branch25,pub_branch26,
+                                  pub_branch27,pub_branch28,pub_branch28,pub_branch30,
+                                  pub_branch31,pub_branch32,pub_branch33,
+                                  pub_branch34,pub_branch35,pub_branch36,
+                                  pub_branch37,pub_branch38,pub_branch38,
+                                  pub_branch40,pub_n0,pub_n1,pub_n2,pub_n3,pub_n4,
+                                  pub_n5,pub_n6,
+                                  pub_ptr0,pub_ptr1,pub_ptr2,
+                                  pub_ptr3,pub_ptr4,pub_ptr5,
+                                  pub_ptr6,pub_ptr7,pub_ptr8,
+                                  pub_ptr9,pub_ptr10,pub_ptr11,
+                                  pub_ptr12,pub_ptr13,pub_ptr14,
+                                  pub_ptr15,
+                                  pub_VAL0, pub_VAL1, pub_VAL2, pub_VAL3 ) );
 
     MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &U, 16,
         "36E139AEA55215609D2816998ED020BB" \

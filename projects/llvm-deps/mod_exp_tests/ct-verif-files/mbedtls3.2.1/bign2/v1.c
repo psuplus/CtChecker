@@ -1864,27 +1864,27 @@ static void mpi_montg_init( mbedtls_mpi_uint *mm, const mbedtls_mpi *N )
  *                      Note that unlike the usual convention in the library
  *                      for `const mbedtls_mpi*`, the content of T can change.
  */
-static void mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi *N, mbedtls_mpi_uint mm,
-                         const mbedtls_mpi *T )
+static void mpi_montmul_0( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi *N, mbedtls_mpi_uint mm,
+                         const mbedtls_mpi *T, int pub_BRANCH0)
 {
-    size_t n, m;
+    size_t i, n, m;
     mbedtls_mpi_uint *d;
 
-    memset( T->p, 0, T->n * ciL );
+    //memset( T->p, 0, T->n * ciL );
 
     d = T->p;
     n = N->n;
-    m = ( B->n < n ) ? B->n : n;
+    m = T->n;///*+*/m = ( B->n < n ) ? B->n : n;
 
-    for( size_t i = 0; i < n; i++ )
+    i = 0; //if(n)/*loop*/ //for( size_t i = 0; i < n; i++ )
     {
         mbedtls_mpi_uint u0, u1;
 
         /*
          * T = (T + u0*B + u1*N) / 2^biL
          */
-        u0 = A->p[i];
-        u1 = ( d[0] + u0 * B->p[0] ) * mm;
+/*cache channel*/        //u0 = A->p[i];
+/*cache channel*/        //u1 = ( d[0] + u0 * B->p[0] ) * mm;
 
         (void) mbedtls_mpi_core_mla( d, n + 2,
                                      B->p, m,
@@ -1901,19 +1901,19 @@ static void mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi
 
     /* Copy the n least significant limbs of d to A, so that
      * A = d if d < N (recall that N has n limbs). */
-    memcpy( A->p, d, n * ciL );
+    // memcpy( A->p, d, (n+1) * ciL );
     /* If d >= N then we want to set A to d - N. To prevent timing attacks,
      * do the calculation without using conditional tests. */
     /* Set d to d0 + (2^biL)^n - N where d0 is the current value of d. */
-    d[n] += 1;
-    d[n] -= mpi_sub_hlp( n, d, d, N->p );
-    /* If d0 < N then d < (2^biL)^n
-     * so d[n] == 0 and we want to keep A as it is.
-     * If d0 >= N then d >= (2^biL)^n, and d <= (2^biL)^n + N < 2 * (2^biL)^n
-     * so d[n] == 1 and we want to set A to the result of the subtraction
-     * which is d - (2^biL)^n, i.e. the n least significant limbs of d.
-     * This exactly corresponds to a conditional assignment. */
-    mbedtls_ct_mpi_uint_cond_assign( n, A->p, d, (unsigned char) d[n] );
+/*cache channel*/    // d[n] += 1;
+/*cache channel*/    // d[n] -= mpi_sub_hlp( n, d, d, N->p );
+    // /* If d0 < N then d < (2^biL)^n
+    //  * so d[n] == 0 and we want to keep A as it is.
+    //  * If d0 >= N then d >= (2^biL)^n, and d <= (2^biL)^n + N < 2 * (2^biL)^n
+    //  * so d[n] == 1 and we want to set A to the result of the subtraction
+    //  * which is d - (2^biL)^n, i.e. the n least significant limbs of d.
+    //  * This exactly corresponds to a conditional assignment. */
+    // mbedtls_ct_mpi_uint_cond_assign( n, A->p, d, (unsigned char) d[n] );
 }
 
 /*
@@ -1921,8 +1921,8 @@ static void mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi
  *
  * See mpi_montmul() regarding constraints and guarantees on the parameters.
  */
-static void mpi_montred( mbedtls_mpi *A, const mbedtls_mpi *N,
-                         mbedtls_mpi_uint mm, const mbedtls_mpi *T )
+static void mpi_montred_0( mbedtls_mpi *A, const mbedtls_mpi *N,
+                         mbedtls_mpi_uint mm, const mbedtls_mpi *T, int pub_BRANCH0 )
 {
     mbedtls_mpi_uint z = 1;
     mbedtls_mpi U;
@@ -1930,7 +1930,7 @@ static void mpi_montred( mbedtls_mpi *A, const mbedtls_mpi *N,
     U.n = U.s = (int) z;
     U.p = &z;
 
-    mpi_montmul( A, &U, N, mm, T );
+    mpi_montmul_0( A, &U, N, mm, T, pub_BRANCH0 );
 }
 
 /**
@@ -1965,9 +1965,11 @@ cleanup:
 /*
  * Sliding-window exponentiation: X = A^E mod N  (HAC 14.85)
  */
-int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
+int mbedtls_mpi_exp_mod( mbedtls_mpi *X, const mbedtls_mpi *A,
                          const mbedtls_mpi *E, const mbedtls_mpi *N,
-                         mbedtls_mpi *prec_RR,int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,int pub_branch39,int pub_branch40,size_t pub_n0,size_t pub_n1,size_t pub_n2,size_t pub_n3,size_t pub_n4,size_t pub_n5,size_t pub_n6,mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14,mbedtls_mpi_uint *pub_ptr15, size_t pub_VAL0, size_t pub_VAL1, size_t pub_VAL2, mbedtls_mpi_uint pub_VAL3 )
+                         mbedtls_mpi *prec_RR, int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,int pub_branch39,int pub_branch40,
+                size_t pub_n0,size_t pub_n1,size_t pub_n2,size_t pub_n3,size_t pub_n4,size_t pub_n5,size_t pub_n6,
+                mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14,mbedtls_mpi_uint *pub_ptr15, size_t pub_VAL0,size_t pub_VAL1,size_t pub_VAL2,mbedtls_mpi_uint pub_VAL3 )
 {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
     size_t wbits, wsize, one = 1;
@@ -2063,13 +2065,13 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
 
     /* Note that this is safe because W[1] always has at least N->n limbs
      * (it grew above and was preserved by mbedtls_mpi_copy()). */
-    mpi_montmul( &W[1], &RR, N, mm, &T );
+    mpi_montmul_0( &W[1], &RR, N, mm, &T, pub_branch4 );
 
     /*
      * X = R^2 * R^-1 mod N = R mod N
      */
     MBEDTLS_MPI_CHK( mbedtls_mpi_copy( X, &RR ) );
-    mpi_montred( X, N, mm, &T );
+    mpi_montred_0( X, N, mm, &T, pub_branch5 );
 
     if( wsize > 1 )
     {
@@ -2082,7 +2084,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
         MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[j], &W[1]    ) );
 
         for( i = 0; i < wsize - 1; i++ )
-            mpi_montmul( &W[j], &W[j], N, mm, &T );
+            mpi_montmul_0( &W[0], &W[0], N, mm, &T, pub_branch7 );
 
         /*
          * W[i] = W[i - 1] * W[1]
@@ -2092,7 +2094,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
             MBEDTLS_MPI_CHK( mbedtls_mpi_grow( &W[i], N->n + 1 ) );
             MBEDTLS_MPI_CHK( mbedtls_mpi_copy( &W[i], &W[i - 1] ) );
 
-            mpi_montmul( &W[i], &W[1], N, mm, &T );
+            mpi_montmul_0( &W[0], &W[1], N, mm, &T, pub_branch8 );
         }
     }
 
@@ -2129,7 +2131,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
             /*
              * out of window, square X
              */
-            mpi_montmul( X, X, N, mm, &T );
+            mpi_montmul_0( X, X, N, mm, &T, pub_branch10 );
             continue;
         }
 
@@ -2147,13 +2149,13 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
              * X = X^wsize R^-1 mod N
              */
             for( i = 0; i < wsize; i++ )
-                mpi_montmul( X, X, N, mm, &T );
+                mpi_montmul_0( X, X, N, mm, &T, pub_branch13 );
 
             /*
              * X = X * W[wbits] R^-1 mod N
              */
             MBEDTLS_MPI_CHK( mpi_select( &WW, W, (size_t) 1 << wsize, wbits ) );
-            mpi_montmul( X, &WW, N, mm, &T );
+            mpi_montmul_0( X, &WW, N, mm, &T, pub_branch14 );
 
             state--;
             nbits = 0;
@@ -2166,18 +2168,18 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
      */
     for( i = 0; i < nbits; i++ )
     {
-        mpi_montmul( X, X, N, mm, &T );
+        mpi_montmul_0( X, X, N, mm, &T, pub_branch15 );
 
         wbits <<= 1;
 
         if( ( wbits & ( one << wsize ) ) != 0 )
-            mpi_montmul( X, &W[1], N, mm, &T );
+            mpi_montmul_0( X, &W[1], N, mm, &T, pub_branch16 );
     }
 
     /*
      * X = A^E * R * R^-1 mod N = A^E mod N
      */
-    mpi_montred( X, N, mm, &T );
+    mpi_montred_0( X, N, mm, &T, pub_branch18 );
 
     if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
     {
@@ -2188,7 +2190,7 @@ int mbedtls_mpi_exp_mod_algorithm( mbedtls_mpi *X, const mbedtls_mpi *A,
 cleanup:
 
     for( i = ( one << ( wsize - 1 ) ); i < ( one << wsize ); i++ )
-        mbedtls_mpi_free( &W[i] );
+/*cache*/        mbedtls_mpi_free( &W[0] );//mbedtls_mpi_free( &W[i] );
 
     mbedtls_mpi_free( &W[1] ); mbedtls_mpi_free( &T ); mbedtls_mpi_free( &Apos );
     mbedtls_mpi_free( &WW );
@@ -2608,6 +2610,12 @@ static int mpi_miller_rabin( const mbedtls_mpi *X, size_t rounds,
                              int (*f_rng)(void *, unsigned char *, size_t),
                              void *p_rng )
 {
+    int pub_branch0, pub_branch1, pub_branch2, pub_branch3, pub_branch4, pub_branch5, pub_branch6, pub_branch7, pub_branch8, pub_branch9, pub_branch10, pub_branch11, pub_branch12, pub_branch13, pub_branch14, pub_branch15, pub_branch16, pub_branch17, pub_branch18, pub_branch19, pub_branch20, pub_branch21, pub_branch22, pub_branch23, pub_branch24, pub_branch25, pub_branch26, pub_branch27, pub_branch28, pub_branch29, pub_branch30, pub_branch31, pub_branch32, pub_branch33, pub_branch34, pub_branch35, pub_branch36, pub_branch37, pub_branch38, pub_branch39, pub_branch40;
+    size_t pub_n0, pub_n1, pub_n2, pub_n3, pub_n4, pub_n5, pub_n6;
+    mbedtls_mpi_uint *pub_ptr0, *pub_ptr1, *pub_ptr2, *pub_ptr3, *pub_ptr4, *pub_ptr5, *pub_ptr6, *pub_ptr7, *pub_ptr8, *pub_ptr9, *pub_ptr10, *pub_ptr11, *pub_ptr12, *pub_ptr13, *pub_ptr14, *pub_ptr15;
+    size_t pub_VAL0, pub_VAL1, pub_VAL2;
+    mbedtls_mpi_uint pub_VAL3;
+    
     int ret, count;
     size_t i, j, k, s;
     mbedtls_mpi W, R, T, A, RR;
@@ -2654,7 +2662,28 @@ static int mpi_miller_rabin( const mbedtls_mpi *X, size_t rounds,
         /*
          * A = A^R mod |X|
          */
-        MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &A, &A, &R, X, &RR ) );
+        MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &A, &A, &R, X, &RR, pub_branch0,pub_branch1,pub_branch2,
+                                  pub_branch3,pub_branch4,pub_branch5,
+                                  pub_branch6,pub_branch7,pub_branch8,
+                                  pub_branch9,pub_branch10,pub_branch11,
+                                  pub_branch12,pub_branch13,pub_branch14,
+                                  pub_branch15,pub_branch16,pub_branch17,
+                                  pub_branch18,pub_branch19,pub_branch20,
+                                  pub_branch21,pub_branch22,pub_branch23,
+                                  pub_branch24,pub_branch25,pub_branch26,
+                                  pub_branch27,pub_branch28,pub_branch28,pub_branch30,
+                                  pub_branch31,pub_branch32,pub_branch33,
+                                  pub_branch34,pub_branch35,pub_branch36,
+                                  pub_branch37,pub_branch38,pub_branch38,
+                                  pub_branch40,pub_n0,pub_n1,pub_n2,pub_n3,pub_n4,
+                                  pub_n5,pub_n6,
+                                  pub_ptr0,pub_ptr1,pub_ptr2,
+                                  pub_ptr3,pub_ptr4,pub_ptr5,
+                                  pub_ptr6,pub_ptr7,pub_ptr8,
+                                  pub_ptr9,pub_ptr10,pub_ptr11,
+                                  pub_ptr12,pub_ptr13,pub_ptr14,
+                                  pub_ptr15,
+                                  pub_VAL0, pub_VAL1, pub_VAL2, pub_VAL3 ) );
 
         if( mbedtls_mpi_cmp_mpi( &A, &W ) == 0 ||
             mbedtls_mpi_cmp_int( &A,  1 ) == 0 )
@@ -2873,6 +2902,12 @@ static const int gcd_pairs[GCD_PAIR_COUNT][3] =
  */
 int mbedtls_mpi_self_test( int verbose )
 {
+    int pub_branch0, pub_branch1, pub_branch2, pub_branch3, pub_branch4, pub_branch5, pub_branch6, pub_branch7, pub_branch8, pub_branch9, pub_branch10, pub_branch11, pub_branch12, pub_branch13, pub_branch14, pub_branch15, pub_branch16, pub_branch17, pub_branch18, pub_branch19, pub_branch20, pub_branch21, pub_branch22, pub_branch23, pub_branch24, pub_branch25, pub_branch26, pub_branch27, pub_branch28, pub_branch29, pub_branch30, pub_branch31, pub_branch32, pub_branch33, pub_branch34, pub_branch35, pub_branch36, pub_branch37, pub_branch38, pub_branch39, pub_branch40;
+    size_t pub_n0, pub_n1, pub_n2, pub_n3, pub_n4, pub_n5, pub_n6;
+    mbedtls_mpi_uint *pub_ptr0, *pub_ptr1, *pub_ptr2, *pub_ptr3, *pub_ptr4, *pub_ptr5, *pub_ptr6, *pub_ptr7, *pub_ptr8, *pub_ptr9, *pub_ptr10, *pub_ptr11, *pub_ptr12, *pub_ptr13, *pub_ptr14, *pub_ptr15;
+    size_t pub_VAL0, pub_VAL1, pub_VAL2;
+    mbedtls_mpi_uint pub_VAL3;
+
     int ret, i;
     mbedtls_mpi A, E, N, X, Y, U, V;
 
@@ -2948,7 +2983,28 @@ int mbedtls_mpi_self_test( int verbose )
     if( verbose != 0 )
         mbedtls_printf( "passed\n" );
 
-    MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &X, &A, &E, &N, NULL ) );
+    MBEDTLS_MPI_CHK( mbedtls_mpi_exp_mod( &X, &A, &E, &N, NULL, pub_branch0,pub_branch1,pub_branch2,
+                                  pub_branch3,pub_branch4,pub_branch5,
+                                  pub_branch6,pub_branch7,pub_branch8,
+                                  pub_branch9,pub_branch10,pub_branch11,
+                                  pub_branch12,pub_branch13,pub_branch14,
+                                  pub_branch15,pub_branch16,pub_branch17,
+                                  pub_branch18,pub_branch19,pub_branch20,
+                                  pub_branch21,pub_branch22,pub_branch23,
+                                  pub_branch24,pub_branch25,pub_branch26,
+                                  pub_branch27,pub_branch28,pub_branch28,pub_branch30,
+                                  pub_branch31,pub_branch32,pub_branch33,
+                                  pub_branch34,pub_branch35,pub_branch36,
+                                  pub_branch37,pub_branch38,pub_branch38,
+                                  pub_branch40,pub_n0,pub_n1,pub_n2,pub_n3,pub_n4,
+                                  pub_n5,pub_n6,
+                                  pub_ptr0,pub_ptr1,pub_ptr2,
+                                  pub_ptr3,pub_ptr4,pub_ptr5,
+                                  pub_ptr6,pub_ptr7,pub_ptr8,
+                                  pub_ptr9,pub_ptr10,pub_ptr11,
+                                  pub_ptr12,pub_ptr13,pub_ptr14,
+                                  pub_ptr15,
+                                  pub_VAL0, pub_VAL1, pub_VAL2, pub_VAL3 ) );
 
     MBEDTLS_MPI_CHK( mbedtls_mpi_read_string( &U, 16,
         "36E139AEA55215609D2816998ED020BB" \
@@ -3033,171 +3089,171 @@ cleanup:
 
 #endif /* MBEDTLS_BIGNUM_C */
 
-/**********************/
-#include <smack.h>
-#include "../../../ct-verif.h"
-void
-fragment_wrapper(int s, size_t n, mbedtls_mpi_uint *p,
-                int s0, size_t n0, mbedtls_mpi_uint *p0,
-                int s1, size_t n1, mbedtls_mpi_uint *p1,
-                int s2, size_t n2, mbedtls_mpi_uint *p2,
-                int s3, size_t n3, mbedtls_mpi_uint *p3,
-                int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,int pub_branch39,int pub_branch40,
-                size_t pub_n0,size_t pub_n1,size_t pub_n2,size_t pub_n3,size_t pub_n4,size_t pub_n5,size_t pub_n6,
-                mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14,mbedtls_mpi_uint *pub_ptr15, size_t pub_VAL0,size_t pub_VAL1,size_t pub_VAL2,mbedtls_mpi_uint pub_VAL3) {
+// /**********************/
+// #include <smack.h>
+// #include "../../../ct-verif.h"
+// void
+// fragment_wrapper(int s, size_t n, mbedtls_mpi_uint *p,
+//                 int s0, size_t n0, mbedtls_mpi_uint *p0,
+//                 int s1, size_t n1, mbedtls_mpi_uint *p1,
+//                 int s2, size_t n2, mbedtls_mpi_uint *p2,
+//                 int s3, size_t n3, mbedtls_mpi_uint *p3,
+//                 int pub_branch0,int pub_branch1,int pub_branch2,int pub_branch3,int pub_branch4,int pub_branch5,int pub_branch6,int pub_branch7,int pub_branch8,int pub_branch9,int pub_branch10,int pub_branch11,int pub_branch12,int pub_branch13,int pub_branch14,int pub_branch15,int pub_branch16,int pub_branch17,int pub_branch18,int pub_branch19,int pub_branch20,int pub_branch21,int pub_branch22,int pub_branch23,int pub_branch24,int pub_branch25,int pub_branch26,int pub_branch27,int pub_branch28,int pub_branch29,int pub_branch30,int pub_branch31,int pub_branch32,int pub_branch33,int pub_branch34,int pub_branch35,int pub_branch36,int pub_branch37,int pub_branch38,int pub_branch39,int pub_branch40,
+//                 size_t pub_n0,size_t pub_n1,size_t pub_n2,size_t pub_n3,size_t pub_n4,size_t pub_n5,size_t pub_n6,
+//                 mbedtls_mpi_uint *pub_ptr0,mbedtls_mpi_uint *pub_ptr1,mbedtls_mpi_uint *pub_ptr2,mbedtls_mpi_uint *pub_ptr3,mbedtls_mpi_uint *pub_ptr4,mbedtls_mpi_uint *pub_ptr5,mbedtls_mpi_uint *pub_ptr6,mbedtls_mpi_uint *pub_ptr7,mbedtls_mpi_uint *pub_ptr8,mbedtls_mpi_uint *pub_ptr9,mbedtls_mpi_uint *pub_ptr10,mbedtls_mpi_uint *pub_ptr11,mbedtls_mpi_uint *pub_ptr12,mbedtls_mpi_uint *pub_ptr13,mbedtls_mpi_uint *pub_ptr14,mbedtls_mpi_uint *pub_ptr15, size_t pub_VAL0,size_t pub_VAL1,size_t pub_VAL2,mbedtls_mpi_uint pub_VAL3) {
 
 
-   public_in(__SMACK_value(pub_branch0));
-   public_in(__SMACK_value(pub_branch1));
-   public_in(__SMACK_value(pub_branch2));
-   public_in(__SMACK_value(pub_branch3));
-   public_in(__SMACK_value(pub_branch4));
-   public_in(__SMACK_value(pub_branch5));
-   public_in(__SMACK_value(pub_branch6));
-   public_in(__SMACK_value(pub_branch7));
-   public_in(__SMACK_value(pub_branch8));
-   public_in(__SMACK_value(pub_branch9));
-   public_in(__SMACK_value(pub_branch10));
-   public_in(__SMACK_value(pub_branch11));
-   public_in(__SMACK_value(pub_branch12));
-   public_in(__SMACK_value(pub_branch13));
-   public_in(__SMACK_value(pub_branch14));
-   public_in(__SMACK_value(pub_branch15));
-   public_in(__SMACK_value(pub_branch16));
-   public_in(__SMACK_value(pub_branch17));
-   public_in(__SMACK_value(pub_branch18));
-   public_in(__SMACK_value(pub_branch19));
-   public_in(__SMACK_value(pub_branch20));
-   public_in(__SMACK_value(pub_branch21));
-   public_in(__SMACK_value(pub_branch22));
-   public_in(__SMACK_value(pub_branch23));
-   public_in(__SMACK_value(pub_branch24));
-   public_in(__SMACK_value(pub_branch25));
-   public_in(__SMACK_value(pub_branch26));
-   public_in(__SMACK_value(pub_branch27));
-   public_in(__SMACK_value(pub_branch28));
-   public_in(__SMACK_value(pub_branch29));
-   public_in(__SMACK_value(pub_branch30));
-   public_in(__SMACK_value(pub_branch31));
-   public_in(__SMACK_value(pub_branch32));
-   public_in(__SMACK_value(pub_branch33));
-   public_in(__SMACK_value(pub_branch34));
-   public_in(__SMACK_value(pub_branch35));
-   public_in(__SMACK_value(pub_branch36));
-   public_in(__SMACK_value(pub_branch37));
-   public_in(__SMACK_value(pub_branch38));
-   public_in(__SMACK_value(pub_branch39));
-   public_in(__SMACK_value(pub_branch40));
+//    public_in(__SMACK_value(pub_branch0));
+//    public_in(__SMACK_value(pub_branch1));
+//    public_in(__SMACK_value(pub_branch2));
+//    public_in(__SMACK_value(pub_branch3));
+//    public_in(__SMACK_value(pub_branch4));
+//    public_in(__SMACK_value(pub_branch5));
+//    public_in(__SMACK_value(pub_branch6));
+//    public_in(__SMACK_value(pub_branch7));
+//    public_in(__SMACK_value(pub_branch8));
+//    public_in(__SMACK_value(pub_branch9));
+//    public_in(__SMACK_value(pub_branch10));
+//    public_in(__SMACK_value(pub_branch11));
+//    public_in(__SMACK_value(pub_branch12));
+//    public_in(__SMACK_value(pub_branch13));
+//    public_in(__SMACK_value(pub_branch14));
+//    public_in(__SMACK_value(pub_branch15));
+//    public_in(__SMACK_value(pub_branch16));
+//    public_in(__SMACK_value(pub_branch17));
+//    public_in(__SMACK_value(pub_branch18));
+//    public_in(__SMACK_value(pub_branch19));
+//    public_in(__SMACK_value(pub_branch20));
+//    public_in(__SMACK_value(pub_branch21));
+//    public_in(__SMACK_value(pub_branch22));
+//    public_in(__SMACK_value(pub_branch23));
+//    public_in(__SMACK_value(pub_branch24));
+//    public_in(__SMACK_value(pub_branch25));
+//    public_in(__SMACK_value(pub_branch26));
+//    public_in(__SMACK_value(pub_branch27));
+//    public_in(__SMACK_value(pub_branch28));
+//    public_in(__SMACK_value(pub_branch29));
+//    public_in(__SMACK_value(pub_branch30));
+//    public_in(__SMACK_value(pub_branch31));
+//    public_in(__SMACK_value(pub_branch32));
+//    public_in(__SMACK_value(pub_branch33));
+//    public_in(__SMACK_value(pub_branch34));
+//    public_in(__SMACK_value(pub_branch35));
+//    public_in(__SMACK_value(pub_branch36));
+//    public_in(__SMACK_value(pub_branch37));
+//    public_in(__SMACK_value(pub_branch38));
+//    public_in(__SMACK_value(pub_branch39));
+//    public_in(__SMACK_value(pub_branch40));
 
-   public_in(__SMACK_value(pub_n0));
-   public_in(__SMACK_value(pub_n1));
-   public_in(__SMACK_value(pub_n2));
-   public_in(__SMACK_value(pub_n3));
-   public_in(__SMACK_value(pub_n4));
-   public_in(__SMACK_value(pub_n5));
-   public_in(__SMACK_value(pub_n6));
+//    public_in(__SMACK_value(pub_n0));
+//    public_in(__SMACK_value(pub_n1));
+//    public_in(__SMACK_value(pub_n2));
+//    public_in(__SMACK_value(pub_n3));
+//    public_in(__SMACK_value(pub_n4));
+//    public_in(__SMACK_value(pub_n5));
+//    public_in(__SMACK_value(pub_n6));
 
-   public_in(__SMACK_value(pub_ptr0));
-   public_in(__SMACK_value(pub_ptr1));
-   public_in(__SMACK_value(pub_ptr2));
-   public_in(__SMACK_value(pub_ptr3));
-   public_in(__SMACK_value(pub_ptr4));
-   public_in(__SMACK_value(pub_ptr5));
-   public_in(__SMACK_value(pub_ptr6));
-   public_in(__SMACK_value(pub_ptr7));
-   public_in(__SMACK_value(pub_ptr8));
-   public_in(__SMACK_value(pub_ptr9));
-   public_in(__SMACK_value(pub_ptr10));
-   public_in(__SMACK_value(pub_ptr11));
-   public_in(__SMACK_value(pub_ptr12));
-   public_in(__SMACK_value(pub_ptr13));
-   public_in(__SMACK_value(pub_ptr14));
-   public_in(__SMACK_value(pub_ptr15));
+//    public_in(__SMACK_value(pub_ptr0));
+//    public_in(__SMACK_value(pub_ptr1));
+//    public_in(__SMACK_value(pub_ptr2));
+//    public_in(__SMACK_value(pub_ptr3));
+//    public_in(__SMACK_value(pub_ptr4));
+//    public_in(__SMACK_value(pub_ptr5));
+//    public_in(__SMACK_value(pub_ptr6));
+//    public_in(__SMACK_value(pub_ptr7));
+//    public_in(__SMACK_value(pub_ptr8));
+//    public_in(__SMACK_value(pub_ptr9));
+//    public_in(__SMACK_value(pub_ptr10));
+//    public_in(__SMACK_value(pub_ptr11));
+//    public_in(__SMACK_value(pub_ptr12));
+//    public_in(__SMACK_value(pub_ptr13));
+//    public_in(__SMACK_value(pub_ptr14));
+//    public_in(__SMACK_value(pub_ptr15));
 
-   public_in(__SMACK_values(pub_ptr0,10));
-   public_in(__SMACK_values(pub_ptr1,10));
-   public_in(__SMACK_values(pub_ptr2,10));
-   public_in(__SMACK_values(pub_ptr3,10));
-   public_in(__SMACK_values(pub_ptr4,10));
-   public_in(__SMACK_values(pub_ptr5,10));
-   public_in(__SMACK_values(pub_ptr6,10));
-   public_in(__SMACK_values(pub_ptr7,10));
-   public_in(__SMACK_values(pub_ptr8,10));
-   public_in(__SMACK_values(pub_ptr9,10));
-   public_in(__SMACK_values(pub_ptr10,10));
-   public_in(__SMACK_values(pub_ptr11,10));
-   public_in(__SMACK_values(pub_ptr12,10));
-   public_in(__SMACK_values(pub_ptr13,10));
-   public_in(__SMACK_values(pub_ptr14,10));
-   public_in(__SMACK_values(pub_ptr15,10));
+//    public_in(__SMACK_values(pub_ptr0,10));
+//    public_in(__SMACK_values(pub_ptr1,10));
+//    public_in(__SMACK_values(pub_ptr2,10));
+//    public_in(__SMACK_values(pub_ptr3,10));
+//    public_in(__SMACK_values(pub_ptr4,10));
+//    public_in(__SMACK_values(pub_ptr5,10));
+//    public_in(__SMACK_values(pub_ptr6,10));
+//    public_in(__SMACK_values(pub_ptr7,10));
+//    public_in(__SMACK_values(pub_ptr8,10));
+//    public_in(__SMACK_values(pub_ptr9,10));
+//    public_in(__SMACK_values(pub_ptr10,10));
+//    public_in(__SMACK_values(pub_ptr11,10));
+//    public_in(__SMACK_values(pub_ptr12,10));
+//    public_in(__SMACK_values(pub_ptr13,10));
+//    public_in(__SMACK_values(pub_ptr14,10));
+//    public_in(__SMACK_values(pub_ptr15,10));
 
-   public_in(__SMACK_value(pub_VAL0));
-   public_in(__SMACK_value(pub_VAL1));
-   public_in(__SMACK_value(pub_VAL2));
-   public_in(__SMACK_value(pub_VAL3));
+//    public_in(__SMACK_value(pub_VAL0));
+//    public_in(__SMACK_value(pub_VAL1));
+//    public_in(__SMACK_value(pub_VAL2));
+//    public_in(__SMACK_value(pub_VAL3));
 
-   /****************/
+//    /****************/
 
-   public_in(__SMACK_value(s));
-   public_in(__SMACK_value(n));
-   public_in(__SMACK_value(p));
-   public_in(__SMACK_value(s2));
-   public_in(__SMACK_value(n2));
-   public_in(__SMACK_value(p2));
+//    public_in(__SMACK_value(s));
+//    public_in(__SMACK_value(n));
+//    public_in(__SMACK_value(p));
+//    public_in(__SMACK_value(s2));
+//    public_in(__SMACK_value(n2));
+//    public_in(__SMACK_value(p2));
 
-   public_in(__SMACK_value(s0));
-   public_in(__SMACK_value(n0));
-   public_in(__SMACK_value(p0));
-   public_in(__SMACK_value(s1));
-   public_in(__SMACK_value(n1));
-   public_in(__SMACK_value(p1));
-   public_in(__SMACK_value(s3));
-   public_in(__SMACK_value(n3));
-   public_in(__SMACK_value(p3));
+//    public_in(__SMACK_value(s0));
+//    public_in(__SMACK_value(n0));
+//    public_in(__SMACK_value(p0));
+//    public_in(__SMACK_value(s1));
+//    public_in(__SMACK_value(n1));
+//    public_in(__SMACK_value(p1));
+//    public_in(__SMACK_value(s3));
+//    public_in(__SMACK_value(n3));
+//    public_in(__SMACK_value(p3));
 
-   // Show that these values are left unannotated
-   // public_in(__SMACK_values(p,10));
-   public_in(__SMACK_values(p2,10));
+//    // Show that these values are left unannotated
+//    // public_in(__SMACK_values(p,10));
+//    public_in(__SMACK_values(p2,10));
 
-   public_in(__SMACK_values(p0,10));
-   public_in(__SMACK_values(p1,10));
-   public_in(__SMACK_values(p3,10));
+//    public_in(__SMACK_values(p0,10));
+//    public_in(__SMACK_values(p1,10));
+//    public_in(__SMACK_values(p3,10));
 
-   mbedtls_mpi OBJ = {s,n,p};
-   mbedtls_mpi *E = &OBJ;
-   mbedtls_mpi OBJ2 = {s2,n2,p2};
-   mbedtls_mpi *N = &OBJ2;
+//    mbedtls_mpi OBJ = {s,n,p};
+//    mbedtls_mpi *E = &OBJ;
+//    mbedtls_mpi OBJ2 = {s2,n2,p2};
+//    mbedtls_mpi *N = &OBJ2;
 
-   mbedtls_mpi OBJ0 = {s0,n0,p0};
-   mbedtls_mpi OBJ1 = {s1,n1,p1};
-   mbedtls_mpi OBJ3 = {s3,n3,p3};
+//    mbedtls_mpi OBJ0 = {s0,n0,p0};
+//    mbedtls_mpi OBJ1 = {s1,n1,p1};
+//    mbedtls_mpi OBJ3 = {s3,n3,p3};
 
-   mbedtls_mpi *X = &OBJ0;
-   mbedtls_mpi *A = &OBJ1;
-   mbedtls_mpi *_RR = &OBJ3;
+//    mbedtls_mpi *X = &OBJ0;
+//    mbedtls_mpi *A = &OBJ1;
+//    mbedtls_mpi *_RR = &OBJ3;
 
-   mbedtls_mpi_exp_mod_algorithm (X,A,E,N,_RR,
-                                  pub_branch0,pub_branch1,pub_branch2,
-                                  pub_branch3,pub_branch4,pub_branch5,
-                                  pub_branch6,pub_branch7,pub_branch8,
-                                  pub_branch9,pub_branch10,pub_branch11,
-                                  pub_branch12,pub_branch13,pub_branch14,
-                                  pub_branch15,pub_branch16,pub_branch17,
-                                  pub_branch18,pub_branch19,pub_branch20,
-                                  pub_branch21,pub_branch22,pub_branch23,
-                                  pub_branch24,pub_branch25,pub_branch26,
-                                  pub_branch27,pub_branch28,pub_branch28,pub_branch30,
-                                  pub_branch31,pub_branch32,pub_branch33,
-                                  pub_branch34,pub_branch35,pub_branch36,
-                                  pub_branch37,pub_branch38,pub_branch38,
-                                  pub_branch40,pub_n0,pub_n1,pub_n2,pub_n3,pub_n4,
-                                  pub_n5,pub_n6,
-                                  pub_ptr0,pub_ptr1,pub_ptr2,
-                                  pub_ptr3,pub_ptr4,pub_ptr5,
-                                  pub_ptr6,pub_ptr7,pub_ptr8,
-                                  pub_ptr9,pub_ptr10,pub_ptr11,
-                                  pub_ptr12,pub_ptr13,pub_ptr14,
-                                  pub_ptr15,
-                                  pub_VAL0, pub_VAL1, pub_VAL2, pub_VAL3);
+//    mbedtls_mpi_exp_mod_algorithm (X,A,E,N,_RR,
+//                                   pub_branch0,pub_branch1,pub_branch2,
+//                                   pub_branch3,pub_branch4,pub_branch5,
+//                                   pub_branch6,pub_branch7,pub_branch8,
+//                                   pub_branch9,pub_branch10,pub_branch11,
+//                                   pub_branch12,pub_branch13,pub_branch14,
+//                                   pub_branch15,pub_branch16,pub_branch17,
+//                                   pub_branch18,pub_branch19,pub_branch20,
+//                                   pub_branch21,pub_branch22,pub_branch23,
+//                                   pub_branch24,pub_branch25,pub_branch26,
+//                                   pub_branch27,pub_branch28,pub_branch28,pub_branch30,
+//                                   pub_branch31,pub_branch32,pub_branch33,
+//                                   pub_branch34,pub_branch35,pub_branch36,
+//                                   pub_branch37,pub_branch38,pub_branch38,
+//                                   pub_branch40,pub_n0,pub_n1,pub_n2,pub_n3,pub_n4,
+//                                   pub_n5,pub_n6,
+//                                   pub_ptr0,pub_ptr1,pub_ptr2,
+//                                   pub_ptr3,pub_ptr4,pub_ptr5,
+//                                   pub_ptr6,pub_ptr7,pub_ptr8,
+//                                   pub_ptr9,pub_ptr10,pub_ptr11,
+//                                   pub_ptr12,pub_ptr13,pub_ptr14,
+//                                   pub_ptr15,
+//                                   pub_VAL0, pub_VAL1, pub_VAL2, pub_VAL3);
 
-}
+// }

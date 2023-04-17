@@ -15,7 +15,8 @@ LEVEL="../../../../.."
 START=393
 END=773
 
-FILE="mpi/mpi-pow.c"
+
+FILE=$2".c"
 
 # if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
 #CPPFLAGS=`llvm-config --cppflags`
@@ -27,8 +28,10 @@ CUR=$(pwd)
 make $1
 cd $CUR
 
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer $1 -o $1
+
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

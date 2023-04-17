@@ -12,18 +12,15 @@ LLVMLIBS=
 LDFLAGS=
 LEVEL="../../../../.."
 
-if [ $2 == "v2" ] ; then
+if [[ "$1" == *"min"* ]]; then
+    FILE="bign2/"$2"_min.c"
+    START=396
+    END=633
+else
+    FILE="bign2/"$2".c"
     START=1967
     END=2202
-elif [ $2 == "v3" ] ; then
-    START=1967
-    END=2202
-elif [ $2 == "v4" ] ; then
-    START=1965
-    END=2200
 fi
-
-FILE="bignum.c"
 
 # if your instrumentation code calls into LLVM libraries, then comment out the above and use these instead:
 #CPPFLAGS=`llvm-config --cppflags`
@@ -34,8 +31,10 @@ CUR=$(pwd)
 
 make $1
 
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer $1 -o $1
+
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
 -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
 -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
 -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

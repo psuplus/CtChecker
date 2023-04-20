@@ -24,17 +24,7 @@
       "c": {}
     },
     {
-      "function": "main",
-      "type": "variable",
-      "name": "sec",
-      "index": -1,
-      "l": {
-        "secret": "private"
-      },
-      "c": {}
-    },
-    {
-      "function": "main",
+      "function": "_Z3fooi",
       "type": "variable",
       "name": "sec",
       "index": -1,
@@ -47,5 +37,5 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["main"]
+  "entry": ["_Z3fooi"]
 }

@@ -12,6 +12,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "VulnerableBranch.h"
+#include "../../../lib/IR/ConstantsContext.h"
 #include "Infoflow.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/Function.h"
@@ -122,38 +123,32 @@ bool VulnerableBranch::runOnModule(Module &M) {
   }
 
   errs() << "#--------------Array Indices------------------\n";
-  for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
-    for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-         ++I) {
-      if (const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&*I)) {
-        // for (uint i = 0; i < gep->getNumOperands(); i++) {
-        //   errs() << "Operand " << i << ": ";
-        //   gep->getOperand(i)->dump();
-        // }
+  for (auto &F : M.functions()) {
+    for (auto &I : inst_range(F)) {
+      bool isCacheSC = false;
+      if (const LoadInst *load = dyn_cast<LoadInst>(&I)) {
+        if (const GetElementPtrConstantExpr *gepCE =
+                dyn_cast<GetElementPtrConstantExpr>(load->getPointerOperand()))
+          for (auto &op : gepCE->operands())
+            if (tainted.find(op) != tainted.end()) {
+              isCacheSC = true;
+              break;
+            }
+      } else if (const GetElementPtrInst *bareGEP =
+                     dyn_cast<GetElementPtrInst>(&I)) {
+        for (auto &op : bareGEP->operands())
+          if (tainted.find(op) != tainted.end()) {
+            isCacheSC = true;
+            break;
+          }
+      }
 
-        const MDLocation *loc = gep->getDebugLoc();
-        if (tainted.find(gep->getOperand(0)) != tainted.end()) {
-          errs() << loc->getFilename() << " at "
-                 << std::to_string(loc->getLine()) << "\n";
-          gep->dump();
-          gep->getOperand(0)->dump();
-        }
-
-        // get the index value and lookup in the tainted set
-        const Value *v;
-        // v = gep->getOperand(2);
-        if (isa<ArrayType>(gep->getSourceElementType())) {
-          v = gep->getOperand(2);
-        } else {
-          v = gep->getOperand(1);
-        }
-
-        if (!isa<Constant>(v) && tainted.find(v) != tainted.end()) {
-          errs() << loc->getFilename() << " at "
-                 << std::to_string(loc->getLine()) << "\n";
-          gep->dump();
-          v->dump();
-        }
+      if (isCacheSC) {
+        const MDLocation *loc = I.getDebugLoc();
+        errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
+               << "\n";
+        I.dump();
+        I.getOperand(0)->dump();
       }
     }
   }

@@ -141,12 +141,12 @@ bool VulnerableBranch::runOnModule(Module &M) {
 
         // get the index value and lookup in the tainted set
         const Value *v;
-        v = gep->getOperand(2);
-        // if (isa<ArrayType>(gep->getSourceElementType())) {
-        //   v = gep->getOperand(2);
-        // } else {
-        //   v = gep->getOperand(1);
-        // }
+        // v = gep->getOperand(2);
+        if (isa<ArrayType>(gep->getSourceElementType())) {
+          v = gep->getOperand(2);
+        } else {
+          v = gep->getOperand(1);
+        }
 
         if (!isa<Constant>(v) && tainted.find(v) != tainted.end()) {
           errs() << loc->getFilename() << " at "

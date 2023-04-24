@@ -15,17 +15,14 @@ Table 2: cache side channel
 |             ||| Ct-Verif     |||\|||       CtChecker       |||||
 |-------------|---|---|---|---|---|----|----|----|---|---|---|---|
 |             |Full|Baseline|Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|Full-argToAll|Full-argToRet|Baseline-argToAll|Baseline-argToRet| Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|
-|**BearSSL**  |  0|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
-|**libgcrypt**|  -|  2|  1|  0|  0|   0|   0|   0|  0|  0|  0|  0|
-|**mbedtls**  |OOM|  1|  0|  0|  0|   1|   0|   1|  1|  0|  0|  0|
+|**BearSSL**  |  0|  0|  0|  0|  0|   1|   1|   1|  1|  1|  1|  1|
+|**libgcrypt**|  -|  2|  1|  0|  0|  18|  17|  57|  5|  5|  4|  4|
+|**mbedtls**  |OOM|  1|  0|  0|  0|   3|   3|  16|  6|  2|  1|  1|
 |**openSSL**  |   |   |   |   |   |    |    |    |   |   |   |   |
 | recp        |  -|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
-| mont        |  -|  2|  2|  0|  1|1[1]|1[1]|1[1]|  0|  0|  0|  0|
-| word        |  -|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
-| consttime   |  -|  1|  0|  0|  0|4[2]|4[2]|4[2]|  0|  0|  0|  0|
-
-*[1]* v1_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
-*[2]* mont_consttime/v1_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+| mont        |  -|  2|  2|  0|  1|   5|   5|  14|  0|  0|  0|  0|
+| word        |  -|  0|  0|  0|  0|   1|   1|   0|  0|  0|  0|  0|
+| consttime   |  -|  1|  0|  0|  0|  13|   8|  27|  0|  0|  0|  0|
 
 
 # BearSSL

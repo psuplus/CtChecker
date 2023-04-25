@@ -5,6 +5,7 @@
  *
  ******************************************************/
 #include <stdint.h>
+#include <stdlib.h>
 
 static uint32_t SP8[64] __attribute__((aligned(64))) = {
     0x10001040L, 0x00001000L, 0x00040000L, 0x10041040L, 0x10000000L,
@@ -24,9 +25,18 @@ static uint32_t SP8[64] __attribute__((aligned(64))) = {
 void foo(int sec) {
   int a = SP8[0];
   a = SP8[16];
-  // SP8[32];
-  // SP8[48];
+  a = SP8[32];
+  a = SP8[48];
   a = SP8[sec];
+
+  int *b;
+  b = (int *)malloc(20);
+  a = b[0];
+  a = b[sec];
+
+  int c[3] = {1,2,3};
+  a = c[0];
+  a = c[sec];
   // SP8[sec+16];
   // SP8[sec+32];
   // SP8[sec+48];

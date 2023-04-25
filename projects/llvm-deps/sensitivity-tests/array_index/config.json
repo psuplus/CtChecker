@@ -32,6 +32,26 @@
         "secret": "private"
       },
       "c": {}
+    },
+    {
+      "function": "_Z3fooi",
+      "type": "variable",
+      "name": "b",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "_Z3fooi",
+      "type": "variable",
+      "name": "c",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
     }
   ],
   "sink": [],

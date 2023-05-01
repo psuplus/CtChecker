@@ -12,8 +12,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "VulnerableBranch.h"
-#include "../../../lib/IR/ConstantsContext.h"
 #include "Infoflow.h"
+#include "llvm/IR/Constants.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstIterator.h"
@@ -125,30 +125,24 @@ bool VulnerableBranch::runOnModule(Module &M) {
   errs() << "#--------------Array Indices------------------\n";
   for (auto &F : M.functions()) {
     for (auto &I : inst_range(F)) {
-      bool isCacheSC = false;
+      const User *user = nullptr;
       if (const LoadInst *load = dyn_cast<LoadInst>(&I)) {
-        if (const GetElementPtrConstantExpr *gepCE =
-                dyn_cast<GetElementPtrConstantExpr>(load->getPointerOperand()))
-          for (auto &op : gepCE->operands())
-            if (tainted.find(op) != tainted.end()) {
-              isCacheSC = true;
-              break;
-            }
-      } else if (const GetElementPtrInst *bareGEP =
+        if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(load->getPointerOperand()))
+          user = ce;
+      } else if (const StoreInst *store = dyn_cast<StoreInst>(&I)) {
+        if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(store->getPointerOperand()))
+          user = ce;
+      } else if (const GetElementPtrInst *gep =
                      dyn_cast<GetElementPtrInst>(&I)) {
-        for (auto &op : bareGEP->operands())
-          if (tainted.find(op) != tainted.end()) {
-            isCacheSC = true;
-            break;
-          }
+        user = gep;
       }
 
-      if (isCacheSC) {
+      if (user && matchNonPointerWhitelistAndTainted(user, tainted)) {
         const MDLocation *loc = I.getDebugLoc();
         errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
                << "\n";
-        I.dump();
-        I.getOperand(0)->dump();
       }
     }
   }
@@ -166,6 +160,23 @@ bool VulnerableBranch::runOnModule(Module &M) {
                      tainted_percentage);
   }
 
+  return false;
+}
+
+bool VulnerableBranch::matchNonPointerWhitelistAndTainted(
+    const User *user, std::set<const Value *> &tainted) {
+  for (auto &op : user->operands()) {
+    bool isWhitelisted = false;
+    for (auto ptr : ifa->whitelistPointers) {
+      if (op.get()->getType()->isPtrOrPtrVectorTy() &&
+          op.get()->getName() == ptr.name) {
+        isWhitelisted = true;
+      }
+    }
+    if (!isWhitelisted && tainted.find(op) != tainted.end()) {
+      return true;
+    }
+  }
   return false;
 }
 

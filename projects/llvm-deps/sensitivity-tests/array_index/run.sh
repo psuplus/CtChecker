@@ -19,10 +19,10 @@ LEVEL="../../../.."
 
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
-$LEVEL/Debug+Asserts/bin/clang $INCLUDES $CPPFLAGS -c main.cpp -o test.bc
-$LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
-# $LEVEL/Debug+Asserts/bin/opt -mem2reg test.bc -o test.bc
-# $LEVEL/Debug+Asserts/bin/llvm-dis test.bc
+$LEVEL/Debug+Asserts/bin/clang $INCLUDES $CPPFLAGS -c main.c -o test.bc
+# $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.cpp
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer test.bc -o test.bc
+$LEVEL/Debug+Asserts/bin/llvm-dis test.bc
 
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer test.bc -o test.bc
 

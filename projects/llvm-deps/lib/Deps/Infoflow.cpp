@@ -3423,6 +3423,11 @@ void Infoflow::readConfiguration() {
     for (json whitelist : config.at("whitelist")) {
       whitelistVariables.push_back(parseConfigVariable(whitelist));
     }
+    if (config.contains("ptr_whitelist")) {
+      for (json ptr : config.at("ptr_whitelist")) {
+        whitelistPointers.push_back(parseConfigVariable(ptr));
+      }
+    }
   }
 }
 

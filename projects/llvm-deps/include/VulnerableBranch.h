@@ -46,6 +46,9 @@ public:
 private:
   Infoflow *ifa;
   TaintAnalysisBase parser;
+
+  bool matchNonPointerWhitelistAndTainted(const User *,
+                                          std::set<const Value *> &);
 };
 
 } // namespace deps

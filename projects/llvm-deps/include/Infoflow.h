@@ -344,6 +344,7 @@ private:
   std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
+  std::vector<ConfigVariable> whitelistPointers;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;

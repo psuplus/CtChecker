@@ -16,7 +16,7 @@
   "source": [
     {
       "type": "variable",
-      "name": "_ZL3SP8",
+      "name": "SP8",
       "index": -1,
       "l": {
         "secret": "private"
@@ -24,7 +24,7 @@
       "c": {}
     },
     {
-      "function": "_Z3fooi",
+      "function": "foo",
       "type": "variable",
       "name": "sec",
       "index": -1,
@@ -37,5 +37,16 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "entry": ["_Z3fooi"]
+  "ptr_whitelist": [
+    {
+      "type": "variable",
+      "name": "SP8",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "entry": ["foo"]
 }

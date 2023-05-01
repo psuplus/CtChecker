@@ -58,9 +58,10 @@ echo "Running with flags: $COL"
 
 LEVEL="../../../.."
 
+rm *.bc
 make $1
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
-$LEVEL/Debug+Asserts/bin/llvm-dis $1
+$LEVEL/Debug+Asserts/bin/llvm-dis $1 -o $1-$COL".ll"
 
 TIME=$(date +%s)
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc

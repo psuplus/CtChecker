@@ -68,14 +68,15 @@ FILE="mpi/mpi-pow.c"
 
 # CUR=$(pwd)
 # cd ../../../;
+rm mpi/*.bc
 make full.bc
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer full.bc -o full.bc
-$LEVEL/Debug+Asserts/bin/llvm-dis full.bc
+$LEVEL/Debug+Asserts/bin/llvm-dis full.bc -o full-$COL".ll"
 
 make mpi/mpi-pow.bc
 cp mpi/mpi-pow.bc .
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer mpi-pow.bc -o mpi-pow.bc
-$LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc
+$LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc -o mpi-pow-$COL".ll"
 
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc

@@ -64,9 +64,10 @@ LLVMLIBS=
 LDFLAGS=
 LEVEL="../../../.."
 
+rm *.bc
 make $1
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
-$LEVEL/Debug+Asserts/bin/llvm-dis $1
+$LEVEL/Debug+Asserts/bin/llvm-dis $1 -o $1-$COL".ll"
 
 TIME=$(date +%s)
 $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \

@@ -34,20 +34,10 @@
       "c": {}
     },
     {
-      "function": "_Z3fooi",
+      "function": "foo",
       "type": "variable",
-      "name": "b",
-      "index": -1,
-      "l": {
-        "secret": "private"
-      },
-      "c": {}
-    },
-    {
-      "function": "_Z3fooi",
-      "type": "variable",
-      "name": "c",
-      "index": -1,
+      "name": "expo",
+      "index": 4,
       "l": {
         "secret": "private"
       },
@@ -62,6 +52,16 @@
       "type": "variable",
       "name": "SP8",
       "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "foo",
+      "type": "variable",
+      "name": "expo",
+      "index": 4,
       "l": {
         "secret": "private"
       },

@@ -105,6 +105,7 @@ public:
   Value *val;           // field added by the analysis for sink labeling
   std::string callsite; // field added by the analysis for sink labeling
 
+  ConfigVariable() = default;
   ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
                  int num, int idx, std::string file, int line, int value,
                  RLLabel label)

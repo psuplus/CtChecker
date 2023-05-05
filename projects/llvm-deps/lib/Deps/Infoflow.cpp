@@ -2764,6 +2764,30 @@ void Infoflow::constraintUnreachableInst(const UnreachableInst &inst,
 /// Compute a pointer value, depending on the pc and operands.
 void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
                                           Flows &flows) {
+  int numOp = inst.getNumOperands();
+  if (numOp >= 3) {
+    Value *ptr = inst.getOperand(0);
+    Value *index = inst.getOperand(2);
+    if (ConstantInt *CI = dyn_cast<ConstantInt>(index)) {
+      uint64_t idx = CI->getZExtValue();
+      bool isWhitelisted = false;
+      for (auto whitelistedPtr : whitelistPointers) {
+        if (inst.getType()->isPtrOrPtrVectorTy() &&
+            ptr->getName() == whitelistedPtr.name &&
+            idx == whitelistedPtr.index) {
+          isWhitelisted = true;
+          break;
+        }
+      }
+      if (isWhitelisted) {
+        ConfigVariable *newPtr = new ConfigVariable();
+        newPtr->index = -1;
+        newPtr->name = inst.getName();
+        whitelistPointers.push_back(*newPtr);
+      }
+    } 
+  }
+
   return operandsAndPCtoValue(inst, flows);
 }
 
@@ -2789,6 +2813,23 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 /// Load the value from the memory at the pointer operand into the result.
 /// Flow from pc, ptr value, and memory to result.
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
+  Value *addr = inst.getOperand(0);
+  bool isWhitelisted = false;
+  for (auto whitelistedPtr : whitelistPointers) {
+    if (inst.getType()->isPtrOrPtrVectorTy() &&
+        addr->getName() == whitelistedPtr.name &&
+        whitelistedPtr.index == -1) {
+      isWhitelisted = true;
+      break;
+    }
+  }
+  if (isWhitelisted) {
+    ConfigVariable *newPtr = new ConfigVariable();
+    newPtr->index = -1;
+    newPtr->name = inst.getName();
+    whitelistPointers.push_back(*newPtr);
+  }
+
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);
   // pc

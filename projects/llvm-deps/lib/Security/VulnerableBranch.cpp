@@ -95,6 +95,12 @@ bool VulnerableBranch::runOnModule(Module &M) {
   }
   errs() << "---- Constraints END ----\n\n";
 
+  errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
+  for (auto i : ifa->whitelistPointers) {
+    errs() << i.name << ":" << i.index << "\n";
+  }
+  errs() << "---- Whitelisted Pointers END ----\n\n";
+
   // Variables to gather branch statistics
   unsigned long number_branches = 0;
   unsigned long tainted_branches = 0;
@@ -168,6 +174,8 @@ bool VulnerableBranch::matchNonPointerWhitelistAndTainted(
   for (auto &op : user->operands()) {
     bool isWhitelisted = false;
     for (auto ptr : ifa->whitelistPointers) {
+      //errs() << ptr.name << ":" << ptr.index << "\n";
+      //errs() << op.get()->getName() << ":" << op.get()->getType()->isPtrOrPtrVectorTy() << "\n";
       if (op.get()->getType()->isPtrOrPtrVectorTy() &&
           op.get()->getName() == ptr.name) {
         isWhitelisted = true;

@@ -546,6 +546,8 @@ private:
                        const ImmutableCallSite &cs, Flows &);
   void constrainIntrinsic(const IntrinsicInst &, Flows &);
 
+  void isWhitelistPtrAndPush (const Instruction &inst, Value *op, int idx);
+
   AbstractLocSet getPointedToAbstractLocs(const Value *v);
 };
 

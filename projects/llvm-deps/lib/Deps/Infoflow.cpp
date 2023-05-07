@@ -2517,6 +2517,20 @@ void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
   // errs() << "NEW-FLOWS-END\n\n";
 }
 
+// add inst to whitelistPointers if op is in it; otherwise, do nothing
+void Infoflow::isWhitelistPtrAndPush (const Instruction &inst, Value *op, int idx) {
+  for (auto whitelistedPtr : whitelistPointers) {
+    if (op->getName() == whitelistedPtr.name &&
+        whitelistedPtr.index == idx) {
+      ConfigVariable *newPtr = new ConfigVariable();
+      newPtr->index = -1;
+      newPtr->name = inst.getName();
+      whitelistPointers.push_back(*newPtr);
+      break;
+    }
+  }
+}
+
 void Infoflow::constrainUnaryInstruction(const UnaryInstruction &inst,
                                          Flows &flows) {
   if (const AllocaInst *i = dyn_cast<AllocaInst>(&inst)) {
@@ -2649,6 +2663,11 @@ void Infoflow::constrainBinaryOperator(const BinaryOperator &inst,
 /// which all take a single operand and a type. They perform various bit
 /// conversions on the operand. Flow is from operands and pc to value.
 void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
+  if (inst.getType()->isPtrOrPtrVectorTy()) {
+    Value *op = inst.getOperand(0);
+    isWhitelistPtrAndPush(inst, op, -1);
+  }
+
   return operandsAndPCtoValue(inst, flows);
 }
 
@@ -2663,16 +2682,7 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
     for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
        op != end; ++op) {
       Value *v = op->get();
-      for (auto whitelistedPtr : whitelistPointers) {
-        if (v->getName() == whitelistedPtr.name &&
-            whitelistedPtr.index == -1) {
-          ConfigVariable *newPtr = new ConfigVariable();
-          newPtr->index = -1;
-          newPtr->name = inst.getName();
-          whitelistPointers.push_back(*newPtr);
-          break;
-        }
-      }
+      isWhitelistPtrAndPush(inst, v, -1);
     }
   }
   
@@ -2782,26 +2792,12 @@ void Infoflow::constraintUnreachableInst(const UnreachableInst &inst,
 void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
                                           Flows &flows) {
   int numOp = inst.getNumOperands();
-  if (numOp >= 3) {
+  if (numOp >= 3 && inst.getType()->isPtrOrPtrVectorTy()) {
     Value *ptr = inst.getOperand(0);
     Value *index = inst.getOperand(2);
     if (ConstantInt *CI = dyn_cast<ConstantInt>(index)) {
       uint64_t idx = CI->getZExtValue();
-      bool isWhitelisted = false;
-      for (auto whitelistedPtr : whitelistPointers) {
-        if (inst.getType()->isPtrOrPtrVectorTy() &&
-            ptr->getName() == whitelistedPtr.name &&
-            idx == whitelistedPtr.index) {
-          isWhitelisted = true;
-          break;
-        }
-      }
-      if (isWhitelisted) {
-        ConfigVariable *newPtr = new ConfigVariable();
-        newPtr->index = -1;
-        newPtr->name = inst.getName();
-        whitelistPointers.push_back(*newPtr);
-      }
+      isWhitelistPtrAndPush(inst, ptr, idx);
     } 
   }
 
@@ -2832,20 +2828,7 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
   Value *addr = inst.getOperand(0);
   bool isWhitelisted = false;
-  for (auto whitelistedPtr : whitelistPointers) {
-    if (inst.getType()->isPtrOrPtrVectorTy() &&
-        addr->getName() == whitelistedPtr.name &&
-        whitelistedPtr.index == -1) {
-      isWhitelisted = true;
-      break;
-    }
-  }
-  if (isWhitelisted) {
-    ConfigVariable *newPtr = new ConfigVariable();
-    newPtr->index = -1;
-    newPtr->name = inst.getName();
-    whitelistPointers.push_back(*newPtr);
-  }
+  isWhitelistPtrAndPush(inst, addr, -1);
 
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);

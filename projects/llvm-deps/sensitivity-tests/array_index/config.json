@@ -42,6 +42,16 @@
         "secret": "private"
       },
       "c": {}
+    },
+    {
+      "function": "foo",
+      "type": "variable",
+      "name": "ptr",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
     }
   ],
   "sink": [],
@@ -62,6 +72,16 @@
       "type": "variable",
       "name": "expo",
       "index": 4,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "foo",
+      "type": "variable",
+      "name": "ptr",
+      "index": -1,
       "l": {
         "secret": "private"
       },

@@ -32,7 +32,13 @@ static int PUB_ARR[16] = {0x10001040, 0x00001000, 0x00040000, 0x10041040,
                           0x00040040, 0x10040000, 0x10041040, 0x00041000,
                           0x10041000, 0x00041040, 0x00001000, 0x00000040};
 
-void foo(long sec, long pub, long val, gcry_mpi_t expo) {
+void foo(long sec, long pub, long val, gcry_mpi_t expo, int *ptr) {
+  void *q = (void *)ptr;
+  q = q + pub;
+
+  int *r = (int *)q + 5;
+  *r = val;
+
   mpi_ptr_t ep = expo->d;
   int j = ep[pub];
   int k = expo->d[pub];

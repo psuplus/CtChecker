@@ -28,5 +28,17 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [{ "name": "bits" }],
+  "ptr_whitelist": [
+    {
+      "function": "BN_mod_exp_mont_word",
+      "type": "variable",
+      "name": "p",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["BN_mod_exp_mont_word"]
 }

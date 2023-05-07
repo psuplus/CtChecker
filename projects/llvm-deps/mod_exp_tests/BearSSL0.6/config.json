@@ -28,5 +28,17 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [{ "name": "len" }, { "name": "m_bitlen" }, { "name": "mlen" }],
+  "ptr_whitelist": [
+    {
+      "function": "br_i32_modpow",
+      "type": "variable",
+      "name": "e",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["br_i32_modpow"]
 }

@@ -32,5 +32,17 @@
     { "name": "rsize" },
     { "name": "max_size" }
   ],
+  "ptr_whitelist": [
+    {
+      "function": "_gcry_mpi_powm",
+      "type": "variable",
+      "name": "expo",
+      "index": 4,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["_gcry_mpi_powm"]
 }

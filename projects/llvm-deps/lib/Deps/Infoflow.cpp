@@ -2659,6 +2659,23 @@ void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
 /// Value of PHI node depends on values of incoming edges (the operands)
 /// and on pc.
 void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
+  if (inst.getType()->isPtrOrPtrVectorTy()) {
+    for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
+       op != end; ++op) {
+      Value *v = op->get();
+      for (auto whitelistedPtr : whitelistPointers) {
+        if (v->getName() == whitelistedPtr.name &&
+            whitelistedPtr.index == -1) {
+          ConfigVariable *newPtr = new ConfigVariable();
+          newPtr->index = -1;
+          newPtr->name = inst.getName();
+          whitelistPointers.push_back(*newPtr);
+          break;
+        }
+      }
+    }
+  }
+  
   return operandsAndPCtoValue(inst, flows);
 }
 

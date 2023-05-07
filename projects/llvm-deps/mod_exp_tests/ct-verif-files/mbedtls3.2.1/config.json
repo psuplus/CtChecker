@@ -28,5 +28,17 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [{ "name": "wsize" }],
+  "ptr_whitelist": [
+    {
+      "function": "mbedtls_mpi_exp_mod",
+      "type": "variable",
+      "name": "E",
+      "index": 2,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["mbedtls_mpi_exp_mod"]
 }

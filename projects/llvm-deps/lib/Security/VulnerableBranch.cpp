@@ -97,7 +97,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
 
   errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
   for (auto i : ifa->whitelistPointers) {
-    errs() << i.name << ":" << i.index << "\n";
+    errs() << i.function << ":" << i.name << ":" << i.index << "\n";
   }
   errs() << "---- Whitelisted Pointers END ----\n\n";
 
@@ -145,7 +145,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
         user = gep;
       }
 
-      if (user && matchNonPointerWhitelistAndTainted(user, tainted)) {
+      if (user && matchNonPointerWhitelistAndTainted(user, tainted, I)) {
         const MDLocation *loc = I.getDebugLoc();
         errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
                << "\n";
@@ -170,14 +170,15 @@ bool VulnerableBranch::runOnModule(Module &M) {
 }
 
 bool VulnerableBranch::matchNonPointerWhitelistAndTainted(
-    const User *user, std::set<const Value *> &tainted) {
+    const User *user, std::set<const Value *> &tainted, const Instruction &I) {
+  const BasicBlock *bc = I.getParent();
+  const Function *func = bc->getParent();
   for (auto &op : user->operands()) {
     bool isWhitelisted = false;
     for (auto ptr : ifa->whitelistPointers) {
-      //errs() << ptr.name << ":" << ptr.index << "\n";
-      //errs() << op.get()->getName() << ":" << op.get()->getType()->isPtrOrPtrVectorTy() << "\n";
       if (op.get()->getType()->isPtrOrPtrVectorTy() &&
-          op.get()->getName() == ptr.name) {
+          op.get()->getName() == ptr.name &&
+          func->getName() == ptr.function) {
         isWhitelisted = true;
       }
     }

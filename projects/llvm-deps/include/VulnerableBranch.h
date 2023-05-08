@@ -48,7 +48,7 @@ private:
   TaintAnalysisBase parser;
 
   bool matchNonPointerWhitelistAndTainted(const User *,
-                                          std::set<const Value *> &);
+                                          std::set<const Value *> &, const Instruction &);
 };
 
 } // namespace deps

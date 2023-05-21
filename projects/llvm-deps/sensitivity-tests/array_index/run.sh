@@ -34,7 +34,8 @@ $LEVEL/Debug+Asserts/bin/opt \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < test.bc 2> tmp.dat > /dev/null
+  -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/VulnerableBranchWrapper.$EXT  \
+  -vulnerablebranchwrapper  -debug < test.bc 2> tmp.dat > /dev/null
 
 cat tmp.dat | grep '<:' > constraints.con
 

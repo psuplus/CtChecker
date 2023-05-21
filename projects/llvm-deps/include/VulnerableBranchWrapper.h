@@ -1,4 +1,4 @@
-//===------- SourceSinkAnalysis.h -- Identify taint sources and sinks ----===//
+//===------- VulnerableBranchWrapper.h -- Identify taint sources and sinks ----===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -7,14 +7,11 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file declares a pass for identifying vulnerable branches.
+// This file declares a pass for wrapping vulnerable branch pass.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef VULNERABLEBRANCH_H_
-#define VULNERABLEBRANCH_H_
-
-#include "Infoflow.h"
+#include "VulnerableBranch.h"
 #include "TaintAnalysisBase.h"
 #include "llvm/IR/CallSite.h"
 #include "llvm/Pass.h"
@@ -30,23 +27,21 @@ using namespace llvm;
 
 namespace deps {
 
-class VulnerableBranch : public ModulePass {
-  friend class VulnerableBranchWrapper;
-
+class VulnerableBranchWrapper : public ModulePass {
 public:
   static char ID;
 
-  VulnerableBranch() : ModulePass(ID) {}
+  VulnerableBranchWrapper() : ModulePass(ID) {}
 
   virtual bool runOnModule(Module &M);
 
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
-    // AU.addRequired<Infoflow>();
+    AU.addRequired<VulnerableBranch>();
     AU.setPreservesAll();
   }
 
 private:
-  Infoflow *ifa;
+  VulnerableBranch *vba;
   TaintAnalysisBase parser;
 
   bool matchNonPointerWhitelistAndTainted(const User *,
@@ -54,5 +49,3 @@ private:
 };
 
 } // namespace deps
-
-#endif

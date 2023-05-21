@@ -16,7 +16,8 @@
 
 #ifndef DEBUG_TYPE
 #define DEBUG_TYPE "deps"
-
+#include <chrono>
+#include <ctime>
 #include "Infoflow.h"
 
 namespace deps {
@@ -1542,6 +1543,8 @@ void Infoflow::setReachPtrTainted(std::string kind, const Value &value) {
 
 InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
                                           bool implicit, bool sinks) {
+  using namespace std::chrono;
+  auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   kinds.insert("default");
   if (sinks)
     kinds.insert("default-sinks");
@@ -1549,7 +1552,12 @@ InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
     kinds.insert("implicit");
   if (implicit && sinks)
     kinds.insert("implicit-sinks");
-  return new InfoflowSolution(*this,                     // infoflow
+  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  unsigned long long elapsed_seconds = end-start;
+  errs() << "qwert" << "insert constraint:" << elapsed_seconds << "\n";
+
+  start = end;
+  InfoflowSolution *solution = new InfoflowSolution(*this,                     // infoflow
                               kit->leastSolution(kinds), // ConsSoln* s
                               kit->topConstant(),        // const ConsElem & top
                               kit->botConstant(),
@@ -1557,6 +1565,10 @@ InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
                               summarySinkValueConstraintMap, // valueMap
                               locConstraintMap,              // locMap
                               summarySinkVargConstraintMap); // vargMap
+  end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  elapsed_seconds = end-start;
+  errs() << "qwert" << "least solution:" << elapsed_seconds << "\n";
+  return solution;
 }
 
 InfoflowSolution *Infoflow::greatestSolution(std::set<std::string> kinds,
@@ -1583,6 +1595,7 @@ Infoflow::locsForValue(const Value &value) const {
 
 const std::set<const AbstractLoc *> &
 Infoflow::reachableLocsForValue(const Value &value) const {
+  errs() << value.getName() << "\n";
   return *pti->getReachableAbstractLocSetForValue(&value);
 }
 
@@ -2672,12 +2685,14 @@ void Infoflow::constrainBinaryOperator(const BinaryOperator &inst,
 /// which all take a single operand and a type. They perform various bit
 /// conversions on the operand. Flow is from operands and pc to value.
 void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
+#if WLPTR_ROUND
   if (inst.getType()->isPtrOrPtrVectorTy()) {
     Value *op = inst.getOperand(0);
     if (isWhitelistPtr(inst, op)) {
       pushTowhitelistPointers(inst);
     }
   }
+#endif
 
   return operandsAndPCtoValue(inst, flows);
 }
@@ -2689,6 +2704,7 @@ void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
 /// Value of PHI node depends on values of incoming edges (the operands)
 /// and on pc.
 void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
+#if WLPTR_ROUND
   if (inst.getType()->isPtrOrPtrVectorTy()) {
     bool isWhitelisted = false;
     for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
@@ -2705,7 +2721,8 @@ void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
       pushTowhitelistPointers(inst);
     }
   }
-  
+#endif
+
   return operandsAndPCtoValue(inst, flows);
 }
 
@@ -2811,17 +2828,28 @@ void Infoflow::constraintUnreachableInst(const UnreachableInst &inst,
 /// Compute a pointer value, depending on the pc and operands.
 void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
                                           Flows &flows) {
-  int numOp = inst.getNumOperands();
-  if (numOp >= 3 && inst.getType()->isPtrOrPtrVectorTy()) {
-    Value *ptr = inst.getOperand(0);
-    Value *index = inst.getOperand(2);
-    if (ConstantInt *CI = dyn_cast<ConstantInt>(index)) {
-      uint64_t idx = CI->getZExtValue();
-      if (isWhitelistPtr(inst, ptr)) {
-        pushTowhitelistPointers(inst);
+#if WLPTR_ROUND
+  if (inst.getType()->isPtrOrPtrVectorTy()) {
+    bool isWhitelisted = false;
+    int i;
+    for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end(), i = 0;
+       op != end; ++op, ++i) {
+      Value *v = op->get();
+      if (i == 0 && isWhitelistPtr(inst, v)) {
+        isWhitelisted = true;
+        continue;
       }
-    } 
+
+      if (tainted.find(v) != tainted.end()) {
+        isWhitelisted = false;
+        break;
+      }
+    }
+    if (isWhitelisted) {
+      pushTowhitelistPointers(inst);
+    }
   }
+#endif
 
   return operandsAndPCtoValue(inst, flows);
 }
@@ -2848,10 +2876,12 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 /// Load the value from the memory at the pointer operand into the result.
 /// Flow from pc, ptr value, and memory to result.
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
+#if WLPTR_ROUND
   Value *addr = inst.getOperand(0);
   if (isWhitelistPtr(inst, addr)) {
     pushTowhitelistPointers(inst);
   }
+#endif
 
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);

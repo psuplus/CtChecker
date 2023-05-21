@@ -285,8 +285,8 @@ PointsToInterface::findReachableAbstractLocSetForNode(AbstractLocSet &Set,
                                                       const DSNode *Node) {
   df_ext_iterator<const DSNode *> DFIt = df_ext_begin(Node, Set);
   df_ext_iterator<const DSNode *> DFEnd = df_ext_end(Node, Set);
-  for (; DFIt != DFEnd; ++DFIt)
-    ;
+  // for (; DFIt != DFEnd; ++DFIt)
+  //   ;
 }
 
 //

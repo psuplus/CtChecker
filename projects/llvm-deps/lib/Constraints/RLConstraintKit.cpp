@@ -18,6 +18,8 @@
 #include "Constraints/RLConsSoln.h"
 #include "Constraints/RLConstraints.h"
 #include <iostream>
+#include <chrono>
+#include <ctime>
 
 #include "llvm/ADT/Statistic.h"
 #include "llvm/IR/DebugInfo.h"
@@ -199,6 +201,8 @@ void RLConstraintKit::removeConstraintRHS(const std::string kind,
 ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
                                          const Predicate &pred) {
   PartialSolution *PS = NULL;
+  using namespace std::chrono;
+  auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   for (auto kind : kinds) {
     if (!leastSolutions[&pred].count(kind)) {
       lockedConstraintKinds[&pred].insert(kind);
@@ -213,6 +217,10 @@ ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
     else
       PS->mergeIn(*P);
   }
+  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  unsigned long long elapsed_seconds = end-start;
+  std::cerr << "qwert" << "actual solving leastSolution:" << elapsed_seconds << "\n";
+
   assert(PS && "No kinds given?");
   return PS;
 }

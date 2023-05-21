@@ -1,4 +1,4 @@
-//===- SourceSinkAnalysis.cpp ---------------------------------------------===//
+//===- VulnerableBranchWrapper.cpp ---------------------------------------------===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -13,7 +13,7 @@
 #include <chrono>
 #include <ctime>
 
-#include "VulnerableBranch.h"
+#include "VulnerableBranchWrapper.h"
 #include "Infoflow.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/DebugInfoMetadata.h"
@@ -33,18 +33,23 @@
 
 namespace deps {
 
-static RegisterPass<VulnerableBranch>
-    X("vulnerablebranch", "An analysis for identifying vulnerable branches");
+static RegisterPass<VulnerableBranchWrapper>
+    X("vulnerablebranchwrapper", "wrapping vulnerable branch pass");
 
-char VulnerableBranch::ID;
+char VulnerableBranchWrapper::ID;
 
-bool VulnerableBranch::runOnModule(Module &M) {
-  using namespace std::chrono;
-  auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  // ifa = &getAnalysis<Infoflow>();
+bool VulnerableBranchWrapper::runOnModule(Module &M) {
+  vba = &getAnalysis<VulnerableBranch>();
   
-  // Phase 1
-  errs() << "\n---------Phase 1: Taint analysis---------\n";
+  parser.setInfoflow(vba->ifa);
+  if (!(vba->ifa)) {
+    errs() << "No instance\n";
+    return false;
+  }
+  
+  parser.labelValue("source-sink", vba->ifa->sourceVariables, true);
+//   Phase 1
+//   errs() << "\n---------Phase 1: Taint analysis---------\n";
   // ifa = new Infoflow();
   // PassBuilder pb;
   // ModuleAnalysisManager MAM;
@@ -53,19 +58,19 @@ bool VulnerableBranch::runOnModule(Module &M) {
   // MPM.addPass(ifa);
   // MPM.run(M, MAM);
 
-  legacy::PassManager *passManager = new legacy::PassManager();
-  ifa = new Infoflow();
-  ifa->WLPTR_ROUND = false;
-  passManager->add(ifa);
-  passManager->run(M);
+//   legacy::PassManager *passManager = new legacy::PassManager();
+//   ifa = new Infoflow();
+//   ifa->WLPTR_ROUND = false;
+//   passManager->add(ifa);
+//   passManager->run(M);
 
-  // parser.setInfoflow(ifa);
-  // if (!ifa) {
-  //   errs() << "No instance\n";
-  //   return false;
-  // }
+//   parser.setInfoflow(ifa);
+//   if (!ifa) {
+//     errs() << "No instance\n";
+//     return false;
+//   }
   
-  // parser.labelValue("source-sink", ifa->sourceVariables, true);
+//   parser.labelValue("source-sink", ifa->sourceVariables, true);
 
   // for (auto whitelist : ifa->whitelistVariables) {
   //   ifa->removeConstraint("default", whitelist);
@@ -131,11 +136,11 @@ bool VulnerableBranch::runOnModule(Module &M) {
   // }
   // errs() << "---- Constraints END ----\n\n";
 
-  errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
-  for (auto i : ifa->whitelistPointers) {
-    errs() << i.function << ":" << i.name << ":" << i.index << "\n";
-  }
-  errs() << "---- Whitelisted Pointers END ----\n\n";
+//   errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
+//   for (auto i : ifa->whitelistPointers) {
+//     errs() << i.function << ":" << i.name << ":" << i.index << "\n";
+//   }
+//   errs() << "---- Whitelisted Pointers END ----\n\n";
 
   // // Variables to gather branch statistics
   // unsigned long number_branches = 0;
@@ -205,23 +210,23 @@ bool VulnerableBranch::runOnModule(Module &M) {
   return false;
 }
 
-bool VulnerableBranch::matchNonPointerWhitelistAndTainted(
+bool VulnerableBranchWrapper::matchNonPointerWhitelistAndTainted(
     const User *user, std::set<const Value *> &tainted, const Instruction &I) {
-  const BasicBlock *bc = I.getParent();
-  const Function *func = bc->getParent();
-  for (auto &op : user->operands()) {
-    bool isWhitelisted = false;
-    for (auto ptr : ifa->whitelistPointers) {
-      if (op.get()->getType()->isPtrOrPtrVectorTy() &&
-          op.get()->getName() == ptr.name &&
-          func->getName() == ptr.function) {
-        isWhitelisted = true;
-      }
-    }
-    if (!isWhitelisted && tainted.find(op) != tainted.end()) {
-      return true;
-    }
-  }
+//   const BasicBlock *bc = I.getParent();
+//   const Function *func = bc->getParent();
+//   for (auto &op : user->operands()) {
+//     bool isWhitelisted = false;
+//     for (auto ptr : ifa->whitelistPointers) {
+//       if (op.get()->getType()->isPtrOrPtrVectorTy() &&
+//           op.get()->getName() == ptr.name &&
+//           func->getName() == ptr.function) {
+//         isWhitelisted = true;
+//       }
+//     }
+//     if (!isWhitelisted && tainted.find(op) != tainted.end()) {
+//       return true;
+//     }
+//   }
   return false;
 }
 

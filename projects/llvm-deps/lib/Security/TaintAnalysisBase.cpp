@@ -80,23 +80,23 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       relevantLocs.insert(rl);
     }
   }
-  DEBUG_WITH_TYPE(
-      DEBUG_TYPE_DEBUG, errs() << "\n --------- locs --------- \n";
-      for (auto &l
-           : locs) {
-        l->dump();
-        errs() << " --------- \n";
-      } errs()
-      << " --------- rlocs --------- \n";
-      for (auto &rl
-           : rlocs) {
-        rl->dump();
-        errs() << " --------- \n";
-      } errs()
-      << " locs size : " << locs.size() << "\n";
-      errs() << " rlocs size : " << rlocs.size() << "\n";
-      errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
-      errs() << " --------- end --------- \n\n";);
+  // DEBUG_WITH_TYPE(
+  //     DEBUG_TYPE_DEBUG, errs() << "\n --------- locs --------- \n";
+  //     for (auto &l
+  //          : locs) {
+  //       l->dump();
+  //       errs() << " --------- \n";
+  //     } errs()
+  //     << " --------- rlocs --------- \n";
+  //     for (auto &rl
+  //          : rlocs) {
+  //       rl->dump();
+  //       errs() << " --------- \n";
+  //     } errs()
+  //     << " locs size : " << locs.size() << "\n";
+  //     errs() << " rlocs size : " << rlocs.size() << "\n";
+  //     errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
+  //     errs() << " --------- end --------- \n\n";);
 
   unsigned offset = 0, span = 0;
   bool hasOffset = ifa->offsetForValue(value, &offset);

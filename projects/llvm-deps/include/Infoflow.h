@@ -184,6 +184,7 @@ class Infoflow
   friend class VulnerableInst;
   friend class ConstraintGen;
   friend class TaintAnalysisBase;
+  friend class VulnerableBranchWrapper;
 
 public:
   typedef std::set<const AbstractLoc *> AbsLocSet;
@@ -193,14 +194,15 @@ public:
   typedef FlowRecord::value_set value_set;
   typedef std::vector<FlowRecord> Flows;
 
+  bool WLPTR_ROUND = false;
   static char ID;
   bool offset_used;
   json config;
 
   Infoflow();
   virtual ~Infoflow() {
-    delete kit;
-    delete signatureRegistrar;
+    // delete kit;
+    // delete signatureRegistrar;
   }
   const char *getPassName() const { return "Infoflow"; }
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
@@ -214,16 +216,16 @@ public:
 
   virtual void releaseMemory() {
     // Clear out all the maps
-    valueConstraintMap.clear();
-    vargConstraintMap.clear();
-    summarySinkValueConstraintMap.clear();
-    summarySourceValueConstraintMap.clear();
-    summarySinkVargConstraintMap.clear();
-    summarySourceVargConstraintMap.clear();
+    // valueConstraintMap.clear();
+    // vargConstraintMap.clear();
+    // summarySinkValueConstraintMap.clear();
+    // summarySourceValueConstraintMap.clear();
+    // summarySinkVargConstraintMap.clear();
+    // summarySourceVargConstraintMap.clear();
 
-    // And free the kit and all its constraints
-    delete kit;
-    kit = NULL;
+    // // And free the kit and all its constraints
+    // delete kit;
+    // kit = NULL;
   }
 
   bool DropAtSinks() const;
@@ -346,6 +348,8 @@ private:
   std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
   std::vector<ConfigVariable> whitelistPointers;
+  
+  std::set<const Value *> tainted;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;

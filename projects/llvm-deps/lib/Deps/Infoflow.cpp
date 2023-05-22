@@ -2537,8 +2537,11 @@ bool Infoflow::isWhitelistPtr (const Instruction &inst, Value *op) {
   const BasicBlock *bc = inst.getParent();
   const Function *func = bc->getParent();
   for (auto whitelistedPtr : whitelistPointers) {
-    if (op->getName() == whitelistedPtr.name &&
-        func->getName() == whitelistedPtr.function) {
+    if ((op->getName() == whitelistedPtr.name &&
+        func->getName() == whitelistedPtr.function) || 
+        (op->getName() == whitelistedPtr.name &&
+        isa<GlobalVariable>(op) &&
+        whitelistedPtr.function == "")) {
       return true;
     }
   }

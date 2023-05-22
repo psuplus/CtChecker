@@ -181,7 +181,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
         user = gep;
       }
 
-      if (user && matchNonPointerWhitelistAndTainted(user, Infoflow::tainted, I)) {
+      if (user && matchNonPointerWhitelistAndTainted(user, Infoflow::tainted, I, vba->ifa->whitelistPointers)) {
         const MDLocation *loc = I.getDebugLoc();
         errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
                << "\n";
@@ -206,15 +206,16 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 }
 
 bool VulnerableBranchWrapper::matchNonPointerWhitelistAndTainted(
-    const User *user, std::set<const Value *> &tainted, const Instruction &I) {
+    const User *user, std::set<const Value *> &tainted, const Instruction &I, std::vector<ConfigVariable> whitelistPointers) {
   const BasicBlock *bc = I.getParent();
   const Function *func = bc->getParent();
   for (auto &op : user->operands()) {
     bool isWhitelisted = false;
-    for (auto ptr : vba->ifa->whitelistPointers) {
+    for (auto ptr : whitelistPointers) {
       if (op.get()->getType()->isPtrOrPtrVectorTy() &&
           op.get()->getName() == ptr.name &&
-          func->getName() == ptr.function) {
+          (func->getName() == ptr.function ||
+          (ptr.function == "" && isa<GlobalVariable>(op.get())))) {
         isWhitelisted = true;
       }
     }

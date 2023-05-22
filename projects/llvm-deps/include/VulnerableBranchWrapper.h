@@ -44,7 +44,7 @@ private:
   VulnerableBranch *vba;
 
   bool matchNonPointerWhitelistAndTainted(const User *,
-                                          std::set<const Value *> &, const Instruction &);
+                                          std::set<const Value *> &, const Instruction &, std::vector<ConfigVariable> whitelistPointers);
 };
 
 } // namespace deps

@@ -39,6 +39,8 @@ static cl::opt<bool>
 typedef Infoflow::Flows Flows;
 
 char Infoflow::ID = 42;
+std::set<const Value *> Infoflow::tainted;
+bool Infoflow::WLPTR_ROUND = false;
 std::string delim = "|";
 
 static RegisterPass<Infoflow>
@@ -93,7 +95,7 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
                                            << unit.function().getName()
                                            << "] in context [";
                   CM.getContextFor(unit.context()).dump(); errs() << "]\n");
-
+  
   // start only from entry functions, if entry is specified in config
   bool needAnalysis = true;
   if (unit.context() == DefaultID) { // top-level function
@@ -2685,14 +2687,14 @@ void Infoflow::constrainBinaryOperator(const BinaryOperator &inst,
 /// which all take a single operand and a type. They perform various bit
 /// conversions on the operand. Flow is from operands and pc to value.
 void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
-#if WLPTR_ROUND
-  if (inst.getType()->isPtrOrPtrVectorTy()) {
-    Value *op = inst.getOperand(0);
-    if (isWhitelistPtr(inst, op)) {
-      pushTowhitelistPointers(inst);
+  if (Infoflow::WLPTR_ROUND) {
+    if (inst.getType()->isPtrOrPtrVectorTy()) {
+      Value *op = inst.getOperand(0);
+      if (isWhitelistPtr(inst, op)) {
+        pushTowhitelistPointers(inst);
+      }
     }
   }
-#endif
 
   return operandsAndPCtoValue(inst, flows);
 }
@@ -2704,24 +2706,24 @@ void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
 /// Value of PHI node depends on values of incoming edges (the operands)
 /// and on pc.
 void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
-#if WLPTR_ROUND
-  if (inst.getType()->isPtrOrPtrVectorTy()) {
-    bool isWhitelisted = false;
-    for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
-       op != end; ++op) {
-      Value *v = op->get();
-      if (isWhitelistPtr(inst, v)) {
-        isWhitelisted = true;
-      } else {
-        isWhitelisted = false;
-        break;
+  if (Infoflow::WLPTR_ROUND) {
+    if (inst.getType()->isPtrOrPtrVectorTy()) {
+      bool isWhitelisted = false;
+      for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
+        op != end; ++op) {
+        Value *v = op->get();
+        if (isWhitelistPtr(inst, v)) {
+          isWhitelisted = true;
+        } else {
+          isWhitelisted = false;
+          break;
+        }
+      }
+      if (isWhitelisted) {
+        pushTowhitelistPointers(inst);
       }
     }
-    if (isWhitelisted) {
-      pushTowhitelistPointers(inst);
-    }
   }
-#endif
 
   return operandsAndPCtoValue(inst, flows);
 }
@@ -2828,28 +2830,28 @@ void Infoflow::constraintUnreachableInst(const UnreachableInst &inst,
 /// Compute a pointer value, depending on the pc and operands.
 void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
                                           Flows &flows) {
-#if WLPTR_ROUND
-  if (inst.getType()->isPtrOrPtrVectorTy()) {
-    bool isWhitelisted = false;
-    int i;
-    for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end(), i = 0;
-       op != end; ++op, ++i) {
-      Value *v = op->get();
-      if (i == 0 && isWhitelistPtr(inst, v)) {
-        isWhitelisted = true;
-        continue;
-      }
+  if (Infoflow::WLPTR_ROUND) {
+    if (inst.getType()->isPtrOrPtrVectorTy()) {
+      bool isWhitelisted = false;
+      int i;
+      for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end(), i = 0;
+        op != end; ++op, ++i) {
+        Value *v = op->get();
+        if (i == 0 && isWhitelistPtr(inst, v)) {
+          isWhitelisted = true;
+          continue;
+        }
 
-      if (tainted.find(v) != tainted.end()) {
-        isWhitelisted = false;
-        break;
+        if (tainted.find(v) != tainted.end()) {
+          isWhitelisted = false;
+          break;
+        }
       }
-    }
-    if (isWhitelisted) {
-      pushTowhitelistPointers(inst);
+      if (isWhitelisted) {
+        pushTowhitelistPointers(inst);
+      }
     }
   }
-#endif
 
   return operandsAndPCtoValue(inst, flows);
 }
@@ -2876,12 +2878,12 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 /// Load the value from the memory at the pointer operand into the result.
 /// Flow from pc, ptr value, and memory to result.
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
-#if WLPTR_ROUND
-  Value *addr = inst.getOperand(0);
-  if (isWhitelistPtr(inst, addr)) {
-    pushTowhitelistPointers(inst);
+  if (Infoflow::WLPTR_ROUND) {
+    Value *addr = inst.getOperand(0);
+    if (isWhitelistPtr(inst, addr)) {
+      pushTowhitelistPointers(inst);
+    }
   }
-#endif
 
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);

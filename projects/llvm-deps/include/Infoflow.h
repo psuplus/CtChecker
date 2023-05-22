@@ -194,7 +194,9 @@ public:
   typedef FlowRecord::value_set value_set;
   typedef std::vector<FlowRecord> Flows;
 
-  bool WLPTR_ROUND = false;
+  static std::set<const Value *> tainted;
+  static bool WLPTR_ROUND;
+
   static char ID;
   bool offset_used;
   json config;
@@ -349,7 +351,6 @@ private:
   std::vector<ConfigVariable> whitelistVariables;
   std::vector<ConfigVariable> whitelistPointers;
   
-  std::set<const Value *> tainted;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;

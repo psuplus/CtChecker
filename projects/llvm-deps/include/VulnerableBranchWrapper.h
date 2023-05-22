@@ -42,7 +42,6 @@ public:
 
 private:
   VulnerableBranch *vba;
-  TaintAnalysisBase parser;
 
   bool matchNonPointerWhitelistAndTainted(const User *,
                                           std::set<const Value *> &, const Instruction &);

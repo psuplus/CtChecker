@@ -41,80 +41,55 @@ char VulnerableBranch::ID;
 bool VulnerableBranch::runOnModule(Module &M) {
   using namespace std::chrono;
   auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  // ifa = &getAnalysis<Infoflow>();
+  ifa = &getAnalysis<Infoflow>();
+
+  parser.setInfoflow(ifa);
+  if (!ifa) {
+    errs() << "No instance\n";
+    return false;
+  }
   
-  // Phase 1
-  errs() << "\n---------Phase 1: Taint analysis---------\n";
-  // ifa = new Infoflow();
-  // PassBuilder pb;
-  // ModuleAnalysisManager MAM;
-  // pb.registerModuleAnalyses(MAM);
-  // ModulePassManager MPM = pb.buildPerModuleDefaultPipeline(OptimizationLevel::O0);
-  // MPM.addPass(ifa);
-  // MPM.run(M, MAM);
+  parser.labelValue("source-sink", ifa->sourceVariables, true);
 
-  legacy::PassManager *passManager = new legacy::PassManager();
-  ifa = new Infoflow();
-  ifa->WLPTR_ROUND = false;
-  passManager->add(ifa);
-  passManager->run(M);
+  for (auto whitelist : ifa->whitelistVariables) {
+    ifa->removeConstraint("default", whitelist);
+  }
 
-  // parser.setInfoflow(ifa);
-  // if (!ifa) {
-  //   errs() << "No instance\n";
-  //   return false;
-  // }
-  
-  // parser.labelValue("source-sink", ifa->sourceVariables, true);
+  std::set<std::string> kinds;
+  kinds.insert("source-sink");
 
-  // for (auto whitelist : ifa->whitelistVariables) {
-  //   ifa->removeConstraint("default", whitelist);
-  // }
+  InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
+  Infoflow::tainted = soln->getAllTaintValues();
 
-  // std::set<std::string> kinds;
-  // kinds.insert("source-sink");
+  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  unsigned long long elapsed_seconds = end-start;
+  errs() << "qwert" << "whole:" << elapsed_seconds << "\n";
 
-  // InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
-  // std::set<const Value *> tainted = soln->getAllTaintValues();
-
-  // auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  // unsigned long long elapsed_seconds = end-start;
-  // errs() << "qwert" << "whole:" << elapsed_seconds << "\n";
-
-  // // Create constraints for Derivation Solver
-  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
-  //   for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-  //        ++I) {
-  //     if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
-  //       const MDLocation *loc = bi->getDebugLoc();
-  //       if (bi->isConditional() && loc) {
-  //         const Value *v = bi->getCondition();
-  //         for (auto ctxtIter : ifa->valueConstraintMap) {
-  //           DenseMap<const Value *, const ConsElem *> valueConsMap =
-  //               ctxtIter.second;
-  //           DenseMap<const Value *, const ConsElem *>::iterator vIter =
-  //               valueConsMap.find(v);
-  //           if (vIter != valueConsMap.end()) {
-  //             const ConsElem *elem = vIter->second;
-  //             const ConsElem &low = RLConstant::bot();
-  //             RLConstraint c(elem, &low, &Predicate::TruePred(), false,
-  //                            "  ;  [ConsDebugTag-*]   conditional branch");
-  //             ifa->kit->getOrCreateConstraintSet("source-sink").push_back(c);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Phase 2
-  // errs() << "\n---------Phase 2: Whitelist pointer propagation---------\n";
-  // passManager = new legacy::PassManager();
-  // ifa = new Infoflow();
-  // ifa->tainted = tainted;
-  // ifa->WLPTR_ROUND = true;
-  // passManager->add(ifa);
-  // passManager->run(M);
+  // Create constraints for Derivation Solver
+  for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
+    for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
+         ++I) {
+      if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
+        const MDLocation *loc = bi->getDebugLoc();
+        if (bi->isConditional() && loc) {
+          const Value *v = bi->getCondition();
+          for (auto ctxtIter : ifa->valueConstraintMap) {
+            DenseMap<const Value *, const ConsElem *> valueConsMap =
+                ctxtIter.second;
+            DenseMap<const Value *, const ConsElem *>::iterator vIter =
+                valueConsMap.find(v);
+            if (vIter != valueConsMap.end()) {
+              const ConsElem *elem = vIter->second;
+              const ConsElem &low = RLConstant::bot();
+              RLConstraint c(elem, &low, &Predicate::TruePred(), false,
+                             "  ;  [ConsDebugTag-*]   conditional branch");
+              ifa->kit->getOrCreateConstraintSet("source-sink").push_back(c);
+            }
+          }
+        }
+      }
+    }
+  }
 
   // errs() << "\n---- Tainted Values BEGIN ----\n";
   // for (auto i : tainted) {
@@ -122,14 +97,14 @@ bool VulnerableBranch::runOnModule(Module &M) {
   // }
   // errs() << "---- Tainted Values END ----\n\n";
 
-  // errs() << "\n---- Constraints BEGIN ----\n";
-  // kinds.insert({"default", "default-sink"});
-  // for (auto kind : kinds) {
-  //   errs() << kind << ":\n";
-  //   for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
-  //     cons.dump();
-  // }
-  // errs() << "---- Constraints END ----\n\n";
+  errs() << "\n---- Constraints BEGIN ----\n";
+  kinds.insert({"default", "default-sink"});
+  for (auto kind : kinds) {
+    errs() << kind << ":\n";
+    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
+      cons.dump();
+  }
+  errs() << "---- Constraints END ----\n\n";
 
   errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
   for (auto i : ifa->whitelistPointers) {
@@ -205,24 +180,24 @@ bool VulnerableBranch::runOnModule(Module &M) {
   return false;
 }
 
-bool VulnerableBranch::matchNonPointerWhitelistAndTainted(
-    const User *user, std::set<const Value *> &tainted, const Instruction &I) {
-  const BasicBlock *bc = I.getParent();
-  const Function *func = bc->getParent();
-  for (auto &op : user->operands()) {
-    bool isWhitelisted = false;
-    for (auto ptr : ifa->whitelistPointers) {
-      if (op.get()->getType()->isPtrOrPtrVectorTy() &&
-          op.get()->getName() == ptr.name &&
-          func->getName() == ptr.function) {
-        isWhitelisted = true;
-      }
-    }
-    if (!isWhitelisted && tainted.find(op) != tainted.end()) {
-      return true;
-    }
-  }
-  return false;
-}
+// bool VulnerableBranch::matchNonPointerWhitelistAndTainted(
+//     const User *user, std::set<const Value *> &tainted, const Instruction &I) {
+//   const BasicBlock *bc = I.getParent();
+//   const Function *func = bc->getParent();
+//   for (auto &op : user->operands()) {
+//     bool isWhitelisted = false;
+//     for (auto ptr : ifa->whitelistPointers) {
+//       if (op.get()->getType()->isPtrOrPtrVectorTy() &&
+//           op.get()->getName() == ptr.name &&
+//           func->getName() == ptr.function) {
+//         isWhitelisted = true;
+//       }
+//     }
+//     if (!isWhitelisted && tainted.find(op) != tainted.end()) {
+//       return true;
+//     }
+//   }
+//   return false;
+// }
 
 } // namespace deps

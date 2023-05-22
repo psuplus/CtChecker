@@ -41,7 +41,7 @@ public:
   virtual bool runOnModule(Module &M);
 
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
-    // AU.addRequired<Infoflow>();
+    AU.addRequired<Infoflow>();
     AU.setPreservesAll();
   }
 
@@ -49,8 +49,8 @@ private:
   Infoflow *ifa;
   TaintAnalysisBase parser;
 
-  bool matchNonPointerWhitelistAndTainted(const User *,
-                                          std::set<const Value *> &, const Instruction &);
+  // bool matchNonPointerWhitelistAndTainted(const User *,
+  //                                         std::set<const Value *> &, const Instruction &);
 };
 
 } // namespace deps

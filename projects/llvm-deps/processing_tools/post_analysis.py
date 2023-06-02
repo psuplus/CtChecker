@@ -64,7 +64,10 @@ def get_lines_from_source(positives, positives2):
 
 def output_results(lines):
     """Writes out to stdout ex. fn.c line # - source"""
-    for fname, result_pair in lines.items():
+    for fname, result_pair in lines[0].items():
+        for line, src in result_pair:
+            print("{} line {:4d} - {}".format(fname, line, src))
+    for fname, result_pair in lines[1].items():
         for line, src in result_pair:
             print("{} line {:4d} - {}".format(fname, line, src))
 
@@ -81,7 +84,7 @@ def update_table(lines):
     count = 0
     for fname, result_pair in lines[0].items():
         for line, src in result_pair:
-            print("{} line {:4d} - {}".format(fname, line, src))
+            # print("{} line {:4d} - {}".format(fname, line, src))
             if line >= start and line <= end:
                 if fname == interested_file:
                     count = count + 1
@@ -121,7 +124,7 @@ def update_table(lines):
     count = 0
     for fname, result_pair in lines[1].items():
         for line, src in result_pair:
-            print("{} line {:4d} - {}".format(fname, line, src))
+            # print("{} line {:4d} - {}".format(fname, line, src))
             if line >= start and line <= end:
                 if fname == interested_file:
                     count = count + 1
@@ -222,7 +225,7 @@ def main():
             positives2[fn].append(int(ln) - 1)
 
     res = get_lines_from_source(positives, positives2)
-    # output_results(res)
+    output_results(res)
     update_table(res)
 
 

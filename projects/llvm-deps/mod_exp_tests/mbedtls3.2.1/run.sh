@@ -22,7 +22,8 @@ else
         sed -i -r "s/\"using_whitelist\": true/\"using_whitelist\": false/g" "config.json"
 fi
 
-if git branch -a | grep -q '* master'; then
+BRANCH=$(git rev-parse --abbrev-ref HEAD | grep "baseline")
+if [[ $BRANCH == "" ]]; then
         if [ "$COL" = "" ] ; then
                 COL+="FS"
         else
@@ -54,6 +55,17 @@ else
         FILE="bignum_min.c"
 fi
 
+if [ $5 = true ] ; then
+        if [ "$COL" = "" ] ; then
+                COL+="FXP"
+        else
+                COL+="/FXP"
+        fi
+        sed -i -r "s/\"using_fix_point\": false/\"using_fix_point\": true/g" "config.json"
+else
+        sed -i -r "s/\"using_fix_point\": true/\"using_fix_point\": false/g" "config.json"
+fi
+
 if [ "$COL" = "" ] ; then
         COL="Base"
 fi
@@ -76,7 +88,7 @@ $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/L
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
+  -vulnerablebranchwrapper  -debug < $1 2> tmp.dat > /dev/null
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 

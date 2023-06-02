@@ -59,7 +59,7 @@ $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/L
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2>tmp-$FUNC-$2.dat > /dev/null
+  -vulnerablebranchwrapper  -debug < $1 2>tmp-$FUNC-$2.dat > /dev/null
 
 CONS_FILENAME=$( echo 'constraints-'$FUNC'-'$2'.con' | tr '/' '-')
 cat tmp-$FUNC-$2.dat | grep '<:' > $CONS_FILENAME

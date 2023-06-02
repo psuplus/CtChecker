@@ -26,7 +26,7 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
+  -vulnerablebranchwrapper  -debug < $1 2>tmp.dat > /dev/null
 
 export PATH="$PATH:../../../processing_tools" # tmp change to path to have post-processing tools
 post_analysis.py tmp.dat > $2

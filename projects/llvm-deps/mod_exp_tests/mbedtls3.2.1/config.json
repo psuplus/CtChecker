@@ -28,6 +28,7 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [{ "name": "wsize" }],
+  "using_fix_point": true,
   "ptr_whitelist": [
     {
       "function": "mbedtls_mpi_exp_mod",

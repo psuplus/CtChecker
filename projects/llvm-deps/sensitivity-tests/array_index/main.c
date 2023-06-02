@@ -33,45 +33,96 @@ static int PUB_ARR[16] = {0x10001040, 0x00001000, 0x00040000, 0x10041040,
                           0x10041000, 0x00041040, 0x00001000, 0x00000040};
 
 void foo(long sec, long pub, long val, gcry_mpi_t expo, int *ptr) {
-  void *q = (void *)ptr;
-  q = q + pub;
+  int *p1 = ptr + 2;
+  int y = (int)p1 % 2;
+  int *p2 = p1 + 2;
+  int y1 = (int)p2 % 2;
+  int *p3 = p1 + y1;
+  int y2 = (int)p3 % 2;
+  int *p4 = p1 + y2;
+  int y3 = (int)p4 % 2;
+  int *p5 = p1 + y3;
+  int y4 = p5[pub];
 
-  int *r = (int *)q + 5;
-  *r = val;
+  // if (p5 == 3)
+  //   ;
 
-  mpi_ptr_t ep = expo->d;
+  // if (p5 == 0)
+  //   ;
+
+  // if (p5 == y4)
+  //   ;
+  
+  // if (y3)
+  //   ;
+  
+  // if (y4)
+  //   ;
+
+  // int y = (int)ptr % 2;
+  // int z = PUB_ARR[y];
+  // int *ptr1 = (int *)z;
+  // int y1 = (int)ptr1 % 2;
+  // int z2 = PUB_ARR[y1];
+
+  // void *q = (void *)ptr;
+  // q = q + pub;
+
+  // int *r = (int *)q + 5;
+  // q = q + sec;  // Cache side-channel
+  // *r = val;
+
+  gcry_mpi_t expo1 = expo + 0;
+  unsigned int flag = expo1->flags;
+  mpi_ptr_t ep = expo1->d;
+  // mpi_ptr_t ep = expo->d;
   int j = ep[pub];
   int k = expo->d[pub];
-  int l = expo->d[sec];
+  int l = expo->d[sec]; // Cache side-channel
 
-  int *x = &SP8;
-  int y  = x[pub];
+  // int *x = &SP8;
+  // y  = x[pub];
 
   int e = SP8[0];
-  int f = SP8[10];
-  int a = SP8[pub];
-  int b = SP8[pub + 5];
-  int c = SP8[sec];     // Cache side-channel
-  int d = SP8[sec + 5]; // Cache side-channel
-  int g = x[0];
-  int h = x[10];
-  int i = x[sec];       // Cache side-channel
+  // int f = SP8[10];
+  // int a = SP8[pub];
+  // int b = SP8[pub + 5];
+  // int c = SP8[sec];     // Cache side-channel
+  // int d = SP8[sec + 5]; // Cache side-channel
+  // int g = x[0];
+  // int h = x[10];
+  // int i = x[sec];       // Cache side-channel
 
-  SP8[0] = val;
-  SP8[10] = val;
-  SP8[pub] = val;
-  SP8[pub + 5] = val;
-  SP8[sec] = val;     // Cache side-channel
-  SP8[sec + 5] = val; // Cache side-channel
+  // SP8[0] = val;
+  // SP8[10] = val;
+  // SP8[pub] = val;
+  // SP8[pub + 5] = val;
+  // SP8[sec] = val;     // Cache side-channel
+  // SP8[sec + 5] = val; // Cache side-channel
 
-  PUB_ARR[1] = val;
-  PUB_ARR[pub] = val;
-  PUB_ARR[sec] = val; // Cache side-channel
-  PUB_ARR[a] = val;   // Cache side-channel
-  PUB_ARR[y] = val;
+  // PUB_ARR[1] = val;
+  // PUB_ARR[pub] = val;
+  // PUB_ARR[sec] = val; // Cache side-channel
+  // PUB_ARR[a] = val;   // Cache side-channel
+  // PUB_ARR[y] = val;
 
-  if(a)
-  ;
-  if(y)
-  ;
+  // if(a)
+  // ;
+  // if(y)
+  // ;
 }
+
+// void foo(long pub, int val) {
+  // int array[10] = {0};
+  // void *q = (void *)array;
+  // // q = q + pub;
+
+  // int y = ((int)q) % 2;
+  // array[y] = val;
+
+  // int *r = (int *)q + 5;
+  // if (*r == 0) // vulnerable branch
+  //   ;
+  // *r = val;
+  // return;
+// }

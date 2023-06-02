@@ -21,7 +21,8 @@ else
         sed -i -r "s/\"using_whitelist\": true/\"using_whitelist\": false/g" "config.json"
 fi
 
-if git branch -a | grep -q '* master'; then
+BRANCH=$(git rev-parse --abbrev-ref HEAD | grep "baseline")
+if [[ $BRANCH == "" ]]; then
         if [ "$COL" = "" ] ; then
                 COL+="FS"
         else
@@ -46,6 +47,17 @@ if [ $4 = true ] ; then
         fi
 fi
 
+if [ $5 = true ] ; then
+        if [ "$COL" = "" ] ; then
+                COL+="FXP"
+        else
+                COL+="/FXP"
+        fi
+        sed -i -r "s/\"using_fix_point\": false/\"using_fix_point\": true/g" "config.json"
+else
+        sed -i -r "s/\"using_fix_point\": true/\"using_fix_point\": false/g" "config.json"
+fi
+
 if [ "$COL" = "" ] ; then
         COL="Base"
 fi
@@ -62,7 +74,7 @@ FILE="bn_exp.c"
 #use makefile
 make $1
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
-$LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=0 $1 -o $1
+# $LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=0 $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
@@ -101,7 +113,7 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-        -vulnerablebranch  -debug < $1 2>tmp.dat > /dev/null
+        -vulnerablebranchwrapper  -debug < $1 2>tmp.dat > /dev/null
         TIME=$(echo "$(date +%s) - $TIME" | bc)
         printf "Execution time: %d seconds\n" $TIME
 

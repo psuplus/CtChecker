@@ -1,6 +1,6 @@
 LEVEL = ..
 
-DIRS = Constraints PointsToInterface SourceSinkAnalysis Deps Security VulnerableBranchWrapper
+DIRS = Constraints PointsToInterface SourceSinkAnalysis Deps Security
 
 include $(LEVEL)/Makefile.common
 

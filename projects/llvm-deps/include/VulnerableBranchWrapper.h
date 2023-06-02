@@ -36,7 +36,7 @@ public:
   virtual bool runOnModule(Module &M);
 
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
-    AU.addRequired<VulnerableBranch>();
+    // AU.addRequired<VulnerableBranch>();
     AU.setPreservesAll();
   }
 
@@ -44,7 +44,7 @@ private:
   VulnerableBranch *vba;
 
   bool matchNonPointerWhitelistAndTainted(const User *,
-                                          std::set<const Value *> &, const Instruction &, std::vector<ConfigVariable> whitelistPointers);
+                                          std::set<const Value *> &, const Instruction &);
 };
 
 } // namespace deps

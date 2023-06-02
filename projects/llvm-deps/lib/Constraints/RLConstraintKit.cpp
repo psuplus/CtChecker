@@ -219,7 +219,7 @@ ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
   }
   auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   unsigned long long elapsed_seconds = end-start;
-  std::cerr << "qwert" << "actual solving leastSolution:" << elapsed_seconds << "\n";
+  std::cerr << "Actual solving time:" << elapsed_seconds << "\n";
 
   assert(PS && "No kinds given?");
   return PS;

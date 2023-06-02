@@ -112,6 +112,18 @@ public:
       : function(fn), type(ty), name(name), number(num), index(idx), file(file),
         line(line), value(value), label(label) {}
   ~ConfigVariable(){};
+
+  bool operator< (const ConfigVariable &var) const {
+    if (function < var.function) {
+      return true;
+    } else if (function == var.function && name < var.name) {
+      return true;
+    } else if (function == var.function && name == var.name && index < var.index) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 };
 
 class Infoflow;
@@ -203,8 +215,8 @@ public:
 
   Infoflow();
   virtual ~Infoflow() {
-    // delete kit;
-    // delete signatureRegistrar;
+    delete kit;
+    delete signatureRegistrar;
   }
   const char *getPassName() const { return "Infoflow"; }
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
@@ -218,16 +230,16 @@ public:
 
   virtual void releaseMemory() {
     // Clear out all the maps
-    // valueConstraintMap.clear();
-    // vargConstraintMap.clear();
-    // summarySinkValueConstraintMap.clear();
-    // summarySourceValueConstraintMap.clear();
-    // summarySinkVargConstraintMap.clear();
-    // summarySourceVargConstraintMap.clear();
+    valueConstraintMap.clear();
+    vargConstraintMap.clear();
+    summarySinkValueConstraintMap.clear();
+    summarySourceValueConstraintMap.clear();
+    summarySinkVargConstraintMap.clear();
+    summarySourceVargConstraintMap.clear();
 
-    // // And free the kit and all its constraints
-    // delete kit;
-    // kit = NULL;
+    // And free the kit and all its constraints
+    delete kit;
+    kit = NULL;
   }
 
   bool DropAtSinks() const;
@@ -328,6 +340,9 @@ private:
   SignatureRegistrar *signatureRegistrar;
 
   Flows flowVector;
+  // optimization
+  // static DenseMap<const Instruction *, const Flows *> instToFlowsMap;
+  // static DenseMap<const FlowRecord *, const ConsElemSet *> flowToConsMap;
 
   FlowRecord currentContextFlowRecord(bool implicit) const;
 
@@ -349,7 +364,7 @@ private:
   std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
-  std::vector<ConfigVariable> whitelistPointers;
+  static std::set<ConfigVariable> whitelistPointers;
   
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>

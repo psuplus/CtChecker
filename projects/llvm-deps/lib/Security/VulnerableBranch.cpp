@@ -63,7 +63,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
 
   auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   unsigned long long elapsed_seconds = end-start;
-  errs() << "qwert" << "whole:" << elapsed_seconds << "\n";
+  errs() << "Overall time:" << elapsed_seconds << "\n";
 
   // Create constraints for Derivation Solver
   for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
@@ -91,11 +91,11 @@ bool VulnerableBranch::runOnModule(Module &M) {
     }
   }
 
-  // errs() << "\n---- Tainted Values BEGIN ----\n";
-  // for (auto i : tainted) {
-  //   i->dump();
-  // }
-  // errs() << "---- Tainted Values END ----\n\n";
+  errs() << "\n---- Tainted Values BEGIN ----\n";
+  for (auto i : Infoflow::tainted) {
+    i->dump();
+  }
+  errs() << "---- Tainted Values END ----\n\n";
 
   errs() << "\n---- Constraints BEGIN ----\n";
   kinds.insert({"default", "default-sink"});

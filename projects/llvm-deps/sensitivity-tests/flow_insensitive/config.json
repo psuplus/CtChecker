@@ -26,5 +26,6 @@
     }
   ],
   "using_whitelist": false,
+  "ptr_whitelist": [],
   "sink": []
 }

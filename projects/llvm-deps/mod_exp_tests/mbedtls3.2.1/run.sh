@@ -55,17 +55,6 @@ else
         FILE="bignum_min.c"
 fi
 
-if [ $5 = true ] ; then
-        if [ "$COL" = "" ] ; then
-                COL+="FXP"
-        else
-                COL+="/FXP"
-        fi
-        sed -i -r "s/\"using_fix_point\": false/\"using_fix_point\": true/g" "config.json"
-else
-        sed -i -r "s/\"using_fix_point\": true/\"using_fix_point\": false/g" "config.json"
-fi
-
 if [ "$COL" = "" ] ; then
         COL="Base"
 fi

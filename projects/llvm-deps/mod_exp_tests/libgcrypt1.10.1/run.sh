@@ -48,17 +48,6 @@ if [ $4 = true ] ; then
         fi
 fi
 
-if [ $5 = true ] ; then
-        if [ "$COL" = "" ] ; then
-                COL+="FXP"
-        else
-                COL+="/FXP"
-        fi
-        sed -i -r "s/\"using_fix_point\": false/\"using_fix_point\": true/g" "config.json"
-else
-        sed -i -r "s/\"using_fix_point\": true/\"using_fix_point\": false/g" "config.json"
-fi
-
 if [ "$COL" = "" ] ; then
         COL="Base"
 fi
@@ -82,12 +71,12 @@ FILE="mpi/mpi-pow.c"
 # cd ../../../;
 rm mpi/*.bc
 make full.bc
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer full.bc -o full.bc
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer full.bc -o full.bc
 $LEVEL/Debug+Asserts/bin/llvm-dis full.bc -o full-$COL".ll"
 
 make mpi/mpi-pow.bc
 cp mpi/mpi-pow.bc .
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer mpi-pow.bc -o mpi-pow.bc
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer mpi-pow.bc -o mpi-pow.bc
 $LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc -o mpi-pow-$COL".ll"
 
 ## compile the instrumentation module to bitcode

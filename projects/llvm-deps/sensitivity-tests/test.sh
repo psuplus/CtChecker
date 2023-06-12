@@ -44,6 +44,7 @@ function execute_test() {
 
     # Compile using clang
     $LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.c* -o test.bc 2> /dev/null
+    $LEVEL/Debug+Asserts/bin/opt -instnamer test.bc -o test.bc
 
     # Run the pass
     $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
@@ -52,7 +53,7 @@ function execute_test() {
                                   -load ../../Debug+Asserts/lib/pointstointerface.$EXT \
                                   -load ../../Debug+Asserts/lib/Deps.$EXT  \
                                   -load ../../Debug+Asserts/lib/Security.$EXT  \
-                                  -vulnerablebranch  -debug < test.bc 2>$2  > /dev/null
+                                  -vulnerablebranchwrapper -debug < test.bc 2>$2  > /dev/null
 
     exit_code="$?"
 

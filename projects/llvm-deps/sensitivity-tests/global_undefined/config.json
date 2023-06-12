@@ -1,6 +1,6 @@
 {
   "signature_mode": {
-    "direction": 1,
+    "direction": 3,
     "pointer": 0,
     "custom": []
   },
@@ -15,19 +15,8 @@
   },
   "source": [
     {
-      "function": "main",
       "type": "variable",
-      "name": "key",
-      "index": -1,
-      "l": {
-        "secret": "private"
-      },
-      "c": {}
-    },
-    {
-      "function": "main",
-      "type": "variable",
-      "name": "ctx",
+      "name": "GLOBAL",
       "index": -1,
       "l": {
         "secret": "private"

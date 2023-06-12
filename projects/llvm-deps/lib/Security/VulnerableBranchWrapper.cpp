@@ -71,76 +71,6 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
   }
 
   errs() << "Done after " << numberOfIterations << " iterations.\n";
-  
-//   parser.setInfoflow(vba->ifa);
-//   if (!(vba->ifa)) {
-//     errs() << "No instance\n";
-//     return false;
-//   }
-  
-//   parser.labelValue("source-sink", vba->ifa->sourceVariables, true);
-
-  // ifa = new Infoflow();
-  // PassBuilder pb;
-  // ModuleAnalysisManager MAM;
-  // pb.registerModuleAnalyses(MAM);
-  // ModulePassManager MPM = pb.buildPerModuleDefaultPipeline(OptimizationLevel::O0);
-  // MPM.addPass(ifa);
-  // MPM.run(M, MAM);
-
-//   legacy::PassManager *passManager = new legacy::PassManager();
-//   ifa = new Infoflow();
-//   ifa->WLPTR_ROUND = false;
-//   passManager->add(ifa);
-//   passManager->run(M);
-
-//   parser.setInfoflow(ifa);
-//   if (!ifa) {
-//     errs() << "No instance\n";
-//     return false;
-//   }
-  
-//   parser.labelValue("source-sink", ifa->sourceVariables, true);
-
-//   for (auto whitelist : vba->ifa->whitelistVariables) {
-//     vba->ifa->removeConstraint("default", whitelist);
-//   }
-
-//   std::set<std::string> kinds;
-//   kinds.insert("source-sink");
-
-//   InfoflowSolution *soln = vba->ifa->leastSolution(kinds, false, true);
-//   std::set<const Value *> tainted = soln->getAllTaintValues();
-
-  // auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  // unsigned long long elapsed_seconds = end-start;
-  // errs() << "qwert" << "whole:" << elapsed_seconds << "\n";
-
-  // Create constraints for Derivation Solver
-//   for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
-//     for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-//          ++I) {
-//       if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
-//         const MDLocation *loc = bi->getDebugLoc();
-//         if (bi->isConditional() && loc) {
-//           const Value *v = bi->getCondition();
-//           for (auto ctxtIter : vba->ifa->valueConstraintMap) {
-//             DenseMap<const Value *, const ConsElem *> valueConsMap =
-//                 ctxtIter.second;
-//             DenseMap<const Value *, const ConsElem *>::iterator vIter =
-//                 valueConsMap.find(v);
-//             if (vIter != valueConsMap.end()) {
-//               const ConsElem *elem = vIter->second;
-//               const ConsElem &low = RLConstant::bot();
-//               RLConstraint c(elem, &low, &Predicate::TruePred(), false,
-//                              "  ;  [ConsDebugTag-*]   conditional branch");
-//               vba->ifa->kit->getOrCreateConstraintSet("source-sink").push_back(c);
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
 
   errs() << "\n---- Tainted Values BEGIN ----\n";
   for (auto i : Infoflow::tainted) {
@@ -200,6 +130,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 
       if (user && matchNonPointerWhitelistAndTainted(user, Infoflow::tainted, I)) {
         const MDLocation *loc = I.getDebugLoc();
+        user->dump();
         errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
                << "\n";
       }

@@ -32,7 +32,6 @@
     { "name": "rsize" },
     { "name": "max_size" }
   ],
-  "using_fix_point": true,
   "ptr_whitelist": [
     {
       "function": "_gcry_mpi_powm",

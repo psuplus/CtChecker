@@ -41,6 +41,7 @@ char Infoflow::ID = 42;
 std::set<const Value *> Infoflow::tainted;
 bool Infoflow::WLPTR_ROUND = false;
 std::set<ConfigVariable> Infoflow::whitelistPointers;
+std::set<ConfigVariable> Infoflow::fullyTainted;
 std::string delim = "|";
 // possible optimizations
 // DenseMap<const Instruction *, const Flows *> Infoflow::instToFlowsMap;
@@ -994,6 +995,44 @@ bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst *gep) {
 
 const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input) {
+  if (Infoflow::WLPTR_ROUND) {
+    const Instruction *inst = cs.getInstruction();
+    const BasicBlock *bc = inst->getParent();
+    const Function *func = bc->getParent();
+    bool hasWhitelistPtr = false;
+    for (User::const_op_iterator arg = cs.arg_begin(); arg != cs.arg_end(); arg++) {
+      Value *argVal = arg->get();
+      if (isWhitelistPtr(*inst, argVal)) {
+        hasWhitelistPtr = true;
+        break;
+      }
+    }
+    if (hasWhitelistPtr) {
+      int taintDirection = config.at("signature_mode").at("direction");
+      switch (taintDirection) {
+        case SFD_ArgToAllReachable:
+        case SFD_ArgToRetAndOther: {
+          for (User::const_op_iterator arg = cs.arg_begin(); arg != cs.arg_end(); arg++) {
+            const Value *argVal = arg->get();
+            if (argVal->getType()->isPtrOrPtrVectorTy()) {
+              ConfigVariable *var = new ConfigVariable(func->getName(), argVal->getName(), -1);
+              Infoflow::whitelistPointers.insert(*var);
+            }
+          }
+        }
+        case SFD_ArgToRet: {
+          if (inst->getName() != "") {
+            pushToFullyTainted(*inst);
+            removeFromWhitelistPointers(*func, *inst);
+          }
+          break;
+        }
+        default:
+          errs() << "Undefined signature direction\n";
+      }
+    }
+  }
+
   Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
   flowVector.insert(flowVector.end(), recs.begin(), recs.end());
   return bottomOutput();
@@ -1590,7 +1629,6 @@ Infoflow::locsForValue(const Value &value) const {
 
 const std::set<const AbstractLoc *> &
 Infoflow::reachableLocsForValue(const Value &value) const {
-  errs() << value.getName() << "\n";
   return *pti->getReachableAbstractLocSetForValue(&value);
 }
 
@@ -2544,11 +2582,35 @@ bool Infoflow::isWhitelistPtr (const Instruction &inst, Value *op) {
 void Infoflow::pushTowhitelistPointers (const Instruction &inst) {
   const BasicBlock *bc = inst.getParent();
   const Function *func = bc->getParent();
-  ConfigVariable *newPtr = new ConfigVariable();
-  newPtr->index = -1;
-  newPtr->name = inst.getName();
-  newPtr->function = func->getName();
+  ConfigVariable *newPtr = new ConfigVariable(func->getName(), inst.getName(), -1);
   Infoflow::whitelistPointers.insert(*newPtr);
+}
+
+void Infoflow::removeFromWhitelistPointers (const Function &func, const Value &var) {
+  std::set<ConfigVariable>::iterator iter;
+  for (iter = Infoflow::whitelistPointers.begin(); iter != Infoflow::whitelistPointers.end();) {
+    if ((var.getName() == iter->name &&
+        func.getName() == iter->function) || 
+        (var.getName() == iter->name &&
+        isa<GlobalValue>(var) &&
+        iter->function == "")) {
+      Infoflow::whitelistPointers.erase(iter++);
+    } else {
+      ++iter;
+    }
+  }
+}
+
+void Infoflow::pushToFullyTainted(const Instruction &inst) {
+  const BasicBlock *bc = inst.getParent();
+  const Function *func = bc->getParent();
+  json var;
+  var["name"] = inst.getName();
+  var["function"] = func->getName();
+  var["index"] = -1;
+  var["c"] = json::object();
+  var["l"] = json::object({{"secret", "private"}});
+  Infoflow::fullyTainted.insert(parseConfigVariable(var));
 }
 
 void Infoflow::constrainUnaryInstruction(const UnaryInstruction &inst,
@@ -2663,15 +2725,6 @@ void Infoflow::constrainAtomicCmpXchgInst(const AtomicCmpXchgInst &inst,
 
 /// Result is boolean depending on two operand values and pc
 void Infoflow::constrainCmpInst(const CmpInst &inst, Flows &flows) {
-  Value *op1 = inst.getOperand(0);
-  Value *op2 = inst.getOperand(1);
-  if (op1->getType()->isPointerTy()) {
-    if ((isWhitelistPtr(inst, op1) || tainted.find(op1) == tainted.end()) &&
-        (isWhitelistPtr(inst, op2) || tainted.find(op2) == tainted.end())) {
-      return;
-    }
-  }
-
   return operandsAndPCtoValue(inst, flows);
 }
 
@@ -2709,12 +2762,6 @@ void Infoflow::constrainBinaryOperator(const BinaryOperator &inst,
 /// which all take a single operand and a type. They perform various bit
 /// conversions on the operand. Flow is from operands and pc to value.
 void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
-  if (isa<PtrToIntInst>(inst)) {
-    Value *op = inst.getOperand(0);
-    if (isWhitelistPtr(inst, op))
-      return;
-  }
-
   if (Infoflow::WLPTR_ROUND && inst.getType()->isPtrOrPtrVectorTy()) {
     Value *op = inst.getOperand(0);
     if (isWhitelistPtr(inst, op)) {
@@ -2734,14 +2781,24 @@ void Infoflow::constrainCastInst(const CastInst &inst, Flows &flows) {
 void Infoflow::constrainPHINode(const PHINode &inst, Flows &flows) {
   if (Infoflow::WLPTR_ROUND && inst.getType()->isPtrOrPtrVectorTy()) {
     bool isWhitelisted = false;
+    const BasicBlock *bb = inst.getParent();
+    const Function *func = bb->getParent();
     for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
       op != end; ++op) {
       Value *v = op->get();
+      // if there are tainted values in operands, the result will be fully tainted
+      if (tainted.find(v) != tainted.end()) {
+        // if current result is in whitelistPointers, remove it
+        ConfigVariable *res = new ConfigVariable(func->getName(), inst.getName(), -1);
+        whitelistPointers.erase(*res);
+        bool isWhitelisted = false;
+        break;
+      }
       if (isWhitelistPtr(inst, v)) {
         isWhitelisted = true;
+        break;
       } else {
         isWhitelisted = false;
-        break;
       }
     }
     if (isWhitelisted) {
@@ -2851,36 +2908,134 @@ void Infoflow::constraintUnreachableInst(const UnreachableInst &inst,
 /// Memory operations
 ///////////////////////////////////////////////////////////////////////////////
 
+ConfigVariable *Infoflow::whitelistConstantGEP (const User *inst, const Function *func, ConfigVariable *innerNewPtr) {
+  Value *ptr = inst->getOperand(0);
+  Value *index1 = inst->getOperand(1);
+  ConfigVariable *newPtr = nullptr;
+  if (ConstantInt *CI1 = dyn_cast<ConstantInt>(index1)) {
+      uint64_t idx1 = CI1->getZExtValue();
+    if (inst->getNumOperands() == 2){
+      if (innerNewPtr != nullptr) {
+        newPtr = new ConfigVariable(func->getName(), inst->getName(), innerNewPtr->index);
+        return newPtr;
+      }
+      for (auto whitelistedPtr : Infoflow::whitelistPointers) {
+        if ((ptr->getName() == whitelistedPtr.name &&
+            func->getName() == whitelistedPtr.function) || 
+            (ptr->getName() == whitelistedPtr.name &&
+            isa<GlobalVariable>(ptr) &&
+            whitelistedPtr.function == "")) {
+          newPtr = new ConfigVariable(func->getName(), inst->getName(), whitelistedPtr.index);
+          return newPtr;
+        }
+      }
+    } else {
+      Value *index2 = inst->getOperand(2);
+      if (ConstantInt *CI2 = dyn_cast<ConstantInt>(index2)) {
+        uint64_t idx2 = CI2->getZExtValue();
+        if (innerNewPtr != nullptr) {
+          newPtr = new ConfigVariable(func->getName(), inst->getName(), -1);
+          return newPtr;
+        }
+        ConfigVariable *var = new ConfigVariable();
+        var->name = ptr->getName();
+        if (isa<GlobalVariable>(ptr)) {
+          var->function = "";
+        } else {
+          var->function = func->getName();
+        }
+        var->index = idx2;
+        if (Infoflow::whitelistPointers.find(*var) != Infoflow::whitelistPointers.end()) {
+          newPtr = new ConfigVariable(func->getName(), inst->getName(), -1);
+          return newPtr;
+        }
+        var->index = -1;
+        if (Infoflow::whitelistPointers.find(*var) != Infoflow::whitelistPointers.end()) {
+          var->index = idx2;
+          // if index "-1" is in whitelist but the corresponding index is fully tainted
+          // do not add result to whitelist
+          if (sourceVariables.find(*var) == sourceVariables.end() &&
+              Infoflow::fullyTainted.find(*var) == Infoflow::fullyTainted.end()) {
+            newPtr = new ConfigVariable(func->getName(), inst->getName(), -1);
+            return newPtr;
+          }
+        }
+      }
+    }
+  }
+  return newPtr;
+}
+
 /// Compute a pointer value, depending on the pc and operands.
 void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
                                           Flows &flows) {
+  operandsAndPCtoValue(inst, flows);
+
   if (Infoflow::WLPTR_ROUND && inst.getType()->isPtrOrPtrVectorTy()) {
-    bool isWhitelisted = false;
-    int i;
+    const BasicBlock *bc = inst.getParent();
+    const Function *func = bc->getParent();
+    Value *ptr = inst.getOperand(0);
+    ConfigVariable *innerNewPtr = nullptr;
+    if (const ConstantExpr *ce = dyn_cast<ConstantExpr>(ptr)) {
+      const User *user = ce;
+      if (ce->getOpcode() == Instruction::GetElementPtr) {
+        innerNewPtr = whitelistConstantGEP(user, func, nullptr);
+      }
+    }
+    if (innerNewPtr == nullptr && !isWhitelistPtr(inst, ptr)){
+      return;
+    }
+
     for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end(), i = 0;
       op != end; ++op, ++i) {
       Value *v = op->get();
-      if (i == 0 && isWhitelistPtr(inst, v)) {
-        isWhitelisted = true;
-        continue;
-      }
-
+      // if there are tainted values in indices, the result will be fully tainted
       if (tainted.find(v) != tainted.end()) {
-        isWhitelisted = false;
-        break;
+        // if current result is in whitelistPointers, remove it
+        ConfigVariable *res = new ConfigVariable(func->getName(), inst.getName(), -1);
+        whitelistPointers.erase(*res);
+        return;
       }
     }
-    if (isWhitelisted) {
-      pushTowhitelistPointers(inst);
+
+    // if there are variables in indices but no taited values, the result will be whitelisted
+    for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end(), i = 0;
+    op != end; ++op, ++i) {
+      if (i != 0 && !isa<ConstantInt>(op)) {
+        pushTowhitelistPointers(inst);
+        return;
+      }
+    }
+
+    const User *user = &inst;
+    ConfigVariable *newPtr = whitelistConstantGEP(user, func, innerNewPtr);
+    if (newPtr != nullptr) {
+      whitelistPointers.insert(*newPtr);
     }
   }
-
-  return operandsAndPCtoValue(inst, flows);
 }
 
 /// Store a value into a memory location. Flow from pc, pointer value, and
 /// value into the memory location. Has no return value.
 void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
+  if (Infoflow::WLPTR_ROUND) {
+    Value *val = inst.getOperand(0);
+    Value *ptr = inst.getOperand(1);
+    const BasicBlock *bb = inst.getParent();
+    const Function *func = bb->getParent();
+    for (auto whitelistedPtr : Infoflow::whitelistPointers) {
+      if ((val->getName() == whitelistedPtr.name &&
+          func->getName() == whitelistedPtr.function) || 
+          (val->getName() == whitelistedPtr.name &&
+          isa<GlobalVariable>(val) &&
+          whitelistedPtr.function == "")) {
+        errs() << ptr->getName() << "\n";
+        ConfigVariable *newPtr = new ConfigVariable(func->getName(), ptr->getName(), whitelistedPtr.index);
+        Infoflow::whitelistPointers.insert(*newPtr);
+      }
+    }
+  }
+
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);
   // pc
@@ -2900,6 +3055,28 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 /// Load the value from the memory at the pointer operand into the result.
 /// Flow from pc, ptr value, and memory to result.
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
+  if (Infoflow::WLPTR_ROUND) {
+    const BasicBlock *bc = inst.getParent();
+    const Function *func = bc->getParent();
+    Value *ptr = inst.getOperand(0);
+    if (isWhitelistPtr(inst, ptr)) {
+      if (!inst.getType()->isPtrOrPtrVectorTy()) {
+        pushToFullyTainted(inst);
+      } else {
+        for (auto whitelistedPtr : Infoflow::whitelistPointers) {
+          if ((ptr->getName() == whitelistedPtr.name &&
+              func->getName() == whitelistedPtr.function) || 
+              (ptr->getName() == whitelistedPtr.name &&
+              isa<GlobalVariable>(ptr) &&
+              whitelistedPtr.function == "")) {
+            ConfigVariable *newPtr = new ConfigVariable(func->getName(), inst.getName(), whitelistedPtr.index);
+            Infoflow::whitelistPointers.insert(*newPtr);
+          }
+        }
+      }
+    }
+  }
+  
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);
   // pc
@@ -3077,6 +3254,34 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "working on callsite and \n\t"
                                            << (analyzeCallees ? "" : "not ")
                                            << "analyzing callees\n";);
+
+  if (Infoflow::WLPTR_ROUND) {
+    const Instruction *inst = cs.getInstruction();
+    int arg_idx = 0;
+    for (User::const_op_iterator arg = cs.arg_begin(); arg != cs.arg_end(); arg++, arg_idx++) {
+      Value *argVal = arg->get();
+      if (isWhitelistPtr(*inst, argVal)) {
+        const Function *func = cs.getCalledFunction();
+        int param_idx = 0;
+        for (auto &param : func->getArgumentList())
+          if (param_idx == arg_idx) {
+            for (auto ptr : Infoflow::whitelistPointers) {
+              const BasicBlock *bb = inst->getParent();
+              const Function *currentFunction = bb->getParent();
+              if ((argVal->getName() == ptr.name &&
+                  currentFunction->getName() == ptr.function) || 
+                  (argVal->getName() == ptr.name &&
+                  isa<GlobalVariable>(argVal) &&
+                  ptr.function == "")) {
+                ConfigVariable *var = new ConfigVariable(func->getName(), param.getName(), ptr.index);
+                Infoflow::whitelistPointers.insert(*var);
+              }
+            }
+          }
+          param_idx++;
+      }
+    }
+  }
 
   if (analyzeCallees) {
     FlowRecord imp = currentContextFlowRecord(true);
@@ -3520,26 +3725,25 @@ void Infoflow::readConfiguration() {
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, RLConstant::dump_lattice(errs());;);
 
   // Read source & sink
+  assert(config.contains("ptr_whitelist"));
+  for (json ptr : config.at("ptr_whitelist")) {
+    Infoflow::whitelistPointers.insert(parseConfigVariable(ptr));
+  }
   assert(config.contains("source"));
   for (json source : config.at("source")) {
-    sourceVariables.push_back(parseConfigVariable(source));
+    ConfigVariable srcVar = parseConfigVariable(source);
+    if (whitelistPointers.find(srcVar) == whitelistPointers.end()){
+      sourceVariables.insert(parseConfigVariable(source));
+    }
   }
   assert(config.contains("sink"));
   for (json sink : config.at("sink")) {
     sinkVariables.push_back(parseConfigVariable(sink));
   }
-  assert(config.contains("using_whitelist"));
   if (config.at("using_whitelist")) {
     assert(config.contains("whitelist"));
     for (json whitelist : config.at("whitelist")) {
       whitelistVariables.push_back(parseConfigVariable(whitelist));
-    }
-  }
-  assert(config.contains("using_fix_point"));
-  if (config.at("using_fix_point")) {
-    assert(config.contains("ptr_whitelist"));
-    for (json ptr : config.at("ptr_whitelist")) {
-      Infoflow::whitelistPointers.insert(parseConfigVariable(ptr));
     }
   }
 }

@@ -28,5 +28,17 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
+  "ptr_whitelist": [
+    {
+      "function": "caller",
+      "type": "variable",
+      "name": "obuf",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["caller"]
 }

@@ -16,6 +16,7 @@
   "source": [
     {
       "type": "variable",
+      "function": "main_function",
       "name": "key",
       "index": 0,
       "l": {
@@ -27,5 +28,17 @@
   "sink": [],
   "using_whitelist": false,
   "whitelist": [{ "name": "wl" }],
+  "ptr_whitelist": [
+    {
+      "type": "variable",
+      "function": "main_function",
+      "name": "key",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["main_function"]
 }

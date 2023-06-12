@@ -34,7 +34,7 @@ If `pk_info` is added into `source` section, line 16 will still be reported sinc
 
 ## 2. context_sensitivity
 
-**Configuration:** The first field of `key` in `main_function` is tainted (`key->a`) but its pointer is whitelisted.
+**Configuration:** The first field of `key` in `main_function` is tainted (`key->a`) but its pointer is whitelisted. `foo` and `baz` are inlined while `bar` is not.
 
 **Code:**
 
@@ -194,4 +194,4 @@ Line 21 should not be reported since `p.x` is whitelisted.
 
 **Remark:**
 
-Line 26 should not be reported since `c->x` is whitelisted, but somehow it was reported before.
+Line 26 should not be reported since `c->x` is whitelisted. But if `c` is not a pointer, line 26 will still be reported.

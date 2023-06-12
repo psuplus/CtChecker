@@ -111,6 +111,8 @@ public:
                  RLLabel label)
       : function(fn), type(ty), name(name), number(num), index(idx), file(file),
         line(line), value(value), label(label) {}
+  ConfigVariable(std::string fn, std::string name, int idx)
+      : function(fn), name(name), index(idx) {}
   ~ConfigVariable(){};
 
   bool operator< (const ConfigVariable &var) const {
@@ -360,12 +362,12 @@ private:
   const MDLocation *findVar(const Value *V, const Function *F) const;
   const MDLocalVariable *findVarNode(const Value *V, const Function *F) const;
 
-  std::vector<ConfigVariable> sourceVariables;
+  std::set<ConfigVariable> sourceVariables;
   std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
   static std::set<ConfigVariable> whitelistPointers;
-  
+  static std::set<ConfigVariable> fullyTainted;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
@@ -568,6 +570,9 @@ private:
 
   bool isWhitelistPtr (const Instruction &inst, Value *op);
   void pushTowhitelistPointers (const Instruction &inst);
+  void removeFromWhitelistPointers (const Function &func, const Value &var);
+  void pushToFullyTainted(const Instruction &inst);
+  ConfigVariable *whitelistConstantGEP (const User *inst, const Function *func, ConfigVariable *innerNewPtr);
 
   AbstractLocSet getPointedToAbstractLocs(const Value *v);
 };

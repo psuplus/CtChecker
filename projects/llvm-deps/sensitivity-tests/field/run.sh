@@ -34,8 +34,8 @@ cd -
 $LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.c -o main.bc
 $LEVEL/Debug+Asserts/bin/clang -O0 -g -emit-llvm -S main.c
 
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -S main.ll -o main2.ll
-
+$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer main.bc -o main.bc
+$LEVEL/Debug+Asserts/bin/llvm-dis main.bc
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
@@ -44,7 +44,7 @@ $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/L
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < main.bc > /dev/null 2>tmp.dat
+  -vulnerablebranchwrapper -debug < main.bc > /dev/null 2>tmp.dat
 
 # $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
@@ -52,7 +52,7 @@ $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/L
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-#   -vulnerablebranch  -debug < main2.ll > /dev/null 2>flow-sen.dat
+#   -vulnerablebranchwrapper -debug < main2.ll > /dev/null 2>flow-sen.dat
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

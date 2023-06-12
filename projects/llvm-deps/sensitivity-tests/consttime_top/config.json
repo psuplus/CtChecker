@@ -38,5 +38,27 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
+  "ptr_whitelist": [
+    {
+      "function": "BN_mod_exp_mont_consttime_algorithm",
+      "type": "variable",
+      "name": "p",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "BN_mod_exp_mont_consttime_algorithm",
+      "type": "variable",
+      "name": "m",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["BN_mod_exp_mont_consttime_algorithm"]
 }

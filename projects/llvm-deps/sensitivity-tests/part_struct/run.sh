@@ -20,8 +20,9 @@ LEVEL="../../../.."
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc
 $LEVEL/Debug+Asserts/bin/clang  $INCLUDES $CPPFLAGS -c main.cpp -o test.bc
+
+$LEVEL/Debug+Asserts/bin/opt -instnamer -mem2reg test.bc -o test.bc
 $LEVEL/Debug+Asserts/bin/llvm-dis test.bc
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -S test.ll -o test2.ll
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
@@ -30,7 +31,7 @@ $LEVEL/Debug+Asserts/bin/opt -mem2reg -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < test.bc > /dev/null
+  -vulnerablebranchwrapper -debug < test.bc 2> tmp.dat > /dev/null
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

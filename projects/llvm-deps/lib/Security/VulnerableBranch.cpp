@@ -50,6 +50,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
   }
   
   parser.labelValue("source-sink", ifa->sourceVariables, true);
+  parser.labelValue("source-sink", ifa->fullyTainted, true);
 
   for (auto whitelist : ifa->whitelistVariables) {
     ifa->removeConstraint("default", whitelist);
@@ -111,6 +112,12 @@ bool VulnerableBranch::runOnModule(Module &M) {
     errs() << i.function << ":" << i.name << ":" << i.index << "\n";
   }
   errs() << "---- Whitelisted Pointers END ----\n\n";
+
+  errs() << "\n---- Fully Tainted Variables during Propagation BEGIN ----\n";
+  for (auto i : ifa->fullyTainted) {
+    errs() << i.function << ":" << i.name << ":" << i.index << "\n";
+  }
+  errs() << "---- Fully Tainted Variables during Propagation END ----\n\n";
 
   // // Variables to gather branch statistics
   // unsigned long number_branches = 0;

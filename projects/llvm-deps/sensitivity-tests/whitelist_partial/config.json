@@ -31,5 +31,6 @@
     { "name": "p", "index": 0 },
     { "name": "q", "index": 1 }
   ],
+  "ptr_whitelist": [],
   "entry": ["main"]
 }

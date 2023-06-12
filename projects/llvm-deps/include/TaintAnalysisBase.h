@@ -36,7 +36,7 @@ protected:
 public:
   void setInfoflow(Infoflow *flow) { ifa = flow; }
 
-  void labelValue(std::string, std::vector<ConfigVariable>, bool);
+  void labelValue(std::string, std::set<ConfigVariable>, bool);
 
   void labelSink(std::string);
 };

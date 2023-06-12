@@ -49,7 +49,7 @@ $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/L
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 > /dev/null 2>tmp.dat
+  -vulnerablebranchwrapper -debug < $1 > /dev/null 2>tmp.dat
 
 cp tmp.dat tmp-cur.dat
 
@@ -59,7 +59,7 @@ cp tmp.dat tmp-cur.dat
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
 #   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-#   -vulnerablebranch  -debug < main2.ll > /dev/null 2>flow-sen.dat
+#   -vulnerablebranchwrapper -debug < main2.ll > /dev/null 2>flow-sen.dat
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

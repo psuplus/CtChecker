@@ -477,7 +477,7 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 }
 
 void TaintAnalysisBase::labelValue(std::string kind,
-                                   std::vector<ConfigVariable> vars, bool gte) {
+                                   std::set<ConfigVariable> vars, bool gte) {
   for (auto var : vars) {
     NumSourceConstrained++;
     if (var.type == ConfigVariableType::Constant) {

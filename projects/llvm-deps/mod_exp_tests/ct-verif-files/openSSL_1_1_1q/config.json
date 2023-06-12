@@ -15,7 +15,7 @@
   },
   "source": [
     {
-      "function": "BN_mod_exp_mont_consttime_algorithm",
+      "function": "BN_mod_exp_mont_word_algorithm",
       "type": "variable",
       "name": "p",
       "index": 0,
@@ -28,10 +28,9 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [{ "name": "bits" }],
-  "using_fix_point": true,
   "ptr_whitelist": [
     {
-      "function": "BN_mod_exp_mont_consttime_algorithm",
+      "function": "BN_mod_exp_mont_word_algorithm",
       "type": "variable",
       "name": "p",
       "index": 0,
@@ -41,5 +40,5 @@
       "c": {}
     }
   ],
-  "entry": ["BN_mod_exp_mont_consttime_algorithm"]
+  "entry": ["BN_mod_exp_mont_word_algorithm"]
 }

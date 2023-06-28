@@ -36,7 +36,10 @@ $LEVEL/Debug+Asserts/bin/opt \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
   -vulnerablebranchwrapper  -debug < test.bc 2> tmp.dat > /dev/null
 
-cat tmp.dat | grep '<:' > constraints.con
+ITER=$(cat tmp.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
+ITER=$((ITER))
+ITERTAG=$(expr $ITER \* 2)
+cat tmp.dat | grep $ITERTAG':.*<:' > constraints.con
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

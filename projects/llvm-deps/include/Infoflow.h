@@ -209,6 +209,7 @@ public:
   typedef std::vector<FlowRecord> Flows;
 
   static std::set<const Value *> tainted;
+  static std::set<const Value *> whitelistPointers;
   static bool WLPTR_ROUND;
 
   static char ID;
@@ -366,7 +367,7 @@ private:
   std::vector<ConfigVariable> sinkVariables;
   std::vector<ConfigVariable> indexedSinkVariables;
   std::vector<ConfigVariable> whitelistVariables;
-  static std::set<ConfigVariable> whitelistPointers;
+  static std::set<ConfigVariable> sourceWhitelistPointers;
   static std::set<ConfigVariable> fullyTainted;
 
   DenseMap<const AbstractLoc *, std::set<const Value *>>
@@ -390,6 +391,7 @@ private:
   DenseMap<const Function *, const ConsElem *> &
   getOrCreateVargConstraintMap(const ContextID);
 
+  bool isSourceWhitelistPointer(const Instruction &inst, const Value *op);
   virtual const Unit signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input);
 
@@ -519,6 +521,8 @@ private:
 
   void generateFunctionConstraints(const Function &);
   void generateBasicBlockConstraints(const BasicBlock &, Flows &);
+  void getInstructionFlowsInternalWLP(const Instruction &,
+                                   bool callees, Flows &, std::string);
   void getInstructionFlowsInternal(const Instruction &, bool callees, Flows &,
                                    std::string);
 
@@ -532,6 +536,21 @@ private:
   const ConsElem &getOrCreateReachableMemoryConsElem(const Value &);
 
   void constrainConditionalSuccessors(const TerminatorInst &, FlowRecord &rec);
+
+  // WLP constraints
+  void operandsAndPCtoValueWLP(const Instruction &, Flows &);
+  void constrainSelectInstWLP(const SelectInst &, Flows &);
+  void constrainPHINodeWLP(const PHINode &, Flows &);
+  void constrainGetElementPtrInstWLP(const GetElementPtrInst &, Flows &);
+  void constrainStoreInstWLP(const StoreInst &, Flows &);
+  void constrainUnaryInstructionWLP(const UnaryInstruction &, Flows &);
+  void constrainLoadInstWLP(const LoadInst &, Flows &);
+  void constrainCastInstWLP(const CastInst &, Flows &);
+  void constrainCallInstWLP(const CallInst &, bool callees, Flows &);
+  void constrainCallSiteWLP(const ImmutableCallSite &cs, bool callees, Flows &);
+  void constrainCalleeWLP(const ContextID calleeContext, const Function &callee,
+                       const ImmutableCallSite &cs, Flows &);
+  void constrainIntrinsicWLP(const IntrinsicInst &, Flows &);
 
   void constrainAtomicCmpXchgInst(const AtomicCmpXchgInst &, Flows &);
   void constrainAtomicRMWInst(const AtomicRMWInst &, Flows &);
@@ -572,7 +591,7 @@ private:
   void pushTowhitelistPointers (const Instruction &inst);
   void removeFromWhitelistPointers (const Function &func, const Value &var);
   void pushToFullyTainted(const Instruction &inst);
-  ConfigVariable *whitelistConstantGEP (const User *inst, const Function *func, ConfigVariable *innerNewPtr);
+  const Value *whitelistConstantGEP (const User *inst, const Function *func, const Value *innerSrcValue);
 
   AbstractLocSet getPointedToAbstractLocs(const Value *v);
 };

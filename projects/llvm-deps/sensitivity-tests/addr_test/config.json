@@ -23,6 +23,16 @@
         "secret": "private"
       },
       "c": {}
+    },
+    {
+      "function": "main",
+      "type": "variable",
+      "name": "pk",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
     }
   ],
   "sink": [],

@@ -3,21 +3,21 @@ Table 1: without cache side channel
 |-------------|---|---|---|---|---|---|---|---|---|---|---|---|
 |             |Full|Baseline|Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|Full-argToAll|Full-argToRet|Baseline-argToAll|Baseline-argToRet| Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|
 |**BearSSL**  |  3|  3|  3|  0|  0|  3|  3|  3|  3|  3|  0|  0|
-|**libgcrypt**|  -| 32| 19|  0| 10| 20| 14| 26|  7|  7|  1|  0|
-|**mbedtls**  |OOM| 34|  5|  0|  1| 20|  8| 36| 12|  4|  0|  0|
+|**libgcrypt**|  -| 32| 19|  0| 10| 20| 14| 26|  6|  6|  0|  0|
+|**mbedtls**  |OOM| 34|  5|  0|  1| 20| 20| 36| 10|  4|  0|  0|
 |**openSSL**  |   |   |   |   |   |   |   |   |   |   |   |  0|
 | recp        |  -| 18|  3|  0|  0|  9|  9|  3|  3|  2|  0|  0|
-| mont        |  -| 22|  5|  0|  2| 15| 12| 25|  3|  2|  0|  0|
-| word        |  -| 18|  1|  0|  0| 11| 10|  2|  2|  1|  0|  0|
+| mont        |  -| 22|  5|  0|  2| 16| 13| 25|  3|  2|  0|  0|
+| word        |  -| 18|  1|  0|  0| 12| 10|  2|  2|  1|  0|  0|
 | consttime   |  -| 18|  4|  0|  4| 13| 12| 22|  7|  1|  1|  0|
 
 Table 2: cache side channel
 |             ||| Ct-Verif     |||\|||       CtChecker       |||||
 |-------------|---|---|---|---|---|----|----|----|---|---|---|---|
 |             |Full|Baseline|Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|Full-argToAll|Full-argToRet|Baseline-argToAll|Baseline-argToRet| Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|
-|**BearSSL**  |  0|  0|  0|  0|  0|   1|   1|   1|  1|  1|  1|  1|
-|**libgcrypt**|  -|  2|  1|  0|  0|  18|  17|  57|  5|  5|  4|  4|
-|**mbedtls**  |OOM|  1|  0|  0|  0|   3|   3|  16|  6|  2|  1|  1|
+|**BearSSL**  |  0|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
+|**libgcrypt**|  -|  2|  1|  0|  0|  13|  12|  52|  0|  0|  0|  0|
+|**mbedtls**  |OOM|  1|  0|  0|  0|   3|   3|  11|  0|  0|  0|  0|
 |**openSSL**  |   |   |   |   |   |    |    |    |   |   |   |   |
 | recp        |  -|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
 | mont        |  -|  2|  2|  0|  1|   5|   5|  14|  0|  0|  0|  0|

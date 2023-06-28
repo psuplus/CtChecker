@@ -39,38 +39,36 @@ static RegisterPass<VulnerableBranchWrapper>
 char VulnerableBranchWrapper::ID;
 
 bool VulnerableBranchWrapper::runOnModule(Module &M) {
-  bool endIteration = false;
-  int whitelistSizeLastIter = -1;
+  std::set<const Value *> whitelistPointersLastIter;
   int numberOfIterations = 0;
-  while (!endIteration) {
+  while (true) {
     numberOfIterations++;
     // Phase 1
-    errs() << "\n---------Phase 1: Taint analysis---------\n";
+    errs() << "\n---------Phase 1: Whitelist pointer propagation---------\n";
     legacy::PassManager *passManager = new legacy::PassManager();
     vba = new VulnerableBranch();
-    Infoflow::WLPTR_ROUND = false;
+    vba->iterationTag = 2 * numberOfIterations - 1;
+    Infoflow::WLPTR_ROUND = true;
     passManager->add(vba);
     passManager->run(M);
     delete vba;
 
     // Phase 2
-    errs() << "\n---------Phase 2: Whitelist pointer propagation---------\n";
+    errs() << "\n---------Phase 2: Taint analysis---------\n";
     passManager = new legacy::PassManager();
     vba = new VulnerableBranch();
-    Infoflow::WLPTR_ROUND = true;
+    vba->iterationTag = 2 * numberOfIterations;
+    Infoflow::WLPTR_ROUND = false;
     passManager->add(vba);
     passManager->run(M);
 
-    if (Infoflow::whitelistPointers.size() == whitelistSizeLastIter ||
-        Infoflow::whitelistPointers.size() == 0) {
-        endIteration = true;
+    if (Infoflow::whitelistPointers == whitelistPointersLastIter) {
+        break;
     } else {
-        whitelistSizeLastIter = Infoflow::whitelistPointers.size();
+        whitelistPointersLastIter = Infoflow::whitelistPointers;
         delete vba;
     }
   }
-
-  errs() << "Done after " << numberOfIterations << " iterations.\n";
 
   errs() << "\n---- Tainted Values BEGIN ----\n";
   for (auto i : Infoflow::tainted) {
@@ -80,7 +78,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 
   errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
   for (auto i : Infoflow::whitelistPointers) {
-    errs() << i.function << ":" << i.name << ":" << i.index << "\n";
+    i->dump();
   }
   errs() << "---- Whitelisted Pointers END ----\n\n";
 
@@ -137,6 +135,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
     }
   }
 
+  errs() << "Done after " << numberOfIterations << " iterations.\n";
   // Dump statistics
   errs() << "#--------------Statistics----------------\n";
   errs() << ":: Tainted Branches: " << tainted_branches << "\n";
@@ -155,19 +154,26 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 
 bool VulnerableBranchWrapper::matchNonPointerWhitelistAndTainted(
     const User *user, std::set<const Value *> &tainted, const Instruction &I) {
-  const BasicBlock *bc = I.getParent();
-  const Function *func = bc->getParent();
+  // const BasicBlock *bc = I.getParent();
+  // const Function *func = bc->getParent();
+  // for (auto &op : user->operands()) {
+  //   bool isWhitelisted = false;
+  //   for (auto ptr : Infoflow::whitelistPointers) {
+  //     if (op.get()->getType()->isPtrOrPtrVectorTy() &&
+  //         op.get()->getName() == ptr.name &&
+  //         (func->getName() == ptr.function ||
+  //         (ptr.function == "" && isa<GlobalVariable>(op.get())))) {
+  //       isWhitelisted = true;
+  //     }
+  //   }
+  //   if (!isWhitelisted && tainted.find(op) != tainted.end()) {
+  //     return true;
+  //   }
+  // }
+  // return false;
+
   for (auto &op : user->operands()) {
-    bool isWhitelisted = false;
-    for (auto ptr : Infoflow::whitelistPointers) {
-      if (op.get()->getType()->isPtrOrPtrVectorTy() &&
-          op.get()->getName() == ptr.name &&
-          (func->getName() == ptr.function ||
-          (ptr.function == "" && isa<GlobalVariable>(op.get())))) {
-        isWhitelisted = true;
-      }
-    }
-    if (!isWhitelisted && tainted.find(op) != tainted.end()) {
+    if (Infoflow::tainted.find(op) != Infoflow::tainted.end()) {
       return true;
     }
   }

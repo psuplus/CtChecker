@@ -28,8 +28,11 @@ $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/L
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
   -vulnerablebranchwrapper  -debug < $1 2> tmp-$2.dat > /dev/null
 
+ITER=$(cat tmp-$2.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
+ITER=$((ITER))
+ITERTAG=$(expr $ITER \* 2)
 CONS_FILENAME=$( echo 'constraints-'$2'.con' | tr '/' '-')
-cat tmp-$2.dat | grep '<:' > $CONS_FILENAME
+cat tmp-$2.dat | grep $ITERTAG':.*<:' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$2'.txt' | tr '/' '-')
 

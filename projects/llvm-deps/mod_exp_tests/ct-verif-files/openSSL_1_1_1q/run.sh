@@ -65,7 +65,7 @@ ITER=$(cat tmp-$FUNC-$2.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -o
 ITER=$((ITER))
 ITERTAG=$(expr $ITER \* 2)
 CONS_FILENAME=$( echo 'constraints-'$FUNC'-'$2'.con' | tr '/' '-')
-cat tmp-$FUNC-$2.dat | grep $ITERTAG':.*<:' > $CONS_FILENAME
+cat tmp-$FUNC-$2.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$FUNC'-'$2'.txt' | tr '/' '-')
 

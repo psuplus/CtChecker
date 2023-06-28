@@ -110,7 +110,7 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         ITER=$((ITER))
         ITERTAG=$(expr $ITER \* 2)
         CONS_FILENAME=$( echo 'constraints-'$FUNC'-'$COL'.con' | tr '/' '-')
-        cat tmp.dat | grep $ITERTAG':.*<:' > $CONS_FILENAME
+        cat tmp.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
         FILENAME=$( echo 'results_with_source-'$FUNC'-'$COL'.txt' | tr '/' '-')
         #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

@@ -144,11 +144,11 @@ void PartialSolution::initialize(
   for (Constraints::iterator I = C.begin(), E = C.end(); I != E; ++I) {
     vars.clear();
     targets.clear();
-    const ConsElem &From = initial ? I->rhs() : I->lhs();
-    const ConsElem &To = initial ? I->lhs() : I->rhs();
+    const ConsElem *From = initial ? I->rhs() : I->lhs();
+    const ConsElem *To = initial ? I->lhs() : I->rhs();
     // a <= b
-    From.variables(vars); // a -> vars ; b -> targets
-    To.variables(targets);
+    From->variables(vars); // a -> vars ; b -> targets
+    To->variables(targets);
 
     if (targets.empty())
       continue;
@@ -164,7 +164,7 @@ void PartialSolution::initialize(
     }                     // P(a) <- P(a) U {b}
 
     // Initialize varset:
-    RLLabel label = subst(From).label();
+    RLLabel label = subst(*From).label();
     VSet[label].insert(targets.begin(), targets.end());
     for (auto t : targets) {
       VarLabelMap.insert(std::make_pair(t, label));

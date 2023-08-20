@@ -38,7 +38,7 @@ void SignatureRegistrar::registerSignature(const SigInfo si) {
   sigs.push_back(sig);
 }
 
-std::vector<FlowRecord>
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
 SignatureRegistrar::process(const ContextID ctxt, const ImmutableCallSite cs) {
   for (sig_iterator sig = sigs.begin(), end = sigs.end(); sig != end; ++sig) {
     if ((*sig)->accept(ctxt, cs)) {
@@ -46,7 +46,7 @@ SignatureRegistrar::process(const ContextID ctxt, const ImmutableCallSite cs) {
     }
   }
   assert(false && "No signature matched call site.");
-  return std::vector<FlowRecord>();
+  return std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>();
 }
 
 } // namespace deps

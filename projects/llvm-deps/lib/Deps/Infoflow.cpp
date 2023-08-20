@@ -36,17 +36,44 @@ static cl::opt<bool>
 
 typedef Infoflow::Flows Flows;
 typedef std::set<const ConsElem *> ConsElemSet;
+typedef std::set<RLConstraint> ConsSet;
+typedef unsigned long FlowRecordID;
+typedef DenseMap<const Instruction *, std::pair<Flows, Flows>> InstFlowMap;
+typedef DenseMap<FlowRecordID, ConsSet> FlowConsSetMap;
+typedef DenseMap<const Instruction *, ConsSet> InstConsSetMap; 
+typedef DenseMap<const Value *, const ConsElem *> ValueConsElemMap;
 
 char Infoflow::ID = 42;
 std::set<const Value *> Infoflow::tainted;
 std::set<const Value *> Infoflow::whitelistPointers;
+ConsElemSet Infoflow::solutionSetWLP;
 bool Infoflow::WLPTR_ROUND = false;
 std::set<ConfigVariable> Infoflow::sourceWhitelistPointers;
 std::set<ConfigVariable> Infoflow::fullyTainted;
+int Infoflow::iterationTag = 0;
+InstConsSetMap Infoflow::instTaintConsSetMap;
+InstConsSetMap Infoflow::instWLPConsSetMap;
+ConsSet Infoflow::consSetTaint;
+ConsSet Infoflow::consSetWLP;
+PointsToInterface *Infoflow::pti;
 std::string delim = "|";
-// possible optimizations
-// DenseMap<const Instruction *, const Flows *> Infoflow::instToFlowsMap;
-// DenseMap<const FlowRecord *, const ConsElemSet *> Infoflow::flowToConsMap;
+
+DenseMap<const AbstractLoc *, std::set<const Value *>>
+      Infoflow::invertedLocConstraintMap;
+DenseMap<const BasicBlock *, std::string> Infoflow::predicateMap;
+DenseMap<ContextID, ValueConsElemMap> Infoflow::valueConstraintMap;
+DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>
+    Infoflow::locConstraintMap;
+DenseMap<ContextID, DenseMap<const Function *, const ConsElem *>>
+    Infoflow::vargConstraintMap;
+
+ValueConsElemMap Infoflow::summarySinkValueConstraintMap;
+ValueConsElemMap Infoflow::summarySourceValueConstraintMap;
+std::map<std::string, DenseMap<const ConstantInt *, const ConsElem *>>
+    Infoflow::constantValueConstraintMap;
+DenseMap<const Value *, std::string> Infoflow::valueStringMap;
+DenseMap<const Function *, const ConsElem *> Infoflow::summarySinkVargConstraintMap;
+DenseMap<const Function *, const ConsElem *> Infoflow::summarySourceVargConstraintMap;
 
 static RegisterPass<Infoflow>
     X("infoflow", "Compute information flow constraints", true, true);
@@ -55,14 +82,15 @@ Infoflow::Infoflow()
     : // The parameters to the template are an input and output type for the
       // user's analysis and a non-negative integer k.
       CallSensitiveAnalysisPass<Unit, Unit, 1, CallerContext>(
-          ID, DepsCollapseExtContext, DepsCollapseIndContext),
-      kit(new RLConstraintKit()) {
+          ID, DepsCollapseExtContext, DepsCollapseIndContext) {
+  kit = RLConstraintKit::get();
   offset_used = true;
+  currentFlowRecord = 0;
 }
 
 void Infoflow::doInitialization() {
   // Get the PointsToInterface
-  pti = &getAnalysis<PointsToInterface>();
+  // pti = &getAnalysis<PointsToInterface>();
   // CHANGE
   sourceSinkAnalysis = &getAnalysis<SourceSinkAnalysis>();
   // sourceSinkAnalysis = &getAnalysis<>();
@@ -167,6 +195,41 @@ const Unit Infoflow::runOnContext(const Infoflow::AUnitType unit,
   return Unit();
 }
 
+void insertConsVectorIntoConsSet(ConsSet &set, std::vector<RLConstraint> vec) {
+  for (auto cons = vec.begin(); cons != vec.end(); cons++) {
+    set.insert(*cons);
+  }
+}
+
+void Infoflow::insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set) {
+  if (Infoflow::iterationTag > 1) {
+    return;
+  }
+
+  std::pair<FlowRecordID, ConsSet> KV;
+  KV.first = flow.flowRecordID;
+  KV.second = set;
+  
+  auto result = flowConsSetMap.insert(KV);
+  if (result.second) {
+    if (iterationTag > 1)
+      errs() << "Shouldn't happen!\n";
+    else 
+      errs() << "Inserted!\n";
+  } else {
+    if (iterationTag == 1) {
+      errs() << "Insert again!\n";
+      auto consHere = flowConsSetMap.find(flow.flowRecordID);
+      errs() << consHere->second.size() << " constraints before\n";
+      consHere->second.insert(set.begin(), set.end());
+      consHere = flowConsSetMap.find(flow.flowRecordID);
+      errs() << consHere->second.size() << " constraints after\n";
+    } else {
+      errs() << "Shouldn't happen!\n";
+    }
+  }
+}
+
 void Infoflow::constrainFlowRecord(const FlowRecord &record) {
   if (record.one_to_one_directptr()) {
     const Value *src = *record.source_directptr_begin();
@@ -187,6 +250,7 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
     }
   }
 
+  ConsSet consSet;
   const ConsElem *sourceElem = NULL;
   const ConsElem *sinkSourceElem = NULL;
 
@@ -199,7 +263,7 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
                                     end = record.source_value_end();
          source != end; ++source) {
       const ConsElem *elem =
-          &getOrCreateConsElem(record.sourceContext(), **source);
+          &getOrCreateConsElem(record.sourceContext(), **source, consSet);
       if (auto c = dyn_cast<ConstantInt>(*source)) {
         DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTANT, errs() << "constant: ";
                         c->dump(););
@@ -233,7 +297,7 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
                                   end = record.source_varg_end();
          source != end; ++source) {
       const ConsElem *elem =
-          &getOrCreateVargConsElem(record.sourceContext(), **source);
+          &getOrCreateVargConsElem(record.sourceContext(), **source, consSet);
       if (!DepsDropAtSink || !sourceSinkAnalysis->vargIsSink(**source)) {
         Sources.insert(elem);
       } else {
@@ -272,25 +336,27 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
        sink != end; ++sink) {
     if (regFlow)
       putOrConstrainConsElem(implicit, false, record.sinkContext(), **sink,
-                             *sourceElem);
+                             *sourceElem, consSet);
     if (sinkFlow)
       putOrConstrainConsElem(implicit, true, record.sinkContext(), **sink,
-                             *sinkSourceElem);
+                             *sinkSourceElem, consSet);
   }
   for (FlowRecord::fun_iterator sink = record.sink_varg_begin(),
                                 end = record.sink_varg_end();
        sink != end; ++sink) {
     if (regFlow)
       putOrConstrainVargConsElem(implicit, false, record.sinkContext(), **sink,
-                                 *sourceElem);
+                                 *sourceElem, consSet);
+      
     if (sinkFlow)
       putOrConstrainVargConsElem(implicit, true, record.sinkContext(), **sink,
-                                 *sinkSourceElem);
+                                 *sinkSourceElem, consSet);
   }
 
   // To try to save constraint generation, gather memory locations as before:
   constrainSinkMemoryLocations(record, *sourceElem, *sinkSourceElem, regFlow,
-                               sinkFlow);
+                               sinkFlow, consSet);
+  insertIntoFlowConsSetMap(record, consSet);
 }
 
 void Infoflow::addMemorySourceLocations(const FlowRecord &record,
@@ -466,14 +532,14 @@ void Infoflow::addReachValuesToSources(FlowRecord::value_set values,
 void Infoflow::constrainSinkMemoryLocations(const FlowRecord &record,
                                             const ConsElem &source,
                                             const ConsElem &sinkSource,
-                                            bool regFlow, bool sinkFlow) {
+                                            bool regFlow, bool sinkFlow, ConsSet &consSet) {
   bool implicit = record.isImplicit();
-
+  std::vector<RLConstraint> cons;
   std::set<const AbstractLoc *> SinkLocs;
   constrainDirectSinkLocations(record, SinkLocs, source, sinkSource, regFlow,
-                               sinkFlow);
+                               sinkFlow, consSet);
   constrainReachSinkLocations(record, SinkLocs, source, sinkSource, regFlow,
-                              sinkFlow);
+                              sinkFlow, consSet);
 
   // And add constraints for each of the sink memory locations
   for (std::set<const AbstractLoc *>::iterator loc = SinkLocs.begin(),
@@ -481,9 +547,9 @@ void Infoflow::constrainSinkMemoryLocations(const FlowRecord &record,
        loc != end; ++loc) {
     // errs() << "reg: " << regFlow << ", sink: " << sinkFlow << "\n";
     if (regFlow)
-      putOrConstrainConsElem(implicit, false, **loc, source);
+      putOrConstrainConsElem(implicit, false, **loc, source, consSet);
     if (sinkFlow)
-      putOrConstrainConsElem(implicit, true, **loc, sinkSource);
+      putOrConstrainConsElem(implicit, true, **loc, sinkSource, consSet);
   }
 }
 
@@ -491,7 +557,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
                                             AbsLocSet &SinkLocs,
                                             const ConsElem &source,
                                             const ConsElem &sinkSource,
-                                            bool regFlow, bool sinkFlow) {
+                                            bool regFlow, bool sinkFlow,
+                                            ConsSet &consSet) {
+  std::vector<RLConstraint> cons;
   bool implicit = record.isImplicit();
   for (FlowRecord::value_iterator sink = record.sink_directptr_begin();
        sink != record.sink_directptr_end(); ++sink) {
@@ -501,9 +569,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
                       errs() << "DSINKGEP INSTRUCTION "
                              << getOrCreateStringFromValue(**sink) << "\n";);
       if (regFlow)
-        processGetElementPtrInstSink(*sink, implicit, false, source, locs);
+        processGetElementPtrInstSink(*sink, implicit, false, source, locs, consSet);
       if (sinkFlow)
-        processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
+        processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs, consSet);
     } else if (const BitCastInst *bit = dyn_cast<BitCastInst>(*sink)) {
       Type *ty = bit->getSrcTy();
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, ty->dump(););
@@ -535,8 +603,9 @@ void Infoflow::constrainDirectSinkLocations(const FlowRecord &record,
                 DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                                 errs() << "BITCAST CONSTRAINING: ";
                                 e->dump(errs()); errs() << e << "\n";);
-                kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
+                cons = kit->addConstraint(kindFromImplicitSink(implicit, sinkFlow),
                                    source, *e, " ;  [ConsDebugTag-15]");
+                insertConsVectorIntoConsSet(consSet, cons);
               }
             }
           }
@@ -563,9 +632,9 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
                                            AbsLocSet &SinkLocs,
                                            const ConsElem &source,
                                            const ConsElem &sinkSource,
-                                           bool regFlow, bool sinkFlow) {
+                                           bool regFlow, bool sinkFlow, ConsSet &consSet) {
   bool implicit = record.isImplicit();
-
+  std::vector<RLConstraint> cons;
   for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(),
                                   end = record.sink_reachptr_end();
        sink != end; ++sink) {
@@ -575,9 +644,9 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
     const std::set<const AbstractLoc *> &locs = reachableLocsForValue(**sink);
     if (isa<GetElementPtrInst>(*sink) && offset_used) {
       if (regFlow)
-        processGetElementPtrInstSink(*sink, implicit, false, source, locs);
+        processGetElementPtrInstSink(*sink, implicit, false, source, locs, consSet);
       if (sinkFlow)
-        processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs);
+        processGetElementPtrInstSink(*sink, implicit, true, sinkSource, locs, consSet);
     }
     SinkLocs.insert(locs.begin(), locs.end());
     for (auto &l : locs) {
@@ -601,10 +670,11 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
 ///
 void Infoflow::processGetElementPtrInstSink(
     const Value *value, bool implicit, bool sink, const ConsElem &lub,
-    std::set<const AbstractLoc *> locs) {
+    std::set<const AbstractLoc *> locs, ConsSet &consSet) {
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "[Sink:] "
                                            << getOrCreateStringFromValue(*value)
                                            << "\n";);
+  std::vector<RLConstraint> cons;
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -618,7 +688,7 @@ void Infoflow::processGetElementPtrInstSink(
     for (std::set<const AbstractLoc *>::const_iterator I = locs.begin(),
                                                        E = locs.end();
          I != E; ++I) {
-      putOrConstrainConsElem(implicit, sink, **I, lub);
+      putOrConstrainConsElem(implicit, sink, **I, lub, consSet);
     }
     return;
   }
@@ -675,10 +745,10 @@ void Infoflow::processGetElementPtrInstSink(
                       loc->dump(););
       // Put additional Copy elements here and reverse the order of the copy
       if (structTy)
-        putOrConstrainConsElemStruct(implicit, sink, *loc, lub, offset, value);
+        putOrConstrainConsElemStruct(implicit, sink, *loc, lub, offset, consSet, value);
       else
         putOrConstrainConsElem(implicit, sink, *loc, lub, offset, value,
-                               numElements);
+                               numElements, consSet); 
     }
   }
 }
@@ -994,6 +1064,7 @@ bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst *gep) {
   }
 }
 
+// ad-hoc, delete later
 bool Infoflow::isSourceWhitelistPointer(const Instruction &inst, const Value *op) {
   const BasicBlock *bb = inst.getParent();
   const Function *func = bb->getParent();
@@ -1011,69 +1082,40 @@ bool Infoflow::isSourceWhitelistPointer(const Instruction &inst, const Value *op
 
 const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input) {
-  Flows recs;
   const Instruction *inst = cs.getInstruction();
-  int taintDirection = config.at("signature_mode").at("direction");
-  if (Infoflow::WLPTR_ROUND) {
-    for (User::const_op_iterator arg = cs.arg_begin(); arg != cs.arg_end(); arg++) {
-      Value *argVal = arg->get();
-      if (Infoflow::tainted.find(argVal) != Infoflow::tainted.end()) {
-        return Unit();
-      }
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  std::pair<Flows, Flows> recs = signatureRegistrar->process(this->getCurrentContext(), cs);
+  Flows combinedFlows;
+  for (auto flow = recs.first.begin(); flow != recs.first.end(); flow++) {
+    (*flow).flowRecordID = currentFlowRecord;
+    currentFlowRecord++;
+    combinedFlows.push_back(*flow);
+  }
+  for (auto flow = recs.second.begin(); flow != recs.second.end(); flow++) {
+    auto exist = std::find(combinedFlows.begin(), combinedFlows.end(), (*flow));
+    if (exist != combinedFlows.end()) {
+      (*flow).flowRecordID = (*exist).flowRecordID;
+      continue;
     }
-    switch (taintDirection)
-    {
-    case SFD_ArgToAllReachable:
-    case SFD_ArgToRetAndOther: {
-      for (ImmutableCallSite::arg_iterator arg = cs.arg_begin();
-       arg != cs.arg_end(); ++arg) {
-        FlowRecord exp = currentContextFlowRecord(false);
-        if (arg->get()->getType()->isPtrOrPtrVectorTy()) {
-          exp.addSourceValue(**arg);
-        }
-        if ((*arg)->getType()->isPointerTy()) {
-          exp.addSourceReachablePtr(**arg);
-        }
-        for (ImmutableCallSite::arg_iterator other = cs.arg_begin();
-            other != cs.arg_end(); ++other) {
-          if (other != arg && (*other)->getType()->isPointerTy()) {
-            exp.addSinkValue(**other);
-          }
-        }
-        recs.push_back(exp);
-      }
-    }
-    case SFD_ArgToRet: {
-      // ? Not sure if this flow should exist
-      // for (ImmutableCallSite::arg_iterator arg = cs.arg_begin();
-      //  arg != cs.arg_end(); ++arg) {
-      //   FlowRecord exp = currentContextFlowRecord(false);
-      //   if (arg->get()->getType()->isPtrOrPtrVectorTy()) {
-      //     exp.addSourceValue(**arg);
-      //     exp.addSourceReachablePtr(**arg);
-      //     exp.addSourceDirectPtr(**arg);
-      //     exp.addSinkValue(*inst);
-      //   }
-      //   recs.push_back(exp);
-      // }
-      break;
-    }
-    default:
-      errs() << "Undefined signature direction\n";
-    }
-  } else {
-    for (User::const_op_iterator arg = cs.arg_begin(); arg != cs.arg_end(); arg++) {
-      Value *argVal = arg->get();
-      if ((Infoflow::whitelistPointers.find(argVal) != Infoflow::whitelistPointers.end() || 
-           isSourceWhitelistPointer(*inst, argVal)) && // Ad-hoc solution
-          taintDirection >= SFD_ArgToRet) {
+    (*flow).flowRecordID = currentFlowRecord;
+    currentFlowRecord++;
+    combinedFlows.push_back(*flow);
+  }
+  taintFlows.insert(taintFlows.end(), recs.first.begin(), recs.first.end());
+  WLPFlows.insert(WLPFlows.end(), recs.second.begin(), recs.second.end());
+  insertIntoInstFlowMap(inst, taintFlows, WLPFlows);
+  flowVector.insert(flowVector.end(), combinedFlows.begin(), combinedFlows.end());
+  
+  if(Infoflow::iterationTag > 1 && !WLPTR_ROUND) {
+    auto cons = Infoflow::instTaintConsSetMap.find(inst);
+    for (auto con : (*cons).second) {
+      if (!con.isImplicit() && Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end()) {
         pushToFullyTainted(*inst);
       }
     }
-    recs = signatureRegistrar->process(this->getCurrentContext(), cs);
   }
-
-  flowVector.insert(flowVector.end(), recs.begin(), recs.end());
   return bottomOutput();
 }
 
@@ -1110,6 +1152,10 @@ bool InfoflowSolution::isTainted(const AbstractLoc &loc) {
     }
   }
   return false;
+}
+
+bool InfoflowSolution::isTainted(const ConsElem &elem) {
+  return !(soln->subst(elem) == botConstant);
 }
 
 DenseSet<const ConsElem *>
@@ -1416,6 +1462,21 @@ std::set<const Value *> InfoflowSolution::getAllTaintValues() {
   return ret;
 }
 
+std::set<const ConsElem *> InfoflowSolution::getAllWLPConsElem() {
+  std::set<const ConsElem *> ret;
+  for (auto con : Infoflow::consSetWLP) {
+    const ConsElem *lhs = con.lhs();
+    const ConsElem *rhs = con.rhs();
+    if (isTainted(*lhs)) {
+      ret.insert(lhs);
+    }
+    if (isTainted(*rhs)) {
+      ret.insert(rhs);
+    }
+  }
+  return ret;
+}
+
 bool InfoflowSolution::isDirectPtrTainted(const Value &value) {
   const std::set<const AbstractLoc *> &locs = infoflow.locsForValue(value);
   for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
@@ -1626,13 +1687,17 @@ void Infoflow::setReachPtrTainted(std::string kind, const Value &value) {
 
 InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
                                           bool implicit, bool sinks) {
-  kinds.insert("default");
-  if (sinks)
+  if (WLPTR_ROUND) {
+    kinds.insert("default-WLP");
+  } else {
+    kinds.insert("default-taint");
+    if (sinks)
     kinds.insert("default-sinks");
-  if (implicit)
-    kinds.insert("implicit");
-  if (implicit && sinks)
-    kinds.insert("implicit-sinks");
+    if (implicit)
+      kinds.insert("implicit");
+    if (implicit && sinks)
+      kinds.insert("implicit-sinks");
+  }
 
   return new InfoflowSolution(*this,                     // infoflow
                               kit->leastSolution(kinds), // ConsSoln* s
@@ -1659,6 +1724,10 @@ InfoflowSolution *Infoflow::greatestSolution(std::set<std::string> kinds,
                               summarySourceValueConstraintMap, // valueMap
                               locConstraintMap,                // locMap
                               summarySourceVargConstraintMap); // vargMap
+}
+
+void Infoflow::clearSolutions() {
+  kit->clearSolutions();
 }
 
 const std::set<const AbstractLoc *> &
@@ -1823,15 +1892,16 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
 
 void Infoflow::putOrConstrainConsElemSummarySink(std::string kind,
                                                  const Value &value,
-                                                 const ConsElem &lub) {
+                                                 const ConsElem &lub, ConsSet &consSet) {
   // errs() << "Adding a constraint...\n";
   const ConsElem &current = getOrCreateConsElemSummarySink(value);
-  kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-8]");
+  std::vector<RLConstraint> cons = kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-8]");
+  insertConsVectorIntoConsSet(consSet, cons);
   getOriginalLocation(&value);
 }
 
 const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
-                                              const Value &value) {
+                                              const Value &value, ConsSet &consSet) {
   ValueConsElemMap &valueMap = getOrCreateValueConstraintMap(ctxt);
   ValueConsElemMap::iterator curElem = valueMap.find(&value);
   if (curElem == valueMap.end()) {
@@ -1846,8 +1916,9 @@ const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
 
     // Hook up the summaries for non-context sensitive interface
     const ConsElem &summarySource = getOrCreateConsElemSummarySource(value);
-    kit->addConstraint("default", summarySource, elem, " ;  [ConsDebugTag-9]");
-    putOrConstrainConsElemSummarySink("default", value, elem);
+    std::vector<RLConstraint> cons = kit->addConstraint("default", summarySource, elem, " ;  [ConsDebugTag-9]");
+    insertConsVectorIntoConsSet(consSet, cons);
+    putOrConstrainConsElemSummarySink("default", value, elem, consSet);
     return elem;
   } else {
     return *(curElem->second);
@@ -1856,8 +1927,8 @@ const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
 
 void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const ContextID ctxt, const Value &value,
-                                      const ConsElem &lub) {
-  const ConsElem &current = getOrCreateConsElem(ctxt, value);
+                                      const ConsElem &lub, ConsSet &consSet) {
+  const ConsElem &current = getOrCreateConsElem(ctxt, value, consSet);
   // FIXIT: This part may need to be further verified
   if (auto gep = dyn_cast<GetElementPtrInst>(&value)) {
     AbstractLocSet locs = locsForValue(value);
@@ -1878,18 +1949,19 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
     errs() << predicateMap[I->getParent()];
   }
 
-  kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, current,
+  std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, current,
                      " ;  [ConsDebugTag-10]");
+  insertConsVectorIntoConsSet(consSet, cons);
 }
 
-const ConsElem &Infoflow::getOrCreateConsElem(const Value &value) {
-  return getOrCreateConsElem(this->getCurrentContext(), value);
+const ConsElem &Infoflow::getOrCreateConsElem(const Value &value, ConsSet &consSet) {
+  return getOrCreateConsElem(this->getCurrentContext(), value, consSet);
 }
 
 void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
-                                      const Value &value, const ConsElem &lub) {
+                                      const Value &value, const ConsElem &lub, ConsSet &consSet) {
   return putOrConstrainConsElem(implicit, sink, this->getCurrentContext(),
-                                value, lub);
+                                value, lub, consSet);
 }
 
 DenseMap<const Function *, const ConsElem *> &
@@ -1948,15 +2020,16 @@ Infoflow::getOrCreateVargConsElemSummarySink(const Function &value) {
 
 void Infoflow::putOrConstrainVargConsElemSummarySink(std::string kind,
                                                      const Function &value,
-                                                     const ConsElem &lub) {
+                                                     const ConsElem &lub, ConsSet &consSet) {
   // errs() << "Adding a constraint...\n";
   const ConsElem &current = getOrCreateVargConsElemSummarySink(value);
-  kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-11]");
+  std::vector<RLConstraint> cons = kit->addConstraint(kind, lub, current, " ;  [ConsDebugTag-11]");
+  insertConsVectorIntoConsSet(consSet, cons);
   getOriginalLocation(&value);
 }
 
 const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
-                                                  const Function &value) {
+                                                  const Function &value, ConsSet &consSet) {
   DenseMap<const Function *, const ConsElem *> &valueMap =
       getOrCreateVargConstraintMap(ctxt);
   DenseMap<const Function *, const ConsElem *>::iterator curElem =
@@ -1973,10 +2046,10 @@ const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
 
     // Hook up the summaries for non-context sensitive interface
     const ConsElem &summarySource = getOrCreateConsElemSummarySource(value);
-    kit->addConstraint("default", summarySource, elem, " ;  [ConsDebugTag-12]");
+    std::vector<RLConstraint> cons = kit->addConstraint("default", summarySource, elem, " ;  [ConsDebugTag-12]");
+    insertConsVectorIntoConsSet(consSet, cons);
     getOriginalLocation(&value);
-    putOrConstrainVargConsElemSummarySink("default", value, elem);
-
+    putOrConstrainVargConsElemSummarySink("default", value, elem, consSet);
     return elem;
   } else {
     return *(curElem->second);
@@ -1986,22 +2059,23 @@ const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
 void Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink,
                                           const ContextID ctxt,
                                           const Function &value,
-                                          const ConsElem &lub) {
-  const ConsElem &current = getOrCreateVargConsElem(ctxt, value);
-  kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, current,
+                                          const ConsElem &lub, ConsSet &consSet) {                     
+  const ConsElem &current = getOrCreateVargConsElem(ctxt, value, consSet);
+  std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, current,
                      " ;  [ConsDebugTag-13]");
+  insertConsVectorIntoConsSet(consSet, cons);
   getOriginalLocation(&value);
 }
 
-const ConsElem &Infoflow::getOrCreateVargConsElem(const Function &value) {
-  return getOrCreateVargConsElem(this->getCurrentContext(), value);
+const ConsElem &Infoflow::getOrCreateVargConsElem(const Function &value, ConsSet &consSet) {
+  return getOrCreateVargConsElem(this->getCurrentContext(), value, consSet);
 }
 
 void Infoflow::putOrConstrainVargConsElem(bool implicit, bool sink,
                                           const Function &value,
-                                          const ConsElem &lub) {
+                                          const ConsElem &lub, ConsSet &consSet) {
   return putOrConstrainVargConsElem(implicit, sink, this->getCurrentContext(),
-                                    value, lub);
+                                    value, lub, consSet);
 }
 
 std::map<unsigned, const ConsElem *>
@@ -2233,7 +2307,7 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
 
 void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const AbstractLoc &loc,
-                                      const ConsElem &lub) {
+                                      const ConsElem &lub, ConsSet &consSet) {
   std::map<unsigned, const ConsElem *> elemMap = getOrCreateConsElem(loc);
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, loc.dump(););
   for (auto it = elemMap.begin(); it != elemMap.end(); ++it) {
@@ -2241,15 +2315,16 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                     lub.dump(errs()); errs() << ":<->:";
                     it->second->dump(errs()); errs() << it->second << "\n";);
 
-    kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*it).second,
+    std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*it).second,
                        " ;  [ConsDebugTag-14]");
+    insertConsVectorIntoConsSet(consSet, cons);
   }
 }
 
 void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
                                             const AbstractLoc &loc,
                                             const ConsElem &lub,
-                                            unsigned offset, const Value *v) {
+                                            unsigned offset, ConsSet &consSet, const Value *v) {
   unsigned numElements = 0;
   std::map<unsigned, const ConsElem *> elemMap =
       getOrCreateConsElemTyped(loc, numElements, v);
@@ -2271,14 +2346,16 @@ void Infoflow::putOrConstrainConsElemStruct(bool implicit, bool sink,
     auto e = elemMap.find(offset);
     // This is for the byte-wise ConsElem maps created with unions.
     while (e != elemMap.end() && e->first < offset + span) {
-      kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *e->second,
+      std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *e->second,
                          " ;  [ConsDebugTag-15]");
+      insertConsVectorIntoConsSet(consSet, cons);
       e++;
     }
   } else {
     for (auto &kv : elemMap) {
-      kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
+      std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
                          *(kv.second), " ;  [ConsDebugTag-16]");
+      insertConsVectorIntoConsSet(consSet, cons);
     }
   }
 }
@@ -2287,7 +2364,7 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
                                       const AbstractLoc &loc,
                                       const ConsElem &lub, unsigned offset,
                                       const Value *value,
-                                      unsigned numElements) {
+                                      unsigned numElements, ConsSet &consSet) {
 
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                   errs() << " ===== putOrConstrainConsElem =====\n";);
@@ -2303,16 +2380,18 @@ void Infoflow::putOrConstrainConsElem(bool implicit, bool sink,
          it != itEnd; ++it) {
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
                       errs() << "Adding " << elemMap.size() << " elements\n");
-      kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
+      std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub,
                          *(*it).second, " ;  [ConsDebugTag-17]");
+      insertConsVectorIntoConsSet(consSet, cons);
     }
   } else {
     std::set<const ConsElem *> elems =
         findRelevantConsElem(&loc, elemMap, offset, value);
     for (std::set<const ConsElem *>::iterator i = elems.begin();
          i != elems.end(); ++i) {
-      kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*i),
+      std::vector<RLConstraint> cons = kit->addConstraint(kindFromImplicitSink(implicit, sink), lub, *(*i),
                          " ;  [ConsDebugTag-18]");
+      insertConsVectorIntoConsSet(consSet, cons);
     }
   }
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
@@ -2326,6 +2405,9 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
     // The pc of the entry block will be tainted at any call sites
     generateBasicBlockConstraints(*bb, flowVector);
   }
+  if (Infoflow::iterationTag > 1) {
+    return;
+  }
 
   for (Flows::iterator flow = flowVector.begin(), end = flowVector.end();
        flow != end; ++flow) {
@@ -2335,6 +2417,30 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
     }
   }
   flowVector.clear();
+  for (auto instFlowKV = instFlowMap.begin(); instFlowKV != instFlowMap.end(); instFlowKV++) {
+    std::pair<Flows, Flows> flowPair = (*instFlowKV).second;
+    Flows flowsTaint = flowPair.first;
+    Flows flowsWLP = flowPair.second;
+    std::set<RLConstraint> taintSet;
+    std::set<RLConstraint> WLPSet;
+    for (auto flow = flowsTaint.begin(); flow != flowsTaint.end(); flow++) {
+      auto cons = flowConsSetMap.find((*flow).flowRecordID)->second;
+      Infoflow::consSetTaint.insert(cons.begin(), cons.end());
+      taintSet.insert(cons.begin(), cons.end());
+    }
+    auto instConsSetKVTaint = std::make_pair((*instFlowKV).first, taintSet);
+    Infoflow::instTaintConsSetMap.insert(instConsSetKVTaint);
+
+    for (auto flow = flowsWLP.begin(); flow != flowsWLP.end(); flow++) {
+      auto cons = flowConsSetMap.find((*flow).flowRecordID)->second;
+      Infoflow::consSetWLP.insert(cons.begin(), cons.end());
+      WLPSet.insert(cons.begin(), cons.end());
+    }
+    auto instConsSetKVWLP = std::make_pair((*instFlowKV).first, WLPSet);
+    Infoflow::instWLPConsSetMap.insert(instConsSetKVWLP);
+  }
+  kit->setConstraints(consSetWLP, "default-WLP");
+  kit->setConstraints(consSetTaint, "default-taint");
 }
 
 void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
@@ -2383,17 +2489,13 @@ void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
   for (BasicBlock::const_iterator inst = bb.begin(), end = bb.end();
        inst != end; ++inst) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << " +INST+\n"; (*inst).dump(););
-    if (Infoflow::WLPTR_ROUND) {
-      getInstructionFlowsInternalWLP(*inst, true, flows, "");
-    } else {
-      getInstructionFlowsInternal(*inst, true, flows, "");
-    }
+    getInstructionFlowsInternal(*inst, true, flows, "");
   }
 }
 
 void Infoflow::constrainMemoryLocation(bool implicit, bool sink,
                                        const Value &value,
-                                       const ConsElem &level) {
+                                       const ConsElem &level, ConsSet &consSet) {
   const std::set<const AbstractLoc *> &locs = locsForValue(value);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(),
                                                end = locs.end();
@@ -2401,13 +2503,13 @@ void Infoflow::constrainMemoryLocation(bool implicit, bool sink,
     // errs() << "Adding consElem: ";
     // (*loc)->dump(); errs() << " and ";
     // level.dump(errs()); errs() << "\n";
-    putOrConstrainConsElem(implicit, sink, **loc, level);
+    putOrConstrainConsElem(implicit, sink, **loc, level, consSet);
   }
 }
 
 void Infoflow::constrainReachableMemoryLocations(bool implicit, bool sink,
                                                  const Value &value,
-                                                 const ConsElem &level) {
+                                                 const ConsElem &level, ConsSet &consSet) {
   const std::set<const AbstractLoc *> &locs = reachableLocsForValue(value);
   for (std::set<const AbstractLoc *>::iterator loc = locs.begin(),
                                                end = locs.end();
@@ -2415,7 +2517,7 @@ void Infoflow::constrainReachableMemoryLocations(bool implicit, bool sink,
     // errs() << "Adding consElem: ";
     // (*loc)->dump(); errs() << " and ";
     // level.dump(errs()); errs() << "\n";
-    putOrConstrainConsElem(implicit, sink, **loc, level);
+    putOrConstrainConsElem(implicit, sink, **loc, level, consSet);
   }
 }
 
@@ -2462,9 +2564,11 @@ Infoflow::getOrCreateReachableMemoryConsElem(const Value &value) {
   return *join;
 }
 
-FlowRecord Infoflow::currentContextFlowRecord(bool implicit) const {
+FlowRecord Infoflow::currentContextFlowRecord(bool implicit) {
   const ContextID currentContext = this->getCurrentContext();
-  return FlowRecord(implicit, currentContext, currentContext);
+  FlowRecord flow = FlowRecord(implicit, currentContext, currentContext, currentFlowRecord);
+  currentFlowRecord++;
+  return flow;
 }
 
 /// Helper function that computes the join of all operands to an instruction
@@ -2472,6 +2576,7 @@ FlowRecord Infoflow::currentContextFlowRecord(bool implicit) const {
 void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);
+  bool useImp = false;
   // pc
   imp.addSourceValue(*inst.getParent());
   // operands
@@ -2486,21 +2591,25 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
 
   flows.push_back(exp);
 
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  WLPFlows.push_back(exp);
+
   // Handles the case where the instruction is the condition of a branch or
   // switch, in which case we don't want to add it to the implicit flow pool.
   if (auto term = inst.getParent()->getTerminator()) {
     if (auto br = dyn_cast<const BranchInst>(term))
       if (br->isConditional() && br->getCondition() == &inst)
-        return;
+        goto insert;
     if (auto sw = dyn_cast<const SwitchInst>(term))
       if (sw->getCondition() == &inst)
-        return;
+        goto insert;
     // Do we need to handle indirect branches?
   }
 
   // More sophisticated handling of based on users of variables. If all users
   // are within the same block, we don't add it to the implicit flow pool.
-  bool useImp = false;
   if (inst.getNumUses() == 0)
     useImp = true;
   for (auto user : inst.users()) {
@@ -2516,7 +2625,10 @@ void Infoflow::operandsAndPCtoValue(const Instruction &inst, Flows &flows) {
   }
   if (useImp) {
     flows.push_back(imp);
+    taintFlows.push_back(imp);
   }
+insert:
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
@@ -2558,365 +2670,9 @@ Flows Infoflow::getInstructionFlows(const Instruction &inst) {
   return flows;
 }
 
-void Infoflow::operandsAndPCtoValueWLP(const Instruction &inst, Flows &flows) {
-  FlowRecord exp = currentContextFlowRecord(false);
-  // operands
-  for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
-       op != end; ++op) {
-    Value *v = op->get();
-    exp.addSourceValue(*v);
-  }
-  // to value
-  exp.addSinkValue(inst);
-
-  flows.push_back(exp);
-}
-
-void Infoflow::getInstructionFlowsInternalWLP(const Instruction &inst,
-                                           bool callees, Flows &flows,
-                                           std::string predicate) {
-  if (const AtomicCmpXchgInst *i = dyn_cast<AtomicCmpXchgInst>(&inst)) {
-    // Infoflow::constrainAtomicCmpXchgInst(*i, flows);
-  } else if (const AtomicRMWInst *i = dyn_cast<AtomicRMWInst>(&inst)) {
-    // Infoflow::constrainAtomicRMWInst(*i, flows);
-  } else if (const BinaryOperator *i = dyn_cast<BinaryOperator>(&inst)) {
-    // Infoflow::constrainBinaryOperator(*i, flows);
-  } else if (const CallInst *i = dyn_cast<CallInst>(&inst)) {
-    Infoflow::constrainCallInstWLP(*i, callees, flows);
-  } else if (const CmpInst *i = dyn_cast<CmpInst>(&inst)) {
-    // Infoflow::constrainCmpInst(*i, flows);
-  } else if (const ExtractElementInst *i =
-                 dyn_cast<ExtractElementInst>(&inst)) {
-    // Infoflow::constrainExtractElementInst(*i, flows);
-  } else if (const FenceInst *i = dyn_cast<FenceInst>(&inst)) {
-    // Infoflow::constrainFenceInst(*i, flows);
-  } else if (const GetElementPtrInst *i = dyn_cast<GetElementPtrInst>(&inst)) {
-    Infoflow::constrainGetElementPtrInstWLP(*i, flows);
-  } else if (const InsertElementInst *i = dyn_cast<InsertElementInst>(&inst)) {
-    // Infoflow::constrainInsertElementInst(*i, flows);
-  } else if (const InsertValueInst *i = dyn_cast<InsertValueInst>(&inst)) {
-    // Infoflow::constrainInsertValueInst(*i, flows);
-  } else if (const LandingPadInst *i = dyn_cast<LandingPadInst>(&inst)) {
-    // Infoflow::constrainLandingPadInst(*i, flows);
-  } else if (const PHINode *i = dyn_cast<PHINode>(&inst)) {
-    Infoflow::constrainPHINodeWLP(*i, flows);
-  } else if (const SelectInst *i = dyn_cast<SelectInst>(&inst)) {
-    Infoflow::constrainSelectInstWLP(*i, flows);
-  } else if (const ShuffleVectorInst *i = dyn_cast<ShuffleVectorInst>(&inst)) {
-    // Infoflow::constrainShuffleVectorInst(*i, flows);
-  } else if (const StoreInst *i = dyn_cast<StoreInst>(&inst)) {
-    Infoflow::constrainStoreInstWLP(*i, flows);
-  } else if (const TerminatorInst *i = dyn_cast<TerminatorInst>(&inst)) {
-    // Infoflow::constrainTerminatorInst(*i, callees, flows);
-  } else if (const UnaryInstruction *i = dyn_cast<UnaryInstruction>(&inst)) {
-    Infoflow::constrainUnaryInstructionWLP(*i, flows);
-  } else {
-    assert(false && "Unsupported instruction type!");
-  }
-}
-
-void Infoflow::constrainUnaryInstructionWLP(const UnaryInstruction &inst,
-                                         Flows &flows) {
-  if (const AllocaInst *i = dyn_cast<AllocaInst>(&inst)) {
-    // return Infoflow::constrainAllocaInst(*i, flows);
-  } else if (const CastInst *i = dyn_cast<CastInst>(&inst)) {
-    return Infoflow::constrainCastInstWLP(*i, flows);
-  } else if (const ExtractValueInst *i = dyn_cast<ExtractValueInst>(&inst)) {
-    // return Infoflow::constrainExtractValueInst(*i, flows);
-  } else if (const LoadInst *i = dyn_cast<LoadInst>(&inst)) {
-    return Infoflow::constrainLoadInstWLP(*i, flows);
-  } else if (const VAArgInst *i = dyn_cast<VAArgInst>(&inst)) {
-    // return Infoflow::constrainVAArgInst(*i, flows);
-  } else {
-    assert(false && "Unsupported unary instruction type!");
-  }
-}
-
-void Infoflow::constrainSelectInstWLP(const SelectInst &inst, Flows &flows) {
-  if (!inst.getType()->isPtrOrPtrVectorTy()) {
-    return;
-  }
-
-  for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
-    op != end; ++op) {
-    Value *v = op->get();
-    if (Infoflow::tainted.find(v) != Infoflow::tainted.end()) {
-      return;
-    }
-  }
-
-  return operandsAndPCtoValueWLP(inst, flows);
-}
-
-void Infoflow::constrainCastInstWLP(const CastInst &inst, Flows &flows) {
-  return operandsAndPCtoValueWLP(inst, flows);
-}
-
-void Infoflow::constrainPHINodeWLP(const PHINode &inst, Flows &flows) {
-  if (!inst.getType()->isPtrOrPtrVectorTy()) {
-    return;
-  }
-
-  for (User::const_op_iterator op = inst.op_begin(), end = inst.op_end();
-    op != end; ++op) {
-    Value *v = op->get();
-    if (Infoflow::tainted.find(v) != Infoflow::tainted.end()) {
-      return;
-    }
-  }
-  return operandsAndPCtoValueWLP(inst, flows);
-}
-
-void Infoflow::constrainGetElementPtrInstWLP(const GetElementPtrInst &inst,
-                                          Flows &flows) {
-  if (!inst.getType()->isPtrOrPtrVectorTy()) {
-    return;
-  }
-  FlowRecord exp = currentContextFlowRecord(false);
-  exp.addSourceDirectPtr(inst);
-  exp.addSinkValue(inst);
-  flows.push_back(exp);
-  return operandsAndPCtoValueWLP(inst, flows);
-}
-
-void Infoflow::constrainStoreInstWLP(const StoreInst &inst, Flows &flows) {
-  FlowRecord exp = currentContextFlowRecord(false);
-  // value
-  exp.addSourceValue(*inst.getValueOperand());
-  // to memory
-  exp.addSinkDirectPtr(*inst.getPointerOperand());
-
-  flows.push_back(exp);
-}
-
-void Infoflow::constrainLoadInstWLP(const LoadInst &inst, Flows &flows) {
-  if (!inst.getType()->isPtrOrPtrVectorTy()) {
-    return;
-  }
-
-  FlowRecord exp = currentContextFlowRecord(false);
-  exp.addSourceValue(*inst.getPointerOperand());
-  // from memory
-  exp.addSourceDirectPtr(*inst.getPointerOperand());
-  // to value
-  exp.addSinkValue(inst);
-
-  flows.push_back(exp);
-}
-
-void Infoflow::constrainCallInstWLP(const CallInst &inst, bool analyzeCallees,
-                                 Flows &flows) {
-  // TODO: filter out and handle Intrinsics here instead of deferring
-  // to the Signature mechanism...
-  DEBUG_WITH_TYPE(DEBUG_TYPE_CALLINST, errs() << "Working on CallInst: ";
-                  inst.dump(););
-
-  if (const IntrinsicInst *intr = dyn_cast<IntrinsicInst>(&inst)) {
-    return constrainIntrinsicWLP(*intr, flows);
-  } else {
-    return constrainCallSiteWLP(ImmutableCallSite(&inst), analyzeCallees, flows);
-  }
-}
-
-void Infoflow::constrainCallSiteWLP(const ImmutableCallSite &cs,
-                                 bool analyzeCallees, Flows &flows) {
-  // For all functions that could possibly be invoked by this call
-  // 1) pc of function should be at least as high as current pc + function
-  // pointer 2) levels of params should be as high as corresponding args
-  // Result should be at least as high as the possible return values
-
-  // Invoke the analysis on callees, if we're actually generating constraints
-  // XXX HACK if we're not doing analysis on callees, we need to add any
-  // signature flows here
-
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "working on callsite and \n\t"
-                                           << (analyzeCallees ? "" : "not ")
-                                           << "analyzing callees\n";);
-
-  if (analyzeCallees) {
-    const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "The CallInst is: \n\t";
-                    callinst->dump(););
-
-    StringRef fName;
-
-    if (callinst->getCalledFunction() &&
-        callinst->getCalledFunction()->hasName()) {
-      fName = callinst->getCalledFunction()->getName();
-    } else if (auto F = dyn_cast<Function>(
-                   callinst->getCalledValue()->stripPointerCasts())) {
-      fName = F->getName();
-    }
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                    errs() << "Function name: " << fName << "\n";);
-
-    bool callResult = true;
-    for (auto var : sinkVariables) {
-      if (fName.size() > 0 && fName.equals(var.function)) {
-        errs() << "Found function match: " << fName << "\n";
-        User::const_op_iterator op_i = cs.arg_begin();
-        int arg_idx = 0;
-        for (; op_i != cs.arg_end(); op_i++, arg_idx++) {
-          if (var.number == -1 || var.number == arg_idx) {
-            Value *value = (*op_i).get();
-            auto sinkVar = var;
-            sinkVar.ctxt = this->getCurrentContext();
-            sinkVar.val = value;
-            if (auto meta = dyn_cast<Value>(cs.getInstruction())) {
-              sinkVar.callsite = getOrCreateStringFromValue(*meta);
-            }
-            indexedSinkVariables.push_back(sinkVar);
-            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                            errs() << "\tinserted ["
-                                   << getOrCreateStringFromValue(*value)
-                                   << "] at offset: " << var.index << "\n";);
-          }
-        }
-        callResult = false;
-      }
-    }
-
-    if (callResult) {
-      this->getCallResult(cs, Unit());
-    }
-  } else if (usesExternalSignature(cs)) {
-    Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
-    flows.insert(flows.end(), recs.begin(), recs.end());
-  }
-
-  std::set<std::pair<const Function *, const ContextID>> callees =
-      this->invokableCode(cs);
-  // Do constraints for each callee
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  errs() << "callees' size: " << callees.size() << "\n";);
-  for (std::set<std::pair<const Function *, const ContextID>>::iterator
-           callee = callees.begin(),
-           end = callees.end();
-       callee != end; ++callee) {
-    constrainCalleeWLP((*callee).second, *((*callee).first), cs, flows);
-  }
-}
-
-void Infoflow::constrainCalleeWLP(const ContextID calleeContext,
-                               const Function &callee,
-                               const ImmutableCallSite &cs, Flows &flows) {
-  const ContextID callerContext = this->getCurrentContext();
-
-  // levels of params should be as high as corresponding args
-  unsigned int numArgs = cs.arg_size();
-  unsigned int numParams = callee.arg_size();
-
-  // Check arities for sanity...
-  assert((!callee.isVarArg() || numArgs >= numParams) &&
-         "variable arity function called with two few arguments");
-  assert((callee.isVarArg() || numArgs == numParams) &&
-         "function called with the wrong number of arguments");
-
-  // The level of each non-vararg param should be
-  // as high as the corresponding argument
-  Function::const_arg_iterator formal = callee.arg_begin();
-  for (unsigned int i = 0; i < numParams; i++, ++formal) {
-    /* TOOD: This condition check was added for tomoyo overapproximation,
-       but later found to be unsound for cryptolibs. Removing for the time
-       being. Needs further justification & modification. */
-
-    // Only create a flow when the parameter
-    // being passed is not a pointer
-    const Value *actual = cs.getArgument(i)->stripPointerCasts();
-    if (auto bit = dyn_cast<BitCastInst>(actual)) {
-      bit->getOperand(0)->dump();
-      actual = bit->getOperand(0);
-    }
-
-    FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
-    argFlow.addSourceValue(*actual);
-    argFlow.addSinkValue(*formal);
-    flows.push_back(argFlow);
-  }
-
-  // The remaining arguments provide a bound on the vararg structure
-  if (numArgs > numParams) {
-    // TODO: this probably should also be changed to accommodate the above
-    // changes on the parameter flow of whether it's a pointer
-    FlowRecord varargFlow = FlowRecord(false, callerContext, calleeContext);
-    for (unsigned int i = numParams; i < numArgs; i++) {
-      varargFlow.addSourceValue(*cs.getArgument(i));
-    }
-    varargFlow.addSinkVarg(callee);
-    flows.push_back(varargFlow);
-  }
-
-  // result should be at least as high as the possible return values
-  for (Function::const_iterator block = callee.begin(), end = callee.end();
-       block != end; ++block) {
-    const TerminatorInst *terminator = block->getTerminator();
-    if (terminator) {
-      if (const ReturnInst *retInst = dyn_cast<ReturnInst>(terminator)) {
-        FlowRecord retFlow = FlowRecord(false, calleeContext, callerContext);
-        retFlow.addSourceValue(*retInst);
-        retFlow.addSinkValue(*cs.getInstruction());
-        flows.push_back(retFlow);
-      }
-    }
-  }
-}
-
-void constrainMemcpyOrMoveWLP(const IntrinsicInst &intr, Flows &flows) {
-  FlowRecord exp = FlowRecord(false);
-  exp.addSourceDirectPtr(*intr.getArgOperand(1));
-  exp.addSinkDirectPtr(*intr.getArgOperand(0));
-  flows.push_back(exp);
-}
-
-void constrainMemsetWLP(const IntrinsicInst &intr, Flows &flows) {
-  FlowRecord exp = FlowRecord(false);
-  exp.addSourceValue(*intr.getArgOperand(1));
-  exp.addSinkDirectPtr(*intr.getArgOperand(0));
-  flows.push_back(exp);
-}
-
-void Infoflow::constrainIntrinsicWLP(const IntrinsicInst &intr, Flows &flows) {
-  switch (intr.getIntrinsicID()) {
-  // Vararg intrinsics
-  case Intrinsic::vastart:
-  case Intrinsic::vaend:
-  case Intrinsic::vacopy:
-    // These should be nops because the actual flows are taken care of as part
-    // of function invocation and the va_arg instruction
-    return;
-  // StdLib memory intrinsics
-  case Intrinsic::memcpy:
-  case Intrinsic::memmove:
-    return constrainMemcpyOrMoveWLP(intr, flows);
-  case Intrinsic::memset:
-    return constrainMemsetWLP(intr, flows);
-  // StdLib math intrinsics
-  case Intrinsic::sqrt:
-  case Intrinsic::powi:
-  case Intrinsic::sin:
-  case Intrinsic::cos:
-  case Intrinsic::pow:
-  case Intrinsic::exp:
-  case Intrinsic::log:
-  case Intrinsic::fma:
-  case Intrinsic::expect:
-    return this->operandsAndPCtoValue(intr, flows);
-  // dbg
-  case Intrinsic::dbg_declare:
-  case Intrinsic::dbg_value:
-    return;
-  // Unsupported intrinsics
-  default:
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                    errs() << "Unsupported intrinsic: "
-                           << Intrinsic::getName(intr.getIntrinsicID())
-                           << "\n");
-  }
-}
-
 void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
                                            bool callees, Flows &flows,
-                                           std::string predicate) {
+                                           std::string predicate) {                           
   Flows temp = Flows(flows.begin(), flows.end());
   if (const AtomicCmpXchgInst *i = dyn_cast<AtomicCmpXchgInst>(&inst)) {
     Infoflow::constrainAtomicCmpXchgInst(*i, flows);
@@ -2956,10 +2712,45 @@ void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
   } else {
     assert(false && "Unsupported instruction type!");
   }
-  // errs() << "NEW-FLOWS\n";
-  // for (size_t i = temp.size(); i != flows.size(); i++)
-  // flows.at(i).dump();
-  // errs() << "NEW-FLOWS-END\n\n";
+  errs() << "NEW-FLOWS\n";
+  for (size_t i = temp.size(); i != flows.size(); i++)
+  flows.at(i).dump();
+  errs() << "NEW-FLOWS-END\n\n";
+}
+
+void Infoflow::insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows, Flows &WLPFlows) {
+  if (Infoflow::iterationTag > 1) {
+    return;
+  }
+
+  std::pair<Flows, Flows> flows;
+  flows.first = taintFlows;
+  flows.second = WLPFlows;
+  std::pair<const Instruction *, std::pair<Flows, Flows>> KV;
+  KV.first = inst;
+  KV.second = flows;
+  
+  auto result = instFlowMap.insert(KV);
+  if (result.second) {
+    if (iterationTag > 1)
+      errs() << "Shouldn't happen!\n";
+    else 
+      errs() << "Inserted!\n";
+  } else {
+    if (iterationTag == 1) {
+      errs() << "Insert again!\n";
+      auto flowsHere = instFlowMap.find(inst);
+      errs() << flowsHere->second.first.size() << " taint flows before\n";
+      errs() << flowsHere->second.second.size() << " WLP flows before\n";
+      flowsHere->second.first.insert(flowsHere->second.first.end(), taintFlows.begin(), taintFlows.end());
+      flowsHere->second.second.insert(flowsHere->second.second.end(), WLPFlows.begin(), WLPFlows.end());
+      flowsHere = instFlowMap.find(inst);
+      errs() << flowsHere->second.first.size() << " taint flows after\n";
+      errs() << flowsHere->second.second.size() << " WLP flows after\n";
+    } else {
+      errs() << "Shouldn't happen!\n";
+    }
+  }
 }
 
 // return whether op is in whitelistPointers
@@ -3074,6 +2865,12 @@ void Infoflow::constrainAtomicRMWInst(const AtomicRMWInst &inst, Flows &flows) {
 
   flows.push_back(impToMem);
   flows.push_back(expToMem);
+
+  Flows taintFlows;
+  taintFlows.push_back(expToMem);
+  taintFlows.push_back(impToMem);
+  Flows WLPFlows;
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 /// The 'cmpxchg' instruction is used to atomically modify memory. It loads a
@@ -3116,6 +2913,14 @@ void Infoflow::constrainAtomicCmpXchgInst(const AtomicCmpXchgInst &inst,
   flows.push_back(impToMem);
   flows.push_back(expFromMem);
   flows.push_back(impFromMem);
+
+  Flows taintFlows;
+  taintFlows.push_back(expToMem);
+  taintFlows.push_back(impToMem);
+  taintFlows.push_back(expFromMem);
+  taintFlows.push_back(impFromMem);
+  Flows WLPFlows;
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3187,6 +2992,11 @@ void Infoflow::constrainBranchInst(const BranchInst &inst, Flows &flows) {
   constrainConditionalSuccessors(inst, flow);
 
   flows.push_back(flow);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(flow);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 /// The 'indirectbr' instruction implements an indirect branch to a label
@@ -3211,6 +3021,11 @@ void Infoflow::constrainIndirectBrInst(const IndirectBrInst &inst,
   constrainConditionalSuccessors(inst, flow);
 
   flows.push_back(flow);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(flow);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 /// The 'switch' instruction is used to transfer control flow to one of
@@ -3241,6 +3056,11 @@ void Infoflow::constrainSwitchInst(const SwitchInst &inst, Flows &flows) {
   constrainConditionalSuccessors(inst, flow);
 
   flows.push_back(flow);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(flow);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 /// 'unreachable' instruction has no defined semantics. This instruction is
@@ -3279,6 +3099,13 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 
   flows.push_back(imp);
   flows.push_back(exp);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  taintFlows.push_back(imp);
+  WLPFlows.push_back(exp);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 /// Load the value from the memory at the pointer operand into the result.
@@ -3305,6 +3132,22 @@ void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
 
   flows.push_back(exp);
   flows.push_back(imp);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  taintFlows.push_back(imp);
+  WLPFlows.push_back(exp);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
+
+  if(Infoflow::iterationTag > 1 && !WLPTR_ROUND) {
+    auto cons = Infoflow::instTaintConsSetMap.find(&inst);
+    for (auto con : (*cons).second) {
+      if (!con.isImplicit() && Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end()) {
+        pushToFullyTainted(inst);
+      }
+    }
+  }
 }
 
 /// Memory barrier instruction. Treat as noop.
@@ -3351,6 +3194,12 @@ void Infoflow::constrainVAArgInst(const VAArgInst &inst, Flows &flows) {
 
   flows.push_back(exp);
   flows.push_back(imp);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  taintFlows.push_back(imp);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3451,6 +3300,11 @@ void Infoflow::constrainInvokeInst(const InvokeInst &inst, bool analyzeCallees,
   constrainConditionalSuccessors(inst, flow);
 
   flows.push_back(flow);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(flow);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
 }
 
 void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
@@ -3467,14 +3321,16 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "working on callsite and \n\t"
                                            << (analyzeCallees ? "" : "not ")
                                            << "analyzing callees\n";);
-
+  Flows taintFlows;
+  Flows WLPFlows;
+  const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
   if (analyzeCallees) {
     FlowRecord imp = currentContextFlowRecord(true);
     imp.addSourceValue(*cs->getParent());
     imp.addSinkValue(*cs.getInstruction());
     flows.push_back(imp);
+    taintFlows.push_back(imp);
 
-    const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "The CallInst is: \n\t";
                     callinst->dump(););
 
@@ -3520,8 +3376,26 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
       this->getCallResult(cs, Unit());
     }
   } else if (usesExternalSignature(cs)) {
-    Flows recs = signatureRegistrar->process(this->getCurrentContext(), cs);
-    flows.insert(flows.end(), recs.begin(), recs.end());
+    std::pair<Flows, Flows> recs = signatureRegistrar->process(this->getCurrentContext(), cs);
+    Flows combinedFlows;
+    for (auto flow = recs.first.begin(); flow != recs.first.end(); flow++) {
+      (*flow).flowRecordID = currentFlowRecord;
+      currentFlowRecord++;
+      combinedFlows.push_back(*flow);
+    }
+    for (auto flow = recs.second.begin(); flow != recs.second.end(); flow++) {
+      auto exist = std::find(combinedFlows.begin(), combinedFlows.end(), (*flow));
+      if (exist != combinedFlows.end()) {
+        (*flow).flowRecordID = (*exist).flowRecordID;
+        continue;
+      }
+      (*flow).flowRecordID = currentFlowRecord;
+      currentFlowRecord++;
+      combinedFlows.push_back(*flow);
+    }
+    taintFlows.insert(taintFlows.end(), recs.first.begin(), recs.first.end());
+    WLPFlows.insert(WLPFlows.end(), recs.second.begin(), recs.second.end());
+    flows.insert(flows.end(), combinedFlows.begin(), combinedFlows.end());
   }
 
   std::set<std::pair<const Function *, const ContextID>> callees =
@@ -3535,16 +3409,19 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
        callee != end; ++callee) {
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
+  insertIntoInstFlowMap(callinst, taintFlows, WLPFlows);
 }
 
 void Infoflow::constrainCallee(const ContextID calleeContext,
                                const Function &callee,
                                const ImmutableCallSite &cs, Flows &flows) {
   const ContextID callerContext = this->getCurrentContext();
-
+  Flows taintFlows;
+  Flows WLPFlows;
   // 1) pc of function should be at least
   // as high as current pc + function pointer
-  FlowRecord pcFlow = FlowRecord(true, callerContext, calleeContext);
+  FlowRecord pcFlow = FlowRecord(true, callerContext, calleeContext, currentFlowRecord);
+  currentFlowRecord++;
   // caller pc
   pcFlow.addSourceValue(*cs->getParent());
   // caller ptr
@@ -3552,7 +3429,7 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
   // to callee pc
   pcFlow.addSinkValue(callee.getEntryBlock());
   flows.push_back(pcFlow);
-
+  taintFlows.push_back(pcFlow);
   // 2) levels of params should be as high as corresponding args
   unsigned int numArgs = cs.arg_size();
   unsigned int numParams = callee.arg_size();
@@ -3579,22 +3456,28 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
       actual = bit->getOperand(0);
     }
 
-    FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext);
+    FlowRecord argFlow = FlowRecord(false, callerContext, calleeContext, currentFlowRecord);
+    currentFlowRecord++;
     argFlow.addSourceValue(*actual);
     argFlow.addSinkValue(*formal);
     flows.push_back(argFlow);
+    taintFlows.push_back(argFlow);
+    WLPFlows.push_back(argFlow);
   }
 
   // The remaining arguments provide a bound on the vararg structure
   if (numArgs > numParams) {
     // TODO: this probably should also be changed to accommodate the above
     // changes on the parameter flow of whether it's a pointer
-    FlowRecord varargFlow = FlowRecord(false, callerContext, calleeContext);
+    FlowRecord varargFlow = FlowRecord(false, callerContext, calleeContext, currentFlowRecord);
+    currentFlowRecord++;
     for (unsigned int i = numParams; i < numArgs; i++) {
       varargFlow.addSourceValue(*cs.getArgument(i));
     }
     varargFlow.addSinkVarg(callee);
     flows.push_back(varargFlow);
+    taintFlows.push_back(varargFlow);
+    WLPFlows.push_back(varargFlow);
   }
 
   // 3) result should be at least as high as the possible return values
@@ -3603,13 +3486,17 @@ void Infoflow::constrainCallee(const ContextID calleeContext,
     const TerminatorInst *terminator = block->getTerminator();
     if (terminator) {
       if (const ReturnInst *retInst = dyn_cast<ReturnInst>(terminator)) {
-        FlowRecord retFlow = FlowRecord(false, calleeContext, callerContext);
+        FlowRecord retFlow = FlowRecord(false, calleeContext, callerContext, currentFlowRecord);
+        currentFlowRecord++;
         retFlow.addSourceValue(*retInst);
         retFlow.addSinkValue(*cs.getInstruction());
         flows.push_back(retFlow);
+        taintFlows.push_back(retFlow);
+        WLPFlows.push_back(retFlow);
       }
     }
   }
+  insertIntoInstFlowMap(cs.getInstruction(), taintFlows, WLPFlows);
 }
 
 void Infoflow::constrainReturnInst(const ReturnInst &inst, Flows &flows) {
@@ -3634,9 +3521,11 @@ void Infoflow::constrainResumeInst(const ResumeInst &inst, Flows &flows) {
 /// Intrinsics
 ///////////////////////////////////////////////////////////////////////////////
 
-void constrainMemcpyOrMove(const IntrinsicInst &intr, Flows &flows) {
+void Infoflow::constrainMemcpyOrMove(const IntrinsicInst &intr, Flows &flows) {
   FlowRecord imp = FlowRecord(true);
+  imp.flowRecordID = currentFlowRecord++;
   FlowRecord exp = FlowRecord(false);
+  exp.flowRecordID = currentFlowRecord++;
   // Flow from data at source pointer, length, and alignment into
   // data at destination pointer
   exp.addSourceDirectPtr(*intr.getArgOperand(1));
@@ -3647,11 +3536,20 @@ void constrainMemcpyOrMove(const IntrinsicInst &intr, Flows &flows) {
   imp.addSinkDirectPtr(*intr.getArgOperand(0));
   flows.push_back(exp);
   flows.push_back(imp);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  taintFlows.push_back(imp);
+  WLPFlows.push_back(exp);
+  insertIntoInstFlowMap(&intr, taintFlows, WLPFlows);
 }
 
-void constrainMemset(const IntrinsicInst &intr, Flows &flows) {
+void Infoflow::constrainMemset(const IntrinsicInst &intr, Flows &flows) {
   FlowRecord exp = FlowRecord(false);
+  exp.flowRecordID = currentFlowRecord++;
   FlowRecord imp = FlowRecord(true);
+  imp.flowRecordID = currentFlowRecord++;
   // Flow from value, length, and alignment into
   // data at destination pointer
   exp.addSourceValue(*intr.getArgOperand(1));
@@ -3661,6 +3559,12 @@ void constrainMemset(const IntrinsicInst &intr, Flows &flows) {
   imp.addSinkDirectPtr(*intr.getArgOperand(0));
   flows.push_back(exp);
   flows.push_back(imp);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  taintFlows.push_back(imp);
+  insertIntoInstFlowMap(&intr, taintFlows, WLPFlows);
 }
 
 void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {

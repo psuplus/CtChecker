@@ -43,6 +43,39 @@ bool VulnerableBranch::runOnModule(Module &M) {
   auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   ifa = &getAnalysis<Infoflow>();
 
+  // Only generate constraint set in the first round
+  if (Infoflow::iterationTag == 1) {
+    errs() << "\n---- inst to flow map BEGIN ----\n";
+    for (auto instFlowPair : ifa->instFlowMap) {
+      errs() << Infoflow::iterationTag << ":";
+      errs() << instFlowPair.first << ":";
+      errs() << instFlowPair.second.first.size() << ":";
+      errs() << instFlowPair.second.second.size() << "\n";
+    }
+    errs() << "---- inst to flow map END ----\n\n";
+
+    errs() << "\n---- flow to cons map BEGIN ----\n";
+    for (auto flowConsPair : ifa->flowConsSetMap) {
+      errs() << Infoflow::iterationTag << ":";
+      errs() << flowConsPair.first << ":";
+      errs() << flowConsPair.second.size() << "\n";
+    }
+    errs() << "---- flow to cons map END ----\n\n";
+
+    errs() << "\n---- Taint Constraints BEGIN ----\n";
+    for (auto cons : Infoflow::consSetTaint) {
+      errs() << Infoflow::iterationTag << ":";
+      cons.dump();
+    }
+    errs() << "---- Taint Constraints END ----\n\n";
+    errs() << "\n---- WLP Constraints BEGIN ----\n";
+    for (auto cons : Infoflow::consSetWLP) {
+      errs() << Infoflow::iterationTag << ":";
+      cons.dump();
+    }
+    errs() << "---- WLP Constraints END ----\n\n";
+  }
+
   parser.setInfoflow(ifa);
   if (!ifa) {
     errs() << "No instance\n";
@@ -50,17 +83,19 @@ bool VulnerableBranch::runOnModule(Module &M) {
   }
 
   std::set<std::string> kinds;
-  kinds.insert("source-sink");
-
   if (Infoflow::WLPTR_ROUND) {
-    parser.labelValue("source-sink", ifa->sourceWhitelistPointers, true);
+    parser.labelValue("source-sink-WLP", ifa->sourceWhitelistPointers, true);
+    kinds.insert("source-sink-WLP");
     InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
     Infoflow::whitelistPointers = soln->getAllTaintValues();
+    Infoflow::solutionSetWLP = soln->getAllWLPConsElem();
+    ifa->clearSolutions();
   } else {
-    parser.labelValue("source-sink", ifa->sourceVariables, true);
-    parser.labelValue("source-sink", ifa->fullyTainted, true);
+    parser.labelValue("source-sink-taint", ifa->sourceVariables, true);
+    parser.labelValue("source-sink-taint", ifa->fullyTainted, true);
+    kinds.insert("source-sink-taint");
     for (auto whitelist : ifa->whitelistVariables) {
-      ifa->removeConstraint("default", whitelist);
+      ifa->removeConstraint("default-taint", whitelist);
     }
     InfoflowSolution *soln = ifa->leastSolution(kinds, false, true);
     Infoflow::tainted = soln->getAllTaintValues();
@@ -101,7 +136,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
   for (auto kind : kinds) {
     errs() << kind << ":\n";
     for (auto cons : ifa->kit->getOrCreateConstraintSet(kind)) {
-      errs() << iterationTag << ":";
+      errs() << Infoflow::iterationTag << ":";
       cons.dump();
     }
   }

@@ -48,7 +48,6 @@ public:
 private:
   Infoflow *ifa;
   TaintAnalysisBase parser;
-  int iterationTag;
 };
 
 } // namespace deps

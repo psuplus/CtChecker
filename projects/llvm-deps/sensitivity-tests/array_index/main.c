@@ -33,13 +33,34 @@ static int PUB_ARR[16] = {0x10001040, 0x00001000, 0x00040000, 0x10041040,
                           0x00040040, 0x10040000, 0x10041040, 0x00041000,
                           0x10041000, 0x00041040, 0x00001000, 0x00000040};
 
-int bar(gcry_mpi_t expo);
+int bar(mpi_limb_t* expo) {
+  mpi_ptr_t d1 = expo[0];
+  expo[0] = 1;
+  expo[0] = 1;
+  expo[0] = 1;
+  expo[0] = 1;
+}
+
+void baz1(mpi_limb_t* expo);
+int baz2(gcry_mpi_t expo);
+
+void baz1(mpi_limb_t* expo) {
+  bar(expo);
+}
 
 void foo(long sec, long pub, long val, gcry_mpi_t expo, int *ptr) {
+  // bar(expo->d);
+  // bar(expo->d);
+  // bar(expo->d);
+  // bar(expo->d);
+  // bar(expo->d);
+  // bar(expo->d);
+  // baz1(expo->d);
   // missing seed example
-  int x = bar(expo);
+  int x = baz2(expo);
   if (x)
     ;
+
   // mpi_ptr_t ep2 = expo->d;
   // int d0 = ep2[0];
   // int x0 = ptr[d0]; // Cache side-channel
@@ -70,11 +91,11 @@ void foo(long sec, long pub, long val, gcry_mpi_t expo, int *ptr) {
   // if (y4) // side-channel
   //   ;
 
-  // // int y = (int)ptr % 2;
-  // // int z = PUB_ARR[y];
-  // // int *ptr1 = (int *)z;
-  // // int y1 = (int)ptr1 % 2;
-  // // int z2 = PUB_ARR[y1];
+  // int y = (int)ptr % 2;
+  // int z = PUB_ARR[y];
+  // int *ptr1 = (int *)z;
+  // int y1 = (int)ptr1 % 2;
+  // int z2 = PUB_ARR[y1];
 
   // void *q = (void *)ptr;
   // q = q + pub;

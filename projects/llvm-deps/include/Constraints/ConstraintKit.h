@@ -72,8 +72,9 @@ public:
                                      const ConsElem *e2) = 0;
   /// Constrain the left hand side with the right hand side and put it
   /// in the set "kind"
-  virtual void addConstraint(const std::string kind, const ConsElem &lhs,
-                             const ConsElem &rhs, const Predicate &pred) = 0;
+  template <class T>
+  std::vector<T> addConstraint(const std::string kind, const ConsElem &lhs,
+                             const ConsElem &rhs, const Predicate &pred);
   virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs,
                                    const Predicate &pred) = 0;
   /// Find the lfp of the constraints in the "kinds" sets (caller must delete)

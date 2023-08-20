@@ -151,11 +151,13 @@ public:
   /// isTainted - returns true if the security level of the value is High.
   bool isTainted(const Value &);
   bool isTainted(const AbstractLoc &);
+  bool isTainted(const ConsElem &);
   DenseSet<const ConsElem *> taintedConsElemFromLoc(const AbstractLoc &);
   DenseSet<const ConsElem *> taintedConsElemFromValue(const Value &);
   void getOriginalLocation(const Value *);
   void allTainted();
   std::set<const Value *> getAllTaintValues();
+  std::set<const ConsElem *> getAllWLPConsElem();
   /// isDirectPtrTainted - returns true if the security level of the memory
   /// pointed to is High.
   bool isDirectPtrTainted(const Value &);
@@ -203,22 +205,36 @@ class Infoflow
 public:
   typedef std::set<const AbstractLoc *> AbsLocSet;
   typedef std::set<const ConsElem *> ConsElemSet;
+  typedef std::set<RLConstraint> ConsSet;
   typedef DenseMap<const Value *, const ConsElem *> ValueConsElemMap;
   typedef FlowRecord::value_iterator value_iterator;
   typedef FlowRecord::value_set value_set;
   typedef std::vector<FlowRecord> Flows;
+  typedef unsigned long FlowRecordID;
+  typedef DenseMap<const Instruction *, std::pair<Flows, Flows>> InstFlowMap; // pair.first: taintAnalysis, pair.second: whitelist pointer
+  typedef DenseMap<FlowRecordID, ConsSet> FlowConsSetMap;
+  typedef DenseMap<const Instruction *, ConsSet> InstConsSetMap; 
 
   static std::set<const Value *> tainted;
   static std::set<const Value *> whitelistPointers;
+  static ConsElemSet solutionSetWLP;
   static bool WLPTR_ROUND;
+  InstFlowMap instFlowMap;
+  FlowConsSetMap flowConsSetMap;
+  static InstConsSetMap instTaintConsSetMap;
+  static InstConsSetMap instWLPConsSetMap;
+  static ConsSet consSetTaint;
+  static ConsSet consSetWLP;
+  static int iterationTag;
 
   static char ID;
   bool offset_used;
   json config;
+  FlowRecordID currentFlowRecord;
 
   Infoflow();
   virtual ~Infoflow() {
-    delete kit;
+    // delete kit;
     delete signatureRegistrar;
   }
   const char *getPassName() const { return "Infoflow"; }
@@ -227,22 +243,22 @@ public:
         AU);
     AU.addRequired<SourceSinkAnalysis>();
     AU.addRequired<PostDominatorTree>();
-    AU.addRequired<PointsToInterface>();
+    // AU.addRequired<PointsToInterface>();
     AU.setPreservesAll();
   }
 
   virtual void releaseMemory() {
     // Clear out all the maps
-    valueConstraintMap.clear();
-    vargConstraintMap.clear();
-    summarySinkValueConstraintMap.clear();
-    summarySourceValueConstraintMap.clear();
-    summarySinkVargConstraintMap.clear();
-    summarySourceVargConstraintMap.clear();
+    // valueConstraintMap.clear();
+    // vargConstraintMap.clear();
+    // summarySinkValueConstraintMap.clear();
+    // summarySourceValueConstraintMap.clear();
+    // summarySinkVargConstraintMap.clear();
+    // summarySourceVargConstraintMap.clear();
 
     // And free the kit and all its constraints
-    delete kit;
-    kit = NULL;
+    // delete kit;
+    // kit = NULL;
   }
 
   bool DropAtSinks() const;
@@ -318,6 +334,7 @@ public:
   InfoflowSolution *greatestSolution(std::set<std::string> kinds,
                                      bool implicit);
 
+  void clearSolutions();
   Flows getInstructionFlows(const Instruction &);
 
   // Solve the given kind using two threads.
@@ -338,16 +355,13 @@ private:
 
   RLConstraintKit *kit;
 
-  PointsToInterface *pti;
+  static PointsToInterface *pti;
   SourceSinkAnalysis *sourceSinkAnalysis;
   SignatureRegistrar *signatureRegistrar;
 
   Flows flowVector;
-  // optimization
-  // static DenseMap<const Instruction *, const Flows *> instToFlowsMap;
-  // static DenseMap<const FlowRecord *, const ConsElemSet *> flowToConsMap;
 
-  FlowRecord currentContextFlowRecord(bool implicit) const;
+  FlowRecord currentContextFlowRecord(bool implicit);
 
   const AbsLocSet &locsForValue(const Value &value) const;
   const AbsLocSet &reachableLocsForValue(const Value &value) const;
@@ -370,22 +384,22 @@ private:
   static std::set<ConfigVariable> sourceWhitelistPointers;
   static std::set<ConfigVariable> fullyTainted;
 
-  DenseMap<const AbstractLoc *, std::set<const Value *>>
+  static DenseMap<const AbstractLoc *, std::set<const Value *>>
       invertedLocConstraintMap;
-  DenseMap<const BasicBlock *, std::string> predicateMap;
-  DenseMap<ContextID, ValueConsElemMap> valueConstraintMap;
-  DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>
+  static DenseMap<const BasicBlock *, std::string> predicateMap;
+  static DenseMap<ContextID, ValueConsElemMap> valueConstraintMap;
+  static DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>
       locConstraintMap;
-  DenseMap<ContextID, DenseMap<const Function *, const ConsElem *>>
+  static DenseMap<ContextID, DenseMap<const Function *, const ConsElem *>>
       vargConstraintMap;
 
-  ValueConsElemMap summarySinkValueConstraintMap;
-  ValueConsElemMap summarySourceValueConstraintMap;
-  std::map<std::string, DenseMap<const ConstantInt *, const ConsElem *>>
+  static ValueConsElemMap summarySinkValueConstraintMap;
+  static ValueConsElemMap summarySourceValueConstraintMap;
+  static std::map<std::string, DenseMap<const ConstantInt *, const ConsElem *>>
       constantValueConstraintMap;
-  DenseMap<const Value *, std::string> valueStringMap;
-  DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
-  DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;
+  static DenseMap<const Value *, std::string> valueStringMap;
+  static DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
+  static DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;
 
   ValueConsElemMap &getOrCreateValueConstraintMap(const ContextID);
   DenseMap<const Function *, const ConsElem *> &
@@ -409,13 +423,13 @@ private:
                                AbsLocSet &, bool);
 
   void constrainSinkMemoryLocations(const FlowRecord &, const ConsElem &,
-                                    const ConsElem &, bool, bool);
+                                    const ConsElem &, bool, bool, ConsSet &);
   void constrainDirectSinkLocations(const FlowRecord &, AbsLocSet &,
                                     const ConsElem &, const ConsElem &, bool,
-                                    bool);
+                                    bool, ConsSet &);
   void constrainReachSinkLocations(const FlowRecord &, AbsLocSet &,
                                    const ConsElem &, const ConsElem &, bool,
-                                   bool);
+                                   bool, ConsSet &);
   const std::string kindFromImplicitSink(bool implicit, bool sink) const;
 
   const std::string getOrCreateStringFromValue(const Value &, bool = true);
@@ -430,7 +444,7 @@ private:
                                     const AbstractLoc *);
   bool checkGEPOperandsConstant(const GetElementPtrInst *);
   void processGetElementPtrInstSink(const Value *, bool, bool, const ConsElem &,
-                                    std::set<const AbstractLoc *>);
+                                    std::set<const AbstractLoc *>, ConsSet &);
   void processGetElementPtrInstSource(const Value *,
                                       std::set<const ConsElem *> &,
                                       std::set<const AbstractLoc *>, bool);
@@ -448,16 +462,16 @@ private:
                                    std::map<unsigned, const ConsElem *>,
                                    unsigned, unsigned, const Value *, Type *);
 
-  const ConsElem &getOrCreateConsElem(const ContextID, const Value &);
+  const ConsElem &getOrCreateConsElem(const ContextID, const Value &, ConsSet &);
   void putOrConstrainConsElem(bool imp, bool sink, const ContextID,
-                              const Value &, const ConsElem &);
+                              const Value &, const ConsElem &, ConsSet &);
   const ConsElem &getOrCreateConsElemSummarySource(const Value &);
   void putOrConstrainConsElemSummarySource(std::string, const Value &,
                                            const ConsElem &, std::string = "");
   const ConsElem &getOrCreateConsElemSummarySink(const Value &);
   void putOrConstrainConsElemSummarySink(std::string, const Value &,
-                                         const ConsElem &);
-  const ConsElem &getOrCreateConsElem(const Value &);
+                                         const ConsElem &, ConsSet &);
+  const ConsElem &getOrCreateConsElem(const Value &, ConsSet &);
   std::map<unsigned, const ConsElem *> getOrCreateConsElem(const AbstractLoc &);
   std::map<unsigned, const ConsElem *>
   getOrCreateConsElemTyped(const AbstractLoc &, unsigned, const Value *v = NULL,
@@ -471,14 +485,14 @@ private:
   std::map<unsigned, const ConsElem *>
   getOrCreateConsElemCollapsedStruct(const AbstractLoc &, const StructType *);
   void putOrConstrainConsElem(bool imp, bool sink, const Value &,
-                              const ConsElem &);
+                              const ConsElem &, ConsSet &);
   void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &,
-                              const ConsElem &);
+                              const ConsElem &, ConsSet &);
   void putOrConstrainConsElem(bool imp, bool sink, const AbstractLoc &,
                               const ConsElem &, unsigned offset, const Value *,
-                              unsigned);
+                              unsigned, ConsSet &);
   void putOrConstrainConsElemStruct(bool, bool, const AbstractLoc &,
-                                    const ConsElem &, unsigned,
+                                    const ConsElem &, unsigned, ConsSet &,
                                     const Value *v = NULL);
   void putOrConstrainConsElemCollapsed(bool, bool, const AbstractLoc &,
                                        const ConsElem &, unsigned,
@@ -506,51 +520,34 @@ private:
   void constrainOffsetFromIndex(std::string, const AbstractLoc *, const Value *,
                                 std::map<unsigned, const ConsElem *>, int);
 
-  const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &);
+  const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &, ConsSet &);
   void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID,
-                                  const Function &, const ConsElem &);
+                                  const Function &, const ConsElem &, ConsSet &);
   const ConsElem &getOrCreateVargConsElemSummarySource(const Function &);
   void putOrConstrainVargConsElemSummarySource(std::string, const Function &,
                                                const ConsElem &);
   const ConsElem &getOrCreateVargConsElemSummarySink(const Function &);
   void putOrConstrainVargConsElemSummarySink(std::string, const Function &,
-                                             const ConsElem &);
-  const ConsElem &getOrCreateVargConsElem(const Function &);
+                                             const ConsElem &, ConsSet &);
+  const ConsElem &getOrCreateVargConsElem(const Function &, ConsSet &);
   void putOrConstrainVargConsElem(bool imp, bool sink, const Function &,
-                                  const ConsElem &);
+                                  const ConsElem &, ConsSet &);
 
   void generateFunctionConstraints(const Function &);
   void generateBasicBlockConstraints(const BasicBlock &, Flows &);
-  void getInstructionFlowsInternalWLP(const Instruction &,
-                                   bool callees, Flows &, std::string);
   void getInstructionFlowsInternal(const Instruction &, bool callees, Flows &,
                                    std::string);
 
   void operandsAndPCtoValue(const Instruction &, Flows &);
 
   void constrainMemoryLocation(bool imp, bool sink, const Value &,
-                               const ConsElem &);
+                               const ConsElem &, ConsSet &);
   void constrainReachableMemoryLocations(bool imp, bool sink, const Value &,
-                                         const ConsElem &);
+                                         const ConsElem &, ConsSet &);
   const ConsElem &getOrCreateMemoryConsElem(const Value &);
   const ConsElem &getOrCreateReachableMemoryConsElem(const Value &);
 
   void constrainConditionalSuccessors(const TerminatorInst &, FlowRecord &rec);
-
-  // WLP constraints
-  void operandsAndPCtoValueWLP(const Instruction &, Flows &);
-  void constrainSelectInstWLP(const SelectInst &, Flows &);
-  void constrainPHINodeWLP(const PHINode &, Flows &);
-  void constrainGetElementPtrInstWLP(const GetElementPtrInst &, Flows &);
-  void constrainStoreInstWLP(const StoreInst &, Flows &);
-  void constrainUnaryInstructionWLP(const UnaryInstruction &, Flows &);
-  void constrainLoadInstWLP(const LoadInst &, Flows &);
-  void constrainCastInstWLP(const CastInst &, Flows &);
-  void constrainCallInstWLP(const CallInst &, bool callees, Flows &);
-  void constrainCallSiteWLP(const ImmutableCallSite &cs, bool callees, Flows &);
-  void constrainCalleeWLP(const ContextID calleeContext, const Function &callee,
-                       const ImmutableCallSite &cs, Flows &);
-  void constrainIntrinsicWLP(const IntrinsicInst &, Flows &);
 
   void constrainAtomicCmpXchgInst(const AtomicCmpXchgInst &, Flows &);
   void constrainAtomicRMWInst(const AtomicRMWInst &, Flows &);
@@ -586,11 +583,15 @@ private:
   void constrainCallee(const ContextID calleeContext, const Function &callee,
                        const ImmutableCallSite &cs, Flows &);
   void constrainIntrinsic(const IntrinsicInst &, Flows &);
+  void constrainMemcpyOrMove(const IntrinsicInst &intr, Flows &flows);
+  void constrainMemset(const IntrinsicInst &intr, Flows &flows);
 
   bool isWhitelistPtr (const Instruction &inst, Value *op);
   void pushTowhitelistPointers (const Instruction &inst);
   void removeFromWhitelistPointers (const Function &func, const Value &var);
   void pushToFullyTainted(const Instruction &inst);
+  void insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows, Flows &WLPFlows);
+  void insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set);
   const Value *whitelistConstantGEP (const User *inst, const Function *func, const Value *innerSrcValue);
 
   AbstractLocSet getPointedToAbstractLocs(const Value *v);

@@ -159,6 +159,12 @@ RLConstraintKit::solveLeastMT(std::vector<std::string> kinds,
   return Merged;
 }
 
+// typedef DenseMap<const Value *, const ConsElem *> ValueConsElemMap;
+// DenseMap<const AbstractLoc *, std::map<unsigned, const ConsElem *>>
+//     Infoflow::locConstraintMap;
+// ValueConsElemMap Infoflow::summarySinkValueConstraintMap;
+// DenseMap<const Function *, const ConsElem *> Infoflow::summarySinkVargConstraintMap;
+
 std::vector<InfoflowSolution *>
 Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
                        const Predicate *pred) {
@@ -166,14 +172,14 @@ Infoflow::solveLeastMT(std::vector<std::string> kinds, bool useDefaultSinks,
       kit->solveLeastMT(kinds, useDefaultSinks, pred);
 
   std::vector<InfoflowSolution *> Solns;
-  for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();
-       I != E; ++I) {
-    Solns.push_back(
-        new InfoflowSolution(*this, *I, kit->topConstant(), kit->botConstant(),
-                             false, /* default to untainted */
-                             summarySinkValueConstraintMap, locConstraintMap,
-                             summarySinkVargConstraintMap));
-  }
+  // for (std::vector<PartialSolution *>::iterator I = PS.begin(), E = PS.end();
+  //      I != E; ++I) {
+  //   Solns.push_back(
+  //       new InfoflowSolution(*this, *I, kit->topConstant(), kit->botConstant(),
+  //                            false, /* default to untainted */
+  //                            summarySinkValueConstraintMap, locConstraintMap,
+  //                            summarySinkVargConstraintMap));
+  // }
 
   return Solns;
 }

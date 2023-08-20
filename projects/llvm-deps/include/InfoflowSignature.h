@@ -54,7 +54,7 @@ public:
   /// Process takes as input an llvm call site and returns a FlowRecord
   /// summarizing the information flows that occur as a result of the call.
   /// Process may only be invoked if the signature accepted the call site.
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const = 0;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -80,7 +80,7 @@ public:
   /// that may occur as a result of the call.
   /// Currently uses the first signature to accept the call, in order
   /// of signature registration.
-  std::vector<FlowRecord> process(const ContextID ctxt,
+  std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                   const ImmutableCallSite cs);
 
 private:

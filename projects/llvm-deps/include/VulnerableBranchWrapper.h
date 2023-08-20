@@ -37,12 +37,13 @@ public:
 
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
     // AU.addRequired<VulnerableBranch>();
+    AU.addRequired<PointsToInterface>();
     AU.setPreservesAll();
   }
 
 private:
   VulnerableBranch *vba;
-
+  PointsToInterface *pti;
   bool matchNonPointerWhitelistAndTainted(const User *,
                                           std::set<const Value *> &, const Instruction &);
 };

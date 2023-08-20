@@ -82,13 +82,13 @@ void RLConsSoln::solve(void) {
   while (!queue.empty()) {
     number++;
     const RLConstraint &c = dequeueConstraint();
-    const ConsElem &left = c.lhs();
-    const ConsElem &right = c.rhs();
-    if (subst(left).leq(subst(right))) {
+    const ConsElem *left = c.lhs();
+    const ConsElem *right = c.rhs();
+    if (subst(*left).leq(subst(*right))) {
       // The constraint is already satisfied!
     } else {
       // Need to satisfy the constraint
-      satisfyConstraint(c, left, right);
+      satisfyConstraint(c, *left, *right);
     }
   }
   llvm::errs() << "Solved after ";
@@ -111,7 +111,7 @@ RLConsLeastSoln::RLConsLeastSoln(RLConstraintKit &kit,
                                                    end = constraints->end();
        cons != end; ++cons) {
     leftVariables.clear();
-    (*cons)->lhs().variables(leftVariables);
+    (*cons)->lhs()->variables(leftVariables);
 
     for (std::set<const ConsVar *>::iterator var = leftVariables.begin(),
                                              end = leftVariables.end();
@@ -158,7 +158,7 @@ RLConsGreatestSoln::RLConsGreatestSoln(
                                                    end = constraints->end();
        cons != end; ++cons) {
     rightVariables.clear();
-    (*cons)->rhs().variables(rightVariables);
+    (*cons)->rhs()->variables(rightVariables);
 
     for (std::set<const ConsVar *>::iterator var = rightVariables.begin(),
                                              end = rightVariables.end();

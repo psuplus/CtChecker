@@ -24,12 +24,13 @@ bool TaintByConfig::accept(const ContextID ctxt,
   return true;
 }
 
-std::vector<FlowRecord>
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
 TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using taint reachable signature for: "
                << *cs.getInstruction() << "\n");
 
-  std::vector<FlowRecord> flows;
+  std::vector<FlowRecord> taintFlows;
+  std::vector<FlowRecord> WLPFlows;
 
   SignatureFlowDirection directionMode = config.at("direction");
   SignatureFlowPointer pointerMode = config.at("pointer");
@@ -113,8 +114,8 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
               }
             }
           }
-          flows.push_back(imp);
-          flows.push_back(exp);
+          taintFlows.push_back(imp);
+          taintFlows.push_back(exp);
           break;
         }
       }
@@ -153,7 +154,6 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
           if ((other != arg || directionMode == SFD_ArgToAllReachable) &&
               !isa<Constant>(other->get())) {
             if ((*other)->getType()->isPointerTy()) {
-              exp.addSinkValue(**other);
               if (pointerMode == SFP_DirectPointer) {
                 exp.addSinkDirectPtr(**other);
                 imp.addSinkDirectPtr(**other);
@@ -161,14 +161,38 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
                 exp.addSinkReachablePtr(**other);
                 imp.addSinkReachablePtr(**other);
               }
+              // whitelist pointer exclusive flows
+              if ((*arg)->getType()->isPointerTy()) {
+                FlowRecord WLPFlow = FlowRecord(false, ctxt, ctxt);
+                WLPFlow.addSourceValue(**arg);
+                if (pointerMode == SFP_DirectPointer) {
+                  WLPFlow.addSourceDirectPtr(**arg);
+                } else {
+                  WLPFlow.addSourceReachablePtr(**arg);
+                }
+                WLPFlow.addSinkValue(**other);
+                WLPFlows.push_back(WLPFlow);
+              }
             }
           }
         }
       }
+      taintFlows.push_back(exp);
+      WLPFlows.push_back(exp);
 
       // if the function has a return value it is a sink
       // MODE: SFD_ArgToRet
       if (!cs->getType()->isVoidTy()) {
+        FlowRecord exp = FlowRecord(false, ctxt, ctxt);
+        // add source again
+        exp.addSourceValue(**arg);
+        if ((*arg)->getType()->isPointerTy()) {
+          if (pointerMode == SFP_DirectPointer) {
+            exp.addSourceDirectPtr(**arg);
+          } else {
+            exp.addSourceReachablePtr(**arg);
+          }
+        }
         imp.addSinkValue(*cs.getInstruction());
         exp.addSinkValue(*cs.getInstruction());
         // TODO: VERIFY THIS WITH malloc()
@@ -180,13 +204,16 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
         }
       }
 
-      flows.push_back(imp);
-      flows.push_back(exp);
+      taintFlows.push_back(imp);
+      taintFlows.push_back(exp);
     }
     break;
   }
 
-  return flows;
+  std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> flowPair;
+  flowPair.first = taintFlows;
+  flowPair.second = WLPFlows;
+  return flowPair;
 }
 
 bool TaintReachable::accept(const ContextID ctxt,
@@ -194,7 +221,7 @@ bool TaintReachable::accept(const ContextID ctxt,
   return true;
 }
 
-std::vector<FlowRecord>
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
 TaintReachable::process(const ContextID ctxt,
                         const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using taint reachable signature for: "
@@ -245,14 +272,18 @@ TaintReachable::process(const ContextID ctxt,
     flows.push_back(imp);
     flows.push_back(exp);
   }
-  return flows;
+  std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> flowPair;
+  flowPair.first = flows;
+  flowPair.second = std::vector<FlowRecord>();
+  return flowPair;
 }
 
 bool ArgsToRet::accept(const ContextID ctxt, const ImmutableCallSite cs) const {
   return true;
 }
 
-std::vector<FlowRecord> ArgsToRet::process(const ContextID ctxt,
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
+ArgsToRet::process(const ContextID ctxt,
                                            const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using ArgsToRet reachable signature for: "
                << *cs.getInstruction() << "\n");
@@ -276,17 +307,21 @@ std::vector<FlowRecord> ArgsToRet::process(const ContextID ctxt,
     flows.push_back(exp);
   }
 
-  return flows;
+  std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> flowPair;
+  flowPair.first = flows;
+  flowPair.second = std::vector<FlowRecord>();
+  return flowPair;
 }
 
 bool NoFlows::accept(const ContextID ctxt, const ImmutableCallSite cs) const {
   return true;
 }
 
-std::vector<FlowRecord> NoFlows::process(const ContextID ctxt,
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
+NoFlows::process(const ContextID ctxt,
                                          const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using no flows signature...\n");
-  return std::vector<FlowRecord>();
+  return std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>();
 }
 
 bool OverflowChecks::accept(const ContextID ctxt,
@@ -295,7 +330,7 @@ bool OverflowChecks::accept(const ContextID ctxt,
   return F && F->getName().startswith("____jf_check");
 }
 
-std::vector<FlowRecord>
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
 OverflowChecks::process(const ContextID ctxt,
                         const ImmutableCallSite cs) const {
   DEBUG(errs() << "Using OverflowChecks signature...\n");
@@ -318,7 +353,10 @@ OverflowChecks::process(const ContextID ctxt,
   std::vector<FlowRecord> flows;
   flows.push_back(imp);
   flows.push_back(exp);
-  return flows;
+  std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> flowPair;
+  flowPair.first = flows;
+  flowPair.second = std::vector<FlowRecord>();
+  return flowPair;
 }
 
 } // namespace deps

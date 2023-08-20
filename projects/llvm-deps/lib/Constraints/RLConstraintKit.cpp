@@ -33,6 +33,8 @@ STATISTIC(implicitRLConstraints, "Number of implicit flow constraints");
 typedef std::map<const Predicate *, llvm::StringMap<PartialSolution *>>
     PartialSolutionMap;
 
+RLConstraintKit *RLConstraintKit::singleton = nullptr;
+
 RLConstraintKit::RLConstraintKit() {}
 
 RLConstraintKit::~RLConstraintKit() {
@@ -124,7 +126,8 @@ RLConstraintKit::getOrCreateConstraintSet(const std::string kind,
   return constraints[&pred][kind];
 }
 
-void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
+std::vector<RLConstraint>
+RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs, std::string info,
                                     const Predicate &pred) {
   if (lockedConstraintKinds[&pred].find(kind) !=
@@ -156,19 +159,22 @@ void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
     RLConstraint c(lhs, rhs, pred, implicit, info);
     set.push_back(c);
   }
+  return set;
 }
 
-void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
+std::vector<RLConstraint>
+RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs,
                                     const llvm::Value &value,
                                     const Predicate &pred) {
-  addConstraint(kind, lhs, rhs, "", pred);
+  return addConstraint(kind, lhs, rhs, "", pred);
 }
 
-void RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
+std::vector<RLConstraint>
+RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
                                     const ConsElem &rhs,
                                     const Predicate &pred) {
-  addConstraint(kind, lhs, rhs, "", pred);
+  return addConstraint(kind, lhs, rhs, "", pred);
 }
 
 void RLConstraintKit::removeConstraintRHS(const std::string kind,
@@ -189,7 +195,7 @@ void RLConstraintKit::removeConstraintRHS(const std::string kind,
   llvm::errs() << "\n";
 
   for (auto vIt = set.begin(); vIt != set.end(); vIt++) {
-    const ConsElem &constraintRight = (*vIt).rhs();
+    const ConsElem &constraintRight = *(*vIt).rhs();
     if (&rhs == &constraintRight) {
       llvm::errs() << "Constraint erased: ";
       (*vIt).dump(" => ");
@@ -208,7 +214,7 @@ ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
       lockedConstraintKinds[&pred].insert(kind);
       leastSolutions[&pred][kind] =
           new PartialSolution(getOrCreateConstraintSet(kind, pred), false);
-      freeUnneededConstraints(kind, pred);
+      // freeUnneededConstraints(kind, pred);
     }
     PartialSolution *P = leastSolutions[&pred][kind];
 
@@ -245,6 +251,11 @@ ConsSoln *RLConstraintKit::greatestSolution(const std::set<std::string> kinds,
   }
   assert(PS && "No kinds given?");
   return PS;
+}
+
+void RLConstraintKit::clearSolutions(const Predicate &pred) {
+  lockedConstraintKinds[&pred].clear();
+  leastSolutions[&pred].clear();
 }
 
 void RLConstraintKit::freeUnneededConstraints(std::string kind,
@@ -338,6 +349,14 @@ void RLConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
 
   // Sort the predicated constraints
   std::sort(P.begin(), P.end(), Predicate::predcompare);
+}
+
+void RLConstraintKit::setConstraints(std::set<RLConstraint> consSet,
+                    const std::string kind,
+                    const Predicate &pred) {
+  constraints[&pred][kind].clear();
+  std::vector<RLConstraint> &consVec = getOrCreateConstraintSet(kind, pred);
+  consVec.insert(consVec.end(), consSet.begin(), consSet.end());
 }
 
 } // namespace deps

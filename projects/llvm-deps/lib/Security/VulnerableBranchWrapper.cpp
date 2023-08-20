@@ -39,36 +39,40 @@ static RegisterPass<VulnerableBranchWrapper>
 char VulnerableBranchWrapper::ID;
 
 bool VulnerableBranchWrapper::runOnModule(Module &M) {
-  std::set<const Value *> whitelistPointersLastIter;
-  int numberOfIterations = 0;
-  while (true) {
-    numberOfIterations++;
-    // Phase 1
-    errs() << "\n---------Phase 1: Whitelist pointer propagation---------\n";
-    legacy::PassManager *passManager = new legacy::PassManager();
-    vba = new VulnerableBranch();
-    vba->iterationTag = 2 * numberOfIterations - 1;
-    Infoflow::WLPTR_ROUND = true;
-    passManager->add(vba);
-    passManager->run(M);
-    delete vba;
+  pti = &getAnalysis<PointsToInterface>();
+  errs() << "\n---------Phase 0: Constraint Set Generation---------\n";
+  legacy::PassManager *passManager = new legacy::PassManager();
+  vba = new VulnerableBranch();
+  Infoflow::iterationTag++;
+  Infoflow::WLPTR_ROUND = false;
+  Infoflow::pti = pti;
+  passManager->add(vba);
+  passManager->run(M);
+  errs() << vba->ifa->currentFlowRecord << " flow records processed\n";
+  delete vba;
 
-    // Phase 2
-    errs() << "\n---------Phase 2: Taint analysis---------\n";
-    passManager = new legacy::PassManager();
-    vba = new VulnerableBranch();
-    vba->iterationTag = 2 * numberOfIterations;
-    Infoflow::WLPTR_ROUND = false;
-    passManager->add(vba);
-    passManager->run(M);
+  // Phase 1
+  errs() << "\n---------Phase 1: Whitelist pointer propagation---------\n";
+  passManager = new legacy::PassManager();
+  vba = new VulnerableBranch();
+  Infoflow::iterationTag++;
+  Infoflow::WLPTR_ROUND = true;
+  vba->ifa->pti = pti;
+  passManager->add(vba);
+  passManager->run(M);
+  errs() << vba->ifa->currentFlowRecord << " flow records processed\n";
+  delete vba;
 
-    if (Infoflow::whitelistPointers == whitelistPointersLastIter) {
-        break;
-    } else {
-        whitelistPointersLastIter = Infoflow::whitelistPointers;
-        delete vba;
-    }
-  }
+  // Phase 2
+  errs() << "\n---------Phase 2: Taint analysis---------\n";
+  passManager = new legacy::PassManager();
+  vba = new VulnerableBranch();
+  Infoflow::iterationTag++;
+  Infoflow::WLPTR_ROUND = false;
+  vba->ifa->pti = pti;
+  passManager->add(vba);
+  passManager->run(M);
+  errs() << vba->ifa->currentFlowRecord << " flow records processed\n";
 
   errs() << "\n---- Tainted Values BEGIN ----\n";
   for (auto i : Infoflow::tainted) {
@@ -135,7 +139,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
     }
   }
 
-  errs() << "Done after " << numberOfIterations << " iterations.\n";
+  // errs() << "Done after " << 1 << " iterations.\n";
   // Dump statistics
   errs() << "#--------------Statistics----------------\n";
   errs() << ":: Tainted Branches: " << tainted_branches << "\n";

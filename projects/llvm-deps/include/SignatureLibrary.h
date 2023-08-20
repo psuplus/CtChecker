@@ -41,7 +41,7 @@ enum SignatureFlowPointer { SFP_DirectPointer, SFP_ReachablePointer };
 class TaintByConfig : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -65,7 +65,7 @@ public:
 class TaintReachable : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -84,7 +84,7 @@ public:
 class NoFlows : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -98,7 +98,7 @@ public:
 class ArgsToRet : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -119,7 +119,7 @@ class StdLib : public Signature {
 public:
   StdLib() : Signature() { initCalls(); }
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)
@@ -137,7 +137,7 @@ public:
 class OverflowChecks : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt,
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt,
                                           const ImmutableCallSite cs) const;
 
   /// Support for llvm-style RTTI (isa<>, dyn_cast<>, etc.)

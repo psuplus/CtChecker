@@ -73,9 +73,35 @@ public:
     // if (!implicit)
     DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
-  const ConsElem &lhs() const { return *left; }
-  const ConsElem &rhs() const { return *right; }
-  const Predicate &predicate() const { return *pred; }
+  const ConsElem *lhs() const { return left; }
+  const ConsElem *rhs() const { return right; }
+  const Predicate *predicate() const { return pred; }
+  bool isImplicit() const { return implicit; }
+  std::string getInfo() const { return info; }
+  bool operator<(const RLConstraint that) const {
+    if (this->left < that.left) {
+      return true;
+    } else if (this->left == that.left &&
+               this->right < that.right) {
+      return true;
+    } else if (this->left == that.left &&
+               this->right == that.right &&
+               this->pred < that.pred) {
+      return true;
+    } else if (this->left == that.left &&
+               this->right == that.right &&
+               this->pred == that.pred &&
+               this->implicit < that.implicit) {
+      return true;
+    } else if (this->left == that.left &&
+               this->right == that.right &&
+               this->pred == that.pred &&
+               this->implicit == that.implicit &&
+               this->info < that.info) {
+      return true;
+    } 
+    return false;
+  }
 
   void dump(std::string delim = " <: ") { printCosntraint(delim); }
 

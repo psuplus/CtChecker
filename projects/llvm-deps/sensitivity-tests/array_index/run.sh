@@ -27,6 +27,7 @@ $LEVEL/Debug+Asserts/bin/llvm-dis test.bc
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer test.bc -o test.bc
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
+# valgrind --tool=memcheck 
 $LEVEL/Debug+Asserts/bin/opt \
   -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
@@ -36,10 +37,13 @@ $LEVEL/Debug+Asserts/bin/opt \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
   -vulnerablebranchwrapper  -debug < test.bc 2> tmp.dat > /dev/null
 
-ITER=$(cat tmp.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
-ITER=$((ITER))
-ITERTAG=$(expr $ITER \* 2)
-cat tmp.dat | grep $ITERTAG':.*<:' > constraints.con
+# used in fix-point iteration
+# ITER=$(cat tmp.dat | grep -E 'Done after [0-9]* iterations.' | grep -oE '[0-9]*')
+# ITER=$((ITER))
+# ITERTAG=$(expr $ITER \* 2)
+# cat tmp.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > constraints.con
+
+cat tmp.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > constraints.con
 
 ## link instrumentation module
 #llvm-link welcome.bc sample.bc -o welcome.linked.bc

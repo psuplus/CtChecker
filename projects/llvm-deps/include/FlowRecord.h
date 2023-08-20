@@ -50,6 +50,7 @@ public:
   typedef SmallPtrSet<const Function *, 1> fun_set;
   typedef fun_set::const_iterator fun_iterator;
 
+  unsigned long flowRecordID;
   // DefaultID = 0. from CallContext.h
   FlowRecord() : implicit(false), sourceCtxt(DefaultID), sinkCtxt(DefaultID) {}
   FlowRecord(bool type)
@@ -58,6 +59,8 @@ public:
       : implicit(false), sourceCtxt(source), sinkCtxt(sink) {}
   FlowRecord(bool type, const ContextID source, const ContextID sink)
       : implicit(type), sourceCtxt(source), sinkCtxt(sink) {}
+  FlowRecord(bool type, const ContextID source, const ContextID sink, unsigned long id)
+      : implicit(type), sourceCtxt(source), sinkCtxt(sink), flowRecordID(id) {}
 
   bool isImplicit() const { return implicit; }
 
@@ -142,6 +145,7 @@ public:
     errs() << "\tSource context: " << sourceCtxt << "\n";
     errs() << "\tSink context: " << sinkCtxt << "\n";
     errs() << "\tImplicit flow: " << (implicit ? "Yes" : "No") << "\n";
+    errs() << "\tID: " << flowRecordID << "\n";
     print(valueSources, "Value Sources");
     print(directPtrSources, "D Sources");
     print(reachPtrSources, "R Sources");
@@ -151,6 +155,29 @@ public:
     print(vargSources, "Varg Sources");
     print(vargSinks, "Varg Sinks");
     errs() << "++++ end ++++\n\n";
+  }
+
+  bool operator==(const FlowRecord &that) {
+    if (this->implicit == that.implicit &&
+        this->sourceCtxt == that.sourceCtxt &&
+        this->sinkCtxt == that.sinkCtxt && 
+        this->valueSources.size() == that.valueSources.size() && 
+        this->directPtrSources.size() == that.directPtrSources.size() && 
+        this->reachPtrSources.size() == that.reachPtrSources.size() && 
+        this->valueSinks.size() == that.valueSinks.size() && 
+        this->directPtrSinks.size() == that.directPtrSinks.size() && 
+        this->reachPtrSinks.size() == that.reachPtrSinks.size() &&
+        valueSetMatch(this->valueSources, that.valueSources) &&
+        valueSetMatch(this->directPtrSources, that.directPtrSources) &&
+        valueSetMatch(this->reachPtrSources, that.reachPtrSources) &&
+        valueSetMatch(this->valueSinks, that.valueSinks) &&
+        valueSetMatch(this->directPtrSinks, that.directPtrSinks) &&
+        valueSetMatch(this->reachPtrSinks, that.reachPtrSinks) &&
+        funcSetMatch(this->vargSources, that.vargSources) &&
+        funcSetMatch(this->vargSinks, that.vargSinks)) {
+      return true;
+    }
+    return false;
   }
 
 private:
@@ -183,6 +210,39 @@ private:
         errs() << "Function " << (*i)->getName() << "\n";
       }
     }
+  }
+  bool valueSetMatch(const value_set &thisSet, const value_set &thatSet) {
+    for (auto value = thisSet.begin(); value != thisSet.end(); value++) {
+      bool match = true;
+      for (auto thatValue = thatSet.begin(); thatValue != thatSet.end(); thatValue++) {
+        if ((*value) == (*thatValue)) {
+          match = true;
+          break;
+        }
+        match = false;
+      }
+      if (!match) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool funcSetMatch(const fun_set &thisSet, const fun_set &thatSet) {
+    for (auto func = thisSet.begin(); func != thisSet.end(); func++) {
+      bool match = true;
+      for (auto thatFunc = thatSet.begin(); thatFunc != thatSet.end(); thatFunc++) {
+        if ((*func) == (*thatFunc)) {
+          match = true;
+          break;
+        }
+        match = false;
+      }
+      if (!match) {
+        return false;
+      }
+    }
+    return true;
   }
 };
 // typedef uintptr_t ContextID;

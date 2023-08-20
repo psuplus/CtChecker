@@ -39,6 +39,11 @@ class PartialSolution;
 /// solving constraints over a two level lattice.
 class RLConstraintKit : public ConstraintKit {
 public:
+  static RLConstraintKit* get() {
+    if (nullptr == singleton) singleton = new RLConstraintKit;
+    return singleton;
+  }
+
   RLConstraintKit();
   ~RLConstraintKit();
   /// Get a reference to the constant "low" element of the lattice
@@ -63,13 +68,13 @@ public:
   virtual const ConsElem &upperBound(std::set<const ConsElem *> elems);
 
   /// Add the constraint lhs <= rhs to the set "kind"
-  virtual void addConstraint(const std::string kind, const ConsElem &lhs,
+  virtual std::vector<RLConstraint> addConstraint(const std::string kind, const ConsElem &lhs,
                              const ConsElem &rhs,
                              const Predicate &pred = truePredicate());
-  void addConstraint(const std::string kind, const ConsElem &lhs,
+  std::vector<RLConstraint> addConstraint(const std::string kind, const ConsElem &lhs,
                      const ConsElem &rhs, std::string info,
                      const Predicate &pred = truePredicate());
-  void addConstraint(const std::string kind, const ConsElem &lhs,
+  std::vector<RLConstraint> addConstraint(const std::string kind, const ConsElem &lhs,
                      const ConsElem &rhs, const llvm::Value &value,
                      const Predicate &pred = truePredicate());
   virtual void removeConstraintRHS(const std::string kind, const ConsElem &rhs,
@@ -83,6 +88,7 @@ public:
   /// Unconstrained variables will be "High" (caller delete)
   virtual ConsSoln *greatestSolution(const std::set<std::string> kinds,
                                      const Predicate &pred = truePredicate());
+  void clearSolutions(const Predicate &pred = truePredicate());
   /// return the vars and joins
   std::vector<const RLConsVar *> getVars() { return vars; }
   std::set<RLJoin> &getJoins() { return joins; }
@@ -103,6 +109,10 @@ public:
   void partitionPredicateSet(std::vector<Predicate *> &P);
 
   static const Predicate &truePredicate();
+
+  void setConstraints(std::set<RLConstraint> consSet,
+                      const std::string kind,
+                      const Predicate &pred = truePredicate());
 
 private:
   static RLConstraintKit *singleton;

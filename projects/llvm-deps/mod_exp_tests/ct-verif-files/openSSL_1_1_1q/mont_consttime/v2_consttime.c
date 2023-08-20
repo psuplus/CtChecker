@@ -612,7 +612,7 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
 /*X*/    dummy++;//    bn_check_top(m);
 
 /*X*/    if(pub_BRANCH0) {//    if (!BN_is_odd(m)) {
-        BNerr(BN_F_BN_MOD_EXP_MONT_CONSTTIME, BN_R_CALLED_WITH_EVEN_MODULUS);
+/*X*///         BNerr(BN_F_BN_MOD_EXP_MONT_CONSTTIME, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
 
@@ -650,9 +650,9 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
     }
 
     if (a->neg || BN_ucmp(a, m) >= 0) {
-        BIGNUM *reduced = BN_CTX_get(ctx);
-        if (reduced == NULL
-            || !BN_nnmod(reduced, a, m, ctx)) {
+/*X*/        BIGNUM *reduced = pub_BIGNUM0;//        BIGNUM *reduced = BN_CTX_get(ctx);
+        if (reduced == NULL) {
+/*X*/          //  || !BN_nnmod(reduced, a, m, ctx)) {
             goto err;
         }
         a = reduced;
@@ -720,9 +720,9 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
 /*X*/            chr0;//            alloca(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH);
     else
 #endif
-        if ((powerbufFree =
-            OPENSSL_malloc(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH))
-            == NULL)
+/*X*/    if (pub_BRANCH4) //      if ((powerbufFree =
+            // OPENSSL_malloc(powerbufLen + MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH))
+            // == NULL)
         goto err;
 
 /*X*/    powerbuf = chr1;//    powerbuf = MOD_EXP_CTIME_ALIGN(powerbufFree);
@@ -1128,8 +1128,8 @@ int BN_mod_exp_mont_consttime_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNU
     if (in_mont == NULL)
 /*X*/        dummy++;//        BN_MONT_CTX_free(mont);
     if (powerbuf != NULL) {
-        OPENSSL_cleanse(powerbuf, powerbufLen);
-        OPENSSL_free(powerbufFree);
+/*X*/        dummy++;//         OPENSSL_cleanse(powerbuf, powerbufLen);
+/*X*///         OPENSSL_free(powerbufFree);
     }
 /*X*/    dummy++;//    BN_CTX_end(ctx);
     return ret;

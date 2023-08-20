@@ -77,7 +77,7 @@ br_i32_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m,
 	 */
 	a0 = br_i32_word(x, m_bitlen - 32, public_2);
 /*cache channel*/	// hi = x[mlen];
-	memmove(x + 2, x + 1, (mlen - 1) * sizeof *x);
+/*X*/	// memmove(x + 2, x + 1, (mlen - 1) * sizeof *x);
 	x[1] = z;
 	a1 = br_i32_word(x, m_bitlen - 32, public_2);
 	b0 = br_i32_word(m, m_bitlen - 32, public_2);

@@ -615,7 +615,7 @@ int mbedtls_mpi_exp_mod( mbedtls_mpi *X, const mbedtls_mpi *A,
     if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )
     {
         X->s = -1;
-        MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
+/*X*/      //          MBEDTLS_MPI_CHK( mbedtls_mpi_add_mpi( X, N, X ) );
     }
 
 cleanup:

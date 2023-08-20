@@ -188,7 +188,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         return ret;
     }
 
-        BN_RECP_CTX_init(&recp);
+/*X*/         //        BN_RECP_CTX_init(&recp);
 
 /*X*/    dummy++; //BN_CTX_start(ctx);
 /*X*/    aa = pub_BIGNUM0; //aa = BN_CTX_get(ctx);

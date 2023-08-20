@@ -1144,10 +1144,10 @@ int BN_mod_exp_mont_word_algorithm(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
     BN_ULONG w, next_w;
     BIGNUM *r, *t;
     BIGNUM *swap_tmp;
-#define BN_MOD_MUL_WORD(r, w, m) \
-                (BN_mul_word(r, (w)) && \
-                (/* BN_ucmp(r, (m)) < 0 ? 1 :*/  \
-                        (BN_mod(t, r, m, ctx) && (swap_tmp = r, r = t, t = swap_tmp, 1))))
+/*X*/// #define BN_MOD_MUL_WORD(r, w, m) \
+/*X*///                 (BN_mul_word(r, (w)) && \
+/*X*///                 (/* BN_ucmp(r, (m)) < 0 ? 1 :*/  \
+/*X*///                         (BN_mod(t, r, m, ctx) && (swap_tmp = r, r = t, t = swap_tmp, 1))))
     /*
      * BN_MOD_MUL_WORD is only used with 'w' large, so the BN_ucmp test is
      * probably more overhead than always using BN_mod (which uses BN_copy if
@@ -1158,8 +1158,8 @@ int BN_mod_exp_mont_word_algorithm(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
      * never negative (the result of BN_mod does not depend on the sign of
      * the modulus).
      */
-#define BN_TO_MONTGOMERY_WORD(r, w, mont) \
-                (BN_set_word(r, (w)) && BN_to_montgomery(r, r, (mont), ctx))
+/*X*/// #define BN_TO_MONTGOMERY_WORD(r, w, mont) \
+/*X*///                 (BN_set_word(r, (w)) && BN_to_montgomery(r, r, (mont), ctx))
 
  /*X*///    if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
 //             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
@@ -1172,7 +1172,7 @@ int BN_mod_exp_mont_word_algorithm(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
 /*X*/    dummy++;//    bn_check_top(m);
 
 /*X*/    if (pub_BRANCH0) {//    if (!BN_is_odd(m)) {
-        BNerr(BN_F_BN_MOD_EXP_MONT_WORD, BN_R_CALLED_WITH_EVEN_MODULUS);
+/*X*///         BNerr(BN_F_BN_MOD_EXP_MONT_WORD, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
     if (m->top == 1)

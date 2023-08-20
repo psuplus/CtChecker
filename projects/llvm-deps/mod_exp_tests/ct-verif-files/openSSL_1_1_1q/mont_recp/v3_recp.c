@@ -188,7 +188,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         return ret;
     }
 
-        BN_RECP_CTX_init(&recp);
+/*X*/         //        BN_RECP_CTX_init(&recp);
 
 /*X*/    dummy++; //BN_CTX_start(ctx);
 /*X*/    aa = pub_BIGNUM0; //aa = BN_CTX_get(ctx);
@@ -221,7 +221,7 @@ int BN_mod_exp_recp_algorithm(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 /*X*/        if (pub_BRANCH8) //if (!BN_mod_mul_reciprocal(aa, val[0], val[0], &recp, ctx))
             goto err;           /* 2 */
         j = 1 << (window - 1);
-        { //for (i = 1; i < j; i++) {
+        for (i = 1; i < j; i++) {
             if (pub_BRANCH9) //if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
                 // !BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
                 goto err;

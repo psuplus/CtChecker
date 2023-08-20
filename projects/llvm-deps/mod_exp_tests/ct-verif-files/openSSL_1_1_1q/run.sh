@@ -50,7 +50,7 @@ make $1
 
 $LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer $1 -o $1
 # $LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=0 $1 -o $1
-# $LEVEL/Debug+Asserts/bin/llvm-dis $1
+$LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
 $LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \

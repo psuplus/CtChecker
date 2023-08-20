@@ -96,50 +96,50 @@ static int bn_limit_num_mont = 8; /* (1<<bn_limit_bits_mont) */
 // # define MS_BROKEN_BN_num_bits_word
 // # pragma optimize("", off)
 // #endif
-// int BN_num_bits_word(BN_ULONG l)
-// {
-//     BN_ULONG x, mask;
-//     int bits = (l != 0);
+int BN_num_bits_word(BN_ULONG l)
+{
+    BN_ULONG x, mask;
+    int bits = (l != 0);
 
-// #if BN_BITS2 > 32
-//     x = l >> 32;
-//     mask = (0 - x) & BN_MASK2;
-//     mask = (0 - (mask >> (BN_BITS2 - 1)));
-//     bits += 32 & mask;
-//     l ^= (x ^ l) & mask;
-// #endif
+#if BN_BITS2 > 32
+    x = l >> 32;
+    mask = (0 - x) & BN_MASK2;
+    mask = (0 - (mask >> (BN_BITS2 - 1)));
+    bits += 32 & mask;
+    l ^= (x ^ l) & mask;
+#endif
 
-//     x = l >> 16;
-//     mask = (0 - x) & BN_MASK2;
-//     mask = (0 - (mask >> (BN_BITS2 - 1)));
-//     bits += 16 & mask;
-//     l ^= (x ^ l) & mask;
+    x = l >> 16;
+    mask = (0 - x) & BN_MASK2;
+    mask = (0 - (mask >> (BN_BITS2 - 1)));
+    bits += 16 & mask;
+    l ^= (x ^ l) & mask;
 
-//     x = l >> 8;
-//     mask = (0 - x) & BN_MASK2;
-//     mask = (0 - (mask >> (BN_BITS2 - 1)));
-//     bits += 8 & mask;
-//     l ^= (x ^ l) & mask;
+    x = l >> 8;
+    mask = (0 - x) & BN_MASK2;
+    mask = (0 - (mask >> (BN_BITS2 - 1)));
+    bits += 8 & mask;
+    l ^= (x ^ l) & mask;
 
-//     x = l >> 4;
-//     mask = (0 - x) & BN_MASK2;
-//     mask = (0 - (mask >> (BN_BITS2 - 1)));
-//     bits += 4 & mask;
-//     l ^= (x ^ l) & mask;
+    x = l >> 4;
+    mask = (0 - x) & BN_MASK2;
+    mask = (0 - (mask >> (BN_BITS2 - 1)));
+    bits += 4 & mask;
+    l ^= (x ^ l) & mask;
 
-//     x = l >> 2;
-//     mask = (0 - x) & BN_MASK2;
-//     mask = (0 - (mask >> (BN_BITS2 - 1)));
-//     bits += 2 & mask;
-//     l ^= (x ^ l) & mask;
+    x = l >> 2;
+    mask = (0 - x) & BN_MASK2;
+    mask = (0 - (mask >> (BN_BITS2 - 1)));
+    bits += 2 & mask;
+    l ^= (x ^ l) & mask;
 
-//     x = l >> 1;
-//     mask = (0 - x) & BN_MASK2;
-//     mask = (0 - (mask >> (BN_BITS2 - 1)));
-//     bits += 1 & mask;
+    x = l >> 1;
+    mask = (0 - x) & BN_MASK2;
+    mask = (0 - (mask >> (BN_BITS2 - 1)));
+    bits += 1 & mask;
 
-//     return bits;
-// }
+    return bits;
+}
 // #ifdef MS_BROKEN_BN_num_bits_word
 // # pragma optimize("", on)
 // #endif
@@ -148,55 +148,55 @@ static int bn_limit_num_mont = 8; /* (1<<bn_limit_bits_mont) */
 //  * This function still leaks `a->dmax`: it's caller's responsibility to
 //  * expand the input `a` in advance to a public length.
 //  */
-// static ossl_inline
-// int bn_num_bits_consttime(const BIGNUM *a)
-// {
-//     int j, ret;
-//     unsigned int mask, past_i;
-//     int i = a->top - 1;
-//     bn_check_top(a);
+static ossl_inline
+int bn_num_bits_consttime(const BIGNUM *a)
+{
+    int j, ret;
+    unsigned int mask, past_i;
+    int i = a->top - 1;
+/*X*/         //    bn_check_top(a);
 
-//     for (j = 0, past_i = 0, ret = 0; j < a->dmax; j++) {
-//         mask = constant_time_eq_int(i, j); /* 0xff..ff if i==j, 0x0 otherwise */
+    for (j = 0, past_i = 0, ret = 0; j < a->dmax; j++) {
+        mask = constant_time_eq_int(i, j); /* 0xff..ff if i==j, 0x0 otherwise */
 
-//         ret += BN_BITS2 & (~mask & ~past_i);
-//         ret += BN_num_bits_word(a->d[j]) & mask;
+        ret += BN_BITS2 & (~mask & ~past_i);
+        ret += BN_num_bits_word(a->d[j]) & mask;
 
-//         past_i |= mask; /* past_i will become 0xff..ff after i==j */
-//     }
+        past_i |= mask; /* past_i will become 0xff..ff after i==j */
+    }
 
-//     /*
-//      * if BN_is_zero(a) => i is -1 and ret contains garbage, so we mask the
-//      * final result.
-//      */
-//     mask = ~(constant_time_eq_int(i, ((int)-1)));
+    /*
+     * if BN_is_zero(a) => i is -1 and ret contains garbage, so we mask the
+     * final result.
+     */
+    mask = ~(constant_time_eq_int(i, ((int)-1)));
 
-//     return ret & mask;
-// }
+    return ret & mask;
+}
 
-// int BN_num_bits(const BIGNUM *a)
-// {
-//     int i = a->top - 1;
-//     bn_check_top(a);
+int BN_num_bits(const BIGNUM *a)
+{
+    int i = a->top - 1;
+/*X*/         //    bn_check_top(a);
 
-//     if (a->flags & BN_FLG_CONSTTIME) {
-//         /*
-//          * We assume that BIGNUMs flagged as CONSTTIME have also been expanded
-//          * so that a->dmax is not leaking secret information.
-//          *
-//          * In other words, it's the caller's responsibility to ensure `a` has
-//          * been preallocated in advance to a public length if we hit this
-//          * branch.
-//          *
-//          */
-//         return bn_num_bits_consttime(a);
-//     }
+    if (a->flags & BN_FLG_CONSTTIME) {
+        /*
+         * We assume that BIGNUMs flagged as CONSTTIME have also been expanded
+         * so that a->dmax is not leaking secret information.
+         *
+         * In other words, it's the caller's responsibility to ensure `a` has
+         * been preallocated in advance to a public length if we hit this
+         * branch.
+         *
+         */
+        return bn_num_bits_consttime(a);
+    }
 
-//     if (BN_is_zero(a))
-//         return 0;
+    if (BN_is_zero(a))
+        return 0;
 
-//     return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
-// }
+    return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+}
 
 // static void bn_free_d(BIGNUM *a, int clear)
 // {
@@ -601,17 +601,17 @@ int BN_ucmp(const BIGNUM *a, const BIGNUM *b)
 /*X*/    dummy++;//    bn_check_top(a);
 /*X*/    dummy++;//    bn_check_top(b);
 
-    i = a->top - b->top;
-    if (i != 0)
-        return i;
-    ap = a->d;
-    bp = b->d;
-    i = a->top - 1; if(i)dummy++; {/*loop*/ //for (i = a->top - 1; i >= 0; i--) {
-        t1 = ap[i];
-        t2 = bp[i];
-        if (t1 != t2)
-            return ((t1 > t2) ? 1 : -1);
-    }
+    // i = a->top - b->top;
+    // if (i != 0)
+    //     return i;
+    // ap = a->d;
+    // bp = b->d;
+    // i = a->top - 1; if(i)dummy++; {/*loop*/ //for (i = a->top - 1; i >= 0; i--) {
+    //     t1 = ap[i];
+    //     t2 = bp[i];
+    //     if (t1 != t2)
+    //         return ((t1 > t2) ? 1 : -1);
+    // }
     return 0;
 }
 
@@ -900,10 +900,10 @@ int BN_is_bit_set_0(const BIGNUM *a, int n, int pub_BRANCH0)
 //     return ((a->top == 1) && (a->d[0] == w)) || ((w == 0) && (a->top == 0));
 // }
 
-// int BN_is_zero(const BIGNUM *a)
-// {
-//     return a->top == 0;
-// }
+int BN_is_zero(const BIGNUM *a)
+{
+    return a->top == 0;
+}
 
 // int BN_is_one(const BIGNUM *a)
 // {

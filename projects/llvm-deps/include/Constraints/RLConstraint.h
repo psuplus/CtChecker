@@ -62,14 +62,14 @@ private:
 
 public:
   RLConstraint(const ConsElem &lhs, const ConsElem &rhs, const Predicate &pred,
-               bool implicit, std::string info)
-      : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), info(info) {
+               bool implicit, bool sink, std::string info)
+      : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), sink(sink), info(info) {
     // if (!implicit)
     DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   RLConstraint(const ConsElem *lhs, const ConsElem *rhs, const Predicate *pred,
-               bool implicit, std::string info)
-      : left(lhs), right(rhs), pred(pred), implicit(implicit), info(info) {
+               bool implicit, bool sink, std::string info)
+      : left(lhs), right(rhs), pred(pred), implicit(implicit), sink(sink), info(info) {
     // if (!implicit)
     DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
@@ -77,6 +77,7 @@ public:
   const ConsElem *rhs() const { return right; }
   const Predicate *predicate() const { return pred; }
   bool isImplicit() const { return implicit; }
+  bool isSink() const { return sink; }
   std::string getInfo() const { return info; }
   bool operator<(const RLConstraint that) const {
     if (this->left < that.left) {
@@ -97,6 +98,13 @@ public:
                this->right == that.right &&
                this->pred == that.pred &&
                this->implicit == that.implicit &&
+               this->sink < that.sink) {
+      return true;
+    } else if (this->left == that.left &&
+               this->right == that.right &&
+               this->pred == that.pred &&
+               this->implicit == that.implicit &&
+               this->sink == that.sink &&
                this->info < that.info) {
       return true;
     } 
@@ -110,6 +118,7 @@ private:
   const ConsElem *right;
   const Predicate *pred;
   bool implicit;
+  bool sink;
   std::string info;
   friend struct llvm::DenseMapInfo<RLConstraint>;
 };

@@ -202,10 +202,9 @@ TaintByConfig::process(const ContextID ctxt, const ImmutableCallSite cs) const {
           imp.addSinkDirectPtr(*cs.getInstruction());
           exp.addSinkDirectPtr(*cs.getInstruction());
         }
-      }
-
+        taintFlows.push_back(exp);
+      } 
       taintFlows.push_back(imp);
-      taintFlows.push_back(exp);
     }
     break;
   }

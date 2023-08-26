@@ -211,7 +211,8 @@ public:
   typedef FlowRecord::value_set value_set;
   typedef std::vector<FlowRecord> Flows;
   typedef unsigned long FlowRecordID;
-  typedef DenseMap<const Instruction *, std::pair<Flows, Flows>> InstFlowMap; // pair.first: taintAnalysis, pair.second: whitelist pointer
+  // pair.first: taintAnalysis, pair.second: whitelist pointer
+  typedef DenseMap<const Instruction *, std::pair<Flows, Flows>> InstFlowMap;
   typedef DenseMap<FlowRecordID, ConsSet> FlowConsSetMap;
   typedef DenseMap<const Instruction *, ConsSet> InstConsSetMap; 
 
@@ -223,9 +224,15 @@ public:
   FlowConsSetMap flowConsSetMap;
   static InstConsSetMap instTaintConsSetMap;
   static InstConsSetMap instWLPConsSetMap;
-  static ConsSet consSetTaint;
-  static ConsSet consSetWLP;
   static int iterationTag;
+  
+  // 4 for each, implicit or not, sink or not
+  // 0: not implicit, not sink
+  // 1: implicit, not sink
+  // 2: not implicit, sink
+  // 3: implicit, sink
+  static ConsSet consSetTaint[4];
+  static ConsSet consSetWLP[4];
 
   static char ID;
   bool offset_used;

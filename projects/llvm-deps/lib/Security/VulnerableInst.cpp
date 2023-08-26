@@ -69,7 +69,7 @@ bool VulnerableInst::runOnModule(Module &M) {
             const ConsElem *elem = vIter->second;
             const ConsElem &low = RLConstant::bot();
             errs() << "\n";
-            RLConstraint c(elem, &low, &Predicate::TruePred(), false,
+            RLConstraint c(elem, &low, &Predicate::TruePred(), false, false,
                            "  ;  [ConsDebugTag-*]   conditional branch");
             ifa->kit->getOrCreateConstraintSet("source-sink").push_back(c);
           }

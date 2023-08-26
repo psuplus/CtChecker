@@ -94,11 +94,14 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
-ITER=$(cat tmp.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
-ITER=$((ITER))
-ITERTAG=$(expr $ITER \* 2)
 CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
-cat tmp.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
+
+# ITER=$(cat tmp.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
+# ITER=$((ITER))
+# ITERTAG=$(expr $ITER \* 2)
+# cat tmp.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
+
+cat tmp.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

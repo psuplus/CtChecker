@@ -137,6 +137,7 @@ RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
   }
 
   bool implicit = false;
+  bool sink = false;
   if (kind == "default") {
     explicitRLConstraints++;
   }
@@ -144,22 +145,34 @@ RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
     implicitRLConstraints++;
     implicit = true;
   }
+  if (kind == "default-sink") {
+    explicitRLConstraints++;
+    sink = true;
+  }
+  if (kind == "implicit-sink") {
+    implicitRLConstraints++;
+    implicit = true;
+    sink = true;
+  }
 
   std::vector<RLConstraint> &set = getOrCreateConstraintSet(kind, pred);
+  std::vector<RLConstraint> retSet;
 
   assert(!llvm::isa<RLJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
   if (const RLJoin *left = llvm::dyn_cast<RLJoin>(&lhs)) {
     std::set<const ConsElem *> elems = left->elements();
     for (auto elem = elems.begin(); elem != elems.end(); ++elem) {
-      const RLConstraint c(**elem, rhs, pred, implicit, info);
+      const RLConstraint c(**elem, rhs, pred, implicit, sink, info);
       set.push_back(c);
+      retSet.push_back(c);
     }
   } else {
-    RLConstraint c(lhs, rhs, pred, implicit, info);
+    RLConstraint c(lhs, rhs, pred, implicit, sink, info);
     set.push_back(c);
+    retSet.push_back(c);
   }
-  return set;
+  return retSet;
 }
 
 std::vector<RLConstraint>

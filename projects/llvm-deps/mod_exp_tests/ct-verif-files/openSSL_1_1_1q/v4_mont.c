@@ -316,7 +316,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 	/*excluded*/    //    bn_check_top(m);
 
 /*excluded*/    if (pub_BRANCH0) {//    if (!BN_is_odd(m)) {
-        BNerr(BN_F_BN_MOD_EXP_MONT, BN_R_CALLED_WITH_EVEN_MODULUS);
+/*excluded*/        //        BNerr(BN_F_BN_MOD_EXP_MONT, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
     bits = BN_num_bits(p);
@@ -324,9 +324,9 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
 /*excluded*/        if (pub_BRANCH2){//        if (BN_abs_is_word(m, 1)) {
             ret = 1;
-            BN_zero(rr);
+/*excluded*/        //            BN_zero(rr);
         } else {
-            ret = BN_one(rr);
+/*excluded*/        ret = 1;//ret = BN_one(rr);
         }
         return ret;
     }
@@ -345,7 +345,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     if (in_mont != NULL)
         mont = in_mont;
     else {
-        if ((mont = BN_MONT_CTX_new()) == NULL)
+/*excluded*/        if (pub_BRANCH0) //        if ((mont = BN_MONT_CTX_new()) == NULL)
             goto err;
 /*excluded*/        if (pub_BRANCH4)//        if (!BN_MONT_CTX_set(mont, m, ctx))
             goto err;
@@ -455,7 +455,7 @@ int BN_mod_exp_mont_algorithm(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         for (i = 1; i < j; i++)
             val[0]->d[i] = 0;
         val[0]->top = j;
-        if (!BN_mod_mul_montgomery(rr, r, val[0], mont, ctx))
+/*excluded*/        if (pub_BRANCH24) //        if (!BN_mod_mul_montgomery(rr, r, val[0], mont, ctx))
             goto err;
     } else
 #endif

@@ -53,8 +53,8 @@ std::set<ConfigVariable> Infoflow::fullyTainted;
 int Infoflow::iterationTag = 0;
 InstConsSetMap Infoflow::instTaintConsSetMap;
 InstConsSetMap Infoflow::instWLPConsSetMap;
-ConsSet Infoflow::consSetTaint;
-ConsSet Infoflow::consSetWLP;
+ConsSet Infoflow::consSetTaint[4];
+ConsSet Infoflow::consSetWLP[4];
 PointsToInterface *Infoflow::pti;
 std::string delim = "|";
 
@@ -231,6 +231,7 @@ void Infoflow::insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set) {
 }
 
 void Infoflow::constrainFlowRecord(const FlowRecord &record) {
+  ConsSet consSet;
   if (record.one_to_one_directptr()) {
     const Value *src = *record.source_directptr_begin();
     const Value *sink = *record.sink_directptr_begin();
@@ -245,12 +246,12 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
           (*sinkLoc.begin())->dump();
           errs() << "One to one directptr, not constraining\n";
         });
+        insertIntoFlowConsSetMap(record, consSet);
         return;
       }
     }
   }
 
-  ConsSet consSet;
   const ConsElem *sourceElem = NULL;
   const ConsElem *sinkSourceElem = NULL;
 
@@ -1108,7 +1109,8 @@ const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
   insertIntoInstFlowMap(inst, taintFlows, WLPFlows);
   flowVector.insert(flowVector.end(), combinedFlows.begin(), combinedFlows.end());
   
-  if(Infoflow::iterationTag > 1 && !WLPTR_ROUND) {
+  if(Infoflow::iterationTag > 1 && !WLPTR_ROUND &&
+     config.at("signature_mode").at("direction") >= 1) {
     auto cons = Infoflow::instTaintConsSetMap.find(inst);
     for (auto con : (*cons).second) {
       if (!con.isImplicit() && Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end()) {
@@ -1464,7 +1466,7 @@ std::set<const Value *> InfoflowSolution::getAllTaintValues() {
 
 std::set<const ConsElem *> InfoflowSolution::getAllWLPConsElem() {
   std::set<const ConsElem *> ret;
-  for (auto con : Infoflow::consSetWLP) {
+  for (auto con : Infoflow::consSetWLP[0]) {
     const ConsElem *lhs = con.lhs();
     const ConsElem *rhs = con.rhs();
     if (isTainted(*lhs)) {
@@ -1692,11 +1694,11 @@ InfoflowSolution *Infoflow::leastSolution(std::set<std::string> kinds,
   } else {
     kinds.insert("default-taint");
     if (sinks)
-    kinds.insert("default-sinks");
+      kinds.insert("default-sinks-taint");
     if (implicit)
-      kinds.insert("implicit");
+      kinds.insert("implicit-taint");
     if (implicit && sinks)
-      kinds.insert("implicit-sinks");
+      kinds.insert("implicit-sinks-taint");
   }
 
   return new InfoflowSolution(*this,                     // infoflow
@@ -2425,7 +2427,20 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
     std::set<RLConstraint> WLPSet;
     for (auto flow = flowsTaint.begin(); flow != flowsTaint.end(); flow++) {
       auto cons = flowConsSetMap.find((*flow).flowRecordID)->second;
-      Infoflow::consSetTaint.insert(cons.begin(), cons.end());
+      for (auto con : cons) {
+        if (!con.isImplicit() && !con.isSink()){
+          consSetTaint[0].insert(con);
+        }
+        if (con.isImplicit() && !con.isSink()){
+          consSetTaint[1].insert(con);
+        }
+        if (!con.isImplicit() && con.isSink()){
+          consSetTaint[2].insert(con);
+        }
+        if (con.isImplicit() && con.isSink()){
+          consSetTaint[3].insert(con);
+        }
+      }
       taintSet.insert(cons.begin(), cons.end());
     }
     auto instConsSetKVTaint = std::make_pair((*instFlowKV).first, taintSet);
@@ -2433,14 +2448,33 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
 
     for (auto flow = flowsWLP.begin(); flow != flowsWLP.end(); flow++) {
       auto cons = flowConsSetMap.find((*flow).flowRecordID)->second;
-      Infoflow::consSetWLP.insert(cons.begin(), cons.end());
+      for (auto con : cons) {
+        if (!con.isImplicit() && !con.isSink()){
+          consSetWLP[0].insert(con);
+        }
+        if (con.isImplicit() && !con.isSink()){
+          consSetWLP[1].insert(con);
+        }
+        if (!con.isImplicit() && con.isSink()){
+          consSetWLP[2].insert(con);
+        }
+        if (con.isImplicit() && con.isSink()){
+          consSetWLP[3].insert(con);
+        }
+      }
       WLPSet.insert(cons.begin(), cons.end());
     }
     auto instConsSetKVWLP = std::make_pair((*instFlowKV).first, WLPSet);
     Infoflow::instWLPConsSetMap.insert(instConsSetKVWLP);
   }
-  kit->setConstraints(consSetWLP, "default-WLP");
-  kit->setConstraints(consSetTaint, "default-taint");
+  kit->setConstraints(consSetTaint[0], "default-taint");
+  kit->setConstraints(consSetTaint[1], "implicit-taint");
+  kit->setConstraints(consSetTaint[2], "default-sink-taint");
+  kit->setConstraints(consSetTaint[3], "implicit-sink-taint");
+  kit->setConstraints(consSetWLP[0], "default-WLP");
+  kit->setConstraints(consSetWLP[1], "implicit-WLP");
+  kit->setConstraints(consSetWLP[2], "default-sink-WLP");
+  kit->setConstraints(consSetWLP[3], "implicit-sink-WLP");
 }
 
 void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
@@ -3143,7 +3177,9 @@ void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
   if(Infoflow::iterationTag > 1 && !WLPTR_ROUND) {
     auto cons = Infoflow::instTaintConsSetMap.find(&inst);
     for (auto con : (*cons).second) {
-      if (!con.isImplicit() && Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end()) {
+      if (!con.isImplicit() &&
+          Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end() &&
+          !inst.getType()->isPtrOrPtrVectorTy()) {
         pushToFullyTainted(inst);
       }
     }

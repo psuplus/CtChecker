@@ -3,26 +3,26 @@ Table 1: without cache side channel
 |-------------|---|---|---|---|---|---|---|---|---|---|---|---|
 |             |Full|Baseline|Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|Full-argToAll|Full-argToRet|Baseline-argToAll|Baseline-argToRet| Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|
 |**BearSSL**  |  3|  3|  3|  0|  0|  3|  3|  3|  3|  3|  0|  0|
-|**libgcrypt**|  -| 32| 19|  0| 10| 20| 14| 26|  6|  6|  0|  0|
-|**mbedtls**  |OOM| 34|  5|  0|  1| 20| 20| 36| 10|  4|  0|  0|
+|**libgcrypt**|  -| 32| 19|  0| 10| 19| 14| 21|  6|  6|  0|  0|
+|**mbedtls**  |OOM| 34|  5|  0|  1| 20| 20| 36|  5|  4|  0|  0|
 |**openSSL**  |   |   |   |   |   |   |   |   |   |   |   |  0|
-| recp        |  -| 18|  3|  0|  0|  9|  9|  3|  3|  2|  0|  0|
-| mont        |  -| 22|  5|  0|  2| 16| 13| 25|  3|  2|  0|  0|
-| word        |  -| 18|  1|  0|  0| 12| 10|  2|  2|  1|  0|  0|
-| consttime   |  -| 18|  4|  0|  4| 13| 12| 22|  7|  1|  1|  0|
+| recp        |  -| 18|  2|  0|  0|  9|  9|  3|  3|  2|  0|  0|
+| mont        |  -| 22|  4|  0|  2| 15| 13| 25|  3|  2|  0|  0|
+| word        |  -| 18|  1|  0|  0| 11| 10|  2|  2|  1|  0|  0|
+| consttime   |  -| 18|  2|  0|  3| 13| 12| 22|  7|  0|  0|  0|
 
 Table 2: cache side channel
 |             ||| Ct-Verif     |||\|||       CtChecker       |||||
 |-------------|---|---|---|---|---|----|----|----|---|---|---|---|
 |             |Full|Baseline|Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|Full-argToAll|Full-argToRet|Baseline-argToAll|Baseline-argToRet| Excluded-undefined-function|Ct-Verif-Verified|CtChecker-Verified|
 |**BearSSL**  |  0|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
-|**libgcrypt**|  -|  2|  1|  0|  0|  13|  12|  52|  0|  0|  0|  0|
-|**mbedtls**  |OOM|  1|  0|  0|  0|   3|   3|  11|  0|  0|  0|  0|
+|**libgcrypt**|  -|  2|  1|  0|  0|  12|  12|  12|  0|  0|  0|  0|
+|**mbedtls**  |OOM|  1|  0|  0|  0|   3|   3|   2|  0|  0|  0|  0|
 |**openSSL**  |   |   |   |   |   |    |    |    |   |   |   |   |
 | recp        |  -|  0|  0|  0|  0|   0|   0|   0|  0|  0|  0|  0|
-| mont        |  -|  2|  2|  0|  1|   5|   5|  14|  0|  0|  0|  0|
+| mont        |  -|  2|  0|  0|  0|   5|   5|   5|  0|  0|  0|  0|
 | word        |  -|  0|  0|  0|  0|   1|   1|   0|  0|  0|  0|  0|
-| consttime   |  -|  1|  0|  0|  0|  13|   8|  27|  0|  0|  0|  0|
+| consttime   |  -|  1|  0|  0|  0|   8|   8|   8|  0|  0|  0|  0|
 
 
 # BearSSL
@@ -96,7 +96,7 @@ v2.c line  579 - MPN_COPY (precomp[i], rp, rsize);
 v2.c line  582 - if (msize > max_u_size)  
 v2.c line  585 - MPN_ZERO_2 (base_u, max_u_size);  
 v2.c line  617 - if (e == 0)  
-v1.c line  641 - if (c >= W)  
+v2.c line  641 - if (c >= W)  
 v2.c line  667 - for (j += W - c0; j >= 0; j--)  
 v2.c line  702 - while (j--)  
 v2.c line  715 - if ( mod_shift_cnt )  
@@ -109,16 +109,16 @@ v2.c line  758 - gcry_assert (res->d == rp);
 
 ### V4: 10
 
-v2.c line  484 - if ( mod_shift_cnt )  
-v2.c line  506 - MPN_NORMALIZE( bp, bsize );  
-v2.c line  524 - gcry_assert (!bp_marker);  
-v2.c line  569 - if (xsize >= base_u_size)   
-v2.c line  715 - if ( mod_shift_cnt )  
-v2.c line  738 - if ( mod_shift_cnt )  
-v2.c line  740 - MPN_NORMALIZE_1 (rp, rsize);  
-v2.c line  751 - if ( mod_shift_cnt )  
-v2.c line  756 - MPN_NORMALIZE(rp, rsize);  
-v2.c line  758 - gcry_assert (res->d == rp);  
+v4.c line  484 - if ( mod_shift_cnt )  
+v4.c line  506 - MPN_NORMALIZE( bp, bsize );  
+v4.c line  524 - gcry_assert (!bp_marker);  
+v4.c line  569 - if (xsize >= base_u_size)   
+v4.c line  715 - if ( mod_shift_cnt )  
+v4.c line  738 - if ( mod_shift_cnt )  
+v4.c line  740 - MPN_NORMALIZE_1 (rp, rsize);  
+v4.c line  751 - if ( mod_shift_cnt )  
+v4.c line  756 - MPN_NORMALIZE(rp, rsize);  
+v4.c line  758 - gcry_assert (res->d == rp);  
 
 # mbedtls
 
@@ -156,15 +156,15 @@ bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )
 
 ### V2: 5
 
-bign2/v1_min.c line  557 - if( ei == 0 && state == 0 )   
-bign2/v1_min.c line  560 - if( ei == 0 && state == 1 )  
-bign2/v1_min.c line  606 - if( ( wbits & ( one << wsize ) ) != 0 )  
-bign2/v1_min.c line  615 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )  
-bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
+bign2/v2_min.c line  557 - if( ei == 0 && state == 0 )   
+bign2/v2_min.c line  560 - if( ei == 0 && state == 1 )  
+bign2/v2_min.c line  606 - if( ( wbits & ( one << wsize ) ) != 0 )  
+bign2/v2_min.c line  615 - if( neg && E->n != 0 && ( E->p[0] & 1 ) != 0 )  
+bign2/v2_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
 
 ### V4: 1
 
-bign2/v1_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
+bign2/v4_min.c line  629 - if( prec_RR == NULL || prec_RR->p == NULL )  
 
 # OpenSSL
 
@@ -191,9 +191,8 @@ v1_recp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {
 v1_recp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
 v1_recp.c line  279 - if (!BN_mod_mul_reciprocal(r, r, val[wvalue >> 1], &recp, ctx))  
 
-### V2: 3
+### V2: 2
 
-v2_recp.c line  224 - for (i = 1; i < j; i++) {  
 v2_recp.c line  242 - if (BN_is_bit_set(p, wstart) == 0) {  
 v2_recp.c line  262 - if (BN_is_bit_set(p, wstart - i)) {  
 
@@ -228,21 +227,17 @@ v1_mont.c line  431 - if (!bn_mul_mont_fixed_top(r, r, r, mont, ctx))
 v1_mont.c line  436 - if (!bn_mul_mont_fixed_top(r, r, val[wvalue >> 1], mont, ctx))  
 v1_mont.c line  462 - if (!BN_from_montgomery(rr, r, mont, ctx))  
 
-### V2: 7
+### V2: 4
 
 v2_mont.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
-v2_mont.c line  368 - for (i = 1; i < j; i++) {  
-v2_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
-**(cache)**v2_mont.c line  388 - r->d[0] = (0 - m->d[0]) & BN_MASK2;  
-**(cache)**v2_mont.c line  390 - r->d[i] = (~m->d[i]) & BN_MASK2;  
+v2_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {    
 v2_mont.c line  398 - if (BN_is_bit_set(p, wstart) == 0) {  
 v2_mont.c line  419 - if (BN_is_bit_set(p, wstart - i)) {  
 
-### V4: 3
+### V4: 2
 
-v2_mont.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
-v2_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
-**(cache)**v2_mont.c line  390 - r->d[i] = (~m->d[i]) & BN_MASK2;  
+v4_mont.c line  354 - if (a->neg || BN_ucmp(a, m) >= 0) {  
+v4_mont.c line  384 - if (m->d[j - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
 
 ## mont_word
 
@@ -297,16 +292,13 @@ v1_consttime.c line 1105 - if (!bn_mul_mont_fixed_top(&tmp, &tmp, &am, mont, ctx
 v1_consttime.c line 1124 - if (!BN_from_montgomery(rr, &tmp, mont, ctx))  
 v1_consttime.c line 1130 - if (powerbuf != NULL) {  
 
-### V2: 4
+### V2: 2
 
 v2_consttime.c line  652 - if (a->neg || BN_ucmp(a, m) >= 0) {  
-v2_consttime.c line  654 - if (reduced == NULL  
-v2_consttime.c line  723 - if ((powerbufFree =  
 v2_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  
 
-### V4: 4
+### V4: 3
 
 v2_consttime.c line  652 - if (a->neg || BN_ucmp(a, m) >= 0) {  
 v2_consttime.c line  654 - if (reduced == NULL  
-v2_consttime.c line  723 - if ((powerbufFree =  
 v2_consttime.c line  746 - if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {  

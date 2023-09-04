@@ -535,7 +535,6 @@ void Infoflow::constrainSinkMemoryLocations(const FlowRecord &record,
                                             const ConsElem &sinkSource,
                                             bool regFlow, bool sinkFlow, ConsSet &consSet) {
   bool implicit = record.isImplicit();
-  std::vector<RLConstraint> cons;
   std::set<const AbstractLoc *> SinkLocs;
   constrainDirectSinkLocations(record, SinkLocs, source, sinkSource, regFlow,
                                sinkFlow, consSet);
@@ -635,7 +634,6 @@ void Infoflow::constrainReachSinkLocations(const FlowRecord &record,
                                            const ConsElem &sinkSource,
                                            bool regFlow, bool sinkFlow, ConsSet &consSet) {
   bool implicit = record.isImplicit();
-  std::vector<RLConstraint> cons;
   for (FlowRecord::value_iterator sink = record.sink_reachptr_begin(),
                                   end = record.sink_reachptr_end();
        sink != end; ++sink) {
@@ -675,7 +673,6 @@ void Infoflow::processGetElementPtrInstSink(
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "[Sink:] "
                                            << getOrCreateStringFromValue(*value)
                                            << "\n";);
-  std::vector<RLConstraint> cons;
   const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(value);
   Type *T = cast<PointerType>(gep->getPointerOperandType())->getElementType();
   unsigned numElements = 0;
@@ -1065,22 +1062,6 @@ bool Infoflow::checkGEPOperandsConstant(const GetElementPtrInst *gep) {
   }
 }
 
-// ad-hoc, delete later
-bool Infoflow::isSourceWhitelistPointer(const Instruction &inst, const Value *op) {
-  const BasicBlock *bb = inst.getParent();
-  const Function *func = bb->getParent();
-  for (auto whitelistedPtr : Infoflow::sourceWhitelistPointers) {
-    if ((op->getName() == whitelistedPtr.name &&
-        func->getName() == whitelistedPtr.function) || 
-        (op->getName() == whitelistedPtr.name &&
-        isa<GlobalVariable>(op) &&
-        whitelistedPtr.function == "")) {
-      return true;
-    }
-  }
-  return false;
-}
-
 const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input) {
   const Instruction *inst = cs.getInstruction();
@@ -1113,8 +1094,14 @@ const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
      config.at("signature_mode").at("direction") >= 1) {
     auto cons = Infoflow::instTaintConsSetMap.find(inst);
     for (auto con : (*cons).second) {
-      if (!con.isImplicit() && Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end()) {
-        pushToFullyTainted(*inst);
+      if (!con.isImplicit() &&
+          Infoflow::solutionSetWLP.find(con.lhs()) != Infoflow::solutionSetWLP.end()) {
+        if (auto var = dyn_cast<RLConsVar>(con.rhs())) {
+          if (var->getDesc().find("*SummSink*") == std::string::npos) {
+            con.dump();
+            pushToFullyTainted(*inst);
+          }
+        }
       }
     }
   }
@@ -2786,44 +2773,6 @@ void Infoflow::insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows,
     }
   }
 }
-
-// return whether op is in whitelistPointers
-// bool Infoflow::isWhitelistPtr (const Instruction &inst, Value *op) {
-//   const BasicBlock *bc = inst.getParent();
-//   const Function *func = bc->getParent();
-//   for (auto whitelistedPtr : Infoflow::whitelistPointers) {
-//     if ((op->getName() == whitelistedPtr.name &&
-//         func->getName() == whitelistedPtr.function) || 
-//         (op->getName() == whitelistedPtr.name &&
-//         isa<GlobalVariable>(op) &&
-//         whitelistedPtr.function == "")) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
-
-// void Infoflow::pushTowhitelistPointers (const Instruction &inst) {
-//   const BasicBlock *bc = inst.getParent();
-//   const Function *func = bc->getParent();
-//   ConfigVariable *newPtr = new ConfigVariable(func->getName(), inst.getName(), -1);
-//   Infoflow::whitelistPointers.insert(*newPtr);
-// }
-
-// void Infoflow::removeFromWhitelistPointers (const Function &func, const Value &var) {
-//   std::set<ConfigVariable>::iterator iter;
-//   for (iter = Infoflow::whitelistPointers.begin(); iter != Infoflow::whitelistPointers.end();) {
-//     if ((var.getName() == iter->name &&
-//         func.getName() == iter->function) || 
-//         (var.getName() == iter->name &&
-//         isa<GlobalValue>(var) &&
-//         iter->function == "")) {
-//       Infoflow::whitelistPointers.erase(iter++);
-//     } else {
-//       ++iter;
-//     }
-//   }
-// }
 
 void Infoflow::pushToFullyTainted(const Instruction &inst) {
   const BasicBlock *bc = inst.getParent();

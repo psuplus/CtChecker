@@ -412,7 +412,6 @@ private:
   DenseMap<const Function *, const ConsElem *> &
   getOrCreateVargConstraintMap(const ContextID);
 
-  bool isSourceWhitelistPointer(const Instruction &inst, const Value *op);
   virtual const Unit signatureForExternalCall(const ImmutableCallSite &cs,
                                               const Unit input);
 
@@ -593,13 +592,9 @@ private:
   void constrainMemcpyOrMove(const IntrinsicInst &intr, Flows &flows);
   void constrainMemset(const IntrinsicInst &intr, Flows &flows);
 
-  bool isWhitelistPtr (const Instruction &inst, Value *op);
-  void pushTowhitelistPointers (const Instruction &inst);
-  void removeFromWhitelistPointers (const Function &func, const Value &var);
   void pushToFullyTainted(const Instruction &inst);
   void insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows, Flows &WLPFlows);
   void insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set);
-  const Value *whitelistConstantGEP (const User *inst, const Function *func, const Value *innerSrcValue);
 
   AbstractLocSet getPointedToAbstractLocs(const Value *v);
 };

@@ -250,19 +250,21 @@ StdLib::accept(const ContextID ctxt, const ImmutableCallSite cs) const {
   return findEntry(cs, S);
 }
 
-std::vector<FlowRecord>
+std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>>
 StdLib::process(const ContextID ctxt, const ImmutableCallSite cs) const {
   const CallSummary *S;
   bool found = findEntry(cs, S);
   assert(found);
 
   std::vector<FlowRecord> flows;
-
+  std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> flowPair;
+  flowPair.second = std::vector<FlowRecord>();
   // If there are no flows for this call, return empty vector
   // Similarly if the call has no arguments we already know
   // it has no sources so just return empty vector.
   if (S->Sources.empty() || cs.arg_empty()) {
-    return flows;
+    flowPair.first = flows;
+    return flowPair;
   }
 
   // Otherwise, build up a flow record for this summary
@@ -309,8 +311,8 @@ StdLib::process(const ContextID ctxt, const ImmutableCallSite cs) const {
   }
 
   // Finally, stash it in the vector and return
-  flows.push_back(flow);
-  return flows;
+  flowPair.first = flows;
+  return flowPair;
 }
 
 } // end namespace deps

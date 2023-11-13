@@ -26,6 +26,8 @@
 #include "CallContext.h"
 #include "llvm/IR/Value.h"
 #include "llvm/ADT/SmallPtrSet.h"
+#include "llvm/IR/Function.h"
+#include "llvm/Support/raw_ostream.h"
 
 #include <set>
 
@@ -48,6 +50,7 @@ class FlowRecord {
     typedef SmallPtrSet<const Function *, 1> fun_set;
     typedef fun_set::const_iterator fun_iterator;
 
+    unsigned long flowRecordID;
     // DefaultID = 0. from CallContext.h
     FlowRecord() : implicit(false), sourceCtxt(DefaultID), sinkCtxt(DefaultID) { }
     FlowRecord(bool type) : implicit(type), sourceCtxt(DefaultID), sinkCtxt(DefaultID) { }
@@ -55,6 +58,8 @@ class FlowRecord {
       implicit(false), sourceCtxt(source), sinkCtxt(sink) { }
     FlowRecord(bool type, const ContextID source, const ContextID sink) :
       implicit(type), sourceCtxt(source), sinkCtxt(sink) { }
+    FlowRecord(bool type, const ContextID source, const ContextID sink, unsigned long id)
+      : implicit(type), sourceCtxt(source), sinkCtxt(sink), flowRecordID(id) {}
 
     bool isImplicit() const { return implicit; }
 
@@ -113,6 +118,46 @@ class FlowRecord {
     fun_iterator sink_varg_begin() const { return vargSinks.begin(); }
     fun_iterator sink_varg_end() const { return vargSinks.end(); }
 
+    void dump() {
+      errs() << "++++ Dumping Flow Record ++++ [" << this << "]\n";
+      errs() << "\tSource context: " << sourceCtxt << "\n";
+      errs() << "\tSink context: " << sinkCtxt << "\n";
+      errs() << "\tImplicit flow: " << (implicit ? "Yes" : "No") << "\n";
+      errs() << "\tID: " << flowRecordID << "\n";
+      print(valueSources, "Value Sources");
+      print(directPtrSources, "D Sources");
+      print(reachPtrSources, "R Sources");
+      print(valueSinks, "Value Sinks");
+      print(directPtrSinks, "D Sinks");
+      print(reachPtrSinks, "R Sinks");
+      print(vargSources, "Varg Sources");
+      print(vargSinks, "Varg Sinks");
+      errs() << "++++ end ++++\n\n";
+    }
+
+    bool operator==(const FlowRecord &that) {
+      if (this->implicit == that.implicit &&
+          this->sourceCtxt == that.sourceCtxt &&
+          this->sinkCtxt == that.sinkCtxt && 
+          this->valueSources.size() == that.valueSources.size() && 
+          this->directPtrSources.size() == that.directPtrSources.size() && 
+          this->reachPtrSources.size() == that.reachPtrSources.size() && 
+          this->valueSinks.size() == that.valueSinks.size() && 
+          this->directPtrSinks.size() == that.directPtrSinks.size() && 
+          this->reachPtrSinks.size() == that.reachPtrSinks.size() &&
+          valueSetMatch(this->valueSources, that.valueSources) &&
+          valueSetMatch(this->directPtrSources, that.directPtrSources) &&
+          valueSetMatch(this->reachPtrSources, that.reachPtrSources) &&
+          valueSetMatch(this->valueSinks, that.valueSinks) &&
+          valueSetMatch(this->directPtrSinks, that.directPtrSinks) &&
+          valueSetMatch(this->reachPtrSinks, that.reachPtrSinks) &&
+          funcSetMatch(this->vargSources, that.vargSources) &&
+          funcSetMatch(this->vargSinks, that.vargSinks)) {
+        return true;
+      }
+      return false;
+    }
+
   private:
     bool implicit;
     value_set valueSources, directPtrSources, reachPtrSources;
@@ -120,6 +165,63 @@ class FlowRecord {
     fun_set vargSources, vargSinks;
     ContextID sourceCtxt;
     ContextID sinkCtxt;
+
+    void print(value_set vSet, std::string name) {
+      if (vSet.size()) {
+        errs() << "\t" << name << "\n";
+        for (auto v : vSet) {
+          errs() << "\t  ";
+          if (isa<BasicBlock>(v))
+            errs() << "BB: " << v->getName() << "\n";
+          else if (isa<Function>(v))
+            errs() << "Function: " << v->getName() << "\n";
+          else
+            v->dump();
+        }
+      }
+    }
+    void print(fun_set fSet, std::string name) {
+      if (fSet.size()) {
+        errs() << name << "\n";
+        fun_iterator i = fSet.begin();
+        fun_iterator e = fSet.end();
+        for (; i != e; i++) {
+          errs() << "Function " << (*i)->getName() << "\n";
+        }
+      }
+    }
+    bool valueSetMatch(const value_set &thisSet, const value_set &thatSet) {
+      for (auto value = thisSet.begin(); value != thisSet.end(); value++) {
+        bool match = true;
+        for (auto thatValue = thatSet.begin(); thatValue != thatSet.end(); thatValue++) {
+          if ((*value) == (*thatValue)) {
+            match = true;
+            break;
+          }
+          match = false;
+        }
+        if (!match) {
+          return false;
+        }
+      }
+      return true;
+    }
+    bool funcSetMatch(const fun_set &thisSet, const fun_set &thatSet) {
+      for (auto func = thisSet.begin(); func != thisSet.end(); func++) {
+        bool match = true;
+        for (auto thatFunc = thatSet.begin(); thatFunc != thatSet.end(); thatFunc++) {
+          if ((*func) == (*thatFunc)) {
+            match = true;
+            break;
+          }
+          match = false;
+        }
+        if (!match) {
+          return false;
+        }
+      }
+      return true;
+    }
 };
 //typedef uintptr_t ContextID;
 }

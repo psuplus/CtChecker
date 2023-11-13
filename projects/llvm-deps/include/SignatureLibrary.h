@@ -33,7 +33,7 @@ using namespace llvm;
 class TaintReachable : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt, const ImmutableCallSite cs) const;
 };
 
 /// Description: A dummy signature that assumes no information flows happen
@@ -44,13 +44,13 @@ public:
 class NoFlows : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt, const ImmutableCallSite cs) const;
 };
 
 class ArgsToRet : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt, const ImmutableCallSite cs) const;
 };
 
 
@@ -63,7 +63,7 @@ class StdLib: public Signature {
 public:
   StdLib() : Signature() { initCalls(); }
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt, const ImmutableCallSite cs) const;
 };
 
 // OverflowChecks
@@ -73,7 +73,7 @@ public:
 class OverflowChecks : public Signature {
 public:
   virtual bool accept(const ContextID ctxt, const ImmutableCallSite cs) const;
-  virtual std::vector<FlowRecord> process(const ContextID ctxt, const ImmutableCallSite cs) const;
+  virtual std::pair<std::vector<FlowRecord>, std::vector<FlowRecord>> process(const ContextID ctxt, const ImmutableCallSite cs) const;
 };
 
 }

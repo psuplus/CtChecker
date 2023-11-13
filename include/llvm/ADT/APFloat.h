@@ -343,7 +343,8 @@ public:
   /// copied from some other APFloat.
   static APFloat copySign(APFloat Value, const APFloat &Sign) {
     Value.copySign(Sign);
-    return Value;
+    // return Value;
+    return std::move(Value);
   }
 
   /// @}

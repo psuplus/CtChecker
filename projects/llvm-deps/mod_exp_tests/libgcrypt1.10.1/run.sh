@@ -66,6 +66,7 @@ FILE="mpi/mpi-pow.c"
 #LLVMLIBS=`llvm-config --libs`
 #LDFLAGS=`llvm-config --ldflags`
 
+make clean
 # CUR=$(pwd)
 # cd ../../../;
 make full.bc
@@ -88,12 +89,14 @@ $LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asse
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $1 2> tmp.dat > /dev/null
+  -vulnerablebranchwrapper  -debug < $1 2> tmp.dat > /dev/null
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
 CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
-cat tmp.dat | grep '<:' > $CONS_FILENAME
+CONS_FILENAME_WLP=$( echo 'constraintsWLP-'$COL'.con' | tr '/' '-')
+cat tmp.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
+cat tmp.dat | grep '^2:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME_WLP
 
 FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

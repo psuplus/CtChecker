@@ -44,4 +44,4 @@ test4.bc: $(TEST4BC)
 	$(CC) $(CFLAGS) -S $<
 
 clean:
-	$(RM) *.bc
+	$(RM) *.bc *.ll

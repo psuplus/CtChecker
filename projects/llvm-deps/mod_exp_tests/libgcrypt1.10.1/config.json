@@ -32,5 +32,6 @@
     { "name": "rsize" },
     { "name": "max_size" }
   ],
+  "ptr_whitelist": [],
   "entry": ["_gcry_mpi_powm"]
 }

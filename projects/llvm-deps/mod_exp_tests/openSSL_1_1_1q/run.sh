@@ -61,9 +61,10 @@ LEVEL="../../../../"
 FILE="bn_exp.c"
 
 #use makefile
+make clean
 make $1
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $1 -o $1
-# $LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=0 $1 -o $1
+# $LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=500 $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis $1
 
 for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
@@ -102,11 +103,12 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-        -vulnerablebranchwrapper  -debug < $1 2>tmp.dat > /dev/null
+        -vulnerablebranchwrapper -debug < $1 2>tmp.dat > /dev/null
         TIME=$(echo "$(date +%s) - $TIME" | bc)
         printf "Execution time: %d seconds\n" $TIME
 
         CONS_FILENAME=$( echo 'constraints-'$FUNC'-'$COL'.con' | tr '/' '-')
+        CONS_FILENAME_WLP=$( echo 'constraintsWLP-'$FUNC'-'$COL'.con' | tr '/' '-')
 
         # ITER=$(cat tmp.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
         # ITER=$((ITER))
@@ -114,6 +116,7 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         # cat tmp.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
         cat tmp.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
+        cat tmp.dat | grep '^2:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME_WLP
 
         FILENAME=$( echo 'results_with_source-'$FUNC'-'$COL'.txt' | tr '/' '-')
         #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

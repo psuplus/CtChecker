@@ -69,7 +69,7 @@ FILE="mpi/mpi-pow.c"
 
 # CUR=$(pwd)
 # cd ../../../;
-rm mpi/*.bc
+make clean
 make full.bc
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer full.bc -o full.bc
 $LEVEL/Debug+Asserts/bin/llvm-dis full.bc -o full-$COL".ll"
@@ -77,6 +77,7 @@ $LEVEL/Debug+Asserts/bin/llvm-dis full.bc -o full-$COL".ll"
 make mpi/mpi-pow.bc
 cp mpi/mpi-pow.bc .
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer mpi-pow.bc -o mpi-pow.bc
+# $LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=500 $1 -o $1
 $LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc -o mpi-pow-$COL".ll"
 
 ## compile the instrumentation module to bitcode
@@ -95,6 +96,7 @@ TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
 CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
+CONS_FILENAME_WLP=$( echo 'constraintsWLP-'$COL'.con' | tr '/' '-')
 
 # ITER=$(cat tmp.dat | grep -Ei 'Done after [0-9]* iterations.' | grep -oEi '[0-9]*')
 # ITER=$((ITER))
@@ -102,6 +104,7 @@ CONS_FILENAME=$( echo 'constraints-'$COL'.con' | tr '/' '-')
 # cat tmp.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
 cat tmp.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
+cat tmp.dat | grep '^2:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME_WLP
 
 FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

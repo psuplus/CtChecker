@@ -8,7 +8,7 @@ LDFLAGS=
 TEST1=bignum_min.c
 TEST1BC=$(TEST1:.c=.bc)
 
-TEST2=bignum.c
+TEST2=bignum.c constant_time.c
 TEST2BC=$(TEST2:.c=.bc)
 
 test1.bc: $(TEST1BC)
@@ -27,4 +27,4 @@ test2.bc: $(TEST2BC)
 	$(CC) $(CFLAGS) -S $<
 
 clean:
-	$(RM) *.bc
+	rm *.bc *.ll

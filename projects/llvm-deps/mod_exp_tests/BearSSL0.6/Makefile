@@ -3,6 +3,8 @@ LD=../../../../Debug+Asserts/bin/llvm-link
 
 CFLAGS=-isystem include -I include -O0 -g -emit-llvm
 
+clean:
+	rm *.bc *.ll
 
 test1.bc : i32_modpow.bc
 	$(LD) $^ -o $@

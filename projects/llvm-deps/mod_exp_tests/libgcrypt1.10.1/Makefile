@@ -41,6 +41,6 @@ min.bc: $(MIN_SRC)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	$(RM) *.bc
-	$(RM) *.ll
-	$(RM) mpi/*.bc
+	rm *.bc
+	rm *.ll
+	rm mpi/*.bc

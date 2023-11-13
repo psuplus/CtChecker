@@ -213,19 +213,19 @@ void Infoflow::insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set) {
   auto result = flowConsSetMap.insert(KV);
   if (result.second) {
     if (iterationTag > 1)
-      errs() << "Shouldn't happen!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Shouldn't happen!\n";);
     else 
-      errs() << "Inserted!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Inserted!\n";);
   } else {
     if (iterationTag == 1) {
-      errs() << "Insert again!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Insert again!\n";);
       auto consHere = flowConsSetMap.find(flow.flowRecordID);
-      errs() << consHere->second.size() << " constraints before\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << consHere->second.size() << " constraints before\n";);
       consHere->second.insert(set.begin(), set.end());
       consHere = flowConsSetMap.find(flow.flowRecordID);
-      errs() << consHere->second.size() << " constraints after\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << consHere->second.size() << " constraints after\n";);
     } else {
-      errs() << "Shouldn't happen!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Shouldn't happen!\n";);
     }
   }
 }
@@ -2733,10 +2733,10 @@ void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
   } else {
     assert(false && "Unsupported instruction type!");
   }
-  errs() << "NEW-FLOWS\n";
-  for (size_t i = temp.size(); i != flows.size(); i++)
-  flows.at(i).dump();
-  errs() << "NEW-FLOWS-END\n\n";
+  // errs() << "NEW-FLOWS\n";
+  // for (size_t i = temp.size(); i != flows.size(); i++)
+  // flows.at(i).dump();
+  // errs() << "NEW-FLOWS-END\n\n";
 }
 
 void Infoflow::insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows, Flows &WLPFlows) {
@@ -2754,22 +2754,22 @@ void Infoflow::insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows,
   auto result = instFlowMap.insert(KV);
   if (result.second) {
     if (iterationTag > 1)
-      errs() << "Shouldn't happen!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Shouldn't happen!\n";);
     else 
-      errs() << "Inserted!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Inserted!\n";);
   } else {
     if (iterationTag == 1) {
-      errs() << "Insert again!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Insert again!\n";);
       auto flowsHere = instFlowMap.find(inst);
-      errs() << flowsHere->second.first.size() << " taint flows before\n";
-      errs() << flowsHere->second.second.size() << " WLP flows before\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << flowsHere->second.first.size() << " taint flows before\n";);
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << flowsHere->second.second.size() << " WLP flows before\n";);
       flowsHere->second.first.insert(flowsHere->second.first.end(), taintFlows.begin(), taintFlows.end());
       flowsHere->second.second.insert(flowsHere->second.second.end(), WLPFlows.begin(), WLPFlows.end());
       flowsHere = instFlowMap.find(inst);
-      errs() << flowsHere->second.first.size() << " taint flows after\n";
-      errs() << flowsHere->second.second.size() << " WLP flows after\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << flowsHere->second.first.size() << " taint flows after\n";);
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << flowsHere->second.second.size() << " WLP flows after\n";);
     } else {
-      errs() << "Shouldn't happen!\n";
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Shouldn't happen!\n";);
     }
   }
 }

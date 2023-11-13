@@ -46,7 +46,7 @@ CONS_FILENAME=$( echo 'constraints-'$2'.con' | tr '/' '-')
 # ITERTAG=$(expr $ITER \* 2)
 # cat tmp-$2.dat | grep '^'$ITERTAG':.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
-cat tmp.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
+cat tmp-$2.dat | grep '^3:.*<:' | sed -nr 's/^[0-9]+:(.*)/\1/p' > $CONS_FILENAME
 
 FILENAME=$( echo 'results_with_source-'$2'.txt' | tr '/' '-')
 

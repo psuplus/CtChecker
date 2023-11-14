@@ -68,12 +68,12 @@ def output_results(lines):
             branch_count += 1
             print("{} line {:4d} - {}".format(fname, line, src))
     print(branch_count)
-    # for fname, result_pair in lines[1].items():
-    #     for line, src in result_pair:
-    #         print("{} line {:4d} - {}".format(fname, line, src))
+    for fname, result_pair in lines[1].items():
+        for line, src in result_pair:
+            print("{} line {:4d} - {}".format(fname, line, src))
 
 def find_and_update_row(csv_file, search_value, updated_data):
-    fieldnames = ['Name', 'Positives', 'Time (mm:ss)', 'Time (s)']
+    fieldnames = ['Name', 'Positives', 'Array', 'Time (mm:ss)', 'Time (s)']
     found = False
     data = []
 
@@ -112,7 +112,13 @@ def update_table(lines):
         for line, src in result_pair:
             count = count + 1
 
-    combined_result = {'Name': row_name, 'Positives': count, 'Time (mm:ss)': running_time, 'Time (s)': num_seconds}
+    count_array = 0
+    for fname, result_pair in lines[1].items():
+        for line, src in result_pair:
+            count_array = count_array + 1
+            
+
+    combined_result = {'Name': row_name, 'Positives': count, 'Array': count_array, 'Time (mm:ss)': running_time, 'Time (s)': num_seconds}
 
     find_and_update_row(csv_file, row_name, combined_result)
 

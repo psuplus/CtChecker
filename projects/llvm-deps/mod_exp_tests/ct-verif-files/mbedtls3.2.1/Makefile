@@ -66,7 +66,7 @@ v2_min_test: v2_min_test.bc
 v1_min_test.bc: bign2/v1_min.bc
 	$(LD) $^ -o $@
 
-v1_test.bc: bign2/v1.bc
+v1_test.bc: bign2/v1.bc constant_time.bc
 	$(LD) $^ -o $@
 
 v1_min_test: v1_min_test.bc

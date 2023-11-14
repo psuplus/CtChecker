@@ -1,4 +1,5 @@
-//===------- VulnerableBranchWrapper.h -- Identify taint sources and sinks ----===//
+//===------- VulnerableBranchWrapper.h -- Identify taint sources and sinks
+//----===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -11,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "VulnerableBranch.h"
 #include "TaintAnalysisBase.h"
+#include "VulnerableBranch.h"
 #include "llvm/IR/CallSite.h"
 #include "llvm/Pass.h"
 
@@ -44,8 +45,9 @@ public:
 private:
   VulnerableBranch *vba;
   PointsToInterface *pti;
-  bool matchNonPointerWhitelistAndTainted(const User *,
-                                          std::set<const Value *> &, const Instruction &);
+  bool matchNonPointerWhitelistAndTainted(const Value *, const User *,
+                                          std::set<const Value *> &,
+                                          const Instruction &);
 };
 
 } // namespace deps

@@ -1,0 +1,43 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "dfs_EC___main",
+      "type": "variable",
+      "name": "llvm_cbe_ctx",
+      "index": 1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "dfs_EC___main",
+      "type": "variable",
+      "name": "_7",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
+  "ptr_whitelist": [],
+  "entry": ["dfs_EC___main"]
+}

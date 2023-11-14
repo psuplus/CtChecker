@@ -44,8 +44,9 @@ public:
 private:
   VulnerableBranch *vba;
   PointsToInterface *pti;
-  bool matchNonPointerWhitelistAndTainted(const User *,
-                                          std::set<const Value *> &, const Instruction &);
+  bool matchNonPointerWhitelistAndTainted(const Value *, const User *,
+                                          std::set<const Value *> &,
+                                          const Instruction &);
 };
 
 } // namespace deps

@@ -117,24 +117,34 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
   for (auto &F : M.functions()) {
     for (auto &I : inst_range(F)) {
       const User *user = nullptr;
+      const Value *value = nullptr;
       if (const LoadInst *load = dyn_cast<LoadInst>(&I)) {
         if (const ConstantExpr *ce =
                 dyn_cast<ConstantExpr>(load->getPointerOperand()))
           user = ce;
+        value = load->getPointerOperand();
       } else if (const StoreInst *store = dyn_cast<StoreInst>(&I)) {
         if (const ConstantExpr *ce =
                 dyn_cast<ConstantExpr>(store->getPointerOperand()))
           user = ce;
-      } else if (const GetElementPtrInst *gep =
-                     dyn_cast<GetElementPtrInst>(&I)) {
-        user = gep;
+        value = store->getPointerOperand();
       }
-
-      if (user && matchNonPointerWhitelistAndTainted(user, Infoflow::tainted, I)) {
+      // } else if (const GetElementPtrInst *gep =
+      //                dyn_cast<GetElementPtrInst>(&I)) {
+      //   user = gep;
+      // }
+      if ((user || value) && matchNonPointerWhitelistAndTainted(value, user,
+                                                     Infoflow::tainted, I)) {
         const MDLocation *loc = I.getDebugLoc();
-        user->dump();
-        errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
+        if (user) {
+          user->dump();
+        }else{
+          value->dump();
+        }
+        if (loc) {
+          errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
                << "\n";
+        }
       }
     }
   }
@@ -157,7 +167,8 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 }
 
 bool VulnerableBranchWrapper::matchNonPointerWhitelistAndTainted(
-    const User *user, std::set<const Value *> &tainted, const Instruction &I) {
+    const Value *value, const User *user, std::set<const Value *> &tainted,
+    const Instruction &I) {
   // const BasicBlock *bc = I.getParent();
   // const Function *func = bc->getParent();
   // for (auto &op : user->operands()) {
@@ -175,12 +186,16 @@ bool VulnerableBranchWrapper::matchNonPointerWhitelistAndTainted(
   //   }
   // }
   // return false;
-
-  for (auto &op : user->operands()) {
-    if (Infoflow::tainted.find(op) != Infoflow::tainted.end()) {
+  if (user)
+    for (auto &op : user->operands()) {
+      if (Infoflow::tainted.find(op) != Infoflow::tainted.end()) {
+        return true;
+      }
+    }
+  if (value)
+    if (Infoflow::tainted.find(value) != Infoflow::tainted.end()) {
       return true;
     }
-  }
   return false;
 }
 

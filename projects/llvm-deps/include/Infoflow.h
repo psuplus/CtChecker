@@ -67,6 +67,7 @@ using json = nlohmann::json;
 #define DEBUG_TYPE_TAINT "taint"
 #define DEBUG_TYPE_CONSTANT "constant"
 
+#define DEPS_DEBUG_FULL 1
 #define IMPLICIT 1
 #define HOTSPOT 0
 
@@ -115,12 +116,13 @@ public:
       : function(fn), name(name), index(idx) {}
   ~ConfigVariable(){};
 
-  bool operator< (const ConfigVariable &var) const {
+  bool operator<(const ConfigVariable &var) const {
     if (function < var.function) {
       return true;
     } else if (function == var.function && name < var.name) {
       return true;
-    } else if (function == var.function && name == var.name && index < var.index) {
+    } else if (function == var.function && name == var.name &&
+               index < var.index) {
       return true;
     } else {
       return false;
@@ -214,7 +216,7 @@ public:
   // pair.first: taintAnalysis, pair.second: whitelist pointer
   typedef DenseMap<const Instruction *, std::pair<Flows, Flows>> InstFlowMap;
   typedef DenseMap<FlowRecordID, ConsSet> FlowConsSetMap;
-  typedef DenseMap<const Instruction *, ConsSet> InstConsSetMap; 
+  typedef DenseMap<const Instruction *, ConsSet> InstConsSetMap;
 
   static std::set<const Value *> tainted;
   static std::set<const Value *> whitelistPointers;
@@ -225,7 +227,7 @@ public:
   static InstConsSetMap instTaintConsSetMap;
   static InstConsSetMap instWLPConsSetMap;
   static int iterationTag;
-  
+
   // 4 for each, implicit or not, sink or not
   // 0: not implicit, not sink
   // 1: implicit, not sink
@@ -405,8 +407,10 @@ private:
   static std::map<std::string, DenseMap<const ConstantInt *, const ConsElem *>>
       constantValueConstraintMap;
   static DenseMap<const Value *, std::string> valueStringMap;
-  static DenseMap<const Function *, const ConsElem *> summarySinkVargConstraintMap;
-  static DenseMap<const Function *, const ConsElem *> summarySourceVargConstraintMap;
+  static DenseMap<const Function *, const ConsElem *>
+      summarySinkVargConstraintMap;
+  static DenseMap<const Function *, const ConsElem *>
+      summarySourceVargConstraintMap;
 
   ValueConsElemMap &getOrCreateValueConstraintMap(const ContextID);
   DenseMap<const Function *, const ConsElem *> &
@@ -468,7 +472,8 @@ private:
                                    std::map<unsigned, const ConsElem *>,
                                    unsigned, unsigned, const Value *, Type *);
 
-  const ConsElem &getOrCreateConsElem(const ContextID, const Value &, ConsSet &);
+  const ConsElem &getOrCreateConsElem(const ContextID, const Value &,
+                                      ConsSet &);
   void putOrConstrainConsElem(bool imp, bool sink, const ContextID,
                               const Value &, const ConsElem &, ConsSet &);
   const ConsElem &getOrCreateConsElemSummarySource(const Value &);
@@ -526,9 +531,11 @@ private:
   void constrainOffsetFromIndex(std::string, const AbstractLoc *, const Value *,
                                 std::map<unsigned, const ConsElem *>, int);
 
-  const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &, ConsSet &);
+  const ConsElem &getOrCreateVargConsElem(const ContextID, const Function &,
+                                          ConsSet &);
   void putOrConstrainVargConsElem(bool imp, bool sink, const ContextID,
-                                  const Function &, const ConsElem &, ConsSet &);
+                                  const Function &, const ConsElem &,
+                                  ConsSet &);
   const ConsElem &getOrCreateVargConsElemSummarySource(const Function &);
   void putOrConstrainVargConsElemSummarySource(std::string, const Function &,
                                                const ConsElem &);
@@ -593,7 +600,8 @@ private:
   void constrainMemset(const IntrinsicInst &intr, Flows &flows);
 
   void pushToFullyTainted(const Instruction &inst);
-  void insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows, Flows &WLPFlows);
+  void insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows,
+                             Flows &WLPFlows);
   void insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set);
 
   AbstractLocSet getPointedToAbstractLocs(const Value *v);

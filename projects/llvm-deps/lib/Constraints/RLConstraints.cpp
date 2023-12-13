@@ -15,6 +15,8 @@
 #include "llvm/Support/Casting.h"
 #include <regex>
 
+#define DEPS_DEBUG_CLEAN 1
+
 namespace deps {
 
 CompartmentMap RLConstant::RLCompartmentMap;
@@ -229,6 +231,9 @@ bool RLConstant::operator==(const ConsElem &elem) const {
 
 RLConsVar::RLConsVar(const std::string description, const std::string metainfo)
     : desc(description), meta(metainfo) {
+#if DEPS_DEBUG_CLEAN
+
+#else
   std::regex re("[ =@\\\\[\\];\n\"\\{\\}~]+");
   replaced = std::regex_replace(desc, re, "_");
   replaced.append(std::regex_replace(meta, re, "_"));
@@ -237,6 +242,7 @@ RLConsVar::RLConsVar(const std::string description, const std::string metainfo)
     delimCount++;
     replaced.append("|");
   }
+#endif
 }
 
 bool RLConsVar::leq(const ConsElem &elem) const { return false; }

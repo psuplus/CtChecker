@@ -13,19 +13,19 @@
 #include <chrono>
 #include <ctime>
 
-#include "VulnerableBranch.h"
 #include "Infoflow.h"
+#include "VulnerableBranch.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/InstIterator.h"
 #include "llvm/IR/IntrinsicInst.h"
-#include "llvm/IR/Module.h"
 #include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Passes/PassBuilder.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Passes/PassBuilder.h"
 
 // For __cxa_demangle (demangling c++ function names)
 // Requires libstdc++
@@ -40,7 +40,9 @@ char VulnerableBranch::ID;
 
 bool VulnerableBranch::runOnModule(Module &M) {
   using namespace std::chrono;
-  auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  auto start =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+          .count();
   ifa = &getAnalysis<Infoflow>();
 
   // Only generate constraint set in the first round
@@ -76,18 +78,18 @@ bool VulnerableBranch::runOnModule(Module &M) {
     // }
     // errs() << "---- flow to cons map END ----\n\n";
 
-    errs() << "\n---- Taint Constraints BEGIN ----\n";
-    for (auto cons : Infoflow::consSetTaint[0]) {
-      errs() << Infoflow::iterationTag << ":";
-      cons.dump();
-    }
-    errs() << "---- Taint Constraints END ----\n\n";
-    errs() << "\n---- WLP Constraints BEGIN ----\n";
-    for (auto cons : Infoflow::consSetWLP[0]) {
-      errs() << Infoflow::iterationTag << ":";
-      cons.dump();
-    }
-    errs() << "---- WLP Constraints END ----\n\n";
+    // errs() << "\n---- Taint Constraints BEGIN ----\n";
+    // for (auto cons : Infoflow::consSetTaint[0]) {
+    //   errs() << Infoflow::iterationTag << ":";
+    //   cons.dump();
+    // }
+    // errs() << "---- Taint Constraints END ----\n\n";
+    // errs() << "\n---- WLP Constraints BEGIN ----\n";
+    // for (auto cons : Infoflow::consSetWLP[0]) {
+    //   errs() << Infoflow::iterationTag << ":";
+    //   cons.dump();
+    // }
+    // errs() << "---- WLP Constraints END ----\n\n";
     return false;
   }
 
@@ -121,7 +123,7 @@ bool VulnerableBranch::runOnModule(Module &M) {
     // Create constraints for Derivation Solver
     for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F) {
       for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-          ++I) {
+           ++I) {
         if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
           const MDLocation *loc = bi->getDebugLoc();
           if (bi->isConditional() && loc) {
@@ -135,8 +137,9 @@ bool VulnerableBranch::runOnModule(Module &M) {
                 const ConsElem *elem = vIter->second;
                 const ConsElem &low = RLConstant::bot();
                 RLConstraint c(elem, &low, &Predicate::TruePred(), false, false,
-                              "  ;  [ConsDebugTag-*]   conditional branch");
-                ifa->kit->getOrCreateConstraintSet("source-sink-taint").push_back(c);
+                               "  ;  [ConsDebugTag-*]   conditional branch");
+                ifa->kit->getOrCreateConstraintSet("source-sink-taint")
+                    .push_back(c);
               }
             }
           }
@@ -145,50 +148,52 @@ bool VulnerableBranch::runOnModule(Module &M) {
     }
   }
 
-  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  unsigned long long elapsed_seconds = end-start;
+  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+                 .count();
+  unsigned long long elapsed_seconds = end - start;
+  errs() << "Current epoch time (ms): " << end << "\n";
   errs() << "Overall time:" << elapsed_seconds << "\n";
 
-  errs() << "\n---- Constraints BEGIN ----\n";
-  if (Infoflow::WLPTR_ROUND) {
-    kinds.insert({"default-WLP", "default-sink"});
-  } else {
-    kinds.insert({"default-taint", "default-sink"});
-  }
-  for (auto kind : kinds) {
-    errs() << kind << ":\n";
-    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind)) {
-      errs() << Infoflow::iterationTag << ":";
-      cons.dump();
-    }
-  }
-  errs() << "---- Constraints END ----\n\n";
+  // errs() << "\n---- Constraints BEGIN ----\n";
+  // if (Infoflow::WLPTR_ROUND) {
+  //   kinds.insert({"default-WLP", "default-sink"});
+  // } else {
+  //   kinds.insert({"default-taint", "default-sink"});
+  // }
+  // for (auto kind : kinds) {
+  //   errs() << kind << ":\n";
+  //   for (auto cons : ifa->kit->getOrCreateConstraintSet(kind)) {
+  //     errs() << Infoflow::iterationTag << ":";
+  //     cons.dump();
+  //   }
+  // }
+  // errs() << "---- Constraints END ----\n\n";
 
-  if (Infoflow::WLPTR_ROUND) {
-    errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
-    for (auto i : Infoflow::whitelistPointers) {
-      i->dump();
-    }
-    errs() << "---- Whitelisted Pointers END ----\n\n";
+  // if (Infoflow::WLPTR_ROUND) {
+  //   errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
+  //   for (auto i : Infoflow::whitelistPointers) {
+  //     i->dump();
+  //   }
+  //   errs() << "---- Whitelisted Pointers END ----\n\n";
 
-    errs() << "\n---- Whitelisted ConsElem BEGIN ----\n";
-    for (auto i : Infoflow::solutionSetWLP) {
-      errs() << i << "\n";
-    }
-    errs() << "---- Whitelisted ConsElem END ----\n\n";
-  } else {
-    errs() << "\n---- Tainted Values BEGIN ----\n";
-    for (auto i : Infoflow::tainted) {
-      i->dump();
-    }
-    errs() << "---- Tainted Values END ----\n\n";
+  //   errs() << "\n---- Whitelisted ConsElem BEGIN ----\n";
+  //   for (auto i : Infoflow::solutionSetWLP) {
+  //     errs() << i << "\n";
+  //   }
+  //   errs() << "---- Whitelisted ConsElem END ----\n\n";
+  // } else {
+  //   errs() << "\n---- Tainted Values BEGIN ----\n";
+  //   for (auto i : Infoflow::tainted) {
+  //     i->dump();
+  //   }
+  //   errs() << "---- Tainted Values END ----\n\n";
 
-    errs() << "\n---- Fully Tainted Variables during Propagation BEGIN ----\n";
-    for (auto i : ifa->fullyTainted) {
-      errs() << i.function << ":" << i.name << ":" << i.index << "\n";
-    }
-    errs() << "---- Fully Tainted Variables during Propagation END ----\n\n";
-  }
+  //   errs() << "\n---- Fully Tainted Variables during Propagation BEGIN
+  //   ----\n"; for (auto i : ifa->fullyTainted) {
+  //     errs() << i.function << ":" << i.name << ":" << i.index << "\n";
+  //   }
+  //   errs() << "---- Fully Tainted Variables during Propagation END ----\n\n";
+  // }
 
   return false;
 }

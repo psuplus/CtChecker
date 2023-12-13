@@ -67,7 +67,7 @@ using json = nlohmann::json;
 #define DEBUG_TYPE_TAINT "taint"
 #define DEBUG_TYPE_CONSTANT "constant"
 
-#define DEPS_DEBUG_FULL 1
+#define DEPS_DEBUG_CLEAN 1
 #define IMPLICIT 1
 #define HOTSPOT 0
 

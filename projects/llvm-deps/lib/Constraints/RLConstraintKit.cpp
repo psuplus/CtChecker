@@ -17,9 +17,9 @@
 #include "Constraints/PartialSolution.h"
 #include "Constraints/RLConsSoln.h"
 #include "Constraints/RLConstraints.h"
-#include <iostream>
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
 #include "llvm/ADT/Statistic.h"
 #include "llvm/IR/DebugInfo.h"
@@ -128,8 +128,8 @@ RLConstraintKit::getOrCreateConstraintSet(const std::string kind,
 
 std::vector<RLConstraint>
 RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
-                                    const ConsElem &rhs, std::string info,
-                                    const Predicate &pred) {
+                               const ConsElem &rhs, std::string info,
+                               const Predicate &pred) {
   if (lockedConstraintKinds[&pred].find(kind) !=
       lockedConstraintKinds[&pred].end()) {
     assert(false && "Have already started solving this kind and cannot add "
@@ -177,16 +177,14 @@ RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
 
 std::vector<RLConstraint>
 RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
-                                    const ConsElem &rhs,
-                                    const llvm::Value &value,
-                                    const Predicate &pred) {
+                               const ConsElem &rhs, const llvm::Value &value,
+                               const Predicate &pred) {
   return addConstraint(kind, lhs, rhs, "", pred);
 }
 
 std::vector<RLConstraint>
 RLConstraintKit::addConstraint(const std::string kind, const ConsElem &lhs,
-                                    const ConsElem &rhs,
-                                    const Predicate &pred) {
+                               const ConsElem &rhs, const Predicate &pred) {
   return addConstraint(kind, lhs, rhs, "", pred);
 }
 
@@ -202,16 +200,9 @@ void RLConstraintKit::removeConstraintRHS(const std::string kind,
 
   assert(!llvm::isa<RLJoin>(&rhs) && "We shouldn't have joins on rhs!");
 
-  llvm::errs() << "Size of vector " << set.size() << "\n";
-  llvm::errs() << "Constraint element to find ";
-  rhs.dump(llvm::errs());
-  llvm::errs() << "\n";
-
   for (auto vIt = set.begin(); vIt != set.end(); vIt++) {
     const ConsElem &constraintRight = *(*vIt).rhs();
     if (&rhs == &constraintRight) {
-      llvm::errs() << "Constraint erased: ";
-      (*vIt).dump(" => ");
       set.erase(vIt--);
     }
   }
@@ -221,7 +212,9 @@ ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
                                          const Predicate &pred) {
   PartialSolution *PS = NULL;
   using namespace std::chrono;
-  auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  auto start =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+          .count();
   for (auto kind : kinds) {
     if (!leastSolutions[&pred].count(kind)) {
       lockedConstraintKinds[&pred].insert(kind);
@@ -236,8 +229,9 @@ ConsSoln *RLConstraintKit::leastSolution(const std::set<std::string> kinds,
     else
       PS->mergeIn(*P);
   }
-  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  unsigned long long elapsed_seconds = end-start;
+  auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+                 .count();
+  unsigned long long elapsed_seconds = end - start;
   std::cerr << "Actual solving time:" << elapsed_seconds << "\n";
 
   assert(PS && "No kinds given?");
@@ -365,8 +359,8 @@ void RLConstraintKit::partitionPredicateSet(std::vector<Predicate *> &P) {
 }
 
 void RLConstraintKit::setConstraints(std::set<RLConstraint> consSet,
-                    const std::string kind,
-                    const Predicate &pred) {
+                                     const std::string kind,
+                                     const Predicate &pred) {
   constraints[&pred][kind].clear();
   std::vector<RLConstraint> &consVec = getOrCreateConstraintSet(kind, pred);
   consVec.insert(consVec.end(), consSet.begin(), consSet.end());

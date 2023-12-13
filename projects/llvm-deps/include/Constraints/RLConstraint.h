@@ -63,15 +63,17 @@ private:
 public:
   RLConstraint(const ConsElem &lhs, const ConsElem &rhs, const Predicate &pred,
                bool implicit, bool sink, std::string info)
-      : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), sink(sink), info(info) {
+      : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), sink(sink),
+        info(info) {
     // if (!implicit)
-    DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
+    // DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   RLConstraint(const ConsElem *lhs, const ConsElem *rhs, const Predicate *pred,
                bool implicit, bool sink, std::string info)
-      : left(lhs), right(rhs), pred(pred), implicit(implicit), sink(sink), info(info) {
+      : left(lhs), right(rhs), pred(pred), implicit(implicit), sink(sink),
+        info(info) {
     // if (!implicit)
-    DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
+    // DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   const ConsElem *lhs() const { return left; }
   const ConsElem *rhs() const { return right; }
@@ -82,36 +84,29 @@ public:
   bool operator<(const RLConstraint that) const {
     if (this->left < that.left) {
       return true;
-    } else if (this->left == that.left &&
-               this->right < that.right) {
+    } else if (this->left == that.left && this->right < that.right) {
       return true;
-    } else if (this->left == that.left &&
-               this->right == that.right &&
+    } else if (this->left == that.left && this->right == that.right &&
                this->pred < that.pred) {
       return true;
-    } else if (this->left == that.left &&
-               this->right == that.right &&
-               this->pred == that.pred &&
-               this->implicit < that.implicit) {
+    } else if (this->left == that.left && this->right == that.right &&
+               this->pred == that.pred && this->implicit < that.implicit) {
       return true;
-    } else if (this->left == that.left &&
-               this->right == that.right &&
-               this->pred == that.pred &&
-               this->implicit == that.implicit &&
+    } else if (this->left == that.left && this->right == that.right &&
+               this->pred == that.pred && this->implicit == that.implicit &&
                this->sink < that.sink) {
       return true;
-    } else if (this->left == that.left &&
-               this->right == that.right &&
-               this->pred == that.pred &&
-               this->implicit == that.implicit &&
-               this->sink == that.sink &&
-               this->info < that.info) {
+    } else if (this->left == that.left && this->right == that.right &&
+               this->pred == that.pred && this->implicit == that.implicit &&
+               this->sink == that.sink && this->info < that.info) {
       return true;
-    } 
+    }
     return false;
   }
 
-  void dump(std::string delim = " <: ") { printCosntraint(delim); }
+  void dump(std::string delim = " <: ") {
+    // printCosntraint(delim);
+  }
 
 private:
   const ConsElem *left;

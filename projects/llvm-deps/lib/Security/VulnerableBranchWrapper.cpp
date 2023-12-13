@@ -75,17 +75,17 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
   passManager->run(M);
   errs() << vba->ifa->currentFlowRecord << " flow records processed\n";
 
-  errs() << "\n---- Tainted Values BEGIN ----\n";
-  for (auto i : Infoflow::tainted) {
-    i->dump();
-  }
-  errs() << "---- Tainted Values END ----\n\n";
+  // errs() << "\n---- Tainted Values BEGIN ----\n";
+  // for (auto i : Infoflow::tainted) {
+  //   i->dump();
+  // }
+  // errs() << "---- Tainted Values END ----\n\n";
 
-  errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
-  for (auto i : Infoflow::whitelistPointers) {
-    i->dump();
-  }
-  errs() << "---- Whitelisted Pointers END ----\n\n";
+  // errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
+  // for (auto i : Infoflow::whitelistPointers) {
+  //   i->dump();
+  // }
+  // errs() << "---- Whitelisted Pointers END ----\n\n";
 
   // Variables to gather branch statistics
   unsigned long number_branches = 0;
@@ -135,8 +135,8 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
       //   user = gep;
       // }
 
-      if ((user || value) && matchNonPointerWhitelistAndTainted(value, user,
-                                                     Infoflow::tainted, I)) {
+      if ((user || value) && matchNonPointerWhitelistAndTainted(
+                                 value, user, Infoflow::tainted, I)) {
         const MDLocation *loc = I.getDebugLoc();
         if (user)
           user->dump();

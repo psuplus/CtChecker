@@ -111,8 +111,25 @@ bool VulnerableBranch::runOnModule(Module &M) {
     Infoflow::solutionSetWLP = soln->getAllWLPConsElem();
     ifa->clearSolutions();
   } else {
+    errs() << "ConstraintMap Size: " << ifa->summarySourceValueConstraintMap.size() << "\n";
+    errs() << "SourceVariables Size: " << ifa->sourceVariables.size() << "\n";
+    auto label_src_start =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+          .count();
     parser.labelValue("source-sink-taint", ifa->sourceVariables, true);
+    auto label_src_end =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+          .count();
+    errs() << "Label Value time (Source Variables):" << label_src_end-label_src_start << "\n";
+    errs() << "FullyTainted Size: " << ifa->fullyTainted.size() << "\n";
+    auto label_start =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+          .count();
     parser.labelValue("source-sink-taint", ifa->fullyTainted, true);
+    auto label_end =
+      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+          .count();
+    errs() << "Label Value time (Fully Tainted):" << label_end-label_start << "\n";
     kinds.insert("source-sink-taint");
     for (auto whitelist : ifa->whitelistVariables) {
       ifa->removeConstraint("default-taint", whitelist);

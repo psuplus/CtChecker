@@ -27,6 +27,7 @@
 #include "SignatureLibrary.h"
 #include "SourceSinkAnalysis.h"
 #include "TaintAnalysisBase.h"
+#include "DbgInstVisitor.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Analysis/PostDominators.h"
@@ -67,7 +68,7 @@ using json = nlohmann::json;
 #define DEBUG_TYPE_TAINT "taint"
 #define DEBUG_TYPE_CONSTANT "constant"
 
-#define DEPS_DEBUG_CLEAN 1
+#define DEPS_DEBUG_CLEAN 0
 #define IMPLICIT 1
 #define HOTSPOT 0
 

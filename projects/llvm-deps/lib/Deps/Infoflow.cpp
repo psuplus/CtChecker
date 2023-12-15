@@ -1203,22 +1203,36 @@ const MDLocation *Infoflow::findVar(const Value *V, const Function *F) const {
 
 const MDLocalVariable *Infoflow::findVarNode(const Value *V,
                                              const Function *F) const {
-  StringRef vName;
-  if (V->hasName()) {
-    vName = V->getName();
+  DbgInstVisitor visitor;
+  visitor.collectDbgInstructions(*F);
+
+  for (auto I=visitor.getDbgDeclareInstructions().begin(); I != visitor.getDbgDeclareInstructions().end(); I++) {
+    if((*I)->getAddress() == V)
+      return (*I)->getVariable();
   }
-  for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End;
-       ++Iter) {
-    const Instruction *I = &*Iter;
-    if (const DbgDeclareInst *DbgDeclare = dyn_cast<DbgDeclareInst>(I)) {
-      if (DbgDeclare->getAddress() == V)
-        return DbgDeclare->getVariable();
-    } else if (const DbgValueInst *DbgValue = dyn_cast<DbgValueInst>(I)) {
-      if (DbgValue->getValue() == V)
-        return DbgValue->getVariable();
-    }
+
+  for (auto I=visitor.getDbgValueInstructions().begin(); I != visitor.getDbgValueInstructions().end(); I++) {
+    if((*I)->getValue() == V)
+      return (*I)->getVariable();
   }
+
   return NULL;
+  // StringRef vName;
+  // if (V->hasName()) {
+  //   vName = V->getName();
+  // }
+  // for (const_inst_iterator Iter = inst_begin(F), End = inst_end(F); Iter != End;
+  //      ++Iter) {
+  //   const Instruction *I = &*Iter;
+  //   if (const DbgDeclareInst *DbgDeclare = dyn_cast<DbgDeclareInst>(I)) {
+  //     if (DbgDeclare->getAddress() == V)
+  //       return DbgDeclare->getVariable();
+  //   } else if (const DbgValueInst *DbgValue = dyn_cast<DbgValueInst>(I)) {
+  //     if (DbgValue->getValue() == V)
+  //       return DbgValue->getVariable();
+  //   }
+  // }
+  // return NULL;
 }
 
 void Infoflow::getOriginalLocation(const Value *V) {

@@ -103,7 +103,7 @@ for FUNC in "recp" "mont" "mont_consttime" "mont_word" ;
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
         -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-        -vulnerablebranchwrapper -debug < $1 2>tmp.dat > /dev/null
+        -vulnerablebranchwrapper < $1 2>tmp.dat > /dev/null
         TIME=$(echo "$(date +%s) - $TIME" | bc)
         printf "Execution time: %d seconds\n" $TIME
 

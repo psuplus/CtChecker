@@ -8,7 +8,7 @@ else
 fi
 
 COL=""
-MEM2REG=""
+MEM2REG="-mem2reg"
 
 COL+="WL"
 COL+="/FS"
@@ -45,7 +45,7 @@ $LEVEL/Debug+Asserts/bin/clang -isystem include -I include -O0 -emit-llvm -g -o 
 # CUR=$(pwd)
 # cd ../../../;
 # $LEVEL/Debug+Asserts/bin/llvm-as $NAME.ll -o $NAME".bc"
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer $NAME".bc" -o $NAME".bc"
+$LEVEL/Debug+Asserts/bin/opt -instnamer $NAME".bc" -o $NAME".bc"
 $LEVEL/Debug+Asserts/bin/llvm-dis $NAME".bc" -o $NAME"_final.ll"
 
 TIME=$(date +%s)
@@ -70,7 +70,7 @@ PATTERN="/Constantine/[/a-zA-Z0-9_-]+"
 NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
 ROW="${NAMEPREFIX}/${NAME}"
 SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
-RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/results-noFLS.csv"
+RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/results.csv"
 python $SCRIPTPATH tmp-$NAME.dat $RESULTPATH $ROW $TIME > $FILENAME
 
 # COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')

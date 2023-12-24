@@ -62,23 +62,33 @@ $LEVEL/Debug+Asserts/bin/clang -isystem include -O0 -emit-llvm -g -o $NAME".bc" 
 # CUR=$(pwd)
 # cd ../../../;
 # $LEVEL/Debug+Asserts/bin/llvm-as $NAME.ll -o $NAME".bc"
-$LEVEL/Debug+Asserts/bin/opt -mem2reg -instnamer $NAME".bc" -o $NAME".bc"
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $NAME".bc" -o $NAME".bc"
 $LEVEL/Debug+Asserts/bin/llvm-dis $NAME".bc" -o $NAME"_final.ll"
 
 TIME=$(date +%s)
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Deps.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Security.$EXT  \
-  -vulnerablebranch  -debug < $NAME".bc" 2> tmp-$NAME.dat > /dev/null
+  -vulnerablebranchwrapper < $NAME".bc" 2> tmp-$NAME.dat > /dev/null
 TIME=$(echo "$(date +%s) - $TIME" | bc)
 printf "Execution time: %d seconds\n" $TIME
 
-CONS_FILENAME=$( echo 'constraints-'$NAME'.con' | tr '/' '-')
-cat tmp-$NAME.dat | grep '<:' > $CONS_FILENAME
+FILENAME=$( echo 'results-'$NAME'.txt' | tr '/' '-')
+#export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools
+WORKINGPATH=$(pwd)
+PATTERN="/SC-Eliminator/[/a-zA-Z0-9_-]+"
+NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
+ROW="${NAMEPREFIX}/${NAME}"
+SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
+RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator/results.csv"
+python $SCRIPTPATH tmp-$NAME.dat $RESULTPATH $ROW $TIME > $FILENAME
+
+# CONS_FILENAME=$( echo 'constraints-'$NAME'.con' | tr '/' '-')
+# cat tmp-$NAME.dat | grep '<:' > $CONS_FILENAME
 
 #FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')
 #export PATH="$PATH:../../processing_tools" # tmp change to path to have post-processing tools

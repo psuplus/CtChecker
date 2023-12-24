@@ -17,7 +17,7 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "_7",
+      "name": "_2",
       "index": -1,
       "l": {
         "secret": "private"
@@ -27,7 +27,7 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "_8",
+      "name": "_3",
       "index": -1,
       "l": {
         "secret": "private"
@@ -37,7 +37,27 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "_9",
+      "name": "_4",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "main",
+      "type": "variable",
+      "name": "_5",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "main",
+      "type": "variable",
+      "name": "_6",
       "index": -1,
       "l": {
         "secret": "private"
@@ -48,5 +68,6 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
+  "ptr_whitelist": [],
   "entry": ["main"]
 }

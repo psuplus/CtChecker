@@ -10,6 +10,7 @@ $RUN loki911_opt
 $RUN loki911_wo_opt
 
 echo "Change into chronos"
+# cd chronos
 cd ../chronos
 $RUN aes1_opt
 $RUN aes1_wo_opt
@@ -30,6 +31,7 @@ $RUN khazad1_wo_opt
 
 echo "Change into libg"
 cd ../libg
+# cd libg
 $RUN camellia1_opt
 $RUN camellia1_wo_opt
 $RUN des1_opt

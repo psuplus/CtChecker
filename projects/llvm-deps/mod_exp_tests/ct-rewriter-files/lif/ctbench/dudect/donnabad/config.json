@@ -17,7 +17,7 @@
     {
       "function": "main",
       "type": "variable",
-      "name": "_2",
+      "name": "_1",
       "index": -1,
       "l": {
         "secret": "private"
@@ -28,5 +28,6 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
+  "ptr_whitelist": [],
   "entry": ["main"]
 }

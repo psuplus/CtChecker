@@ -45,6 +45,7 @@ public:
 private:
   VulnerableBranch *vba;
   PointsToInterface *pti;
+  bool isGepTainted(const GetElementPtrInst &inst);
   bool matchNonPointerWhitelistAndTainted(const Value *, const User *,
                                           std::set<const Value *> &,
                                           const Instruction &);

@@ -20,16 +20,31 @@ if [ "$COL" = "" ] ; then
 fi
 echo "Running with flags: $COL"
 
-NAME=${1%.*}
+NAME=${1%.*}"1"
 # change config file for each example
 rm config.json
-if [[ "$NAME" == *"aes_core"* ]]; then
-        cp config-aes_core.json config.json
-elif [[ "$NAME" == *"cast-ssl"* ]]; then
-        cp config-cast-ssl.json config.json
+
+# if $2 is true, taint source like SC-Eliminator; otherwise, only taint key
+if [ $2 = true ]; then
+        echo "Taint like SC-Eliminator"
+        if [[ "$NAME" == *"aes_core"* ]]; then
+                cp config-aes_core.json config.json
+        elif [[ "$NAME" == *"cast-ssl"* ]]; then
+                cp config-cast-ssl.json config.json
+        else
+                echo "Wrong example name"
+                exit 1
+        fi
 else
-        echo "Wrong example name"
-        exit 1
+        echo "Taint only key"
+        if [[ "$NAME" == *"aes_core"* ]]; then
+                cp config-aes_core-ctchecker.json config.json
+        elif [[ "$NAME" == *"cast-ssl"* ]]; then
+                cp config-cast-ssl-ctchecker.json config.json
+        else
+                echo "Wrong example name"
+                exit 1
+        fi
 fi
 
 CPPFLAGS=
@@ -72,7 +87,12 @@ PATTERN="/SC-Eliminator-original/[/a-zA-Z0-9_-]+"
 NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
 ROW="${NAMEPREFIX}/${NAME}"
 SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
-RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"
+
+if [ $2 = true ]; then
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"
+else
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results-ctchecker.csv"
+fi
 python3 $SCRIPTPATH tmp-$NAME.dat $RESULTPATH $ROW $TIME > $FILENAME
 
 #FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')

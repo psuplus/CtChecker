@@ -20,20 +20,39 @@ if [ "$COL" = "" ] ; then
 fi
 echo "Running with flags: $COL"
 
-NAME=${1%.*}
+NAME=${1%.*}"1"
 # change config file for each example
 rm config.json
-if [[ "$NAME" == *"camellia"* ]]; then
-        cp config-camellia.json config.json
-elif [[ "$NAME" == *"des"* ]]; then
-        cp config-des.json config.json
-elif [[ "$NAME" == *"seed"* ]]; then
-        cp config-seed.json config.json
-elif [[ "$NAME" == *"twofish"* ]]; then
-        cp config-twofish.json config.json
+
+# if $2 is true, taint source like SC-Eliminator; otherwise, only taint key
+if [ $2 = true ]; then
+        echo "Taint like SC-Eliminator"
+        if [[ "$NAME" == *"camellia"* ]]; then
+                cp config-camellia.json config.json
+        elif [[ "$NAME" == *"des"* ]]; then
+                cp config-des.json config.json
+        elif [[ "$NAME" == *"seed"* ]]; then
+                cp config-seed.json config.json
+        elif [[ "$NAME" == *"twofish"* ]]; then
+                cp config-twofish.json config.json
+        else
+                echo "Wrong example name"
+                exit 1
+        fi
 else
-        echo "Wrong example name"
-        exit 1
+        echo "Taint only key"
+        if [[ "$NAME" == *"camellia"* ]]; then
+                cp config-camellia-ctchecker.json config.json
+        elif [[ "$NAME" == *"des"* ]]; then
+                cp config-des-ctchecker.json config.json
+        elif [[ "$NAME" == *"seed"* ]]; then
+                cp config-seed-ctchecker.json config.json
+        elif [[ "$NAME" == *"twofish"* ]]; then
+                cp config-twofish-ctchecker.json config.json
+        else
+                echo "Wrong example name"
+                exit 1
+        fi
 fi
 
 CPPFLAGS=
@@ -76,7 +95,12 @@ PATTERN="/SC-Eliminator-original/[/a-zA-Z0-9_-]+"
 NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
 ROW="${NAMEPREFIX}/${NAME}"
 SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
-RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"
+
+if [ $2 = true ]; then
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"
+else
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results-ctchecker.csv"
+fi
 python3 $SCRIPTPATH tmp-$NAME.dat $RESULTPATH $ROW $TIME > $FILENAME
 
 #FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')

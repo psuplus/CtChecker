@@ -20,28 +20,55 @@ if [ "$COL" = "" ] ; then
 fi
 echo "Running with flags: $COL"
 
-NAME=${1%.*}
+NAME=${1%.*}"1"
 # change config file for each example
 rm config.json
-if [[ "$NAME" == *"aes"* ]]; then
-        cp config-aes.json config.json
-elif [[ "$NAME" == *"anubis"* ]]; then
-        cp config-anubis.json config.json
-elif [[ "$NAME" == *"cast5"* ]]; then
-        cp config-cast5.json config.json
-elif [[ "$NAME" == *"cast6"* ]]; then
-        cp config-cast6.json config.json
-elif [[ "$NAME" == *"des3"* ]]; then
-        cp config-des3.json config.json
-elif [[ "$NAME" == *"des"* ]]; then
-        cp config-des.json config.json
-elif [[ "$NAME" == *"fcrypt"* ]]; then
-        cp config-fcrypt.json config.json
-elif [[ "$NAME" == *"khazad"* ]]; then
-        cp config-khazad.json config.json
+
+# if $2 is true, taint source like SC-Eliminator; otherwise, only taint key
+if [ $2 = true ]; then
+        echo "Taint like SC-Eliminator"
+        if [[ "$NAME" == *"aes"* ]]; then
+                cp config-aes.json config.json
+        elif [[ "$NAME" == *"anubis"* ]]; then
+                cp config-anubis.json config.json
+        elif [[ "$NAME" == *"cast5"* ]]; then
+                cp config-cast5.json config.json
+        elif [[ "$NAME" == *"cast6"* ]]; then
+                cp config-cast6.json config.json
+        elif [[ "$NAME" == *"des3"* ]]; then
+                cp config-des3.json config.json
+        elif [[ "$NAME" == *"des"* ]]; then
+                cp config-des.json config.json
+        elif [[ "$NAME" == *"fcrypt"* ]]; then
+                cp config-fcrypt.json config.json
+        elif [[ "$NAME" == *"khazad"* ]]; then
+                cp config-khazad.json config.json
+        else
+                echo "Wrong example name"
+                exit 1
+        fi
 else
-        echo "Wrong example name"
-        exit 1
+        echo "Taint only key"
+        if [[ "$NAME" == *"aes"* ]]; then
+                cp config-aes-ctchecker.json config.json
+        elif [[ "$NAME" == *"anubis"* ]]; then
+                cp config-anubis-ctchecker.json config.json
+        elif [[ "$NAME" == *"cast5"* ]]; then
+                cp config-cast5-ctchecker.json config.json
+        elif [[ "$NAME" == *"cast6"* ]]; then
+                cp config-cast6-ctchecker.json config.json
+        elif [[ "$NAME" == *"des3"* ]]; then
+                cp config-des3-ctchecker.json config.json
+        elif [[ "$NAME" == *"des"* ]]; then
+                cp config-des-ctchecker.json config.json
+        elif [[ "$NAME" == *"fcrypt"* ]]; then
+                cp config-fcrypt-ctchecker.json config.json
+        elif [[ "$NAME" == *"khazad"* ]]; then
+                cp config-khazad-ctchecker.json config.json
+        else
+                echo "Wrong example name"
+                exit 1
+        fi
 fi
 
 CPPFLAGS=
@@ -84,7 +111,12 @@ PATTERN="/SC-Eliminator-original/[/a-zA-Z0-9_-]+"
 NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
 ROW="${NAMEPREFIX}/${NAME}"
 SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
-RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"
+
+if [ $2 = true ]; then
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"
+else
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results-ctchecker.csv"
+fi
 python3 $SCRIPTPATH tmp-$NAME.dat $RESULTPATH $ROW $TIME > $FILENAME
 
 #FILENAME=$( echo 'results_with_source-'$COL'.txt' | tr '/' '-')

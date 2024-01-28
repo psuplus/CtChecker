@@ -1,0 +1,133 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "deskey",
+      "type": "variable",
+      "name": "key",
+      "index": 0,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "cookey",
+      "type": "variable",
+      "name": "raw1",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "cpkey",
+      "type": "variable",
+      "name": "into",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "usekey",
+      "type": "variable",
+      "name": "from",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "des",
+      "type": "variable",
+      "name": "inblock",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "scrunch",
+      "type": "variable",
+      "name": "outof",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "unscrun",
+      "type": "variable",
+      "name": "outof",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "desfunc",
+      "type": "variable",
+      "name": "keys",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "des_key",
+      "type": "variable",
+      "name": "dc",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "des_enc",
+      "type": "variable",
+      "name": "dc",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "des_dec",
+      "type": "variable",
+      "name": "dc",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
+  "ptr_whitelist": [],
+  "entry": ["main"]
+}

@@ -1,0 +1,63 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "des_ekey",
+      "type": "variable",
+      "name": "k",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "dkey",
+      "type": "variable",
+      "name": "k",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "des3_ede_encrypt",
+      "type": "variable",
+      "name": "dctx",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "des3_ede_decrypt",
+      "type": "variable",
+      "name": "dctx",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
+  "ptr_whitelist": [],
+  "entry": ["main"]
+}

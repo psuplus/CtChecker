@@ -47,12 +47,12 @@ $LEVEL/Debug+Asserts/bin/clang -isystem include -I include -O0 -emit-llvm -g -o 
 # CUR=$(pwd)
 # cd ../../../;
 # $LEVEL/Debug+Asserts/bin/llvm-as $NAME.ll -o $NAME".bc"
-$LEVEL/Debug+Asserts/bin/opt -instnamer $NAME".bc" -o $NAME".bc"
+$LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer $NAME".bc" -o $NAME".bc"
 $LEVEL/Debug+Asserts/bin/llvm-dis $NAME".bc" -o $NAME"_final.ll"
 
 TIME=$(date +%s)
 ## opt -load *.so -infoflow < $BENCHMARKS/welcome/welcome.bc -o welcome.bc
-$LEVEL/Debug+Asserts/bin/opt $MEM2REG -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
+$LEVEL/Debug+Asserts/bin/opt -load $LEVEL/projects/poolalloc/Debug+Asserts/lib/LLVMDataStructure.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/Constraints.$EXT  \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/sourcesinkanalysis.$EXT \
   -load $LEVEL/projects/llvm-deps/Debug+Asserts/lib/pointstointerface.$EXT \

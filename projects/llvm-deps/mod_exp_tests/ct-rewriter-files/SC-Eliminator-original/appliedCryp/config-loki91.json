@@ -1,0 +1,123 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "setlokikey",
+      "type": "variable",
+      "name": "key",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "enloki",
+      "type": "variable",
+      "name": "c",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "deloki",
+      "type": "variable",
+      "name": "c",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "perm32",
+      "type": "variable",
+      "name": "out",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "f",
+      "type": "variable",
+      "name": "r",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "mult8",
+      "type": "variable",
+      "name": "a",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "mult8",
+      "type": "variable",
+      "name": "b",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "exp8",
+      "type": "variable",
+      "name": "base",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "exp8",
+      "type": "variable",
+      "name": "exponent",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "s",
+      "type": "variable",
+      "name": "i",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
+  "ptr_whitelist": [],
+  "entry": ["main"]
+}

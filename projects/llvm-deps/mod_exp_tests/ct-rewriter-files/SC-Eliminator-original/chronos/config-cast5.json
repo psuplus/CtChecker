@@ -1,0 +1,53 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["public", "private"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "cast5_encrypt",
+      "type": "variable",
+      "name": "c",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "cast5_decrypt",
+      "type": "variable",
+      "name": "c",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "function": "cast5_setkey",
+      "type": "variable",
+      "name": "key",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
+  "sink": [],
+  "using_whitelist": true,
+  "whitelist": [],
+  "ptr_whitelist": [],
+  "entry": ["main"]
+}

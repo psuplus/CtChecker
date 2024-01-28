@@ -86,7 +86,7 @@ WORKINGPATH=$(pwd)
 PATTERN="/SC-Eliminator-original/[/a-zA-Z0-9_-]+"
 NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
 ROW="${NAMEPREFIX}/${NAME}"
-SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
+SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results_original.py"
 
 if [ $2 = true ]; then
         RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/SC-Eliminator-original/results.csv"

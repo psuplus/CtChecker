@@ -104,8 +104,8 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
           const Value *v = bi->getCondition();
           if (Infoflow::tainted.find(v) != Infoflow::tainted.end()) {
             tainted_branches++;
-            errs() << "IR line (Branch): ";
-            bi->dump();
+            // errs() << "IR line (Branch): ";
+            // bi->dump();
             errs() << loc->getFilename() << " line "
                    << std::to_string(loc->getLine()) << "\n";
             // errs() << loc->getFilename() << " line " <<
@@ -119,45 +119,45 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
   errs() << "#--------------Array Indices------------------\n";
   for (auto &F : M.functions()) {
     for (auto &I : inst_range(F)) {
-      // const User *user = nullptr;
-      // const Value *value = nullptr;
-      // if (const LoadInst *load = dyn_cast<LoadInst>(&I)) {
-      //   if (const ConstantExpr *ce =
-      //           dyn_cast<ConstantExpr>(load->getPointerOperand()))
-      //     user = ce;
-      //   value = load->getPointerOperand();
-      // } else if (const StoreInst *store = dyn_cast<StoreInst>(&I)) {
-      //   if (const ConstantExpr *ce =
-      //           dyn_cast<ConstantExpr>(store->getPointerOperand()))
-      //     user = ce;
-      //   value = store->getPointerOperand();
+      const User *user = nullptr;
+      const Value *value = nullptr;
+      if (const LoadInst *load = dyn_cast<LoadInst>(&I)) {
+        if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(load->getPointerOperand()))
+          user = ce;
+        value = load->getPointerOperand();
+      } else if (const StoreInst *store = dyn_cast<StoreInst>(&I)) {
+        if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(store->getPointerOperand()))
+          user = ce;
+        value = store->getPointerOperand();
+      }
+      // } else if (const GetElementPtrInst *gep =
+      //                dyn_cast<GetElementPtrInst>(&I)) {
+      //   user = gep;
       // }
-      // // } else if (const GetElementPtrInst *gep =
-      // //                dyn_cast<GetElementPtrInst>(&I)) {
-      // //   user = gep;
-      // // }
 
-      // if ((user || value) && matchNonPointerWhitelistAndTainted(value, user,
-      //                                                Infoflow::tainted, I)) {
-      //   const MDLocation *loc = I.getDebugLoc();
-      //   if (user){
-      //     errs() << "IR line (Index): ";
-      //     user->dump();
-      //   } else {
-      //     errs() << "IR line (Index): ";
-      //     value->dump();
-      //   }
-      //   errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
-      //          << "\n";
-      // }
+      if ((user || value) && matchNonPointerWhitelistAndTainted(value, user,
+                                                     Infoflow::tainted, I)) {
+        const MDLocation *loc = I.getDebugLoc();
+        // if (user){
+        //   errs() << "IR line (Index): ";
+        //   user->dump();
+        // } else {
+        //   errs() << "IR line (Index): ";
+        //   value->dump();
+        // }
+        errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
+               << "\n";
+      }
 
       // This is to mimic SC-Eliminator
       if (const GetElementPtrInst *gep = dyn_cast<GetElementPtrInst>(&I)) {
         if (isGepTainted(*gep)) {
           const MDLocation *loc = I.getDebugLoc();
-          errs() << "IR line (Index): ";
+          errs() << "IR line (Index-SC-Eliminator): ";
           gep->dump();
-          errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
+          errs() << loc->getFilename() << " at(SC-Eliminator) " << std::to_string(loc->getLine())
             << "\n";
         }
       }

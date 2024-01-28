@@ -26,15 +26,15 @@ def parse_number(num):
 def filter_lines_from_results(fname):
     """Filters through vulnerable branch dat file for tainted lines"""
     match = r"IR line \(Branch\): (.+)"
-    match2 = r"IR line \(Index\): (.+)"
-    filtered_lines = set()
-    filtered_lines2 = set()
+    match2 = r"IR line \(Index-SC-Eliminator\): (.+)"
+    filtered_lines = []
+    filtered_lines2 = []
     with open(fname, "r") as f:
         for line in f:
             if re.match(match, line):
-                filtered_lines.add(line)
+                filtered_lines.append(line)
             if re.match(match2, line):
-                filtered_lines2.add(line)
+                filtered_lines2.append(line)
 
     return [filtered_lines, filtered_lines2]
 

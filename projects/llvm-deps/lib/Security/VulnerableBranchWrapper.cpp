@@ -104,8 +104,8 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
           const Value *v = bi->getCondition();
           if (Infoflow::tainted.find(v) != Infoflow::tainted.end()) {
             tainted_branches++;
-            // errs() << "IR line (Branch): ";
-            // bi->dump();
+            errs() << "IR line (Branch): ";
+            bi->dump();
             errs() << loc->getFilename() << " line "
                    << std::to_string(loc->getLine()) << "\n";
             // errs() << loc->getFilename() << " line " <<

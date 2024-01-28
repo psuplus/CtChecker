@@ -205,8 +205,8 @@ main()
 
     min_library_tests
     full_library_tests
-    # ct_verif_tests
-    # ct_verif_full_tests
+    ct_verif_tests
+    ct_verif_full_tests
 }
 
 # Run the actual tests

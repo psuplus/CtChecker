@@ -72,13 +72,13 @@ FILE="mpi/mpi-pow.c"
 make clean
 make full.bc
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer full.bc -o full.bc
-$LEVEL/Debug+Asserts/bin/llvm-dis full.bc -o full-$COL".ll"
+$LEVEL/Debug+Asserts/bin/llvm-dis full.bc
 
 make mpi/mpi-pow.bc
 cp mpi/mpi-pow.bc .
 $LEVEL/Debug+Asserts/bin/opt $MEM2REG -instnamer mpi-pow.bc -o mpi-pow.bc
 # $LEVEL/Debug+Asserts/bin/opt -inline -inline-threshold=500 $1 -o $1
-$LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc -o mpi-pow-$COL".ll"
+$LEVEL/Debug+Asserts/bin/llvm-dis mpi-pow.bc
 
 ## compile the instrumentation module to bitcode
 ## clang $CPPFLAGS -O0 -emit-llvm -c sample.cpp -o sample.bc

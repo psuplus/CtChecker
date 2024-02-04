@@ -38,13 +38,13 @@ public:
 
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
     // AU.addRequired<VulnerableBranch>();
-    AU.addRequired<PointsToInterface>();
+    // AU.addRequired<PointsToInterface>();
     AU.setPreservesAll();
   }
 
 private:
   VulnerableBranch *vba;
-  PointsToInterface *pti;
+  // PointsToInterface *pti;
   bool isGepTainted(const GetElementPtrInst &inst);
   bool matchNonPointerWhitelistAndTainted(const Value *, const User *,
                                           std::set<const Value *> &,

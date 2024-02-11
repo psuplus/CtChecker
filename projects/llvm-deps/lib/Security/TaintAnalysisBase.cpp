@@ -56,21 +56,27 @@ TaintAnalysisBase::getPointerTarget(const AbstractLoc *loc) {
 
 void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
                                        int t_offset, std::string match_name,
-                                       RLLabel label) {
+                                       RLLabel label, bool gte) {
 
   std::string s = value.getName();
   std::string meta = "[" + match_name + ":" + std::to_string(t_offset) +
                      "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  errs() << "Trying to constrain " << meta << " for value : ";
-                  value.dump(););
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+    errs() << "Trying to constrain " << meta << " for value : ";
+    value.dump();
+  });
   const AbstractLocSet &locs = ifa->locsForValue(value);
   const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
   if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                    errs() << "SETTING " << s << " TO BE TAINTED\n";);
-    ifa->constrainAllConsElem(kind, value, std::set<const ConsElem *>(), label,
-                              meta);
+    if (gte) {
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      { errs() << "Setting " << s << " to tainted\n"; });
+      ifa->setLabel(kind, value, label, true, meta);
+    } else {
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                      { errs() << "Setting " << s << " to public\n"; });
+      ifa->setLabel(kind, value, label, false, meta);
+    }
   }
 
   // Heap nodes not returned from locs For value
@@ -80,29 +86,30 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       relevantLocs.insert(rl);
     }
   }
-  DEBUG_WITH_TYPE(
-      DEBUG_TYPE_DEBUG, errs() << "\n --------- locs --------- \n";
-      for (auto &l
-           : locs) {
-        l->dump();
-        errs() << " --------- \n";
-      } errs()
-      << " --------- rlocs --------- \n";
-      for (auto &rl
-           : rlocs) {
-        rl->dump();
-        errs() << " --------- \n";
-      } errs()
-      << " locs size : " << locs.size() << "\n";
-      errs() << " rlocs size : " << rlocs.size() << "\n";
-      errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
-      errs() << " --------- end --------- \n\n";);
+
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+    errs() << "\n --------- locs --------- \n";
+    for (auto &l : locs) {
+      l->dump();
+      errs() << " --------- \n";
+    }
+    errs() << " --------- rlocs --------- \n";
+    for (auto &rl : rlocs) {
+      rl->dump();
+      errs() << " --------- \n";
+    }
+    errs() << " locs size : " << locs.size() << "\n";
+    errs() << " rlocs size : " << rlocs.size() << "\n";
+    errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
+    errs() << " --------- end --------- \n\n";
+  });
 
   unsigned offset = 0, span = 0;
   bool hasOffset = ifa->offsetForValue(value, &offset);
   unsigned numElements = getNumElements(value);
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "This value has " << numElements
-                                           << " elements.\n";);
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+    errs() << "This value has " << numElements << " elements.\n";
+  });
 
   if (!ifa->offset_used) {
     t_offset = -1; // if offset is disabled ignore offset from taintfile
@@ -128,7 +135,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 
     if (hasOffset) {
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                      errs() << "Has offset [" << offset << "]\n";);
+                      { errs() << "Has offset [" << offset << "]\n"; });
       std::set<const ConsElem *> rel;
 
 #if HOTSPOT
@@ -194,12 +201,13 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
 #if HOTSPOT
       }
 #endif
-      DEBUG_WITH_TYPE(
-          DEBUG_TYPE_DEBUG, errs() << "REL: \n"; for (auto e
-                                                      : rel) {
-            e->dump(errs() << "");
-            errs() << "\n";
-          });
+      DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+        errs() << "REL: \n";
+        for (auto e : rel) {
+          e->dump(errs() << "");
+          errs() << "\n";
+        }
+      });
       elementsToConstrain.insert(rel.begin(), rel.end());
     } else {
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "No offset.\n";);
@@ -224,26 +232,37 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
         }
       }
     }
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                    errs() << "FOUND " << elementsToConstrain.size()
-                           << " elements from the locsForValue\n";
-                    errs() << "=====\n";);
+    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+      errs() << "Found " << elementsToConstrain.size()
+             << " elements from the locsForValue\n";
+      errs() << "=====\n";
+    });
   }
-  DEBUG_WITH_TYPE(
-      DEBUG_TYPE_DEBUG, errs() << "Number of elements to constrain: "
-                               << elementsToConstrain.size() << "\n";
-      for (auto &el
-           : elementsToConstrain) {
-        el->dump(errs());
-        errs() << " : addr " << el << "\n";
-      });
-  ifa->constrainAllConsElem(kind, value, elementsToConstrain, label, meta);
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+    errs() << "#elements to constrain: " << elementsToConstrain.size() << "\n";
+    for (auto &el : elementsToConstrain) {
+      el->dump(errs());
+      errs() << " : addr " << el << "\n";
+    }
+  });
+
+  for (auto &elem : elementsToConstrain) {
+    const ConsElem &labelConst = ifa->kit->constant(label);
+    if (gte) {
+      std::string memMeta = " ;  [ConsDebugTag-*] source-mem " + meta;
+      ifa->kit->addConstraint(kind, labelConst, *elem, memMeta);
+    } else {
+      std::string memMeta = " ;  [ConsDebugTag-*] sink-mem " + meta;
+      ifa->kit->addConstraint(kind, *elem, labelConst, memMeta);
+    }
+  }
 }
 
 void TaintAnalysisBase::labelSink(std::string kind) {
-  // process the sink functions' arguments
-  DEBUG_WITH_TYPE(DEBUG_TYPE,
-                  errs() << "\n========= Labeling Sink Functions ========= \n");
+  DEBUG_WITH_TYPE(DEBUG_TYPE, {
+    errs() << "\n========= Labeling Sink Functions ========= \n";
+  });
+
   for (auto var : ifa->indexedSinkVariables) {
     Value &value = *var.val;
     int t_offset = var.index;
@@ -477,7 +496,8 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 }
 
 void TaintAnalysisBase::labelValue(std::string kind,
-                                   std::set<ConfigVariable> vars, bool gte) {
+                                   std::set<ConfigVariable> vars, bool gte,
+                                   std::string pred) {
   for (auto var : vars) {
     NumSourceConstrained++;
     if (var.type == ConfigVariableType::Constant) {
@@ -501,18 +521,14 @@ void TaintAnalysisBase::labelValue(std::string kind,
       }
       continue;
     }
-    for (DenseMap<const Value *, const ConsElem *>::const_iterator
-             entry = ifa->summarySourceValueConstraintMap.begin(),
-             end = ifa->summarySourceValueConstraintMap.end();
-         entry != end; ++entry) {
-      const Value &value = *(entry->first);
+    for (auto entry : ifa->summarySourceValueConstraintMap) {
+      const Value &value = *entry.first;
 
       // Only taint variables defined in taint files if the function matches
       const Function *fn = findEnclosingFunc(&value);
       bool function_matches = false;
-      if (var.function.size() == 0) {
-        function_matches = true;
-      } else if (fn && fn->hasName() && fn->getName() == var.function) {
+      if (var.function.size() == 0 ||
+          (fn && fn->hasName() && fn->getName() == var.function)) {
         function_matches = true;
       }
 
@@ -521,15 +537,10 @@ void TaintAnalysisBase::labelValue(std::string kind,
         if (value.hasName()) {
           if (value.getName() == var.name) {
             variable_matches = true;
-            DEBUG_WITH_TYPE(
-                DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
-                                         << " : " << var.name << "\n";
-                errs()
-                << "Matching value with config variable within function ["
-                << (fn ? fn->getName() : "GLOBAL") << "]\n";
-                errs() << "\t- Value has the name [" << value.getName()
-                       << "]\n";
-                errs() << "\t- Found a value name match\n\n";);
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+              errs() << "Lookup: " << var.function << ": " << var.name << "\n"
+                     << "\tFound a *value name* match\n\n";
+            });
           }
         }
         if (!variable_matches && fn) {
@@ -538,29 +549,27 @@ void TaintAnalysisBase::labelValue(std::string kind,
               (local_var->getTag() == 257 || local_var->getTag() == 256)) {
             if (local_var->getName() == var.name) {
               variable_matches = true;
-              DEBUG_WITH_TYPE(
-                  DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
-                                           << " : " << var.name << "\n";
-                  errs()
-                  << "Matching value with config variable within function ["
-                  << fn->getName() << "]\n";
-                  errs() << "\t- Variable has name [" << local_var->getName()
-                         << "]\n";
-                  errs() << "\t- Found a local variable match\n\n";);
+              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+                errs() << "Lookup: " << var.function << ": " << var.name << "\n"
+                       << "\tFound a *local variable* match\n\n ";
+              });
             }
           }
         }
 
         if (variable_matches) {
-          constrainValue(kind, value, var.index, var.name, var.label);
-        } else if (function_matches) {
+          ifa->kit->constant(var.label).dump(errs() << "The label is: ");
+          constrainValue(kind, value, var.index, var.name, var.label, gte);
+        } else {
           // test if the value's content starts with match
           std::string name = ifa->getOrCreateStringFromValue(value, false);
-          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                          errs() << "var.name = " << var.name << "\n";
-                          errs() << "name = " << name << "\n";);
+          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+            errs() << "var.name = " << var.name << "\n";
+            errs() << "name = " << name << "\n";
+          });
+          // QZ: This head matching is not accurate, but it is the best we can
+          // do. Maybe we should just eliminate this for conservativeness.
           if (name.find(var.name) == 0 && var.name.find(name) == 0) {
-            errs() << "Match Detected for " << name << "\n";
             std::string meta =
                 "[" + name + ":" + std::to_string(var.index) +
                 "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";

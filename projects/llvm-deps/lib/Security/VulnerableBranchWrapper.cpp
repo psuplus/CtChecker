@@ -137,18 +137,18 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
       //   user = gep;
       // }
 
-      if ((user || value) && matchNonPointerWhitelistAndTainted(value, user,
-                                                     Infoflow::tainted, I)) {
-        const MDLocation *loc = I.getDebugLoc();
-        // if (user){
-        //   errs() << "IR line (Index): ";
-        //   user->dump();
-        // } else {
-        //   errs() << "IR line (Index): ";
-        //   value->dump();
-        // }
-        errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
-               << "\n";
+      if ((user || value) && matchNonPointerWhitelistAndTainted(
+                                 value, user, Infoflow::tainted, I)) {
+        if (const MDLocation *loc = I.getDebugLoc())
+          // if (user){
+          //   errs() << "IR line (Index): ";
+          //   user->dump();
+          // } else {
+          //   errs() << "IR line (Index): ";
+          //   value->dump();
+          // }
+          errs() << loc->getFilename() << " at "
+                 << std::to_string(loc->getLine()) << "\n";
       }
 
       // This is to mimic SC-Eliminator
@@ -157,8 +157,8 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
           const MDLocation *loc = I.getDebugLoc();
           errs() << "IR line (Index-SC-Eliminator): ";
           gep->dump();
-          errs() << loc->getFilename() << " at(SC-Eliminator) " << std::to_string(loc->getLine())
-            << "\n";
+          errs() << loc->getFilename() << " at(SC-Eliminator) "
+                 << std::to_string(loc->getLine()) << "\n";
         }
       }
     }
@@ -183,9 +183,9 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 
 // This is how SC Eliminator report indices
 bool VulnerableBranchWrapper::isGepTainted(const GetElementPtrInst &inst) {
-  for (int i = 1; i < (int)inst.getNumOperands(); i++){
+  for (int i = 1; i < (int)inst.getNumOperands(); i++) {
     Value *Index = inst.getOperand(i);
-    if (Infoflow::tainted.find(Index) != Infoflow::tainted.end()){
+    if (Infoflow::tainted.find(Index) != Infoflow::tainted.end()) {
       return true;
     }
   }

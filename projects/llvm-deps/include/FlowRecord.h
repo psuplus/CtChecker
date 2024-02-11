@@ -59,7 +59,8 @@ public:
       : implicit(false), sourceCtxt(source), sinkCtxt(sink) {}
   FlowRecord(bool type, const ContextID source, const ContextID sink)
       : implicit(type), sourceCtxt(source), sinkCtxt(sink) {}
-  FlowRecord(bool type, const ContextID source, const ContextID sink, unsigned long id)
+  FlowRecord(bool type, const ContextID source, const ContextID sink,
+             unsigned long id)
       : implicit(type), sourceCtxt(source), sinkCtxt(sink), flowRecordID(id) {}
 
   bool isImplicit() const { return implicit; }
@@ -111,6 +112,9 @@ public:
   }
   bool reachPtrIsSink(const Value &V) const { return reachPtrSinks.count(&V); }
 
+  void setPredicate(std::string pred) { predicate = pred; }
+  std::string getPredicate() const { return predicate; }
+
   value_iterator source_value_begin() const { return valueSources.begin(); }
   value_iterator source_value_end() const { return valueSources.end(); }
   value_iterator source_directptr_begin() const {
@@ -146,6 +150,7 @@ public:
     errs() << "\tSink context: " << sinkCtxt << "\n";
     errs() << "\tImplicit flow: " << (implicit ? "Yes" : "No") << "\n";
     errs() << "\tID: " << flowRecordID << "\n";
+    errs() << "\tPredicate: " << predicate << "\n";
     print(valueSources, "Value Sources");
     print(directPtrSources, "D Sources");
     print(reachPtrSources, "R Sources");
@@ -160,12 +165,12 @@ public:
   bool operator==(const FlowRecord &that) {
     if (this->implicit == that.implicit &&
         this->sourceCtxt == that.sourceCtxt &&
-        this->sinkCtxt == that.sinkCtxt && 
-        this->valueSources.size() == that.valueSources.size() && 
-        this->directPtrSources.size() == that.directPtrSources.size() && 
-        this->reachPtrSources.size() == that.reachPtrSources.size() && 
-        this->valueSinks.size() == that.valueSinks.size() && 
-        this->directPtrSinks.size() == that.directPtrSinks.size() && 
+        this->sinkCtxt == that.sinkCtxt &&
+        this->valueSources.size() == that.valueSources.size() &&
+        this->directPtrSources.size() == that.directPtrSources.size() &&
+        this->reachPtrSources.size() == that.reachPtrSources.size() &&
+        this->valueSinks.size() == that.valueSinks.size() &&
+        this->directPtrSinks.size() == that.directPtrSinks.size() &&
         this->reachPtrSinks.size() == that.reachPtrSinks.size() &&
         valueSetMatch(this->valueSources, that.valueSources) &&
         valueSetMatch(this->directPtrSources, that.directPtrSources) &&
@@ -174,7 +179,8 @@ public:
         valueSetMatch(this->directPtrSinks, that.directPtrSinks) &&
         valueSetMatch(this->reachPtrSinks, that.reachPtrSinks) &&
         funcSetMatch(this->vargSources, that.vargSources) &&
-        funcSetMatch(this->vargSinks, that.vargSinks)) {
+        funcSetMatch(this->vargSinks, that.vargSinks) &&
+        this->predicate == that.predicate) {
       return true;
     }
     return false;
@@ -187,6 +193,8 @@ private:
   fun_set vargSources, vargSinks;
   ContextID sourceCtxt;
   ContextID sinkCtxt;
+  std::string predicate;
+
   void print(value_set vSet, std::string name) {
     if (vSet.size()) {
       errs() << "\t" << name << "\n";
@@ -214,7 +222,8 @@ private:
   bool valueSetMatch(const value_set &thisSet, const value_set &thatSet) {
     for (auto value = thisSet.begin(); value != thisSet.end(); value++) {
       bool match = true;
-      for (auto thatValue = thatSet.begin(); thatValue != thatSet.end(); thatValue++) {
+      for (auto thatValue = thatSet.begin(); thatValue != thatSet.end();
+           thatValue++) {
         if ((*value) == (*thatValue)) {
           match = true;
           break;
@@ -231,7 +240,8 @@ private:
   bool funcSetMatch(const fun_set &thisSet, const fun_set &thatSet) {
     for (auto func = thisSet.begin(); func != thisSet.end(); func++) {
       bool match = true;
-      for (auto thatFunc = thatSet.begin(); thatFunc != thatSet.end(); thatFunc++) {
+      for (auto thatFunc = thatSet.begin(); thatFunc != thatSet.end();
+           thatFunc++) {
         if ((*func) == (*thatFunc)) {
           match = true;
           break;

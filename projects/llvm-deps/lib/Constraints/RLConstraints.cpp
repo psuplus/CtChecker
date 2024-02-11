@@ -15,7 +15,7 @@
 #include "llvm/Support/Casting.h"
 #include <regex>
 
-#define DEPS_DEBUG_CLEAN 1
+#define DEPS_DEBUG_CLEAN 0
 
 namespace deps {
 
@@ -124,8 +124,8 @@ void RLConstant::dump(llvm::raw_ostream &o) const {
   o << "CONST[";
   for (auto l : level) {
     o << l.first << ":" << l.second << "("
-      << RLConstant::RLLevelMap[l.first][l.second] << ")"
-      << ((level.rbegin()->first != l.first) ? "," : "");
+      << ((l.second == -1) ? "" : RLConstant::RLLevelMap[l.first][l.second])
+      << ")" << ((level.rbegin()->first != l.first) ? "," : "");
   }
   o << "][";
   for (auto c : compartment) {

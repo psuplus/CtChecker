@@ -7,7 +7,8 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// TODO Description
+// The RLConstraint class represents a single constraint with the support for
+// arbitary lattice.
 //
 //===----------------------------------------------------------------------===//
 
@@ -32,6 +33,9 @@ private:
     //   pred.dump();
     //   llvm::errs() << "iter\n";
     // }
+    if (!predStr.empty()) {
+      llvm::errs() << predStr;
+    }
     if (llvm::isa<RLConstant>(left)) {
       std::string constant;
       llvm::raw_string_ostream *ss = new llvm::raw_string_ostream(constant);
@@ -66,18 +70,20 @@ public:
       : left(&lhs), right(&rhs), pred(&pred), implicit(implicit), sink(sink),
         info(info) {
     // if (!implicit)
-    // DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
+    DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   RLConstraint(const ConsElem *lhs, const ConsElem *rhs, const Predicate *pred,
                bool implicit, bool sink, std::string info)
       : left(lhs), right(rhs), pred(pred), implicit(implicit), sink(sink),
         info(info) {
     // if (!implicit)
-    // DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
+    DEBUG_WITH_TYPE(DEBUG_TYPE_CONSTRAINT, printCosntraint(););
   }
   const ConsElem *lhs() const { return left; }
   const ConsElem *rhs() const { return right; }
   const Predicate *predicate() const { return pred; }
+  std::string predicateStr() const { return predStr; }
+  void setPredicateStr(std::string str) { predStr = str; }
   bool isImplicit() const { return implicit; }
   bool isSink() const { return sink; }
   std::string getInfo() const { return info; }
@@ -104,14 +110,13 @@ public:
     return false;
   }
 
-  void dump(std::string delim = " <: ") {
-    // printCosntraint(delim);
-  }
+  void dump(std::string delim = " <: ") { printCosntraint(delim); }
 
 private:
   const ConsElem *left;
   const ConsElem *right;
   const Predicate *pred;
+  std::string predStr;
   bool implicit;
   bool sink;
   std::string info;

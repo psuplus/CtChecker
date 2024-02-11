@@ -21,13 +21,13 @@
 #include "CallSensitiveAnalysisPass.h"
 #include "Constraints/RLConsSoln.h"
 #include "Constraints/RLConstraintKit.h"
+#include "DbgInstVisitor.h"
 #include "FlowRecord.h"
 #include "InfoflowSignature.h"
 #include "PointsToInterface.h"
 #include "SignatureLibrary.h"
 #include "SourceSinkAnalysis.h"
 #include "TaintAnalysisBase.h"
-#include "DbgInstVisitor.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Analysis/PostDominators.h"
@@ -106,6 +106,7 @@ public:
   ContextID ctxt;       // field added by the analysis for sink labeling
   Value *val;           // field added by the analysis for sink labeling
   std::string callsite; // field added by the analysis for sink labeling
+  std::string extras;   // field holding extraneous information
 
   ConfigVariable() = default;
   ConfigVariable(std::string fn, ConfigVariableType ty, std::string name,
@@ -253,7 +254,7 @@ public:
         AU);
     AU.addRequired<SourceSinkAnalysis>();
     AU.addRequired<PostDominatorTree>();
-    // AU.addRequired<PointsToInterface>();
+    AU.addRequired<PointsToInterface>();
     AU.setPreservesAll();
   }
 
@@ -291,6 +292,7 @@ public:
   /// may specify a set of constraints to include.
 
   void setLabel(std::string, const Value &, RLLabel, bool, std::string = "");
+  void setLabel(std::string, const ConsElem &, RLLabel, bool, std::string = "");
   /// Adds the constraint "TAINTED <= VALUE" to the given kind
   void setUntainted(std::string, const Value &);
   /// Adds the constraint "VALUE <= UNTAINTED" to the given kind

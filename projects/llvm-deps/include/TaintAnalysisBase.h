@@ -21,7 +21,7 @@ protected:
   std::map<unsigned, const ConsElem *> getPointerTarget(const AbstractLoc *loc);
 
   void constrainValue(std::string kind, const Value &, int, std::string,
-                      RLLabel);
+                      RLLabel, bool);
 
   unsigned getNumElements(const Value &v);
 
@@ -36,7 +36,8 @@ protected:
 public:
   void setInfoflow(Infoflow *flow) { ifa = flow; }
 
-  void labelValue(std::string, std::set<ConfigVariable>, bool);
+  void labelValue(std::string, std::set<ConfigVariable>, bool,
+                  std::string = "");
 
   void labelSink(std::string);
 };

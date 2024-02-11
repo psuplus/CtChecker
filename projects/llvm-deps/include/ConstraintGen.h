@@ -39,11 +39,13 @@ public:
   virtual bool runOnModule(Module &M);
 
   virtual void getAnalysisUsage(AnalysisUsage &AU) const {
+    // AU.addRequired<PointsToInterface>();
     AU.addRequired<Infoflow>();
     AU.setPreservesAll();
   }
 
 private:
+  // PointsToInterface *pti;
   Infoflow *ifa;
   TaintAnalysisBase parser;
 };

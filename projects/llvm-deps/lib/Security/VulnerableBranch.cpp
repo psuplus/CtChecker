@@ -47,49 +47,49 @@ bool VulnerableBranch::runOnModule(Module &M) {
 
   // Only generate constraint set in the first round
   if (Infoflow::iterationTag == 1) {
-    // errs() << "\n---- inst to flow map BEGIN ----\n";
-    // for (auto instFlowPair : ifa->instFlowMap) {
-    //   instFlowPair.first->dump();
-    //   for (auto flow : instFlowPair.second.first) {
-    //     flow.dump();
-    //   }
-    //   for (auto flow : instFlowPair.second.second) {
-    //     flow.dump();
-    //   }
-    // }
-    // errs() << "---- inst to flow map END ----\n\n";
+    errs() << "\n---- inst to flow map BEGIN ----\n";
+    for (auto instFlowPair : ifa->instFlowMap) {
+      instFlowPair.first->dump();
+      for (auto flow : instFlowPair.second.first) {
+        flow.dump();
+      }
+      for (auto flow : instFlowPair.second.second) {
+        flow.dump();
+      }
+    }
+    errs() << "---- inst to flow map END ----\n\n";
 
-    // errs() << "\n---- flow to cons map BEGIN ----\n";
-    // for (auto flowConsPair : ifa->flowConsSetMap) {
-    //   errs() << flowConsPair.first << ":";
-    //   errs() << flowConsPair.second.size() << "\n";
-    //   for (auto con : flowConsPair.second) {
-    //     con.dump();
-    //   }
-    // }
-    // errs() << "---- flow to cons map END ----\n\n";
+    errs() << "\n---- flow to cons map BEGIN ----\n";
+    for (auto flowConsPair : ifa->flowConsSetMap) {
+      errs() << flowConsPair.first << ":";
+      errs() << flowConsPair.second.size() << "\n";
+      for (auto con : flowConsPair.second) {
+        con.dump();
+      }
+    }
+    errs() << "---- flow to cons map END ----\n\n";
 
-    // errs() << "\n---- inst to cons map BEGIN ----\n";
-    // for (auto instConsPair : Infoflow::instTaintConsSetMap) {
-    //   instConsPair.first->dump();
-    //   for (auto con : instConsPair.second) {
-    //     con.dump();
-    //   }
-    // }
-    // errs() << "---- flow to cons map END ----\n\n";
+    errs() << "\n---- inst to cons map BEGIN ----\n";
+    for (auto instConsPair : Infoflow::instTaintConsSetMap) {
+      instConsPair.first->dump();
+      for (auto con : instConsPair.second) {
+        con.dump();
+      }
+    }
+    errs() << "---- flow to cons map END ----\n\n";
 
-    // errs() << "\n---- Taint Constraints BEGIN ----\n";
-    // for (auto cons : Infoflow::consSetTaint[0]) {
-    //   errs() << Infoflow::iterationTag << ":";
-    //   cons.dump();
-    // }
-    // errs() << "---- Taint Constraints END ----\n\n";
-    // errs() << "\n---- WLP Constraints BEGIN ----\n";
-    // for (auto cons : Infoflow::consSetWLP[0]) {
-    //   errs() << Infoflow::iterationTag << ":";
-    //   cons.dump();
-    // }
-    // errs() << "---- WLP Constraints END ----\n\n";
+    errs() << "\n---- Taint Constraints BEGIN ----\n";
+    for (auto cons : Infoflow::consSetTaint[0]) {
+      errs() << Infoflow::iterationTag << ":";
+      cons.dump();
+    }
+    errs() << "---- Taint Constraints END ----\n\n";
+    errs() << "\n---- WLP Constraints BEGIN ----\n";
+    for (auto cons : Infoflow::consSetWLP[0]) {
+      errs() << Infoflow::iterationTag << ":";
+      cons.dump();
+    }
+    errs() << "---- WLP Constraints END ----\n\n";
     return false;
   }
 
@@ -111,25 +111,28 @@ bool VulnerableBranch::runOnModule(Module &M) {
     Infoflow::solutionSetWLP = soln->getAllWLPConsElem();
     ifa->clearSolutions();
   } else {
-    errs() << "ConstraintMap Size: " << ifa->summarySourceValueConstraintMap.size() << "\n";
+    errs() << "ConstraintMap Size: "
+           << ifa->summarySourceValueConstraintMap.size() << "\n";
     errs() << "SourceVariables Size: " << ifa->sourceVariables.size() << "\n";
     auto label_src_start =
-      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-          .count();
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+            .count();
     parser.labelValue("source-sink-taint", ifa->sourceVariables, true);
     auto label_src_end =
-      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-          .count();
-    errs() << "Label Value time (Source Variables):" << label_src_end-label_src_start << "\n";
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+            .count();
+    errs() << "Label Value time (Source Variables):"
+           << label_src_end - label_src_start << "\n";
     errs() << "FullyTainted Size: " << ifa->fullyTainted.size() << "\n";
     auto label_start =
-      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-          .count();
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+            .count();
     parser.labelValue("source-sink-taint", ifa->fullyTainted, true);
     auto label_end =
-      duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-          .count();
-    errs() << "Label Value time (Fully Tainted):" << label_end-label_start << "\n";
+        duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+            .count();
+    errs() << "Label Value time (Fully Tainted):" << label_end - label_start
+           << "\n";
     kinds.insert("source-sink-taint");
     for (auto whitelist : ifa->whitelistVariables) {
       ifa->removeConstraint("default-taint", whitelist);
@@ -171,46 +174,46 @@ bool VulnerableBranch::runOnModule(Module &M) {
   errs() << "Current epoch time (ms): " << end << "\n";
   errs() << "Overall time:" << elapsed_seconds << "\n";
 
-  // errs() << "\n---- Constraints BEGIN ----\n";
-  // if (Infoflow::WLPTR_ROUND) {
-  //   kinds.insert({"default-WLP", "default-sink"});
-  // } else {
-  //   kinds.insert({"default-taint", "default-sink"});
-  // }
-  // for (auto kind : kinds) {
-  //   errs() << kind << ":\n";
-  //   for (auto cons : ifa->kit->getOrCreateConstraintSet(kind)) {
-  //     errs() << Infoflow::iterationTag << ":";
-  //     cons.dump();
-  //   }
-  // }
-  // errs() << "---- Constraints END ----\n\n";
+  errs() << "\n---- Constraints BEGIN ----\n";
+  if (Infoflow::WLPTR_ROUND) {
+    kinds.insert({"default-WLP", "default-sink"});
+  } else {
+    kinds.insert({"default-taint", "default-sink"});
+  }
+  for (auto kind : kinds) {
+    errs() << kind << ":\n";
+    for (auto cons : ifa->kit->getOrCreateConstraintSet(kind)) {
+      errs() << Infoflow::iterationTag << ":";
+      cons.dump();
+    }
+  }
+  errs() << "---- Constraints END ----\n\n";
 
-  // if (Infoflow::WLPTR_ROUND) {
-  //   errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
-  //   for (auto i : Infoflow::whitelistPointers) {
-  //     i->dump();
-  //   }
-  //   errs() << "---- Whitelisted Pointers END ----\n\n";
+  if (Infoflow::WLPTR_ROUND) {
+    errs() << "\n---- Whitelisted Pointers BEGIN ----\n";
+    for (auto i : Infoflow::whitelistPointers) {
+      i->dump();
+    }
+    errs() << "---- Whitelisted Pointers END ----\n\n";
 
-  //   errs() << "\n---- Whitelisted ConsElem BEGIN ----\n";
-  //   for (auto i : Infoflow::solutionSetWLP) {
-  //     errs() << i << "\n";
-  //   }
-  //   errs() << "---- Whitelisted ConsElem END ----\n\n";
-  // } else {
-  //   errs() << "\n---- Tainted Values BEGIN ----\n";
-  //   for (auto i : Infoflow::tainted) {
-  //     i->dump();
-  //   }
-  //   errs() << "---- Tainted Values END ----\n\n";
+    errs() << "\n---- Whitelisted ConsElem BEGIN ----\n";
+    for (auto i : Infoflow::solutionSetWLP) {
+      errs() << i << "\n";
+    }
+    errs() << "---- Whitelisted ConsElem END ----\n\n";
+  } else {
+    errs() << "\n---- Tainted Values BEGIN ----\n";
+    for (auto i : Infoflow::tainted) {
+      i->dump();
+    }
+    errs() << "---- Tainted Values END ----\n\n";
 
-  //   errs() << "\n---- Fully Tainted Variables during Propagation BEGIN
-  //   ----\n"; for (auto i : ifa->fullyTainted) {
-  //     errs() << i.function << ":" << i.name << ":" << i.index << "\n";
-  //   }
-  //   errs() << "---- Fully Tainted Variables during Propagation END ----\n\n";
-  // }
+    errs() << "\n---- Fully Tainted Variables during Propagation BEGIN ----\n";
+    for (auto i : ifa->fullyTainted) {
+      errs() << i.function << ":" << i.name << ":" << i.index << "\n";
+    }
+    errs() << "---- Fully Tainted Variables during Propagation END ----\n\n";
+  }
 
   return false;
 }

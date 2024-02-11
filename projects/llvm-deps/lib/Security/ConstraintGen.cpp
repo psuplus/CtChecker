@@ -26,6 +26,8 @@
 // Requires libstdc++
 #include <cxxabi.h>
 
+using json = nlohmann::json;
+
 namespace deps {
 
 static RegisterPass<ConstraintGen>
@@ -42,115 +44,144 @@ bool ConstraintGen::runOnModule(Module &M) {
     return false;
   }
 
-  parser.labelValue("source-sink", ifa->sourceVariables, true);
+  std::set<std::string> kinds{
+      // "source-sink-taint",
+      "default-taint", "default-sink-taint",
+      // "implicit-taint", "implicit-sink-taint"
+  };
+
+  parser.labelValue("source-sink-taint", ifa->sourceVariables, true);
+
+  std::set<ConfigVariable> sinkVar{ifa->sinkVariables.begin(),
+                                   ifa->sinkVariables.end()};
+  parser.labelValue("source-sink-taint", sinkVar, false);
+
+  // std::list<json> dynamic = ifa->config.at("predicate");
+  // for (auto &it : dynamic) {
+  //   std::string predTrue, predFalse;
+  //   predTrue.append("(");
+  //   predTrue.append(it.at("function").get<std::string>());
+  //   predTrue.append("_");
+  //   predTrue.append(it.at("name").get<std::string>());
+  //   predFalse = predTrue;
+  //   predTrue.append("==1) => ");
+  //   predFalse.insert(0, "(Not ");
+
+  //   ConfigVariable cv;
+  //   cv.name = it.at("related").get<std::string>();
+  //   cv.function = it.at("function").get<std::string>();
+  //   cv.type = ConfigVariableType::Variable;
+  //   cv.index = -1;
+  //   cv.label = RLConstant::parseLabelString("CONST[secret:1(private)][]");
+
+  //   parser.labelValue("source-sink-taint", std::set<ConfigVariable>{cv},
+  //   true,
+  //                     predFalse);
+
+  //   cv.label = RLConstant::parseLabelString("CONST[secret:0(public)][]");
+  //   parser.labelValue("source-sink-taint", std::set<ConfigVariable>{cv},
+  //   false,
+  //                     predTrue);
+  // }
 
   for (auto whitelist : ifa->whitelistVariables) {
     ifa->removeConstraint("default", whitelist);
   }
 
-  parser.labelSink("source-sink");
-
-  std::set<std::string> kinds{"source-sink", "default", "default-sink",
-                              "implicit"};
   errs() << "\n---- Constraints BEGIN ----\n";
   for (auto kind : kinds) {
     errs() << kind << ":\n";
     for (auto cons : ifa->kit->getOrCreateConstraintSet(kind))
       cons.dump();
   }
+
+  // QZ: The dynamic labeling system requires too much change on the original
+  // code, so we are doing a simple rewrite of the constraints to fit the
+  // predicate on dynamic labeling.
+
+  // assuming at most one distinct dynamic label for now
+  errs() << "source-sink-taint:\n";
+  std::string dynamic_label;
+  for (auto sv : ifa->sourceVariables) {
+    if (sv.extras.size() > 0) {
+      dynamic_label = sv.extras;
+      break;
+    }
+  }
+  if (!dynamic_label.empty()) {
+    for (auto cons : ifa->kit->getOrCreateConstraintSet("source-sink-taint")) {
+      // assuming dynamic label constraints has constant label on LHS
+      if (isa<RLConstant>(cons.lhs())) {
+        std::string tmp = dynamic_label;
+        std::string str;
+        llvm::raw_string_ostream output(str);
+        cons.lhs()->dump(output);
+
+        if (output.str().find("-1") != std::string::npos) {
+          // errs() << tmp << " :hdhasd: " << output.str() << "\n";
+
+          int cur_idx = tmp.find_first_of(" ?");
+
+          std::string pred = tmp.substr(0, cur_idx);
+          std::string predTrue, predFalse;
+          predTrue.append("(");
+          predTrue.append(pred);
+          predTrue.append("==1) => ");
+          predFalse = predTrue;
+          predFalse.insert(0, "(Not ");
+          predFalse.insert(predFalse.size() - 4, ")");
+          // errs() << predFalse << " :hdhasd: " << predTrue << "\n";
+          tmp = tmp.substr(cur_idx);
+          tmp = tmp.substr(tmp.find_first_not_of(" ?"));
+          std::string left = tmp.substr(0, tmp.find_first_of(" -<>"));
+          tmp = tmp.substr(left.size());
+          std::string direction = tmp.substr(0, tmp.find_first_not_of(" -<>"));
+          std::string right = tmp.substr(direction.size());
+
+          // errs() << right << "::::" << left << "\n";
+
+          int trueIdx = std::distance(
+              RLConstant::RLLevelMap["secret"].begin(),
+              std::find(RLConstant::RLLevelMap["secret"].begin(),
+                        RLConstant::RLLevelMap["secret"].end(), right));
+          int falseIdx = std::distance(
+              RLConstant::RLLevelMap["secret"].begin(),
+              std::find(RLConstant::RLLevelMap["secret"].begin(),
+                        RLConstant::RLLevelMap["secret"].end(), left));
+
+          std::string trueLabel =
+              "CONST[secret:" + std::to_string(trueIdx) + "(" + right + ")][]";
+          std::string falseLabel =
+              "CONST[secret:" + std::to_string(falseIdx) + "(" + left + ")][]";
+
+          errs() << predTrue << trueLabel << " <: CE" << cons.rhs();
+          cons.rhs()->dump(errs() << "[");
+          errs() << "]" << cons.getInfo() << "\n";
+
+          errs() << predTrue << "CE" << cons.rhs();
+          cons.rhs()->dump(errs() << "[");
+          errs() << "] <: " << trueLabel << cons.getInfo() << "\n";
+
+          errs() << predFalse << falseLabel << " <: CE" << cons.rhs();
+          cons.rhs()->dump(errs() << "[");
+          errs() << "]" << cons.getInfo() << "\n";
+
+          errs() << predFalse << "CE" << cons.rhs();
+          cons.rhs()->dump(errs() << "[");
+          errs() << "] <: " << falseLabel << cons.getInfo() << "\n";
+        }
+      } else {
+        cons.dump();
+      }
+    }
+  } else {
+    for (auto cons : ifa->kit->getOrCreateConstraintSet("source-sink-taint")) {
+      cons.dump();
+    }
+  }
   errs() << "---- Constraints END ----\n\n";
 
-  // Variables to gather branch statistics
-  // unsigned long number_branches = 0;
-  // unsigned long tainted_branches = 0;
-  // unsigned long number_conditional = 0;
-  // errs() << "\n#--------------Results------------------\n";
-  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd; ++F)
-  // {
-  //   errs() << "Check function match: " << F->getName() << "\n";
-  // if (sinks.find(F->getName()) != sinks.end()) {
-  //   errs() << "Found function match: " << F->getName() << "\n";
-  //   for (Function::const_arg_iterator arg = F->arg_begin();
-  //        arg != F->arg_end(); ++arg) {
-  //     const Value *v = arg;
-
-  //     errs() << "\tChecking value: " << v->getName() << " : " << v << "\n";
-  //     DenseMap<ContextID, DenseMap<const Value *, const ConsElem
-  //     *>>::iterator
-  //         ctxtIter = ifa->valueConstraintMap.begin();
-  //     for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
-
-  //       errs() << "\t\tIn context: " << ctxtIter->first << "\n";
-  //       DenseMap<const Value *, const ConsElem *> valueConsMap =
-  //           ctxtIter->second;
-  //       for (auto ii = valueConsMap.begin(); ii != valueConsMap.end();
-  //       ii++) {
-  //         // ii->getFirst()->dump();
-  //         errs() << ii->getFirst() << " : " << ii->getFirst()->getName()
-  //                << "\n";
-  //       }
-  //       errs() << "\t\tContext analysis: " << ctxtIter->first << "\nend\n";
-  //       DenseMap<const Value *, const ConsElem *>::iterator vIter =
-  //           valueConsMap.find(v);
-  //       if (vIter != valueConsMap.end()) {
-  //         const ConsElem *elem = vIter->second;
-  //         const ConsElem &low = LHConstant::low();
-  //         LHConstraint c(elem, &low, false);
-  //         errs() << "  ;  [ConsDebugTag-*]   sink public values";
-  //       }
-  //     }
-  //   }
-  // }
-
-  // for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-  // ++I)
-  //   if (const BranchInst *bi = dyn_cast<BranchInst>(&*I)) {
-  //     const MDLocation *loc = bi->getDebugLoc();
-  //     number_branches++;
-  //     if (bi->isConditional())
-  //       number_conditional++;
-  //     if (bi->isConditional() && loc) {
-  //       const Value *v = bi->getCondition();
-  //       DenseMap<ContextID,
-  //                DenseMap<const Value *, const ConsElem *>>::iterator
-  //           ctxtIter = ifa->valueConstraintMap.begin();
-  //       for (; ctxtIter != ifa->valueConstraintMap.end(); ctxtIter++) {
-  //         DenseMap<const Value *, const ConsElem *> valueConsMap =
-  //             ctxtIter->second;
-  //         DenseMap<const Value *, const ConsElem *>::iterator vIter =
-  //             valueConsMap.find(v);
-  //         if (vIter != valueConsMap.end()) {
-  //           const ConsElem *elem = vIter->second;
-  //           const ConsElem &low = RLConstant::bot();
-  //           RLConstraint c(elem, &low, &Predicate::TruePred(), false);
-  //           errs() << "  ;  [ConsDebugTag-*]   public values";
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  // errs() << "\n#--------------Cache Side Channel------------------\n";
-  // for (Module::const_iterator F = M.begin(), FEnd = M.end(); F != FEnd;
-  // ++F)
-  // {
-  //   for (const_inst_iterator I = inst_begin(*F), E = inst_end(*F); I != E;
-  //   ++I)
-  //     if (const LoadInst *li = dyn_cast<LoadInst>(&*I)) {
-  //       const MDLocation *loc = li->getDebugLoc();
-  //       if (loc) {
-  //         const Value *v = li->getOperand(0);
-  //         if (tainted.find(v) != tainted.end() &&
-  //             untrusted.find(v) != untrusted.end()) {
-  //           errs() << loc->getFilename() << " line "
-  //                  << std::to_string(loc->getLine()) << "\n\t";
-  //           li->dump();
-  //         }
-  //       }
-  //     }
-  // }
-
   return false;
-} // namespace deps
+}
 
 } // namespace deps

@@ -1,0 +1,43 @@
+{
+  "signature_mode": {
+    "direction": 3,
+    "pointer": 1,
+    "custom": []
+  },
+  "lattice": {
+    "levels": [
+      {
+        "name": "secret",
+        "level": ["P", "S"]
+      }
+    ],
+    "compartments": []
+  },
+  "source": [
+    {
+      "function": "library",
+      "type": "variable",
+      "name": "book",
+      "l": {
+        "secret": "retur?S <-> P"
+      },
+      "c": {}
+   }
+  ],
+  "sink": [
+    {
+      "function": "library",
+      "type": "variable",
+      "name": "Alice",
+      "index": -1,
+      "l": {
+        "secret": "P"
+      },
+      "c": {}
+    }
+  ],
+  "using_whitelist": true,
+  "whitelist": [],
+  "ptr_whitelist": [],
+  "entry": ["library"]
+}

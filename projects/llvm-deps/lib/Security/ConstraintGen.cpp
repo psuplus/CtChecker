@@ -46,7 +46,7 @@ bool ConstraintGen::runOnModule(Module &M) {
 
   std::set<std::string> kinds{
       // "source-sink-taint",
-      "default-taint", "default-sink-taint",
+      "default-taint", "default-sink-taint", "default",
       // "implicit-taint", "implicit-sink-taint"
   };
 
@@ -138,21 +138,76 @@ bool ConstraintGen::runOnModule(Module &M) {
           std::string direction = tmp.substr(0, tmp.find_first_not_of(" -<>"));
           std::string right = tmp.substr(direction.size());
 
-          // errs() << right << "::::" << left << "\n";
-
-          int trueIdx = std::distance(
+          std::string trueLabel;
+          std::string falseLabel;
+          
+          if (direction =="->") {
+            int trueIdx = std::distance(
               RLConstant::RLLevelMap["secret"].begin(),
               std::find(RLConstant::RLLevelMap["secret"].begin(),
                         RLConstant::RLLevelMap["secret"].end(), right));
-          int falseIdx = std::distance(
+            int falseIdx = std::distance(
               RLConstant::RLLevelMap["secret"].begin(),
               std::find(RLConstant::RLLevelMap["secret"].begin(),
                         RLConstant::RLLevelMap["secret"].end(), left));
 
-          std::string trueLabel =
-              "CONST[secret:" + std::to_string(trueIdx) + "(" + right + ")][]";
-          std::string falseLabel =
-              "CONST[secret:" + std::to_string(falseIdx) + "(" + left + ")][]";
+            trueLabel =
+                "CONST[secret:" + std::to_string(trueIdx) + "(" + right + ")][]";
+            falseLabel =
+                "CONST[secret:" + std::to_string(falseIdx) + "(" + left + ")][]";
+          }
+
+          else if (direction =="<-"){
+            int trueIdx = std::distance(
+              RLConstant::RLLevelMap["secret"].begin(),
+              std::find(RLConstant::RLLevelMap["secret"].begin(),
+                        RLConstant::RLLevelMap["secret"].end(), left));
+            int falseIdx = std::distance(
+              RLConstant::RLLevelMap["secret"].begin(),
+              std::find(RLConstant::RLLevelMap["secret"].begin(),
+                        RLConstant::RLLevelMap["secret"].end(), right));
+
+            trueLabel =
+                "CONST[secret:" + std::to_string(trueIdx) + "(" + left + ")][]";
+            falseLabel =
+                "CONST[secret:" + std::to_string(falseIdx) + "(" + right + ")][]";
+          }
+          else{
+              int trueIdx = std::distance(
+                  RLConstant::RLLevelMap["secret"].begin(),
+                  std::find(RLConstant::RLLevelMap["secret"].begin(),
+                            RLConstant::RLLevelMap["secret"].end(), right));
+              int falseIdx = std::distance(
+                  RLConstant::RLLevelMap["secret"].begin(),
+                  std::find(RLConstant::RLLevelMap["secret"].begin(),
+                            RLConstant::RLLevelMap["secret"].end(), left));
+
+              trueLabel =
+                  "CONST[secret:" + std::to_string(trueIdx) + "(" + right + ")][]";
+              falseLabel =
+                  "CONST[secret:" + std::to_string(falseIdx) + "(" + left + ")][]";
+          }
+
+
+
+
+
+
+          // errs() << right << "::::" << left << "\n";
+
+          // int trueIdx = std::distance(
+          //     RLConstant::RLLevelMap["secret"].begin(),
+          //     std::find(RLConstant::RLLevelMap["secret"].begin(),
+          //               RLConstant::RLLevelMap["secret"].end(), right));
+          // int falseIdx = std::distance(
+          //     RLConstant::RLLevelMap["secret"].begin(),
+          //     std::find(RLConstant::RLLevelMap["secret"].begin(),
+          //               RLConstant::RLLevelMap["secret"].end(), left));
+
+          // std::string trueLabel =
+          //     "CONST[secret:" + std::to_string(trueIdx) + "(" + right + ")][]";
+          // std::string falseLabel =
+          //     "CONST[secret:" + std::to_string(falseIdx) + "(" + left + ")][]";
 
           errs() << predTrue << trueLabel << " <: CE" << cons.rhs();
           cons.rhs()->dump(errs() << "[");
@@ -185,3 +240,4 @@ bool ConstraintGen::runOnModule(Module &M) {
 }
 
 } // namespace deps
+

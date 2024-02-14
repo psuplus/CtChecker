@@ -15,29 +15,29 @@
   },
   "source": [
     {
-      "function": "transaction",
+      "function": "release_bid",
       "type": "variable",
-      "name": "card",
+      "name": "bid1",
       "l": {
-        "secret": "trans?P -> S"
+        "secret": "release ? S <- P"
       },
       "c": {}
     },
     {
-      "function": "transaction",
+      "function": "release_bid",
       "type": "variable",
-      "name": "store1",
+      "name": "bid2",
       "l": {
-        "secret": "P"
+        "secret": "release ? S <- P"
       },
       "c": {}
     }
   ],
   "sink": [
     {
-      "function": "transaction",
+      "function": "release_bid",
       "type": "variable",
-      "name": "output",
+      "name": "general",
       "index": -1,
       "l": {
         "secret": "P"
@@ -48,5 +48,5 @@
   "using_whitelist": true,
   "whitelist": [],
   "ptr_whitelist": [],
-  "entry": ["transaction"]
+  "entry": ["release_bid"]
 }

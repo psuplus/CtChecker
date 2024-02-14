@@ -1,5 +1,4 @@
-int relabel(int to_be_relabel, int predicate, char *label_dynamic,
-            char *label_static);
+int relabel(int to_be_relabel, int predicate, char* label_dynamic, char* label_static);
 // {
 //   if (predicate) {
 //     return to_be_relabel;
@@ -9,17 +8,19 @@ int relabel(int to_be_relabel, int predicate, char *label_dynamic,
 // }
 
 int transaction(int card, int trans) {
-  int store = 0;
-  int output = 0;
-  char *label_card = "trans ? public -> private";
-  char *label_store = "trans ? public -> private";
-
+  int store;
+  int store1;
+  int output;
+  char *label_card = "trans ? P -> S";
+  char *label_store = "trans ? P -> S";
+  char *static_L = "S";
   if (trans == 1) {
-
+//    store = relabel(card, trans, label_card, static_L);
+//    card = relabel(card, trans, label_store, static_L);
     store = card + 1;
-    store = 0;
-    output = store + 1;
-    // store = relabel(card, release, label_bid, static_bid);
+    store1 = 0;
+    output = store1 + 1;
+    
   }
 
   return output;

@@ -1,1 +1,1 @@
-L secret P S
+L secret public private

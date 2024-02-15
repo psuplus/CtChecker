@@ -17,9 +17,9 @@ int library(int book, int retur) {
   //question mark label
   //In the analysis transfer ? string to the constraints
   // public = bid + 1;
- if (retur==1){
+ if (retur==0){
   Alice = relabel(book, retur, label_book, pub_book) + 1;
-  note = 2;
+  note = (int)book/2;
   }
   else{
  // relabel(book, retur, label_book, priv_book);// Alice can no longer access

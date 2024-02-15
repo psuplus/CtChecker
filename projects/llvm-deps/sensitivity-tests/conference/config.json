@@ -19,7 +19,7 @@
       "type": "variable",
       "name": "bid1",
       "l": {
-        "secret": "release ? S -> P"
+        "secret": "release ? P -> S"
       },
       "c": {}
     },
@@ -28,7 +28,7 @@
       "type": "variable",
       "name": "bid2",
       "l": {
-        "secret": "release ? S -> P"
+        "secret": "release ? P -> S"
       },
       "c": {}
     }

@@ -140,13 +140,15 @@ bool ConstraintGen::runOnModule(Module &M) {
 
           std::string trueLabel;
           std::string falseLabel;
+          int trueIdx;
+          int falseIdx;
           
           if (direction =="->") {
-            int trueIdx = std::distance(
+            trueIdx = std::distance(
               RLConstant::RLLevelMap["secret"].begin(),
               std::find(RLConstant::RLLevelMap["secret"].begin(),
                         RLConstant::RLLevelMap["secret"].end(), right));
-            int falseIdx = std::distance(
+            falseIdx = std::distance(
               RLConstant::RLLevelMap["secret"].begin(),
               std::find(RLConstant::RLLevelMap["secret"].begin(),
                         RLConstant::RLLevelMap["secret"].end(), left));
@@ -158,11 +160,11 @@ bool ConstraintGen::runOnModule(Module &M) {
           }
 
           else if (direction =="<-"){
-            int trueIdx = std::distance(
+            trueIdx = std::distance(
               RLConstant::RLLevelMap["secret"].begin(),
               std::find(RLConstant::RLLevelMap["secret"].begin(),
                         RLConstant::RLLevelMap["secret"].end(), left));
-            int falseIdx = std::distance(
+            falseIdx = std::distance(
               RLConstant::RLLevelMap["secret"].begin(),
               std::find(RLConstant::RLLevelMap["secret"].begin(),
                         RLConstant::RLLevelMap["secret"].end(), right));
@@ -173,11 +175,11 @@ bool ConstraintGen::runOnModule(Module &M) {
                 "CONST[secret:" + std::to_string(falseIdx) + "(" + right + ")][]";
           }
           else{
-              int trueIdx = std::distance(
+              trueIdx = std::distance(
                   RLConstant::RLLevelMap["secret"].begin(),
                   std::find(RLConstant::RLLevelMap["secret"].begin(),
                             RLConstant::RLLevelMap["secret"].end(), right));
-              int falseIdx = std::distance(
+              falseIdx = std::distance(
                   RLConstant::RLLevelMap["secret"].begin(),
                   std::find(RLConstant::RLLevelMap["secret"].begin(),
                             RLConstant::RLLevelMap["secret"].end(), left));

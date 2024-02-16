@@ -14,10 +14,16 @@ Baseline experiments:
 
 Once the experiments complete, the results are located in `mod_exp_tests/results` folder.
 
+## Dynamic Label Format
+* Format of dynamic label: predicate? label (direction) label
+* The labels are now P and S
+* Directions: ->, <-, <->
+* To turn a dynamic label to a static label we need relabel
+* relabel (expression, dynamic_label, static_label, predicate(s))
+* Example: Conference, Bid, erasure, bi-directional, with loops
 
 ## Folders 
 * Paper/thesis: Thesis for adding field-senstivity to the analysis - mohammed_thesis.pdf
-* Paper/conference: Conference paper version of thesis - ccs.pdf
 * sensitivity-tests: This folder has a variety of unit-tests with expected behavior.
 * mod\_exp\_tests: Modular exponentiation code used to test field-sensitivity.
 * processing_tools: Scripts to help parse the raw data produced by the analysis.

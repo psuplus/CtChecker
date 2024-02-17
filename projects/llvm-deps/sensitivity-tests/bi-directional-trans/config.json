@@ -15,20 +15,20 @@
   },
   "source": [
     {
-      "function": "transaction",
+      "function": "library",
       "type": "variable",
-      "name": "card",
+      "name": "book",
       "l": {
-        "secret": "trans?P -> S"
+        "secret": "retur?S <-> P"
       },
       "c": {}
-    }
+   }
   ],
   "sink": [
     {
-      "function": "transaction",
+      "function": "library",
       "type": "variable",
-      "name": "output",
+      "name": "Alice",
       "index": -1,
       "l": {
         "secret": "P"
@@ -39,5 +39,5 @@
   "using_whitelist": true,
   "whitelist": [],
   "ptr_whitelist": [],
-  "entry": ["transaction"]
+  "entry": ["library"]
 }

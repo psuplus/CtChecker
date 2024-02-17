@@ -15,20 +15,20 @@
   },
   "source": [
     {
-      "function": "transaction",
+      "function": "autoTurn",
       "type": "variable",
-      "name": "card",
+      "name": "opponentBoard",
       "l": {
-        "secret": "trans?P -> S"
+        "secret": "hit ? S -> P"
       },
       "c": {}
     }
   ],
   "sink": [
     {
-      "function": "transaction",
+      "function": "autoTurn",
       "type": "variable",
-      "name": "output",
+      "name": "hit_coordinate",
       "index": -1,
       "l": {
         "secret": "P"
@@ -39,5 +39,5 @@
   "using_whitelist": true,
   "whitelist": [],
   "ptr_whitelist": [],
-  "entry": ["transaction"]
+  "entry": ["main"]
 }

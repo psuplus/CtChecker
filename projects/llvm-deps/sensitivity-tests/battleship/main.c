@@ -5,28 +5,27 @@
 #define BOARD_SIZE 10
 #define NUM_SHIPS 4
 
-// Coordinate struct to represent the (x, y) location
+//coordinates
 typedef struct {
     int x, y;
 } Coordinate;
-
-// Board struct to represent each player's board
+//Board
 typedef struct {
     int grid[BOARD_SIZE][BOARD_SIZE];
-    int hits; // Track the number of hits to determine game over
+    int hits; // Number of hits
 } Board;
 
-// Ship struct to represent the ships on the board
+//ship
 typedef struct {
     int length;
     Coordinate position; // Starting coordinate
-    int direction; // 0 for horizontal, 1 for vertical
+    int direction; // 0 horizontal, 1 vertical
 } Ship;
 
 void initBoard(Board* b) {
     for (int i = 0; i < BOARD_SIZE; ++i) {
         for (int j = 0; j < BOARD_SIZE; ++j) {
-            b->grid[i][j] = 0; // 0 indicates empty/water
+            b->grid[i][j] = 0; // 0 for empty
         }
     }
     b->hits = 0;
@@ -40,7 +39,7 @@ int checkOverlap(Board* b, Ship* s) {
         int x = s->position.x + (s->direction == 0 ? i : 0);
         int y = s->position.y + (s->direction == 1 ? i : 0);
         if (b->grid[y][x] != 0) {
-            return 1; // Overlap found
+            return 1; // Overlap
         }
     }
     return 0; // No overlap
@@ -58,10 +57,9 @@ int placeShip(Board* b, Ship* s) {
         else // Vertical
             b->grid[s->position.y + i][s->position.x] = 1;
     }
-    return 0; // Success
+    return 0;
 }
 
-// Auto game logic for one turn, with hit coordinates feedback using hit_coordinate variable
 int autoTurn(Board* opponentBoard, char* playerName) {
     Coordinate hit_coordinate = {rand() % BOARD_SIZE, rand() % BOARD_SIZE};
 
@@ -70,13 +68,13 @@ int autoTurn(Board* opponentBoard, char* playerName) {
     char *static_bid = "P";
 
     if (gridValue == 1) { // Hit
-        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 3; // Mark as hit
+        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 3;
         opponentBoard->hits++;
         relabel(opponentBoard, gridValue, label_bid, static_bid);
 	printf("%s hits a ship at (%d,%d)!\n", playerName, hit_coordinate.y, hit_coordinate.x);
         return 1;
     } else if (gridValue == 0) { // Miss
-        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 2; // Mark as miss
+        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 2;
         printf("%s misses at (%d,%d).\n", playerName, hit_coordinate.y, hit_coordinate.x);
     }
     return 0; // Indicate a miss or repeated guess
@@ -84,10 +82,10 @@ int autoTurn(Board* opponentBoard, char* playerName) {
 
 void placeShipsForPlayer(Board* board) {
     Ship ships[NUM_SHIPS] = {
-        {3, {2, 2}, 0}, // A ship of length 3 at (2,2) going horizontally
-        {4, {5, 5}, 1}, // A ship of length 4 at (5,5) going vertically
-        {2, {0, 1}, 0}, // A ship of length 2 at (0,1) going horizontally
-        {3, {7, 0}, 1}  // A ship of length 3 at (7,0) going vertically
+        {3, {2, 2}, 0}, // length 3 at (2,2) horizontal
+        {4, {5, 5}, 1}, // ship length 4 at (5,5) vertical
+        {2, {0, 1}, 0}, // ship length 2 at (0,1) horizontal
+        {3, {7, 0}, 1}  // ship length 3 at (7,0) vertical
     };
 
     for (int i = 0; i < NUM_SHIPS; ++i) {
@@ -105,10 +103,9 @@ int main() {
     placeShipsForPlayer(&aliceBoard);
     placeShipsForPlayer(&bobBoard);
 
-    int aliceTotalHits = NUM_SHIPS * 3 + 4 + 2 + 3; // Assuming specific ship sizes for simplicity
-    int bobTotalHits = aliceTotalHits; // Same configuration for Bob
+    int aliceTotalHits = 12; // Assuming specific ship sizes
+    int bobTotalHits = 12; // Same as Alice
 
-    // Game loop
     int turn = 0;
     while (aliceBoard.hits < aliceTotalHits && bobBoard.hits < bobTotalHits) {
         if (turn % 2 == 0) {

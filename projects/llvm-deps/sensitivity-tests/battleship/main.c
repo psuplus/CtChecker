@@ -63,21 +63,19 @@ int placeShip(Board* b, Ship* s) {
 int autoTurn(Board* opponentBoard, char* playerName) {
     Coordinate hit_coordinate = {rand() % BOARD_SIZE, rand() % BOARD_SIZE};
 
-    int gridValue = opponentBoard->grid[hit_coordinate.y][hit_coordinate.x];
-    char *label_bid = "girdValue ? S -> P";
+    int beinghit = opponentBoard->grid[hit_coordinate.y][hit_coordinate.x];
+    char *label_bid = "beinghit ? S -> P";
     char *static_bid = "P";
-
-    if (gridValue == 1) { // Hit
-        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 3;
+    int hit_place = 0;
+    if (beinghit == 1) { // Hit
+        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 5;
         opponentBoard->hits++;
-        relabel(opponentBoard, gridValue, label_bid, static_bid);
-	printf("%s hits a ship at (%d,%d)!\n", playerName, hit_coordinate.y, hit_coordinate.x);
+        hit_place =  relabel(opponentBoard, beinghit, label_bid, static_bid) + 10;
         return 1;
-    } else if (gridValue == 0) { // Miss
-        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 2;
-        printf("%s misses at (%d,%d).\n", playerName, hit_coordinate.y, hit_coordinate.x);
+    } else { // Miss
+        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 4;
     }
-    return 0; // Indicate a miss or repeated guess
+    return 0; // All miss all repeat guess
 }
 
 void placeShipsForPlayer(Board* board) {
@@ -117,9 +115,9 @@ int main() {
     }
 
     if (aliceBoard.hits == aliceTotalHits) {
-        printf("Alice wins!\n");
+        printf("A wins!\n");
     } else {
-        printf("Bob wins!\n");
+        printf("B wins!\n");
     }
 
     return 0;

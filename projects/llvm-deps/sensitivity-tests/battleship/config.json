@@ -19,7 +19,7 @@
       "type": "variable",
       "name": "opponentBoard",
       "l": {
-        "secret": "hit ? S -> P"
+        "secret": "beinghit ? S -> P"
       },
       "c": {}
     }
@@ -28,7 +28,7 @@
     {
       "function": "autoTurn",
       "type": "variable",
-      "name": "hit_coordinate",
+      "name": "hit_place",
       "index": -1,
       "l": {
         "secret": "P"

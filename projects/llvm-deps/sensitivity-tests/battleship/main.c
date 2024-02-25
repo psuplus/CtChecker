@@ -31,7 +31,7 @@ void initBoard(Board* b) {
     b->hits = 0;
 }
 
-int relabel(Board*  to_be_relabel, int predicate, char *label_dynamic,
+int relabel(void*  to_be_relabel, int predicate, char *label_dynamic,
             char *label_static);
 
 int checkOverlap(Board* b, Ship* s) {
@@ -60,20 +60,20 @@ int placeShip(Board* b, Ship* s) {
     return 0;
 }
 
-int autoTurn(Board* opponentBoard, char* playerName) {
-    Coordinate hit_coordinate = {rand() % BOARD_SIZE, rand() % BOARD_SIZE};
+int autoTurn(Board* opponentBoard, Coordinate* hit_coordinate,  char* playerName) {
+   // Coordinate hit_coordinate = {rand() % BOARD_SIZE, rand() % BOARD_SIZE};
 
-    int beinghit = opponentBoard->grid[hit_coordinate.y][hit_coordinate.x];
+    int beinghit = opponentBoard->grid[hit_coordinate->y][hit_coordinate->x];
     char *label_bid = "beinghit ? S -> P";
     char *static_bid = "P";
     int hit_place = 0;
     if (beinghit == 1) { // Hit
-        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 5;
+        opponentBoard->grid[hit_coordinate->y][hit_coordinate->x] = 5;
         opponentBoard->hits++;
-        hit_place =  relabel(opponentBoard, beinghit, label_bid, static_bid) + 10;
+        hit_place =  relabel(&hit_coordinate, beinghit, label_bid, static_bid) + 10;
         return 1;
     } else { // Miss
-        opponentBoard->grid[hit_coordinate.y][hit_coordinate.x] = 4;
+        opponentBoard->grid[hit_coordinate->y][hit_coordinate->x] = 4;
     }
     return 0; // All miss all repeat guess
 }
@@ -107,9 +107,13 @@ int main() {
     int turn = 0;
     while (aliceBoard.hits < aliceTotalHits && bobBoard.hits < bobTotalHits) {
         if (turn % 2 == 0) {
-            autoTurn(&bobBoard, "Alice");
+	    Coordinate hit_coordinate = {rand() % BOARD_SIZE, rand() % BOARD_SIZE};
+           // autoTurn(&bobBoard, "Alice");
+	   autoTurn(&bobBoard, &hit_coordinate, "Alice");
         } else {
-            autoTurn(&aliceBoard, "Bob");
+	    Coordinate hit_coordinate = {rand() % BOARD_SIZE, rand() % BOARD_SIZE};
+           // autoTurn(&aliceBoard, "Bob");
+	   autoTurn(&aliceBoard, &hit_coordinate, "Bob");
         }
         turn++;
     }

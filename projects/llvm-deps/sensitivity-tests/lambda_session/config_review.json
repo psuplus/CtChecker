@@ -15,20 +15,20 @@
   },
   "source": [
     {
-      "function": "autoTurn",
+      "function": "assignReviewerToPaper",
       "type": "variable",
-      "name": "hit_coordinate",
+      "name": "paper",
       "l": {
-        "secret": "beinghit ? S-> P"
+        "secret": "release ? S -> P"
       },
       "c": {}
     }
   ],
   "sink": [
     {
-      "function": "autoTurn",
+      "function": "assignReviewerToPaper",
       "type": "variable",
-      "name": "hit_place",
+      "name": "reviewerGet",
       "index": -1,
       "l": {
         "secret": "P"

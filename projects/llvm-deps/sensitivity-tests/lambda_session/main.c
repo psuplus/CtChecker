@@ -24,7 +24,7 @@ typedef struct {
     char** pcMembers;
     size_t pcMemberCount;
     ConfStatus status;
-    Session session;
+  //  Session sess_number;
 } Config;
 
 typedef enum{
@@ -41,6 +41,7 @@ typedef struct {
     char** conflicts;
     size_t conflictCount;
     Decision decision;
+    Session sess_number;
 } Paper;
 
 
@@ -82,7 +83,7 @@ void addPCMember(Config* config, const char* member) {
     config->pcMemberCount++;
 }
 
-void submitPaper(Paper* paper, const char** authors, size_t authorCount, const char* title, const char** conflicts, size_t conflictCount) {
+void submitPaper(Paper* paper, char** authors, size_t authorCount, const char* title, char** conflicts, size_t conflictCount) {
     paper->paperId = generateUUID();
     paper->authors = malloc(authorCount * sizeof(char*));
     for (size_t i = 0; i < authorCount; i++) {
@@ -148,16 +149,12 @@ int checkDone(Config* config) {	//check if the conference paper reviewing is don
 }
 
 int releaseSession(Config* config, Paper* paper, Session* sessnum){// release decision
-  // Session sessnum ={9};
-  // config->session = &sessnum;
-   int sessionGet = 0;
-   char *label_bid = "release ? S -> P"; //dynamic label
-   char *static_bid = "P"; //relabel to
+   int sessionGet = 0;//sink for assigining relabeled int
    int done = checkDone(config);
-   if (done ==1) { //check
-        sessionGet = relabel(&sessnum, done, label_bid, static_bid) + 10; //relabel and send to reviewerGet which will be the sink    
-	config->session =  *sessnum;
-	return sessionGet;   
+   if (done ==1) { //check if the review is done
+        sessionGet = relabel(&sessnum, done, "release ? S -> P", "P") + 10; //relabel and send to sessionGet, which will be the sink    
+	//paper->session =  *sessnum;//assign the session to the paper
+	return sessionGet;
  }
     return sessionGet;
 
@@ -183,36 +180,25 @@ Decision releaseResult(Config* config, Paper* paper){// release decision
  
 }
 
-
-//int viewTitle(Config* config, Paper* paper, char* name){
-//   int canView;
-//   if (stringInArray(getAuthors(paper,name))|| checkDone(config)){
-	
-//}
-   	
-//}
-
-
-
 int main() {
+//main is like the program chair
     User user;
     createUser(&user, "Alice");
-  //  printf("%d\n", 21);
     Config config = {0};
+    Session sessnum = {0};
     Paper *paper;
     char* authors[] = {"Alice", "Cain"};
     char* conflicts[] = {"Cain"};
-    submitPaper(&paper, authors, 2, "Hello", conflicts, 1);
-    Session sessnum = {99};
+    submitPaper(paper, authors, 2, "Hello", conflicts, 1);
+   // Session sessnum = {99};
 
     addPCMember(&config, user.userName);
     setConfigStatus(&config);
-    for (int i=0;i++; i<11){
+    for (int i=0; i<11; i++){
 	if (i==10){
 	reviewDone(&config);
-	//printf("%d\n", checkDone(&config));
 	}
-	releaseSession(&config, &paper, &sessnum);
+	paper->sess_number.session = releaseSession(&config, paper, &sessnum);
 	}
 //    setPaperStatus(&config);
 //    for (int i=0;i++; i<11){

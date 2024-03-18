@@ -3,7 +3,7 @@
 #include <time.h>
 
 #define BOARD_SIZE 10
-#define NUM_SHIPS 4
+#define NUM_SHIPS 3
 
 //coordinates
 typedef struct {
@@ -47,7 +47,7 @@ int checkOverlap(Board* b, Ship* s) {
 
 int placeShip(Board* b, Ship* s) {
     if (checkOverlap(b, s)) {
-        printf("Error: Overlapping ships.\n");
+	//ship overlap return -1
         return -1;
     }
 
@@ -67,12 +67,12 @@ int autoTurn(Board* opponentBoard, Coordinate* hit_coordinate,  char* playerName
     char *label_bid = "beinghit ? S -> P";
     char *static_bid = "P";
     int hit_place = 0;
-    if (beinghit == 1) { // Hit
+    if (beinghit == 1) { // Hit mark 5
         opponentBoard->grid[hit_coordinate->y][hit_coordinate->x] = 5;
         opponentBoard->hits++;
-        hit_place =  relabel(&hit_coordinate, beinghit, label_bid, static_bid) + 10;
+        hit_place =  relabel(&opponentBoard, beinghit, label_bid, static_bid) + 10;
         return 1;
-    } else { // Miss
+    } else { // Miss mark 4
         opponentBoard->grid[hit_coordinate->y][hit_coordinate->x] = 4;
     }
     return 0; // All miss all repeat guess
@@ -83,7 +83,7 @@ void placeShipsForPlayer(Board* board) {
         {3, {2, 2}, 0}, // length 3 at (2,2) horizontal
         {4, {5, 5}, 1}, // ship length 4 at (5,5) vertical
         {2, {0, 1}, 0}, // ship length 2 at (0,1) horizontal
-        {3, {7, 0}, 1}  // ship length 3 at (7,0) vertical
+       // {3, {7, 0}, 1}  // ship length 3 at (7,0) vertical
     };
 
     for (int i = 0; i < NUM_SHIPS; ++i) {
@@ -101,8 +101,8 @@ int main() {
     placeShipsForPlayer(&aliceBoard);
     placeShipsForPlayer(&bobBoard);
 
-    int aliceTotalHits = 12; // Assuming specific ship sizes
-    int bobTotalHits = 12; // Same as Alice
+    int aliceTotalHits = 9; // Assuming specific ship sizes
+    int bobTotalHits = 9; // Same as Alice
 
     int turn = 0;
     while (aliceBoard.hits < aliceTotalHits && bobBoard.hits < bobTotalHits) {
@@ -119,9 +119,9 @@ int main() {
     }
 
     if (aliceBoard.hits == aliceTotalHits) {
-        printf("A wins!\n");
+        return 1; //Alice wins
     } else {
-        printf("B wins!\n");
+	return 2; //Bob wins
     }
 
     return 0;

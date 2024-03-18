@@ -20,11 +20,15 @@ typedef enum {
     Done
 } ConfStatus;
 
+typedef struct{
+ int score;
+}Score;
+
 typedef struct {
     char** pcMembers;
     size_t pcMemberCount;
     ConfStatus status;
-  //  Session sess_number;
+    Session session;
 } Config;
 
 typedef enum{
@@ -41,7 +45,7 @@ typedef struct {
     char** conflicts;
     size_t conflictCount;
     Decision decision;
-    Session sess_number;
+    Score score;
 } Paper;
 
 
@@ -59,8 +63,9 @@ UUID generateUUID() {
     uuid_unparse_lower(binuuid, uuid.id);
     return uuid;
 }
-int relabel(void* to_be_relabel, int predicate, char *label_dynamic,
-            char *label_static); //The relabel function, now the relabel function is hard coded,
+//void relabel(void* to_be_relabel, int predicate, char *label_dynamic, char *label_static);
+int relabel(void* to_be_relabel, int predicate, char *label_dynamic, char *label_static);
+ //The relabel function, now the relabel function is hard coded,
 
 int stringInArray(char *str, char *arr[]) {
     for(int i = 0; i < 8; i++) {
@@ -68,10 +73,7 @@ int stringInArray(char *str, char *arr[]) {
             return 1;
         }
     }
-    return 0;
-}
-
-
+    return 0;}
 
 void createUser(User* user, const char* name) {
     user->userName = strdup(name);
@@ -115,7 +117,7 @@ int isUserInConflict(Paper* paper, const char* userName) { //check whether the a
     return 1;//not conflict
 } 
 
-int assignReviewerToPaper(Paper *paper, const char* reviewerName) { //assign reviewers
+int assignReviewerToPaper(Paper* paper, const char* reviewerName) { //assign reviewers
    
    int reviewerGet = 0;
    char *label_bid = "release ? S -> P"; //dynamic label
@@ -149,12 +151,17 @@ int checkDone(Config* config) {	//check if the conference paper reviewing is don
 }
 
 int releaseSession(Config* config, Paper* paper, Session* sessnum){// release decision
-   int sessionGet = 0;//sink for assigining relabeled int
+  // Session sessnum ={9};
+  // config->session = &sessnum;
+   int sessionGet = 0;
+   char *label_bid = "release ? S -> P"; //dynamic label
+   char *static_bid = "P"; //relabel to
    int done = checkDone(config);
-   if (done ==1) { //check if the review is done
-        sessionGet = relabel(&sessnum, done, "release ? S -> P", "P") + 10; //relabel and send to sessionGet, which will be the sink    
-	//paper->session =  *sessnum;//assign the session to the paper
-	return sessionGet;
+   if (done ==1) { //check
+ 	config->session =  *sessnum;
+        sessionGet = relabel(&sessnum, done, label_bid, static_bid) + 10; //relabel and send to reviewerGet which will be the sink    
+//	iconfig->session =  *sessnum;
+	return sessionGet;   
  }
     return sessionGet;
 
@@ -163,14 +170,15 @@ char** getAuthors(Paper* paper){
    return  paper -> authors;
 }
 
-Decision releaseResult(Config* config, Paper* paper){// release decision
-    Decision result;
+Decision releaseResult(Config* config, Paper* paper, Decision *result){// release decision
+   // Decision result;
     int result_indicator = 0;
     char *label_bid = "release ? S -> P"; //dynamic label
     char *static_bid = "P"; //relabel to
     int doneR = checkDone(config);
+    paper -> decision = *result;
     if (doneR ==1) { //check
-         result_indicator = relabel(paper, doneR, label_bid, static_bid) + 10; //relabel and send to reviewerGet which will be the sink    
+         result_indicator = relabel(&paper, doneR, label_bid, static_bid) + 10; //relabel and send to reviewerGet which will be the sink    
         if (result_indicator == 10){
 	return Accepted;}
 	else{
@@ -180,38 +188,71 @@ Decision releaseResult(Config* config, Paper* paper){// release decision
  
 }
 
+
+int sortScore(Config* config, Paper* paper1, Paper* paper2, const char* reviewerName) { //assign reviewers
+
+   int score1 = 0, score2 = 0;
+   int release1 = isUserInConflict(paper1, reviewerName);
+   int release2 = isUserInConflict(paper2, reviewerName);
+
+    if (release1 ==1 && release2==1) { //check
+        relabel(paper1, release1, "release ? S -> P", "P"); //relabel and send to reviewerGet which will be the sink    
+        relabel(paper2, release2, "release ? S -> P", "P");
+	paper1->score.score = 10;
+	paper2->score.score = 12;
+    
+    return (paper1->score.score<=paper2->score.score?1:0);}
+    return -1;
+}
+
+
+//int viewTitle(Config* config, Paper* paper, char* name){
+//   int canView;
+//   if (stringInArray(getAuthors(paper,name))|| checkDone(config)){
+	
+//}
+   	
+//}
+
+
+
 int main() {
-//main is like the program chair
-//main is supervisor
     User user;
     createUser(&user, "Alice");
+  //  printf("%d\n", 21);
+    Decision decision = No_decision;
     Config config = {0};
     Session sessnum = {0};
     Paper *paper;
-    char* authors[] = {"Alice", "Cain","Tim"};
+    Paper *paper2;
+    char* authors[] = {"Alice", "Cain"};
     char* conflicts[] = {"Cain"};
     submitPaper(paper, authors, 2, "Hello", conflicts, 1);
+    submitPaper(paper2, authors, 2, "Hello", conflicts, 1);
    // Session sessnum = {99};
 
     addPCMember(&config, user.userName);
-    setConfigStatus(&config);
-    for (int i=0; i<11; i++){
-	if (i==10){
-	reviewDone(&config);
-	}
-	paper->sess_number.session = releaseSession(&config, paper, &sessnum);
-	}
+//    setConfigStatus(&config);
+//    for (int i=0;i++; i<11){
+//	if (i==10){
+//	reviewDone(&config);
+	//printf("%d\n", checkDone(&config));
+//	}
+//	releaseSession(&config, &paper, &sessnum);
+//	}
 //    setPaperStatus(&config);
 //    for (int i=0;i++; i<11){
 //        if (i==10){
 //        reviewDone(&config);
        // printf("%d\n", checkDone(&config));
 //        }
-//        releaseResult(&config, &paper);
+//        releaseResult(&config, paper, &decision);
 //        }
 
     assignReviewerToPaper(paper, "Cain");
     assignReviewerToPaper(paper, "David");
+    sortScore(&config,paper, paper2, "Cain");
+
 
     Review review;
     submitReview(&review, paper->paperId, "Reviewer1", "This is a review.");

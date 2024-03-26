@@ -414,7 +414,7 @@ int main() {
     BulletinBoard bboard;
     VoteCapabilityShare share = {123,456};
     int generationPhase = 0;   
-    declassifyBoard(&bboard, keys);
+//    declassifyBoard(&bboard, keys);
 
     // Initialize voter and their share
     voter.voterID = 1234; // Example voter ID

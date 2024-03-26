@@ -22,15 +22,6 @@
           "secret": "delivered ? P -> S"
         },
         "c": {}
-      },
-      {
-        "function": "declassifyBoard",
-        "type": "variable",
-        "name": "keys",
-        "l": {
-          "secret": "allPosted ? S -> P"
-        },
-        "c": {}
       }
     ],
     "sink": [
@@ -43,18 +34,7 @@
           "secret": "delivered ? P -> S"
         },
         "c": {}
-      },
-	{
-        "function": "declassifyBoard",
-        "type": "variable",
-        "name": "posted",
-        "index": -1,
-        "l": {
-          "secret": "P"
-        },
-        "c": {}
       }
-
     ],
     "using_whitelist": true,
     "whitelist": [],
@@ -62,3 +42,5 @@
     "entry": ["main"]
   }
   
+
+

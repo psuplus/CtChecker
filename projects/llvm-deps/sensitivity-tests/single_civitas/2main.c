@@ -70,16 +70,13 @@ typedef struct { //post public infos here
     int num_tellers;
     VoterInfo* electoral_roll;
     int num_voters;
-    BIGNUM* p; // Prime number
-    BIGNUM* g; // Generator
-    BIGNUM* y; // Public key (g^x mod p)
-    BIGNUM* x; // Private key
+    EVP_PKEY* collective_public_key; // Public key for distributed encryption scheme
     int election_active;
 } BulletinBoard;
 
 
 typedef struct {
-    BIGNUM* p; // Prime number
+BIGNUM* p; // Prime number
     BIGNUM* g; // Generator
     BIGNUM* y; // Public key (g^x mod p)
     BIGNUM* x; // Private key
@@ -111,46 +108,26 @@ int verify_registration_key(char* voterRegistrationKey) {
     return 1;
 }
 
-ElGamalParameters generateElGamalKeys() {
-    BN_CTX* ctx = BN_CTX_new();
-    ElGamalParameters keys;
+void generateElGamalKeys(BIGNUM **p, BIGNUM **g, BIGNUM **x, BIGNUM **y) {
+    BN_CTX *ctx = BN_CTX_new();
+    *p = BN_new();
+    *g = BN_new();
+    *x = BN_new();
+    *y = BN_new();
 
-    // Initialize BIGNUMs
-    keys.p = BN_new();
-    keys.g = BN_new();
-    keys.y = BN_new();
-    keys.x = BN_new();
+    // Generate prime p
+    BN_generate_prime_ex(*p, 2048, 0, NULL, NULL, NULL);
 
-    // Generate a safe prime for p (2048 bits)
-    if (!BN_generate_prime_ex(keys.p, 2048, 1, NULL, NULL, NULL)) {
-        fprintf(stderr, "Prime generation failed.\n");
-        exit(EXIT_FAILURE);
-    }
+    // Set generator g, simple example: 2
+    BN_set_word(*g, 2);
 
-    // Set g as a small prime or a generator of the multiplicative group modulo p
-    BN_set_word(keys.g, 2);
+    // Generate private key x
+    BN_rand_range(*x, *p);
 
-    // Generate private key x (1 < x < p-1)
-    if (!BN_rand_range(keys.x, keys.p)) {
-        fprintf(stderr, "Private key generation failed.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // Calculate y = g^x mod p (public key)
-    if (!BN_mod_exp(keys.y, keys.g, keys.x, keys.p, ctx)) {
-        fprintf(stderr, "Public key calculation failed.\n");
-        exit(EXIT_FAILURE);
-    }
+    // Calculate y = g^x mod p
+    BN_mod_exp(*y, *g, *x, *p, ctx);
 
     BN_CTX_free(ctx);
-    return keys;
-}
-
-void freeElGamalKeys(ElGamalParameters* keys) {
-    BN_free(keys->p);
-    BN_free(keys->g);
-    BN_free(keys->y);
-    BN_free(keys->x);
 }
 
 void distributeShares(BIGNUM *secret, int n, int k) {
@@ -202,6 +179,13 @@ void post_electoral_roll(BulletinBoard* bb, VoterInfo* voters, int num_voters) {
     printf("Electoral roll has been posted.\n");
 }
 
+//step 3 in the section 3 setup phase
+void generate_and_post_collective_key(BulletinBoard* bb) {
+    // Placeholder for collective key generation
+    bb->collective_public_key = generate_rsa_key(); // Simulate collective key generation
+    printf("Collective public key has been posted.\n");
+}
+
 //voting phase
 
 void exchange_protocol_for_credential_share(char* designationKey) {
@@ -246,39 +230,13 @@ void sendToBallot(Voter* voter, Ballot* ballot){
 }
 
 
-void initializeBoard(BulletinBoard* board) {
-    if (!board) return;
-
-    BN_CTX* ctx = BN_CTX_new();
-    board->p = BN_new();
-    board->g = BN_new();
-    board->y = BN_new();
-    board->x = BN_new();
-
-    // Generate a safe prime for p (2048 bits)
-    BN_generate_prime_ex(board->p, 2048, 1, NULL, NULL, NULL);
-
-    // Set g as a small prime or a generator of the multiplicative group modulo p
-    BN_set_word(board->g, 2);
-
-    // Generate private key x (1 < x < p-1)
-    BN_rand_range(board->x, board->p);
-
-    // Calculate y = g^x mod p (public key)
-    BN_mod_exp(board->y, board->g, board->x, board->p, ctx);
-
-    BN_CTX_free(ctx);
-}
-
-
-
 void combineKeyGenerationWithShareDistribution() {
     BIGNUM *p = NULL, *g = NULL, *x = NULL, *y = NULL;
     int n = 5; // Total number of shares
     int k = 3; // Minimum number of shares to reconstruct the secret
 
     // Step 1: Generate ElGamal keys
-   // generateElGamalKeys(&p, &g, &x, &y);
+    generateElGamalKeys(&p, &g, &x, &y);
     printf("ElGamal Keys Generated.\n");
 
     // Step 2: Distribute shares of the private key
@@ -292,40 +250,6 @@ void combineKeyGenerationWithShareDistribution() {
     BN_free(y);
 }
 
-//step 3 in the section 3 setup phase
-void generate_and_post_collective_key(BulletinBoard* bb, ElGamalParameters keys) {
-    // Placeholder for collective key generation
-    //keys = generateElGamalKeys();
-    BIGNUM* p_str = BN_bn2dec(keys.p);
-    BIGNUM* g_str = BN_bn2dec(keys.g);
-    BIGNUM* y_str = BN_bn2dec(keys.y);
-    BIGNUM* x_str = BN_bn2dec(keys.x);
-
-    bb->p = p_str;
-    bb->g = g_str;
-    bb->y = y_str;
-    bb->x = x_str;
-    //bb->collective_public_key = generate_rsa_key(); // Simulate collective key generation
-    //printf("Collective public key has been posted.\n");
-}
-
-
-void declassifyBoard(BulletinBoard* bb, ElGamalParameters keys){
-    int allPosted = 0;	
-    int posted = 0;
-    for (int i =0; i<=10; i++){
-        generate_and_post_collective_key(bb, keys);
-        if (i==10){
-	   allPosted = 1;
-	}
-        if (allPosted == 1){
-	   posted = relabel(&keys, allPosted, "allPosted?S->P", "P") + 10;
-	
-	}
-   }
-   
-
-}
 
 
 void secureEraseShare(VoteCapabilityShare *share) {
@@ -361,7 +285,7 @@ void deliverShareToVoter(Voter *voter, Supervisor *supervisor, VoteCapabilitySha
         if (delivered == 1){
             removeShareFromSystem(voter, supervisor);
             removeShareFromVoter(voter);
-            system = relabel(share, delivered, "delete?P->S", "S")+10;
+	    system = relabel(share, delivered, "delete?P->S", "S")+10;
             user = relabel(share, delivered, "delete?P->S", "S")+10;
         }
     }
@@ -377,7 +301,7 @@ void deliverShareToVoter(Voter *voter, Supervisor *supervisor, VoteCapabilitySha
 int voteAction(Voter* voter, Ballot* ballot){
 //check whether the shares are delivered
 int r = rand() % 10;
-if (voter->shareDelivered == 1){
+if (&voter->shareDelivered == 1){
   if (r%2 == 0){ 
   choose_number_1(voter);
 }
@@ -404,18 +328,16 @@ void tallyPhase(Ballot* ballot){
 }
 
 int main() {
-    ElGamalParameters keys = generateElGamalKeys();
     ElGamalParameters params = {12345675678}; // Example initialization
     Voter voter;
     Voter Alice;
     Voter Bob;
     Ballot ballot = {0,0};
     Supervisor supervisor;
-    BulletinBoard bboard;
     VoteCapabilityShare share = {123,456};
     int generationPhase = 0;   
-    declassifyBoard(&bboard, keys);
 
+ 
     // Initialize voter and their share
     voter.voterID = 1234; // Example voter ID
     voter.share = generateVoteCapabilityShare(params);

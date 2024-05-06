@@ -90,7 +90,7 @@ Infoflow::Infoflow()
 
 void Infoflow::doInitialization() {
   // Get the PointsToInterface
-  pti = &getAnalysis<PointsToInterface>();
+  // pti = &getAnalysis<PointsToInterface>();
   // CHANGE
   sourceSinkAnalysis = &getAnalysis<SourceSinkAnalysis>();
   // sourceSinkAnalysis = &getAnalysis<>();

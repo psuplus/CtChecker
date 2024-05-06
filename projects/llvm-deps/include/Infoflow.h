@@ -250,7 +250,7 @@ public:
         AU);
     AU.addRequired<SourceSinkAnalysis>();
     AU.addRequired<PostDominatorTree>();
-    AU.addRequired<PointsToInterface>();
+    // AU.addRequired<PointsToInterface>();
     AU.setPreservesAll();
   }
 

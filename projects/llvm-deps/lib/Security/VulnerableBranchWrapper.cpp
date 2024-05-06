@@ -40,11 +40,13 @@ static RegisterPass<VulnerableBranchWrapper>
 char VulnerableBranchWrapper::ID;
 
 bool VulnerableBranchWrapper::runOnModule(Module &M) {
+  pti = &getAnalysis<PointsToInterface>();
   errs() << "\n---------Phase 0: Constraint Set Generation---------\n";
   legacy::PassManager *passManager = new legacy::PassManager();
   vba = new VulnerableBranch();
   Infoflow::iterationTag++;
   Infoflow::WLPTR_ROUND = false;
+  Infoflow::pti = pti;
   passManager->add(vba);
   passManager->run(M);
   errs() << vba->ifa->currentFlowRecord << " flow records processed\n";
@@ -56,6 +58,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
   vba = new VulnerableBranch();
   Infoflow::iterationTag++;
   Infoflow::WLPTR_ROUND = true;
+  vba->ifa->pti = pti;
   passManager->add(vba);
   passManager->run(M);
   errs() << vba->ifa->currentFlowRecord << " flow records processed\n";
@@ -67,6 +70,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
   vba = new VulnerableBranch();
   Infoflow::iterationTag++;
   Infoflow::WLPTR_ROUND = false;
+  vba->ifa->pti = pti;
   passManager->add(vba);
   passManager->run(M);
   errs() << vba->ifa->currentFlowRecord << " flow records processed\n";

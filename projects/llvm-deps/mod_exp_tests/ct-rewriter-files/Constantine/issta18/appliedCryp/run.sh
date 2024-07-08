@@ -12,7 +12,12 @@ MEM2REG="-mem2reg"
 
 COL+="WL"
 COL+="/FS"
-COL+="/FlS"
+if [ $2 = true ] ; then
+        MEM2REG="-mem2reg"
+        COL+="/FlS"
+else
+        MEM2REG=""
+fi
 COL+="/SRC"
 
 if [ "$COL" = "" ] ; then
@@ -74,7 +79,11 @@ PATTERN="/Constantine/[/a-zA-Z0-9_-]+"
 NAMEPREFIX=$(echo "$WORKINGPATH" | grep -E -o "$PATTERN")
 ROW="${NAMEPREFIX}/${NAME}"
 SCRIPTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/collecting_results.py"
-RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/results.csv"
+if [ $2 = true ] ; then
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/results.csv"
+else
+        RESULTPATH="${LEVEL}/projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/results-noFLS.csv"
+fi
 python $SCRIPTPATH tmp-$NAME.dat $RESULTPATH $ROW $TIME > $FILENAME
 
 # COL=$( echo 'tmp-'$COL'.dat' | tr '/' '-')

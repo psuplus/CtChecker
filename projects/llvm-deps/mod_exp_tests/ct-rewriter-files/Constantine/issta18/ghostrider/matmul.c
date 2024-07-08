@@ -106,20 +106,20 @@ static void __main(void) {
 
   do {     /* Syntactic loop 'for.cond1.preheader.i' to make GCC happy */
 llvm_cbe_for_2e_cond1_2e_preheader_2e_i:
-#line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv3_2e_i = llvm_cbe_indvars_2e_iv3_2e_i__PHI_TEMPORARY;
   llvm_cbe_indvars_2e_iv_2e_i_2e_i__PHI_TEMPORARY = 0;   /* for PHI node */
   goto llvm_cbe_for_2e_body3_2e_i_2e_i;
 
   do {     /* Syntactic loop 'for.body3.i.i' to make GCC happy */
 llvm_cbe_for_2e_body3_2e_i_2e_i:
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_i_2e_i = llvm_cbe_indvars_2e_iv_2e_i_2e_i__PHI_TEMPORARY;
-#line 24 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 24 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_call_2e_i_2e_i =  /*tail*/ read(0, (((uint8_t*)((&in1.array[((int64_t)llvm_cbe_indvars_2e_iv3_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv_2e_i_2e_i)])))), 1);
-#line 25 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 25 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_call10_2e_i_2e_i =  /*tail*/ read(0, (((uint8_t*)((&in2.array[((int64_t)llvm_cbe_indvars_2e_iv3_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv_2e_i_2e_i)])))), 1);
-#line 23 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 23 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i = llvm_add_u64(llvm_cbe_indvars_2e_iv_2e_i_2e_i, 1);
   if ((((llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i == UINT64_C(128))&1))) {
     goto llvm_cbe_loop_main_2e_exit_2e_i;
@@ -130,7 +130,7 @@ llvm_cbe_for_2e_body3_2e_i_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body3.i.i' */
 llvm_cbe_loop_main_2e_exit_2e_i:
-#line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_next4_2e_i_2e_i = llvm_add_u64(llvm_cbe_indvars_2e_iv3_2e_i, 1);
   if ((((llvm_cbe_indvars_2e_iv_2e_next4_2e_i_2e_i == UINT64_C(128))&1))) {
     goto llvm_cbe_loop_main_2e_1_2e_exit;
@@ -141,9 +141,9 @@ llvm_cbe_loop_main_2e_exit_2e_i:
 
   } while (1); /* end of syntactic loop 'for.cond1.preheader.i' */
 llvm_cbe_loop_main_2e_1_2e_exit:
-#line 28 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 28 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
    /*tail*/ matmul_OC_1();
-#line 29 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 29 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_call14_2e_i =  /*tail*/ write(1, ((uint8_t*)(&out)), 65536);
 }
 
@@ -168,7 +168,7 @@ static void matmul_OC_1(void) {
   uint64_t llvm_cbe_indvars_2e_iv_2e_next6_2e_i_2e_i_2e_i;
   uint64_t llvm_cbe_indvar_2e_next_2e_i_2e_i;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   ;
   ;
   llvm_cbe_indvar_2e_i__PHI_TEMPORARY = 0;   /* for PHI node */
@@ -176,16 +176,16 @@ static void matmul_OC_1(void) {
 
   do {     /* Syntactic loop 'for.cond1.preheader.i' to make GCC happy */
 llvm_cbe_for_2e_cond1_2e_preheader_2e_i:
-#line 8 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 8 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvar_2e_i = llvm_cbe_indvar_2e_i__PHI_TEMPORARY;
   llvm_cbe_indvars_2e_iv5_2e_i_2e_i__PHI_TEMPORARY = 0;   /* for PHI node */
   goto llvm_cbe_for_2e_body3_2e_i_2e_i;
 
   do {     /* Syntactic loop 'for.body3.i.i' to make GCC happy */
 llvm_cbe_for_2e_body3_2e_i_2e_i:
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv5_2e_i_2e_i = llvm_cbe_indvars_2e_iv5_2e_i_2e_i__PHI_TEMPORARY;
-#line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_arrayidx5_2e_i_2e_i_2e_i = (&out.array[((int64_t)llvm_cbe_indvar_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv5_2e_i_2e_i)]);
   *llvm_cbe_arrayidx5_2e_i_2e_i_2e_i = 0;
   llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i__PHI_TEMPORARY = 0;   /* for PHI node */
@@ -194,19 +194,19 @@ llvm_cbe_for_2e_body3_2e_i_2e_i:
 
   do {     /* Syntactic loop 'for.body8.i.i.i' to make GCC happy */
 llvm_cbe_for_2e_body8_2e_i_2e_i_2e_i:
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i = llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i__PHI_TEMPORARY;
   llvm_cbe_add2_2e_i_2e_i_2e_i = llvm_cbe_add2_2e_i_2e_i_2e_i__PHI_TEMPORARY;
-#line 12 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 12 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   _1 = *((&in1.array[((int64_t)llvm_cbe_indvar_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i)]));
   _2 = *((&in2.array[((int64_t)llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv5_2e_i_2e_i)]));
-#line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i = llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i | 1;
-#line 12 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 12 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   _3 = *((&in1.array[((int64_t)llvm_cbe_indvar_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i)]));
   _4 = *((&in2.array[((int64_t)llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i)].array[((int64_t)llvm_cbe_indvars_2e_iv5_2e_i_2e_i)]));
   llvm_cbe_add_2e_i_2e_i_2e_i_2e_1 = llvm_add_u32((llvm_mul_u32(_4, _3)), (llvm_add_u32((llvm_mul_u32(_2, _1)), llvm_cbe_add2_2e_i_2e_i_2e_i)));
-#line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i_2e_1 = llvm_add_u64(llvm_cbe_indvars_2e_iv_2e_i_2e_i_2e_i, 2);
   if ((((llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i_2e_1 == UINT64_C(128))&1))) {
     goto llvm_cbe_loop_matmul_2e_1_2e_exit_2e_i_2e_i;
@@ -218,9 +218,9 @@ llvm_cbe_for_2e_body8_2e_i_2e_i_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body8.i.i.i' */
 llvm_cbe_loop_matmul_2e_1_2e_exit_2e_i_2e_i:
-#line 12 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 12 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   *llvm_cbe_arrayidx5_2e_i_2e_i_2e_i = llvm_cbe_add_2e_i_2e_i_2e_i_2e_1;
-#line 9 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 9 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvars_2e_iv_2e_next6_2e_i_2e_i_2e_i = llvm_add_u64(llvm_cbe_indvars_2e_iv5_2e_i_2e_i, 1);
   if ((((llvm_cbe_indvars_2e_iv_2e_next6_2e_i_2e_i_2e_i == UINT64_C(128))&1))) {
     goto llvm_cbe_loop_matmul_2e_1_2e_2_2e_exit_2e_i;
@@ -231,7 +231,7 @@ llvm_cbe_loop_matmul_2e_1_2e_exit_2e_i_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body3.i.i' */
 llvm_cbe_loop_matmul_2e_1_2e_2_2e_exit_2e_i:
-#line 8 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
+// #line 8 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/matmul.c"
   llvm_cbe_indvar_2e_next_2e_i_2e_i = llvm_add_u64(llvm_cbe_indvar_2e_i, 1);
   if ((((llvm_cbe_indvar_2e_next_2e_i_2e_i == UINT64_C(128))&1))) {
     goto llvm_cbe_loop_matmul_2e_1_2e_3_2e_exit;

@@ -2308,12 +2308,56 @@ void Infoflow::constraintUnreachableInst(const UnreachableInst &inst,
 /// Compute a pointer value, depending on the pc and operands.
 void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
                                           Flows &flows) {
+  for (int i = 0; i < inst.getNumOperands(); i++) {
+    Value *op = inst.getOperand(i);
+    if (const ConstantExpr *ce = dyn_cast<ConstantExpr>(op)) {
+      constrainConstantExpr(inst, *ce, flows);
+    }
+  }
   return operandsAndPCtoValue(inst, flows);
+}
+
+void Infoflow::constrainConstantExpr(const Instruction &inst, const ConstantExpr &expr, Flows &flows) {
+  FlowRecord exp = currentContextFlowRecord(false);
+
+  for (int i = 0; i < expr.getNumOperands(); i++) {
+      Value *op = expr.getOperand(i);
+      exp.addSourceValue(*op);
+  }
+
+  exp.addSinkValue(expr);
+
+  flows.push_back(exp);
+
+  Flows taintFlows;
+  Flows WLPFlows;
+  taintFlows.push_back(exp);
+  WLPFlows.push_back(exp);
+  insertIntoInstFlowMap(&inst, taintFlows, WLPFlows);
+  // if (const BinaryOperator *binConstExpr = dyn_cast<BinaryOperator>(&expr)) {
+  //   return operandsAndPCtoValue(*binConstExpr, flows);
+  // } else if (const castConstExpr = dyn_cast<CastInst>(&expr)) {
+  //   return operandsAndPCtoValue(*castConstExpr, flows);
+  // } else if (const getElemPtrConstExpr = dyn_cast<GetElementPtrInst>(&expr)) {
+  //   return operandsAndPCtoValue(*getElemPtrConstExpr, flows);
+  // } else {
+  //   assert(false && "Unsupported constant expression type!");
+  // }
 }
 
 /// Store a value into a memory location. Flow from pc, pointer value, and value
 /// into the memory location. Has no return value.
 void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
+  if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(inst.getPointerOperand())) {
+    constrainConstantExpr(inst, *ce, flows);
+  }
+
+  if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(inst.getValueOperand())) {
+    constrainConstantExpr(inst, *ce, flows);
+  }
+  
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);
   // pc
@@ -2340,6 +2384,11 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 /// Load the value from the memory at the pointer operand into the result.
 /// Flow from pc, ptr value, and memory to result.
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
+  if (const ConstantExpr *ce =
+                dyn_cast<ConstantExpr>(inst.getPointerOperand())) {
+    constrainConstantExpr(inst, *ce, flows);
+  }
+  
   Value *ptr = inst.getOperand(0);
   if (Infoflow::whitelistPointers.find(ptr) != Infoflow::whitelistPointers.end() &&
       !inst.getType()->isPtrOrPtrVectorTy()) {
@@ -2497,6 +2546,13 @@ void Infoflow::constrainCallInst(const CallInst &inst, bool analyzeCallees,
                                  Flows &flows) {
   // TODO: filter out and handle Intrinsics here instead of deferring
   // to the Signature mechanism...
+  for (int i=0; i < inst.getNumArgOperands(); i++) {
+    Value *arg = inst.getArgOperand(i);
+    if (const ConstantExpr *ce = dyn_cast<ConstantExpr>(arg)) {
+      constrainConstantExpr(inst, *ce, flows);
+    }
+  }
+  
   if (const IntrinsicInst *intr = dyn_cast<IntrinsicInst>(&inst)) {
     return constrainIntrinsic(*intr, flows);
   } else {

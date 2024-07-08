@@ -334,39 +334,39 @@ uint32_t dfs_EC___main(uint32_t llvm_cbe_argc, uint8_t** llvm_cbe_argv) {
   ;
   ;
   _1 = ((uint8_t*)(&llvm_cbe_ctx));
-#line 11 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 11 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   _2 = ((uint8_t*)((&llvm_cbe_ctx.field1)));
   __dfsw___dft_getelementptr(1, (&__hook_arg_OC_i_NC_bid), _2, _1, 0, 0, 0, 0);
   __dfsw___dft_memset(1, (&__hook_arg_OC_i_NC_bid_OC_1), _2, 0, 248, 0, 0, 0, 0, 0);
   __dfsan_set_label(0, _2, 248);
   _3 = memset(_2, 0, 248);
-#line 12 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 12 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   __dfsw___dft_getelementptr(1, (&__hook_arg_OC_i_NC_bid_OC_2), _1, _1, 0, 0, 0, 0);
   __dfsw___dft_store(1, (&__hook_arg_OC_i_NC_bid_OC_3), ((uint64_t)(uintptr_t)(&br_aes_big_cbcenc_vtable)), _1, 0, 0, 0, 0);
   *(((uint128_t*)(uintptr_t)(((((uint64_t)(uintptr_t)(&llvm_cbe_ctx))) << 1) & INT64_C(-246290604621840)))) = llvm_ctor_u128(UINT64_C(0), UINT64_C(0));
   *((&llvm_cbe_ctx.field0)) = (&br_aes_big_cbcenc_vtable);
-#line 13 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 13 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   llvm_cbe_num_rounds = (&llvm_cbe_ctx.field2);
   _4 = ((uint8_t*)llvm_cbe_num_rounds);
   __dfsw___dft_getelementptr(1, (&__hook_arg_OC_i_NC_bid_OC_4), _4, _1, 0, 0, 0, 0);
   __dfsw___dft_store(1, (&__hook_arg_OC_i_NC_bid_OC_5), 2, _4, 0, 0, 0, 0);
   *(((uint64_t*)(uintptr_t)(((((uint64_t)(uintptr_t)llvm_cbe_num_rounds)) << 1) & INT64_C(-246290604621840)))) = 0;
   *llvm_cbe_num_rounds = 2;
-#line 14 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 14 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   ;
   _5 = (&llvm_cbe_iv.array[((int64_t)0)]);
   __dfsw___dft_getelementptr(1, (&__hook_arg_OC_i_NC_bid_OC_6), _5, _5, 0, 0, 0, 0);
   __dfsw___dft_memset(1, (&__hook_arg_OC_i_NC_bid_OC_7), _5, 0, 16, 0, 0, 0, 0, 0);
   __dfsan_set_label(0, _5, 16);
   _6 = memset(_5, 0, 16);
-#line 15 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 15 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   ;
   _7 = (&llvm_cbe_data.array[((int64_t)0)]);
   __dfsw___dft_getelementptr(1, (&__hook_arg_OC_i_NC_bid_OC_8), _7, _7, 0, 0, 0, 0);
   __dfsw___dft_memset(1, (&__hook_arg_OC_i_NC_bid_OC_9), _7, 0, 32, 0, 0, 0, 0, 0);
   __dfsan_set_label(0, _7, 32);
   _8 = memset(_7, 0, 32);
-#line 17 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 17 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   _9 = ((uint8_t*)((&llvm_cbe_ctx.field1.array[((int64_t)0)])));
   __dfsw___dft_getelementptr(1, (&__hook_arg_OC_i_NC_bid_OC_10), _9, _1, 0, 0, 0, 0);
   _10 = __dfsw_read(0, _9, 240, 0, 0, 0, (&llvm_cbe_labelreturn));
@@ -375,14 +375,14 @@ uint32_t dfs_EC___main(uint32_t llvm_cbe_argc, uint8_t** llvm_cbe_argv) {
   _13 = __dfsw_read(0, _7, 32, 0, 0, 0, (&llvm_cbe_labelreturn));
   _14 = llvm_cbe_labelreturn;
   _15 = __dfsw___dft_read(_7, _13, 0, _14, (&llvm_cbe_labelreturn));
-#line 1"/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   ;
-#line 20 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 20 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   __UNALIGNED_LOAD__(uint64_t, 2, ((uint64_t*)(&__dfsan_arg_tls))) = 0;
   dfs_EC_br_aes_big_cbcenc_run((&llvm_cbe_ctx), _5, _7, 32);
-#line 21 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 21 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   _16 = __dfsw_write(1, _7, 32, 0, 0, 0, (&llvm_cbe_labelreturn));
-#line 22 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
+// #line 22 "/home/constantine/constantine/src/apps/binsec/bearssl/aes_big_wrapper.c"
   __dfsan_retval_tls = 0;
   return 0;
 }

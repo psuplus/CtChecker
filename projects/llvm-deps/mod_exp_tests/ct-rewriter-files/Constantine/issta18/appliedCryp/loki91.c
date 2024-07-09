@@ -272,19 +272,19 @@ static void __main(void) {
 
   ;
   ;
-#line 232 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 232 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call =  /*tail*/ read(0, ((&in_key.field0.array[((int64_t)0)])), 24);
-#line 233 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 233 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call1 =  /*tail*/ read(0, ((&in.array[((int64_t)0)])), 8);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 235 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 235 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   setlokikey_OC_21((&llvm_cbe_lc));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 236 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 236 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   enloki_OC_22((&llvm_cbe_lc));
-#line 237 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 237 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call2 =  /*tail*/ write(1, ((&in.array[((int64_t)0)])), 8);
 }
 
@@ -305,75 +305,75 @@ static void setlokikey_OC_21(struct l_struct_struct_OC_loki_ctx* llvm_cbe_c) {
   uint32_t llvm_cbe_or15_2e_2_2e_i;
   uint32_t llvm_cbe_or22_2e_2_2e_i;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _1 = *((uint32_t*)(&in_key));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _2 = *((uint32_t*)((&in_key.field0.array[((int64_t)4)])));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
-#line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)0)])) = _1;
-#line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or_2e_i = (_1 << 12) | (llvm_ashr_u32(_1, 20));
-#line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)1)])) = llvm_cbe_or_2e_i;
-#line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or8_2e_i = (llvm_cbe_or_2e_i << 13) | (llvm_ashr_u32(llvm_cbe_or_2e_i, 19));
-#line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)2)])) = _2;
-#line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or15_2e_i = (_2 << 12) | (llvm_ashr_u32(_2, 20));
-#line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)3)])) = llvm_cbe_or15_2e_i;
-#line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or22_2e_i = (llvm_cbe_or15_2e_i << 13) | (llvm_ashr_u32(llvm_cbe_or15_2e_i, 19));
-#line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)4)])) = llvm_cbe_or8_2e_i;
-#line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or_2e_1_2e_i = (llvm_cbe_or8_2e_i << 12) | (llvm_ashr_u32(llvm_cbe_or8_2e_i, 20));
-#line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)5)])) = llvm_cbe_or_2e_1_2e_i;
-#line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or8_2e_1_2e_i = (llvm_cbe_or_2e_1_2e_i << 13) | (llvm_ashr_u32(llvm_cbe_or_2e_1_2e_i, 19));
-#line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)6)])) = llvm_cbe_or22_2e_i;
-#line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or15_2e_1_2e_i = (llvm_cbe_or22_2e_i << 12) | (llvm_ashr_u32(llvm_cbe_or22_2e_i, 20));
-#line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)7)])) = llvm_cbe_or15_2e_1_2e_i;
-#line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or22_2e_1_2e_i = (llvm_cbe_or15_2e_1_2e_i << 13) | (llvm_ashr_u32(llvm_cbe_or15_2e_1_2e_i, 19));
-#line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)8)])) = llvm_cbe_or8_2e_1_2e_i;
-#line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or_2e_2_2e_i = (llvm_cbe_or8_2e_1_2e_i << 12) | (llvm_ashr_u32(llvm_cbe_or8_2e_1_2e_i, 20));
-#line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)9)])) = llvm_cbe_or_2e_2_2e_i;
-#line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or8_2e_2_2e_i = (llvm_cbe_or_2e_2_2e_i << 13) | (llvm_ashr_u32(llvm_cbe_or_2e_2_2e_i, 19));
-#line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)10)])) = llvm_cbe_or22_2e_1_2e_i;
-#line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or15_2e_2_2e_i = (llvm_cbe_or22_2e_1_2e_i << 12) | (llvm_ashr_u32(llvm_cbe_or22_2e_1_2e_i, 20));
-#line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)11)])) = llvm_cbe_or15_2e_2_2e_i;
-#line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or22_2e_2_2e_i = (llvm_cbe_or15_2e_2_2e_i << 13) | (llvm_ashr_u32(llvm_cbe_or15_2e_2_2e_i, 19));
-#line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 65 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)12)])) = llvm_cbe_or8_2e_2_2e_i;
-#line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 66 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)13)])) = ((llvm_cbe_or8_2e_2_2e_i << 12) | (llvm_ashr_u32(llvm_cbe_or8_2e_2_2e_i, 20)));
-#line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 69 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)14)])) = llvm_cbe_or22_2e_2_2e_i;
-#line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 70 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 71 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((&llvm_cbe_c->field0.array[((int64_t)15)])) = ((llvm_cbe_or22_2e_2_2e_i << 12) | (llvm_ashr_u32(llvm_cbe_or22_2e_2_2e_i, 20)));
 }
 
@@ -429,85 +429,85 @@ static void enloki_OC_22(struct l_struct_struct_OC_loki_ctx* llvm_cbe_c) {
   uint32_t _20;
   uint32_t llvm_cbe_call6_2e_7_2e_i;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
-#line 86 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 86 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _3 = *((uint32_t*)(&in));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 87 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 87 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _4 = *((uint32_t*)((&in.array[((int64_t)4)])));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _5 = *((&llvm_cbe_c->field0.array[((int64_t)0)]));
   llvm_cbe_call_2e_i =  /*tail*/ f_OC_28(_4, _5);
   llvm_cbe_xor_2e_i = llvm_cbe_call_2e_i ^ _3;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _6 = *((&llvm_cbe_c->field0.array[((int64_t)1)]));
   llvm_cbe_call6_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_i, _6);
   llvm_cbe_xor7_2e_i = llvm_cbe_call6_2e_i ^ _4;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _7 = *((&llvm_cbe_c->field0.array[((int64_t)2)]));
   llvm_cbe_call_2e_1_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_i, _7);
   llvm_cbe_xor_2e_1_2e_i = llvm_cbe_call_2e_1_2e_i ^ llvm_cbe_xor_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _8 = *((&llvm_cbe_c->field0.array[((int64_t)3)]));
   llvm_cbe_call6_2e_1_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_1_2e_i, _8);
   llvm_cbe_xor7_2e_1_2e_i = llvm_cbe_call6_2e_1_2e_i ^ llvm_cbe_xor7_2e_i;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _9 = *((&llvm_cbe_c->field0.array[((int64_t)4)]));
   llvm_cbe_call_2e_2_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_1_2e_i, _9);
   llvm_cbe_xor_2e_2_2e_i = llvm_cbe_call_2e_2_2e_i ^ llvm_cbe_xor_2e_1_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _10 = *((&llvm_cbe_c->field0.array[((int64_t)5)]));
   llvm_cbe_call6_2e_2_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_2_2e_i, _10);
   llvm_cbe_xor7_2e_2_2e_i = llvm_cbe_call6_2e_2_2e_i ^ llvm_cbe_xor7_2e_1_2e_i;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _11 = *((&llvm_cbe_c->field0.array[((int64_t)6)]));
   llvm_cbe_call_2e_3_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_2_2e_i, _11);
   llvm_cbe_xor_2e_3_2e_i = llvm_cbe_call_2e_3_2e_i ^ llvm_cbe_xor_2e_2_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _12 = *((&llvm_cbe_c->field0.array[((int64_t)7)]));
   llvm_cbe_call6_2e_3_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_3_2e_i, _12);
   llvm_cbe_xor7_2e_3_2e_i = llvm_cbe_call6_2e_3_2e_i ^ llvm_cbe_xor7_2e_2_2e_i;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _13 = *((&llvm_cbe_c->field0.array[((int64_t)8)]));
   llvm_cbe_call_2e_4_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_3_2e_i, _13);
   llvm_cbe_xor_2e_4_2e_i = llvm_cbe_call_2e_4_2e_i ^ llvm_cbe_xor_2e_3_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _14 = *((&llvm_cbe_c->field0.array[((int64_t)9)]));
   llvm_cbe_call6_2e_4_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_4_2e_i, _14);
   llvm_cbe_xor7_2e_4_2e_i = llvm_cbe_call6_2e_4_2e_i ^ llvm_cbe_xor7_2e_3_2e_i;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _15 = *((&llvm_cbe_c->field0.array[((int64_t)10)]));
   llvm_cbe_call_2e_5_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_4_2e_i, _15);
   llvm_cbe_xor_2e_5_2e_i = llvm_cbe_call_2e_5_2e_i ^ llvm_cbe_xor_2e_4_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _16 = *((&llvm_cbe_c->field0.array[((int64_t)11)]));
   llvm_cbe_call6_2e_5_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_5_2e_i, _16);
   llvm_cbe_xor7_2e_5_2e_i = llvm_cbe_call6_2e_5_2e_i ^ llvm_cbe_xor7_2e_4_2e_i;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _17 = *((&llvm_cbe_c->field0.array[((int64_t)12)]));
   llvm_cbe_call_2e_6_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_5_2e_i, _17);
   llvm_cbe_xor_2e_6_2e_i = llvm_cbe_call_2e_6_2e_i ^ llvm_cbe_xor_2e_5_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _18 = *((&llvm_cbe_c->field0.array[((int64_t)13)]));
   llvm_cbe_call6_2e_6_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_6_2e_i, _18);
   llvm_cbe_xor7_2e_6_2e_i = llvm_cbe_call6_2e_6_2e_i ^ llvm_cbe_xor7_2e_5_2e_i;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _19 = *((&llvm_cbe_c->field0.array[((int64_t)14)]));
   llvm_cbe_call_2e_7_2e_i =  /*tail*/ f_OC_28(llvm_cbe_xor7_2e_6_2e_i, _19);
   llvm_cbe_xor_2e_7_2e_i = llvm_cbe_call_2e_7_2e_i ^ llvm_cbe_xor_2e_6_2e_i;
-#line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 90 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _20 = *((&llvm_cbe_c->field0.array[((int64_t)15)]));
   llvm_cbe_call6_2e_7_2e_i =  /*tail*/ f_OC_29(llvm_cbe_xor_2e_7_2e_i, _20);
-#line 92 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 92 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((uint32_t*)(&in)) = (llvm_cbe_call6_2e_7_2e_i ^ llvm_cbe_xor7_2e_6_2e_i);
-#line 93 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 93 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   *((uint32_t*)((&in.array[((int64_t)4)]))) = llvm_cbe_xor_2e_7_2e_i;
 }
 
@@ -520,36 +520,36 @@ static uint32_t f_OC_28(uint32_t llvm_cbe_r, uint32_t llvm_cbe_k) {
   uint16_t llvm_cbe_call14;
   uint32_t _21;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
-#line 145 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 145 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_xor = llvm_cbe_k ^ llvm_cbe_r;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call =  /*tail*/ s_OC_53((llvm_cbe_xor & 4095));
-#line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call2 =  /*tail*/ s_OC_54(((llvm_lshr_u32(llvm_cbe_xor, 8)) & 4095));
-#line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call6 =  /*tail*/ s_OC_55(((llvm_lshr_u32(llvm_cbe_xor, 16)) & 4095));
-#line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 150 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 150 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call14 =  /*tail*/ s_OC_56((((llvm_ashr_u32(llvm_cbe_xor, 24)) | (llvm_cbe_xor << 8)) & 4095));
-#line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   promoted_stack_var_f_OC_28_2 = (((((((int32_t)(int16_t)llvm_cbe_call2)) << 8) | (((int32_t)(int16_t)llvm_cbe_call))) | ((((uint32_t)(uint16_t)llvm_cbe_call6)) << 16)) | ((((uint32_t)(uint16_t)llvm_cbe_call14)) << 24));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
-#line 151 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 151 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
    /*tail*/ perm32_OC_57();
-#line 152 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 152 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _21 = promoted_stack_var_f_OC_28_3;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return _21;
 }
@@ -565,33 +565,33 @@ static uint32_t f_OC_29(uint32_t llvm_cbe_r, uint32_t llvm_cbe_k) {
 
   ;
   ;
-#line 145 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 145 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_xor = llvm_cbe_k ^ llvm_cbe_r;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call =  /*tail*/ s_OC_58((llvm_cbe_xor & 4095));
-#line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call2 =  /*tail*/ s_OC_59(((llvm_lshr_u32(llvm_cbe_xor, 8)) & 4095));
-#line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call6 =  /*tail*/ s_OC_60(((llvm_lshr_u32(llvm_cbe_xor, 16)) & 4095));
-#line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 150 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 148 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 150 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call14 =  /*tail*/ s_OC_61((((llvm_ashr_u32(llvm_cbe_xor, 24)) | (llvm_cbe_xor << 8)) & 4095));
-#line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 149 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 147 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   promoted_stack_var_f_OC_29_0 = (((((((int32_t)(int16_t)llvm_cbe_call2)) << 8) | (((int32_t)(int16_t)llvm_cbe_call))) | ((((uint32_t)(uint16_t)llvm_cbe_call6)) << 16)) | ((((uint32_t)(uint16_t)llvm_cbe_call14)) << 24));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
-#line 151 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 151 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
    /*tail*/ perm32_OC_62();
-#line 152 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 152 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _22 = promoted_stack_var_f_OC_29_1;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return _22;
 }
@@ -630,17 +630,17 @@ static int16_t s_OC_58(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _23 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -712,7 +712,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_77(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -751,17 +751,17 @@ static int16_t s_OC_59(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _27 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -833,7 +833,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_80(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -872,17 +872,17 @@ static int16_t s_OC_60(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _31 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -954,7 +954,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_81(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -993,17 +993,17 @@ static int16_t s_OC_61(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _35 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -1075,7 +1075,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_82(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -1114,9 +1114,9 @@ static void perm32_OC_62(void) {
   ;
   ;
   ;
-#line 128 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 128 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   promoted_stack_var_f_OC_29_1 = 0;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
@@ -1127,12 +1127,12 @@ static void perm32_OC_62(void) {
 
   do {     /* Syntactic loop 'for.body.i' to make GCC happy */
 llvm_cbe_for_2e_body_2e_i:
-#line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _39 = _39__PHI_TEMPORARY;
   llvm_cbe_p_2e_06_2e_i = llvm_cbe_p_2e_06_2e_i__PHI_TEMPORARY;
   llvm_cbe_mask_2e_03_2e_i = llvm_cbe_mask_2e_03_2e_i__PHI_TEMPORARY;
-#line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_and_2e_i_2e_i_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_p_2e_06_2e_i)) & 63;
   if ((((((int64_t)llvm_cbe_and_2e_i_2e_i_2e_i) < ((int64_t)((((uint64_t)(((uint64_t)(((uint64_t)(((uint64_t)((uint64_t)(uintptr_t)(&P))) + ((uint64_t)95))))) - ((uint64_t)((uint64_t)(uintptr_t)(&P)))))) & -64)))&1))) {
     goto llvm_cbe_for_2e_body_2e_preheader_2e_i_2e_i_2e_i;
@@ -1164,18 +1164,18 @@ llvm_cbe_for_2e_body_2e_i_2e_i_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body.i.i.i' */
 llvm_cbe_uint8_t_dfl_glob_load_2e_exit_2e_loopexit_2e_i_2e_i:
-#line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_phitmp_2e_i_2e_i = ((int32_t)(int8_t)llvm_cbe_cond_2e_v_2e_i_2e_i_2e_i);
   llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i__PHI_TEMPORARY = llvm_cbe_phitmp_2e_i_2e_i;   /* for PHI node */
   goto llvm_cbe___cfl_branch_perm32_2e_62_2e_exit_2e_i;
 
 llvm_cbe___cfl_branch_perm32_2e_62_2e_exit_2e_i:
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i__PHI_TEMPORARY;
   _41 = *(volatile uint32_t*)(&promoted_stack_var_f_OC_29_0);
   _42 = *(volatile uint8_t*)(&taken);
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_tobool3_2e_i_2e_i_2e_i = (((((_42 != ((uint8_t)0))&1)) & (((((llvm_select_u32((((_42 == ((uint8_t)0))&1)), 0, _41)) & (1 << llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i)) != 0u)&1)))&1);
   taken = (((uint8_t)(bool)llvm_cbe_tobool3_2e_i_2e_i_2e_i));
   llvm_cbe_or_2e_i_2e_i = llvm_cbe_mask_2e_03_2e_i | _39;
@@ -1184,9 +1184,9 @@ llvm_cbe___cfl_branch_perm32_2e_62_2e_exit_2e_i:
   *(volatile uint32_t*)(&promoted_stack_var_f_OC_29_1) = (llvm_select_u32(((((((_44 != ((uint8_t)0))&1)) & llvm_cbe_tobool3_2e_i_2e_i_2e_i)&1)), llvm_cbe_or_2e_i_2e_i, _43));
   _45 = llvm_select_u32((((((llvm_select_u32((((_42 == ((uint8_t)0))&1)), 0, _41)) & (1 << llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i)) != 0u)&1)), llvm_cbe_or_2e_i_2e_i, _39);
   taken = _42;
-#line 135 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 135 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr1_2e_i_2e_i = llvm_ashr_u32(llvm_cbe_mask_2e_03_2e_i, 1);
-#line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   if ((((llvm_cbe_p_2e_06_2e_i == ((&P.array[((int64_t)31)])))&1))) {
     goto llvm_cbe_loop_perm32_2e_62_2e_exit;
   } else {
@@ -1266,14 +1266,14 @@ static int16_t exp8_OC_82(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _63;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _46 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_46 != ((uint8_t)0))&1)))&1))));
   _47 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -1328,27 +1328,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _59 = *(volatile uint8_t*)(&taken);
   _60 = *(volatile uint8_t*)(&taken);
   _61 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_90(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_91(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _62 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_62 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _63 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_330), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -1405,7 +1405,7 @@ static int16_t __cfl_mult8_OC_90(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _64 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _65 = taken;
@@ -1423,16 +1423,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _66 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_66 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _67 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_922), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_67) {
@@ -1474,13 +1474,13 @@ static int16_t __cfl_mult8_OC_91(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   uint32_t llvm_cbe_inc_2e_i;
   bool _71;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _68 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _69 = taken;
@@ -1498,16 +1498,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _70 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_70 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _71 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_931), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_71) {
@@ -1592,14 +1592,14 @@ static int16_t exp8_OC_81(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _89;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _72 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_72 != ((uint8_t)0))&1)))&1))));
   _73 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -1654,27 +1654,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _85 = *(volatile uint8_t*)(&taken);
   _86 = *(volatile uint8_t*)(&taken);
   _87 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_78(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_79(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _88 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_88 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _89 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_293), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -1731,7 +1731,7 @@ static int16_t __cfl_mult8_OC_78(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _90 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _91 = taken;
@@ -1749,16 +1749,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _92 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_92 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _93 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_805), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_93) {
@@ -1800,13 +1800,13 @@ static int16_t __cfl_mult8_OC_79(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   uint32_t llvm_cbe_inc_2e_i;
   bool _97;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _94 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _95 = taken;
@@ -1824,16 +1824,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _96 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_96 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _97 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_1154), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_97) {
@@ -1918,14 +1918,14 @@ static int16_t exp8_OC_80(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _115;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _98 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_98 != ((uint8_t)0))&1)))&1))));
   _99 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -1980,27 +1980,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _111 = *(volatile uint8_t*)(&taken);
   _112 = *(volatile uint8_t*)(&taken);
   _113 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_67(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_68(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _114 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_114 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _115 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_256), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -2057,7 +2057,7 @@ static int16_t __cfl_mult8_OC_67(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _116 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _117 = taken;
@@ -2075,16 +2075,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _118 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_118 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _119 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_698), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_119) {
@@ -2126,13 +2126,13 @@ static int16_t __cfl_mult8_OC_68(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   uint32_t llvm_cbe_inc_2e_i;
   bool _123;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _120 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _121 = taken;
@@ -2150,16 +2150,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _122 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_122 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _123 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_707), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_123) {
@@ -2244,14 +2244,14 @@ static int16_t exp8_OC_77(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _141;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _124 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_124 != ((uint8_t)0))&1)))&1))));
   _125 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -2306,27 +2306,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _137 = *(volatile uint8_t*)(&taken);
   _138 = *(volatile uint8_t*)(&taken);
   _139 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_99(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_100(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _140 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_140 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _141 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_69), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -2383,7 +2383,7 @@ static int16_t __cfl_mult8_OC_99(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _142 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _143 = taken;
@@ -2401,16 +2401,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _144 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_144 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _145 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_10211), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_145) {
@@ -2452,13 +2452,13 @@ static int16_t __cfl_mult8_OC_100(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_
   uint32_t llvm_cbe_inc_2e_i;
   bool _149;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _146 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _147 = taken;
@@ -2476,16 +2476,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _148 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_148 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _149 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_10110), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_149) {
@@ -2538,19 +2538,19 @@ static int16_t s_OC_53(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   uint16_t llvm_cbe_call;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _150 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -2622,7 +2622,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_73(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -2661,17 +2661,17 @@ static int16_t s_OC_54(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _154 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -2743,7 +2743,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_74(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -2782,17 +2782,17 @@ static int16_t s_OC_55(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _158 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -2864,7 +2864,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_75(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -2903,17 +2903,17 @@ static int16_t s_OC_56(uint32_t llvm_cbe_i) {
   uint16_t llvm_cbe_call;
 
   ;
-#line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 198 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_or = ((llvm_lshr_u32(llvm_cbe_i, 8)) & 12) | (llvm_cbe_i & 3);
   llvm_cbe_conv = ((uint64_t)(uint32_t)llvm_cbe_or);
-#line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 199 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 200 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_conv8 = llvm_and_u16((((uint16_t)(llvm_add_u32(((llvm_mul_u32(llvm_cbe_or, 17)) ^ 255), (llvm_lshr_u32(llvm_cbe_i, 2)))))), 255);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
-#line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 201 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exp = (&sfn.array[((int64_t)llvm_cbe_conv)].field1);
   _162 = ((uint8_t*)llvm_cbe_exp);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_exp)) & 62;
@@ -2985,7 +2985,7 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint16_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_call =  /*tail*/ exp8_OC_76(llvm_cbe_conv8, llvm_cbe_res_2e_0_2e_lcssa_2e_i, llvm_cbe_res_2e_0_2e_lcssa_2e_i5);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   return llvm_cbe_call;
 }
@@ -3024,9 +3024,9 @@ static void perm32_OC_57(void) {
   ;
   ;
   ;
-#line 128 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 128 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   promoted_stack_var_f_OC_28_3 = 0;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
@@ -3037,12 +3037,12 @@ static void perm32_OC_57(void) {
 
   do {     /* Syntactic loop 'for.body.i' to make GCC happy */
 llvm_cbe_for_2e_body_2e_i:
-#line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _166 = _166__PHI_TEMPORARY;
   llvm_cbe_p_2e_06_2e_i = llvm_cbe_p_2e_06_2e_i__PHI_TEMPORARY;
   llvm_cbe_mask_2e_03_2e_i = llvm_cbe_mask_2e_03_2e_i__PHI_TEMPORARY;
-#line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_and_2e_i_2e_i_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_p_2e_06_2e_i)) & 63;
   if ((((((int64_t)llvm_cbe_and_2e_i_2e_i_2e_i) < ((int64_t)((((uint64_t)(((uint64_t)(((uint64_t)(((uint64_t)((uint64_t)(uintptr_t)(&P))) + ((uint64_t)95))))) - ((uint64_t)((uint64_t)(uintptr_t)(&P)))))) & -64)))&1))) {
     goto llvm_cbe_for_2e_body_2e_preheader_2e_i_2e_i_2e_i;
@@ -3074,18 +3074,18 @@ llvm_cbe_for_2e_body_2e_i_2e_i_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body.i.i.i' */
 llvm_cbe_uint8_t_dfl_glob_load_2e_exit_2e_loopexit_2e_i_2e_i:
-#line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 131 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_phitmp_2e_i_2e_i = ((int32_t)(int8_t)llvm_cbe_cond_2e_v_2e_i_2e_i_2e_i);
   llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i__PHI_TEMPORARY = llvm_cbe_phitmp_2e_i_2e_i;   /* for PHI node */
   goto llvm_cbe___cfl_branch_perm32_2e_57_2e_exit_2e_i;
 
 llvm_cbe___cfl_branch_perm32_2e_57_2e_exit_2e_i:
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i__PHI_TEMPORARY;
   _168 = *(volatile uint32_t*)(&promoted_stack_var_f_OC_28_2);
   _169 = *(volatile uint8_t*)(&taken);
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_tobool3_2e_i_2e_i_2e_i = (((((_169 != ((uint8_t)0))&1)) & (((((llvm_select_u32((((_169 == ((uint8_t)0))&1)), 0, _168)) & (1 << llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i)) != 0u)&1)))&1);
   taken = (((uint8_t)(bool)llvm_cbe_tobool3_2e_i_2e_i_2e_i));
   llvm_cbe_or_2e_i_2e_i = llvm_cbe_mask_2e_03_2e_i | _166;
@@ -3094,9 +3094,9 @@ llvm_cbe___cfl_branch_perm32_2e_57_2e_exit_2e_i:
   *(volatile uint32_t*)(&promoted_stack_var_f_OC_28_3) = (llvm_select_u32(((((((_171 != ((uint8_t)0))&1)) & llvm_cbe_tobool3_2e_i_2e_i_2e_i)&1)), llvm_cbe_or_2e_i_2e_i, _170));
   _172 = llvm_select_u32((((((llvm_select_u32((((_169 == ((uint8_t)0))&1)), 0, _168)) & (1 << llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i)) != 0u)&1)), llvm_cbe_or_2e_i_2e_i, _166);
   taken = _169;
-#line 135 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 135 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr1_2e_i_2e_i = llvm_ashr_u32(llvm_cbe_mask_2e_03_2e_i, 1);
-#line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 130 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   if ((((llvm_cbe_p_2e_06_2e_i == ((&P.array[((int64_t)31)])))&1))) {
     goto llvm_cbe_loop_perm32_2e_57_2e_exit;
   } else {
@@ -3176,14 +3176,14 @@ static int16_t exp8_OC_76(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _190;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _173 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_173 != ((uint8_t)0))&1)))&1))));
   _174 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -3238,27 +3238,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _186 = *(volatile uint8_t*)(&taken);
   _187 = *(volatile uint8_t*)(&taken);
   _188 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_40(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_41(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _189 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_189 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _190 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_112), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -3315,7 +3315,7 @@ static int16_t __cfl_mult8_OC_40(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _191 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _192 = taken;
@@ -3333,16 +3333,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _193 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_193 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _194 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_10414), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_194) {
@@ -3384,13 +3384,13 @@ static int16_t __cfl_mult8_OC_41(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   uint32_t llvm_cbe_inc_2e_i;
   bool _198;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _195 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _196 = taken;
@@ -3408,16 +3408,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _197 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_197 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _198 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_10813), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_198) {
@@ -3502,14 +3502,14 @@ static int16_t exp8_OC_75(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _216;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _199 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_199 != ((uint8_t)0))&1)))&1))));
   _200 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -3564,27 +3564,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _212 = *(volatile uint8_t*)(&taken);
   _213 = *(volatile uint8_t*)(&taken);
   _214 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_106(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_107(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _215 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_215 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _216 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_1015), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -3641,7 +3641,7 @@ static int16_t __cfl_mult8_OC_106(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _217 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _218 = taken;
@@ -3659,16 +3659,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _219 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_219 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _220 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_11817), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_220) {
@@ -3710,13 +3710,13 @@ static int16_t __cfl_mult8_OC_107(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_
   uint32_t llvm_cbe_inc_2e_i;
   bool _224;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _221 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _222 = taken;
@@ -3734,16 +3734,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _223 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_223 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _224 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_11916), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_224) {
@@ -3828,14 +3828,14 @@ static int16_t exp8_OC_74(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _242;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _225 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_225 != ((uint8_t)0))&1)))&1))));
   _226 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -3890,27 +3890,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _238 = *(volatile uint8_t*)(&taken);
   _239 = *(volatile uint8_t*)(&taken);
   _240 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_86(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_87(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _241 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_241 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _242 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_1818), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -3967,7 +3967,7 @@ static int16_t __cfl_mult8_OC_86(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _243 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _244 = taken;
@@ -3985,16 +3985,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _245 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_245 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _246 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_11620), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_246) {
@@ -4036,13 +4036,13 @@ static int16_t __cfl_mult8_OC_87(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_t
   uint32_t llvm_cbe_inc_2e_i;
   bool _250;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _247 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _248 = taken;
@@ -4060,16 +4060,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _249 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_249 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _250 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_8819), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_250) {
@@ -4154,14 +4154,14 @@ static int16_t exp8_OC_73(int16_t llvm_cbe_base, int16_t llvm_cbe_exponent, int1
   uint16_t llvm_cbe_escaping_val18_2e_i_2e_i;
   bool _268;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _251 = taken;
   taken = (((uint8_t)(bool)((((((llvm_cbe_base != ((uint16_t)0))&1)) & (((_251 != ((uint8_t)0))&1)))&1))));
   _252 = ((uint8_t*)(&llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i));
@@ -4216,27 +4216,27 @@ llvm_cbe_for_2e_body_2e_i_2e_i:
   _264 = *(volatile uint8_t*)(&taken);
   _265 = *(volatile uint8_t*)(&taken);
   _266 = *(volatile uint8_t*)(&taken);
-#line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 187 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_112(llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
   llvm_cbe_result_2e_1_2e_i_2e_i_2e_i = llvm_select_u16(((((llvm_and_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1)) == ((uint16_t)0))&1)), llvm_cbe_escaping_val4_2e_i_2e_i, llvm_cbe_call_2e_i_2e_i_2e_i);
   llvm_cbe_result_2e_1_2e_loc_2e_i_2e_i = llvm_cbe_result_2e_1_2e_i_2e_i_2e_i;
-#line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 189 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_i_2e_i_2e_i = llvm_ashr_u16(llvm_cbe_escaping_val2_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shr_2e_loc_2e_i_2e_i = llvm_cbe_shr_2e_i_2e_i_2e_i;
-#line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 190 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_i_2e_i_2e_i =  /*tail*/ __cfl_mult8_OC_113(llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_escaping_val6_2e_i_2e_i, llvm_cbe_gen);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_call11_2e_loc_2e_i_2e_i = llvm_cbe_call11_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i_2e_i_2e_i = llvm_add_u32(llvm_cbe_escaping_val_2e_i_2e_i, 1);
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_loc_2e_i_2e_i = llvm_cbe_inc_2e_i_2e_i_2e_i;
-#line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 185 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 188 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_exitcond_2e_loc_2e_i_2e_i = (((((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))) & 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _267 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val18_2e_i_2e_i = llvm_select_u16((((_267 == ((uint8_t)0))&1)), llvm_cbe_last_valid17_2e_i_2e_i, llvm_cbe_result_2e_1_2e_i_2e_i_2e_i);
   _268 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i), (&loop_cfl_glob_if_OC_end8_OC_split__cfl_loop_exp8_OC_1421), (((llvm_cbe_inc_2e_i_2e_i_2e_i == 16u)&1))))&1);
@@ -4293,7 +4293,7 @@ static int16_t __cfl_mult8_OC_112(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _269 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _270 = taken;
@@ -4311,16 +4311,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _271 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_271 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _272 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_12023), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_272) {
@@ -4362,13 +4362,13 @@ static int16_t __cfl_mult8_OC_113(int16_t llvm_cbe_a, int16_t llvm_cbe_b, int16_
   uint32_t llvm_cbe_inc_2e_i;
   bool _276;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   ;
   ;
   ;
   ;
   ;
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _273 = ((uint8_t*)(&llvm_cbe_loop_cfl_count_2e_i));
   llvm_cbe_loop_cfl_count_2e_i = 0;
   _274 = taken;
@@ -4386,16 +4386,16 @@ llvm_cbe_for_2e_body_2e_i:
   llvm_cbe_i_2e_05_2e_i = llvm_cbe_i_2e_05_2e_i__PHI_TEMPORARY;
   llvm_cbe_product_2e_04_2e_i = llvm_cbe_product_2e_04_2e_i__PHI_TEMPORARY;
   llvm_cbe_last_valid_2e_i = llvm_cbe_last_valid_2e_i__PHI_TEMPORARY;
-#line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 165 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_spec_2e_select_2e_i = llvm_xor_u16((llvm_select_u16(((((llvm_and_u16(llvm_cbe_b_2e_addr_2e_06_2e_i, 1)) == ((uint16_t)0))&1)), 0, llvm_cbe_a_2e_addr_2e_07_2e_i)), llvm_cbe_product_2e_04_2e_i);
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   _275 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val_2e_i = llvm_select_u16((((_275 == ((uint8_t)0))&1)), llvm_cbe_last_valid_2e_i, llvm_cbe_spec_2e_select_2e_i);
-#line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 167 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_shl_2e_i = llvm_shl_u16(llvm_cbe_a_2e_addr_2e_07_2e_i, 1);
-#line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
-#line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 168 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 170 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
+// #line 163 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/loki91.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_i_2e_05_2e_i, 1);
   _276 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i), (&loop_cfl_glob_for_OC_body__cfl_loop_mult8_OC_11722), (((llvm_cbe_inc_2e_i == 16u)&1))))&1);
   if (_276) {

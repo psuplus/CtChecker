@@ -16,7 +16,16 @@
   "source": [
     {
       "type": "variable",
-      "name": "promoted_stack_var_main_0",
+      "name": "in_key",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "type": "variable",
+      "name": "in",
       "index": -1,
       "l": {
         "secret": "private"
@@ -30,7 +39,16 @@
   "ptr_whitelist": [
     {
       "type": "variable",
-      "name": "promoted_stack_var_main_0",
+      "name": "in_key",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "type": "variable",
+      "name": "in",
       "index": -1,
       "l": {
         "secret": "private"

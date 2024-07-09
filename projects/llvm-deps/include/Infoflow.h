@@ -569,6 +569,7 @@ private:
   void constrainPHINode(const PHINode &, Flows &);
   void constrainSelectInst(const SelectInst &, Flows &);
   void constrainShuffleVectorInst(const ShuffleVectorInst &, Flows &);
+  void constrainConstantExpr(const Instruction &, const ConstantExpr &, Flows &);
   void constrainStoreInst(const StoreInst &, Flows &);
   void constrainTerminatorInst(const TerminatorInst &, bool callees, Flows &);
   void constrainUnaryInstruction(const UnaryInstruction &, Flows &);

@@ -120,19 +120,19 @@ static void __main(void) {
 
   ;
   ;
-#line 176 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 176 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_call =  /*tail*/ read(0, ((uint8_t*)(&in_key)), 12);
-#line 177 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 177 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_call1 =  /*tail*/ read(0, ((uint8_t*)(&in)), 12);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 179 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 179 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   twy_key_OC_15((&llvm_cbe_gc));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 180 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 180 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   encrypt_OC_16((&llvm_cbe_gc));
-#line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 181 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_call2 =  /*tail*/ write(1, ((uint8_t*)(&in)), 12);
 }
 
@@ -143,29 +143,29 @@ static void twy_key_OC_15(struct l_struct_struct_OC_twy_ctx* llvm_cbe_c) {
   uint32_t _2;
   uint32_t _3;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
   ;
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _1 = *((&in_key.array[((int64_t)0)]));
   *((&llvm_cbe_c->field0.array[((int64_t)0)])) = _1;
   llvm_cbe_arrayidx2 = (&llvm_cbe_c->field1.array[((int64_t)0)]);
   *llvm_cbe_arrayidx2 = _1;
-#line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 134 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _2 = *((&in_key.array[((int64_t)1)]));
   *((&llvm_cbe_c->field0.array[((int64_t)1)])) = _2;
   *((&llvm_cbe_c->field1.array[((int64_t)1)])) = _2;
-#line 135 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 135 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _3 = *((&in_key.array[((int64_t)2)]));
   *((&llvm_cbe_c->field0.array[((int64_t)2)])) = _3;
   *((&llvm_cbe_c->field1.array[((int64_t)2)])) = _3;
-#line 136 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 136 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ theta_OC_17(llvm_cbe_arrayidx2);
-#line 137 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 137 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ mu_OC_18(llvm_cbe_arrayidx2);
-#line 138 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 138 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ rndcon_gen_OC_19(((&llvm_cbe_c->field2.array[((int64_t)0)])));
-#line 139 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 139 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ rndcon_gen_OC_20(((&llvm_cbe_c->field3.array[((int64_t)0)])));
 }
 
@@ -196,7 +196,7 @@ static void encrypt_OC_16(struct l_struct_struct_OC_twy_ctx* llvm_cbe_c) {
   uint32_t _18;
   uint32_t _19;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
   ;
   ;
@@ -210,30 +210,30 @@ static void encrypt_OC_16(struct l_struct_struct_OC_twy_ctx* llvm_cbe_c) {
 
   do {     /* Syntactic loop 'for.body.i' to make GCC happy */
 llvm_cbe_for_2e_body_2e_i:
-#line 98 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 98 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_indvars_2e_iv_2e_i = llvm_cbe_indvars_2e_iv_2e_i__PHI_TEMPORARY;
   _5 = _5__PHI_TEMPORARY;
-#line 100 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 100 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_arrayidx2_2e_i = (&llvm_cbe_c->field2.array[((int64_t)llvm_cbe_indvars_2e_iv_2e_i)]);
   _6 = *llvm_cbe_arrayidx2_2e_i;
   _7 = *((&in.array[((int64_t)0)]));
   *((&in.array[((int64_t)0)])) = (((_6 << 16) ^ _5) ^ _7);
-#line 101 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 101 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _8 = *llvm_cbe_arrayidx62_2e_i;
   _9 = *((&in.array[((int64_t)1)]));
   *((&in.array[((int64_t)1)])) = (_9 ^ _8);
-#line 102 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 102 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _10 = *llvm_cbe_arrayidx103_2e_i;
   _11 = *llvm_cbe_arrayidx2_2e_i;
   _12 = *((&in.array[((int64_t)2)]));
   *((&in.array[((int64_t)2)])) = ((_11 ^ _10) ^ _12);
-#line 103 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 103 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ rho_OC_21();
-#line 98 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 98 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_i = llvm_add_u64(llvm_cbe_indvars_2e_iv_2e_i, 1);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _13 = *llvm_cbe_arrayidx;
-#line 98 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 98 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   if ((((llvm_cbe_indvars_2e_iv_2e_next_2e_i == UINT64_C(11))&1))) {
     goto llvm_cbe_loop_encrypt_2e_16_2e_exit;
   } else {
@@ -244,33 +244,33 @@ llvm_cbe_for_2e_body_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body.i' */
 llvm_cbe_loop_encrypt_2e_16_2e_exit:
-#line 106 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 106 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _14 = *((&llvm_cbe_c->field2.array[((int64_t)11)]));
   _15 = *((&in.array[((int64_t)0)]));
   *((&in.array[((int64_t)0)])) = (((_14 << 16) ^ _13) ^ _15);
-#line 107 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 107 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _16 = *llvm_cbe_arrayidx62_2e_i;
   _17 = *((&in.array[((int64_t)1)]));
   *((&in.array[((int64_t)1)])) = (_17 ^ _16);
-#line 108 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 108 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _18 = *llvm_cbe_arrayidx103_2e_i;
   _19 = *((&in.array[((int64_t)2)]));
   *((&in.array[((int64_t)2)])) = ((_18 ^ _14) ^ _19);
-#line 109 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 109 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ theta_OC_22();
 }
 
 
 static void rho_OC_21(void) {
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 78 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 78 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ theta_OC_23();
-#line 79 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 79 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ pi_1_OC_24();
-#line 80 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 80 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ gamma_OC_25();
-#line 81 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 81 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
    /*tail*/ pi_2_OC_26();
 }
 
@@ -292,9 +292,9 @@ static void theta_OC_22(void) {
   uint32_t llvm_cbe_shr67;
   uint32_t llvm_cbe_shl70;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _20 = *((&in.array[((int64_t)0)]));
   llvm_cbe_shr = llvm_ashr_u32(_20, 16);
   _21 = *((&in.array[((int64_t)1)]));
@@ -302,35 +302,35 @@ static void theta_OC_22(void) {
   llvm_cbe_shr5 = llvm_ashr_u32(_21, 16);
   _22 = *((&in.array[((int64_t)2)]));
   llvm_cbe_shl8 = _22 << 16;
-#line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr11 = llvm_ashr_u32(_21, 24);
   llvm_cbe_shl14 = _22 << 8;
-#line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr23 = llvm_ashr_u32(_22, 16);
   llvm_cbe_shl26 = _20 << 16;
   llvm_cbe_shr29 = llvm_ashr_u32(_22, 24);
   llvm_cbe_shl32 = _20 << 8;
-#line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr67 = llvm_ashr_u32(_20, 24);
   llvm_cbe_shl70 = _21 << 8;
-#line 57 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 57 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 60 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 60 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *((&in.array[((int64_t)0)])) = ((((((((((((llvm_cbe_shr ^ _20) ^ (_20 << 24)) ^ llvm_cbe_shl26) ^ llvm_cbe_shl32) ^ llvm_cbe_shl) ^ llvm_cbe_shr5) ^ llvm_cbe_shr11) ^ llvm_cbe_shl8) ^ llvm_cbe_shl14) ^ (llvm_ashr_u32(_22, 8))) ^ llvm_cbe_shr23) ^ llvm_cbe_shr29);
   *((&in.array[((int64_t)1)])) = ((((((((((((llvm_cbe_shl26 ^ _21) ^ llvm_cbe_shl32) ^ (llvm_ashr_u32(_20, 8))) ^ llvm_cbe_shr) ^ llvm_cbe_shr67) ^ llvm_cbe_shr5) ^ (_21 << 24)) ^ llvm_cbe_shl) ^ llvm_cbe_shl70) ^ llvm_cbe_shl8) ^ llvm_cbe_shr23) ^ llvm_cbe_shr29);
   *((&in.array[((int64_t)2)])) = ((((((((((((llvm_cbe_shr ^ llvm_cbe_shl26) ^ llvm_cbe_shr67) ^ _22) ^ llvm_cbe_shl) ^ llvm_cbe_shl70) ^ (llvm_ashr_u32(_21, 8))) ^ llvm_cbe_shr5) ^ llvm_cbe_shr11) ^ llvm_cbe_shr23) ^ (_22 << 24)) ^ llvm_cbe_shl8) ^ llvm_cbe_shl14);
@@ -354,9 +354,9 @@ static void theta_OC_23(void) {
   uint32_t llvm_cbe_shr67;
   uint32_t llvm_cbe_shl70;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _23 = *((&in.array[((int64_t)0)]));
   llvm_cbe_shr = llvm_ashr_u32(_23, 16);
   _24 = *((&in.array[((int64_t)1)]));
@@ -364,35 +364,35 @@ static void theta_OC_23(void) {
   llvm_cbe_shr5 = llvm_ashr_u32(_24, 16);
   _25 = *((&in.array[((int64_t)2)]));
   llvm_cbe_shl8 = _25 << 16;
-#line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr11 = llvm_ashr_u32(_24, 24);
   llvm_cbe_shl14 = _25 << 8;
-#line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr23 = llvm_ashr_u32(_25, 16);
   llvm_cbe_shl26 = _23 << 16;
   llvm_cbe_shr29 = llvm_ashr_u32(_25, 24);
   llvm_cbe_shl32 = _23 << 8;
-#line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr67 = llvm_ashr_u32(_23, 24);
   llvm_cbe_shl70 = _24 << 8;
-#line 57 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 57 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 60 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 60 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *((&in.array[((int64_t)0)])) = ((((((((((((llvm_cbe_shr ^ _23) ^ (_23 << 24)) ^ llvm_cbe_shl26) ^ llvm_cbe_shl32) ^ llvm_cbe_shl) ^ llvm_cbe_shr5) ^ llvm_cbe_shr11) ^ llvm_cbe_shl8) ^ llvm_cbe_shl14) ^ (llvm_ashr_u32(_25, 8))) ^ llvm_cbe_shr23) ^ llvm_cbe_shr29);
   *((&in.array[((int64_t)1)])) = ((((((((((((llvm_cbe_shl26 ^ _24) ^ llvm_cbe_shl32) ^ (llvm_ashr_u32(_23, 8))) ^ llvm_cbe_shr) ^ llvm_cbe_shr67) ^ llvm_cbe_shr5) ^ (_24 << 24)) ^ llvm_cbe_shl) ^ llvm_cbe_shl70) ^ llvm_cbe_shl8) ^ llvm_cbe_shr23) ^ llvm_cbe_shr29);
   *((&in.array[((int64_t)2)])) = ((((((((((((llvm_cbe_shr ^ llvm_cbe_shl26) ^ llvm_cbe_shr67) ^ _25) ^ llvm_cbe_shl) ^ llvm_cbe_shl70) ^ (llvm_ashr_u32(_24, 8))) ^ llvm_cbe_shr5) ^ llvm_cbe_shr11) ^ llvm_cbe_shr23) ^ (_25 << 24)) ^ llvm_cbe_shl8) ^ llvm_cbe_shl14);
@@ -403,12 +403,12 @@ static void pi_1_OC_24(void) {
   uint32_t _26;
   uint32_t _27;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 67 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _26 = *((&in.array[((int64_t)0)]));
   *((&in.array[((int64_t)0)])) = ((llvm_ashr_u32(_26, 10)) ^ (_26 << 22));
-#line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 68 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _27 = *((&in.array[((int64_t)2)]));
   *((&in.array[((int64_t)2)])) = ((_27 << 1) ^ (llvm_ashr_u32(_27, 31)));
 }
@@ -419,21 +419,21 @@ static void gamma_OC_25(void) {
   uint32_t _29;
   uint32_t _30;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 46 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 46 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _28 = *((&in.array[((int64_t)0)]));
   _29 = *((&in.array[((int64_t)1)]));
   _30 = *((&in.array[((int64_t)2)]));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 47 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 47 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 48 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 48 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 49 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 49 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *((&in.array[((int64_t)0)])) = ((_29 | (~(_30))) ^ _28);
   *((&in.array[((int64_t)1)])) = ((_30 | (~(_28))) ^ _29);
   *((&in.array[((int64_t)2)])) = (_30 ^ (_28 | (~(_29))));
@@ -444,12 +444,12 @@ static void pi_2_OC_26(void) {
   uint32_t _31;
   uint32_t _32;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 72 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _31 = *((&in.array[((int64_t)0)]));
   *((&in.array[((int64_t)0)])) = ((_31 << 1) ^ (llvm_ashr_u32(_31, 31)));
-#line 73 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 73 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _32 = *((&in.array[((int64_t)2)]));
   *((&in.array[((int64_t)2)])) = ((llvm_ashr_u32(_32, 10)) ^ (_32 << 22));
 }
@@ -474,9 +474,9 @@ static void theta_OC_17(uint32_t* llvm_cbe_a) {
   uint32_t llvm_cbe_shr67;
   uint32_t llvm_cbe_shl70;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _33 = *llvm_cbe_a;
   llvm_cbe_shr = llvm_ashr_u32(_33, 16);
   llvm_cbe_arrayidx2 = (&llvm_cbe_a[((int64_t)1)]);
@@ -486,35 +486,35 @@ static void theta_OC_17(uint32_t* llvm_cbe_a) {
   llvm_cbe_arrayidx7 = (&llvm_cbe_a[((int64_t)2)]);
   _35 = *llvm_cbe_arrayidx7;
   llvm_cbe_shl8 = _35 << 16;
-#line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr11 = llvm_ashr_u32(_34, 24);
   llvm_cbe_shl14 = _35 << 8;
-#line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr23 = llvm_ashr_u32(_35, 16);
   llvm_cbe_shl26 = _33 << 16;
   llvm_cbe_shr29 = llvm_ashr_u32(_35, 24);
   llvm_cbe_shl32 = _33 << 8;
-#line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 54 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 55 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 56 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr67 = llvm_ashr_u32(_33, 24);
   llvm_cbe_shl70 = _34 << 8;
-#line 57 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 57 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 58 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 59 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 60 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 60 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 61 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 62 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
-#line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 63 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *llvm_cbe_a = ((((((((((((llvm_cbe_shr ^ _33) ^ (_33 << 24)) ^ llvm_cbe_shl26) ^ llvm_cbe_shl32) ^ llvm_cbe_shl) ^ llvm_cbe_shr5) ^ llvm_cbe_shr11) ^ llvm_cbe_shl8) ^ llvm_cbe_shl14) ^ (llvm_ashr_u32(_35, 8))) ^ llvm_cbe_shr23) ^ llvm_cbe_shr29);
   *llvm_cbe_arrayidx2 = ((((((((((((llvm_cbe_shl26 ^ _34) ^ llvm_cbe_shl32) ^ (llvm_ashr_u32(_33, 8))) ^ llvm_cbe_shr) ^ llvm_cbe_shr67) ^ llvm_cbe_shr5) ^ (_34 << 24)) ^ llvm_cbe_shl) ^ llvm_cbe_shl70) ^ llvm_cbe_shl8) ^ llvm_cbe_shr23) ^ llvm_cbe_shr29);
   *llvm_cbe_arrayidx7 = ((((((((((((llvm_cbe_shr ^ llvm_cbe_shl26) ^ llvm_cbe_shr67) ^ _35) ^ llvm_cbe_shl) ^ llvm_cbe_shl70) ^ (llvm_ashr_u32(_34, 8))) ^ llvm_cbe_shr5) ^ llvm_cbe_shr11) ^ llvm_cbe_shr23) ^ (_35 << 24)) ^ llvm_cbe_shl8) ^ llvm_cbe_shl14);
@@ -546,7 +546,7 @@ static void mu_OC_18(uint32_t* llvm_cbe_a) {
   uint32_t _38;
   uint32_t llvm_cbe_inc_2e_i_2e_1;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
   ;
   ;
@@ -554,7 +554,7 @@ static void mu_OC_18(uint32_t* llvm_cbe_a) {
   ;
   llvm_cbe_arrayidx10 = (&llvm_cbe_a[((int64_t)1)]);
   llvm_cbe_arrayidx17 = (&llvm_cbe_a[((int64_t)2)]);
-#line 39 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 39 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_a_2e_promoted = *llvm_cbe_a;
   llvm_cbe_arrayidx10_2e_promoted = *llvm_cbe_arrayidx10;
   llvm_cbe_arrayidx17_2e_promoted = *llvm_cbe_arrayidx17;
@@ -569,29 +569,29 @@ static void mu_OC_18(uint32_t* llvm_cbe_a) {
 
   do {     /* Syntactic loop 'for.body.i' to make GCC happy */
 llvm_cbe_for_2e_body_2e_i:
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_shr2813_2e_i = llvm_cbe_shr2813_2e_i__PHI_TEMPORARY;
   llvm_cbe_shr2612_2e_i = llvm_cbe_shr2612_2e_i__PHI_TEMPORARY;
   llvm_cbe_shr11_2e_i = llvm_cbe_shr11_2e_i__PHI_TEMPORARY;
-#line 33 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 33 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_i_2e_010_2e_i = llvm_cbe_i_2e_010_2e_i__PHI_TEMPORARY;
   llvm_cbe_b_2e_sroa_2e_0_2e_09_2e_i = llvm_cbe_b_2e_sroa_2e_0_2e_09_2e_i__PHI_TEMPORARY;
   llvm_cbe_b_2e_sroa_2e_5_2e_08_2e_i = llvm_cbe_b_2e_sroa_2e_5_2e_08_2e_i__PHI_TEMPORARY;
   llvm_cbe_b_2e_sroa_2e_11_2e_07_2e_i = llvm_cbe_b_2e_sroa_2e_11_2e_07_2e_i__PHI_TEMPORARY;
-#line 35 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 36 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 37 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 38 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 39 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 35 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 36 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 35 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 36 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 37 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 38 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 39 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 35 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 36 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _36 = (((llvm_cbe_b_2e_sroa_2e_11_2e_07_2e_i << 1) | (llvm_cbe_shr11_2e_i & 1)) << 1) | ((llvm_lshr_u32(llvm_cbe_shr11_2e_i, 1)) & 1);
-#line 37 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 37 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _37 = (((llvm_cbe_b_2e_sroa_2e_5_2e_08_2e_i << 1) | (llvm_cbe_shr2612_2e_i & 1)) << 1) | ((llvm_lshr_u32(llvm_cbe_shr2612_2e_i, 1)) & 1);
-#line 38 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 38 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   _38 = (((llvm_cbe_b_2e_sroa_2e_0_2e_09_2e_i << 1) | (llvm_cbe_shr2813_2e_i & 1)) << 1) | ((llvm_lshr_u32(llvm_cbe_shr2813_2e_i, 1)) & 1);
-#line 39 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
-#line 33 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 39 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 33 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   llvm_cbe_inc_2e_i_2e_1 = llvm_add_u32(llvm_cbe_i_2e_010_2e_i, 2);
   if ((((llvm_cbe_inc_2e_i_2e_1 == 32u)&1))) {
     goto llvm_cbe_loop_mu_2e_18_2e_exit;
@@ -608,7 +608,7 @@ llvm_cbe_for_2e_body_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body.i' */
 llvm_cbe_loop_mu_2e_18_2e_exit:
-#line 41 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 41 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *llvm_cbe_a = _38;
   *llvm_cbe_arrayidx10 = _37;
   *llvm_cbe_arrayidx17 = _36;
@@ -616,11 +616,11 @@ llvm_cbe_loop_mu_2e_18_2e_exit:
 
 
 static void rndcon_gen_OC_19(uint32_t* llvm_cbe_rtab) {
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
   ;
   ;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *llvm_cbe_rtab = 2827;
   *((&llvm_cbe_rtab[((int64_t)1)])) = 5654;
   *((&llvm_cbe_rtab[((int64_t)2)])) = 11308;
@@ -637,11 +637,11 @@ static void rndcon_gen_OC_19(uint32_t* llvm_cbe_rtab) {
 
 
 static void rndcon_gen_OC_20(uint32_t* llvm_cbe_rtab) {
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   ;
   ;
   ;
-#line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
+// #line 89 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/appliedCryp/3way.c"
   *llvm_cbe_rtab = 45489;
   *((&llvm_cbe_rtab[((int64_t)1)])) = 29555;
   *((&llvm_cbe_rtab[((int64_t)2)])) = 59110;

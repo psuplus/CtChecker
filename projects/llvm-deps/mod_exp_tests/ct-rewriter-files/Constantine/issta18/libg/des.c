@@ -157,18 +157,18 @@ static void __main(void) {
 
   ;
   ;
-#line 1483 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1483 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 1484 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1484 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_call =  /*tail*/ read(0, ((&in_key.array[((int64_t)0)])), 24);
-#line 1485 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1485 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_call1 =  /*tail*/ read(0, ((&in.array[((int64_t)0)])), 64);
-#line 1486 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1486 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arraydecay = (&llvm_cbe_ctx.array[((int64_t)0)]);
   des_setkey_OC_1(llvm_cbe_arraydecay);
-#line 1487 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1487 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   des_ecb_crypt_OC_2(llvm_cbe_arraydecay);
-#line 1488 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1488 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_call5 = write(1, ((&out.array[((int64_t)0)])), 64);
 }
 
@@ -450,58 +450,58 @@ static void des_setkey_OC_1(struct l_struct_struct_OC__des_ctx* llvm_cbe_ctx) {
   __MSALIGN__(16) struct l_vector_4_uint32_t _48;
   __MSALIGN__(16) struct l_vector_4_uint32_t _49;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
-#line 645 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 645 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arraydecay = (&llvm_cbe_ctx->field0.array[((int64_t)0)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
   ;
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _1 = *((&in_key.array[((int64_t)0)]));
   llvm_cbe_conv_2e_i_2e_i = ((uint32_t)(uint8_t)_1);
   _2 = *((&in_key.array[((int64_t)1)]));
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _3 = *((&in_key.array[((int64_t)2)]));
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _4 = *((&in_key.array[((int64_t)3)]));
   llvm_cbe_or10_2e_i_2e_i = ((((((uint32_t)(uint8_t)_2)) << 16) | (llvm_cbe_conv_2e_i_2e_i << 24)) | ((((uint32_t)(uint8_t)_3)) << 8)) | (((uint32_t)(uint8_t)_4));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _5 = *((&in_key.array[((int64_t)4)]));
   _6 = *((&in_key.array[((int64_t)5)]));
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _7 = *((&in_key.array[((int64_t)6)]));
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _8 = *((&in_key.array[((int64_t)7)]));
   llvm_cbe_or10_2e_i265_2e_i = ((((((uint32_t)(uint8_t)_6)) << 16) | ((((uint32_t)(uint8_t)_5)) << 24)) | ((((uint32_t)(uint8_t)_7)) << 8)) | (((uint32_t)(uint8_t)_8));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 543 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 543 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and_2e_i = ((llvm_lshr_u32(llvm_cbe_or10_2e_i265_2e_i, 4)) ^ llvm_cbe_or10_2e_i_2e_i) & 252645135;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 543 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 543 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor3_2e_i = llvm_cbe_and_2e_i ^ llvm_cbe_or10_2e_i_2e_i;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 543 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 543 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
-#line 544 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 544 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor10_2e_i = (((llvm_cbe_and_2e_i << 4) ^ llvm_cbe_or10_2e_i265_2e_i) & -269488145) | (llvm_cbe_or10_2e_i_2e_i & 269488144);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 546 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 546 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor3_2e_i & 15))))]);
   _9 = ((uint8_t*)llvm_cbe_arrayidx_2e_i);
   llvm_cbe_and_2e_i1 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx_2e_i)) & 60;
@@ -538,7 +538,7 @@ llvm_cbe_for_2e_body_2e_i:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i__PHI_TEMPORARY;
   llvm_cbe_shl13_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i << 3;
-#line 547 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 547 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx17_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor3_2e_i, 8)) & 15))))]);
   _11 = ((uint8_t*)llvm_cbe_arrayidx17_2e_i);
   llvm_cbe_and_2e_i186 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx17_2e_i)) & 60;
@@ -575,7 +575,7 @@ llvm_cbe_for_2e_body_2e_i197:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit198:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i190 = llvm_cbe_res_2e_0_2e_lcssa_2e_i190__PHI_TEMPORARY;
   llvm_cbe_or_2e_i = (llvm_cbe_res_2e_0_2e_lcssa_2e_i190 << 2) | llvm_cbe_shl13_2e_i;
-#line 548 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 548 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx22_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor3_2e_i, 16)) & 15))))]);
   _13 = ((uint8_t*)llvm_cbe_arrayidx22_2e_i);
   llvm_cbe_and_2e_i173 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx22_2e_i)) & 60;
@@ -612,7 +612,7 @@ llvm_cbe_for_2e_body_2e_i184:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit185:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i177 = llvm_cbe_res_2e_0_2e_lcssa_2e_i177__PHI_TEMPORARY;
   llvm_cbe_or24_2e_i = llvm_cbe_or_2e_i | (llvm_cbe_res_2e_0_2e_lcssa_2e_i177 << 1);
-#line 549 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 549 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx28_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor3_2e_i, 24)) & 15))))]);
   _15 = ((uint8_t*)llvm_cbe_arrayidx28_2e_i);
   llvm_cbe_and_2e_i160 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx28_2e_i)) & 60;
@@ -649,7 +649,7 @@ llvm_cbe_for_2e_body_2e_i171:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit172:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i164 = llvm_cbe_res_2e_0_2e_lcssa_2e_i164__PHI_TEMPORARY;
   llvm_cbe_or29_2e_i = llvm_cbe_or24_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i164;
-#line 550 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 550 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx33_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor3_2e_i, 5)) & 15))))]);
   _17 = ((uint8_t*)llvm_cbe_arrayidx33_2e_i);
   llvm_cbe_and_2e_i147 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx33_2e_i)) & 60;
@@ -686,7 +686,7 @@ llvm_cbe_for_2e_body_2e_i158:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit159:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i151 = llvm_cbe_res_2e_0_2e_lcssa_2e_i151__PHI_TEMPORARY;
   llvm_cbe_or35_2e_i = llvm_cbe_or29_2e_i | (llvm_cbe_res_2e_0_2e_lcssa_2e_i151 << 7);
-#line 551 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 551 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx39_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor3_2e_i, 13)) & 15))))]);
   _19 = ((uint8_t*)llvm_cbe_arrayidx39_2e_i);
   llvm_cbe_and_2e_i134 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx39_2e_i)) & 60;
@@ -723,7 +723,7 @@ llvm_cbe_for_2e_body_2e_i145:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit146:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i138 = llvm_cbe_res_2e_0_2e_lcssa_2e_i138__PHI_TEMPORARY;
   llvm_cbe_or41_2e_i = llvm_cbe_or35_2e_i | (llvm_cbe_res_2e_0_2e_lcssa_2e_i138 << 6);
-#line 552 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 552 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx45_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor3_2e_i, 21)) & 15))))]);
   _21 = ((uint8_t*)llvm_cbe_arrayidx45_2e_i);
   llvm_cbe_and_2e_i121 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx45_2e_i)) & 60;
@@ -760,7 +760,7 @@ llvm_cbe_for_2e_body_2e_i132:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit133:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i125 = llvm_cbe_res_2e_0_2e_lcssa_2e_i125__PHI_TEMPORARY;
   llvm_cbe_or47_2e_i = llvm_cbe_or41_2e_i | (llvm_cbe_res_2e_0_2e_lcssa_2e_i125 << 5);
-#line 553 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 553 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx51_2e_i = (&leftkey_swap.array[((int64_t)(((uint64_t)(uint32_t)(llvm_lshr_u32(llvm_cbe_conv_2e_i_2e_i, 5)))))]);
   _23 = ((uint8_t*)llvm_cbe_arrayidx51_2e_i);
   llvm_cbe_and_2e_i108 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx51_2e_i)) & 60;
@@ -796,13 +796,13 @@ llvm_cbe_for_2e_body_2e_i119:
   } while (1); /* end of syntactic loop 'for.body.i119' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit120:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i112 = llvm_cbe_res_2e_0_2e_lcssa_2e_i112__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 555 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 555 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and54_2e_i = (llvm_cbe_or47_2e_i | (llvm_cbe_res_2e_0_2e_lcssa_2e_i112 << 4)) & 268435455;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 557 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 557 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx58_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 1)) & 15))))]);
   _25 = ((uint8_t*)llvm_cbe_arrayidx58_2e_i);
   llvm_cbe_and_2e_i95 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx58_2e_i)) & 60;
@@ -842,7 +842,7 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit107_2e_loopexit:
 
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit107:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i99 = llvm_cbe_res_2e_0_2e_lcssa_2e_i99__PHI_TEMPORARY;
-#line 558 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 558 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx63_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 9)) & 15))))]);
   _27 = ((uint8_t*)llvm_cbe_arrayidx63_2e_i);
   llvm_cbe_and_2e_i82 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx63_2e_i)) & 60;
@@ -883,7 +883,7 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit94_2e_loopexit:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit94:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i86 = llvm_cbe_res_2e_0_2e_lcssa_2e_i86__PHI_TEMPORARY;
   llvm_cbe_or65_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i86 | llvm_cbe_res_2e_0_2e_lcssa_2e_i99;
-#line 559 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 559 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx69_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 17)) & 15))))]);
   _29 = ((uint8_t*)llvm_cbe_arrayidx69_2e_i);
   llvm_cbe_and_2e_i69 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx69_2e_i)) & 60;
@@ -924,7 +924,7 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit81_2e_loopexit:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit81:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i73 = llvm_cbe_res_2e_0_2e_lcssa_2e_i73__PHI_TEMPORARY;
   llvm_cbe_or71_2e_i = llvm_cbe_or65_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i73;
-#line 560 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 560 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx75_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 25)) & 15))))]);
   _31 = ((uint8_t*)llvm_cbe_arrayidx75_2e_i);
   llvm_cbe_and_2e_i56 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx75_2e_i)) & 60;
@@ -961,7 +961,7 @@ llvm_cbe_for_2e_body_2e_i67:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit68:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i60 = llvm_cbe_res_2e_0_2e_lcssa_2e_i60__PHI_TEMPORARY;
   llvm_cbe_or76_2e_i = llvm_cbe_or71_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i60;
-#line 561 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 561 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx80_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 4)) & 15))))]);
   _33 = ((uint8_t*)llvm_cbe_arrayidx80_2e_i);
   llvm_cbe_and_2e_i43 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx80_2e_i)) & 60;
@@ -1002,7 +1002,7 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit55_2e_loopexit:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit55:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i47 = llvm_cbe_res_2e_0_2e_lcssa_2e_i47__PHI_TEMPORARY;
   llvm_cbe_or82_2e_i = llvm_cbe_or76_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i47;
-#line 562 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 562 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx86_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 12)) & 15))))]);
   _35 = ((uint8_t*)llvm_cbe_arrayidx86_2e_i);
   llvm_cbe_and_2e_i30 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx86_2e_i)) & 60;
@@ -1043,7 +1043,7 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit42_2e_loopexit:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit42:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i34 = llvm_cbe_res_2e_0_2e_lcssa_2e_i34__PHI_TEMPORARY;
   llvm_cbe_or88_2e_i = llvm_cbe_or82_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i34;
-#line 563 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 563 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx92_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor10_2e_i, 20)) & 15))))]);
   _37 = ((uint8_t*)llvm_cbe_arrayidx92_2e_i);
   llvm_cbe_and_2e_i17 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx92_2e_i)) & 60;
@@ -1084,7 +1084,7 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit29_2e_loopexit:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit29:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i21 = llvm_cbe_res_2e_0_2e_lcssa_2e_i21__PHI_TEMPORARY;
   llvm_cbe_or94_2e_i = llvm_cbe_or88_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i21;
-#line 564 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 564 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx98_2e_i = (&rightkey_swap.array[((int64_t)(((uint64_t)(uint32_t)(llvm_lshr_u32(llvm_cbe_xor10_2e_i, 28)))))]);
   _39 = ((uint8_t*)llvm_cbe_arrayidx98_2e_i);
   llvm_cbe_and_2e_i4 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx98_2e_i)) & 60;
@@ -1124,11 +1124,11 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit16_2e_loopexit:
 
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit16:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i8 = llvm_cbe_res_2e_0_2e_lcssa_2e_i8__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 566 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 566 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and101_2e_i = (llvm_cbe_or94_2e_i | llvm_cbe_res_2e_0_2e_lcssa_2e_i8) & 268435455;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
@@ -1142,120 +1142,120 @@ llvm_cbe_uint32_t_dfl_glob_load_2e_exit16:
 
   do {     /* Syntactic loop 'for.body.i.i.i' to make GCC happy */
 llvm_cbe_for_2e_body_2e_i_2e_i_2e_i:
-#line 568 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 568 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_indvars_2e_iv9_2e_i_2e_i = llvm_cbe_indvars_2e_iv9_2e_i_2e_i__PHI_TEMPORARY;
   llvm_cbe_right_2e_i_2e_04_2e_i_2e_i = llvm_cbe_right_2e_i_2e_04_2e_i_2e_i__PHI_TEMPORARY;
   llvm_cbe_left_2e_i_2e_03_2e_i_2e_i = llvm_cbe_left_2e_i_2e_03_2e_i_2e_i__PHI_TEMPORARY;
   llvm_cbe_subkey_2e_addr_2e_i_2e_02_2e_i_2e_i = llvm_cbe_subkey_2e_addr_2e_i_2e_02_2e_i_2e_i__PHI_TEMPORARY;
   llvm_cbe_index_2e_i_2e_i = llvm_cbe_index_2e_i_2e_i__PHI_TEMPORARY;
-#line 570 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 570 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _41 = *((&encrypt_rotate_tab.array[((int64_t)llvm_cbe_indvars_2e_iv9_2e_i_2e_i)]));
   llvm_cbe_conv_2e_i_2e_i_2e_i = ((uint32_t)(uint8_t)_41);
-#line 571 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 571 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_sub_2e_i_2e_i_2e_i = llvm_sub_u32(28, llvm_cbe_conv_2e_i_2e_i_2e_i);
   llvm_cbe_or109_2e_i_2e_i_2e_i = (llvm_lshr_u32(llvm_cbe_left_2e_i_2e_03_2e_i_2e_i, llvm_cbe_sub_2e_i_2e_i_2e_i)) | (llvm_cbe_left_2e_i_2e_03_2e_i_2e_i << llvm_cbe_conv_2e_i_2e_i_2e_i);
   llvm_cbe_and110_2e_i_2e_i_2e_i = llvm_cbe_or109_2e_i_2e_i_2e_i & 268435455;
-#line 572 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 573 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 572 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 573 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_or120_2e_i_2e_i_2e_i = (llvm_lshr_u32(llvm_cbe_right_2e_i_2e_04_2e_i_2e_i, llvm_cbe_sub_2e_i_2e_i_2e_i)) | (llvm_cbe_right_2e_i_2e_04_2e_i_2e_i << llvm_cbe_conv_2e_i_2e_i_2e_i);
   llvm_cbe_and121_2e_i_2e_i_2e_i = llvm_cbe_or120_2e_i_2e_i_2e_i & 268435455;
-#line 575 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 576 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 577 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 578 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 579 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 580 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 581 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 582 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 575 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 576 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 577 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 578 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 579 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 580 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 581 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 582 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_shl142_2e_i_2e_i_2e_i = llvm_cbe_or109_2e_i_2e_i_2e_i << 10;
-#line 583 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 584 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 585 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 586 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 587 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 588 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 589 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 583 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 584 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 585 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 586 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 587 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 588 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 589 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_shr163_2e_i_2e_i_2e_i = llvm_lshr_u32(llvm_cbe_and121_2e_i_2e_i_2e_i, 14);
-#line 590 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 591 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 592 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 593 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 590 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 591 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 592 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 593 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_shr174_2e_i_2e_i_2e_i = llvm_lshr_u32(llvm_cbe_and121_2e_i_2e_i_2e_i, 3);
-#line 594 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 595 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 596 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 576 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 577 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 578 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 579 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 580 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 581 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 582 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 583 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 584 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 585 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 586 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 587 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 588 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 589 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 590 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 591 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 592 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 593 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 594 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 595 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 596 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 575 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 645 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 575 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 594 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 595 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 596 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 576 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 577 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 578 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 579 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 580 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 581 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 582 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 583 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 584 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 585 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 586 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 587 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 588 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 589 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 590 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 591 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 592 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 593 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 594 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 595 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 596 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 575 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 645 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 575 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&llvm_cbe_ctx->field0.array[((int64_t)llvm_cbe_index_2e_i_2e_i)])) = (((((((((((((((((((((((llvm_cbe_or109_2e_i_2e_i_2e_i << 28) & 268435456) | (llvm_cbe_or120_2e_i_2e_i_2e_i & 256)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 4) & 603979776)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 14) & 134217728)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 18) & 34078720)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 6) & 16777216)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 9) & 2097152)) | ((llvm_lshr_u32(llvm_cbe_or109_2e_i_2e_i_2e_i, 1)) & 1048576)) | (llvm_cbe_shl142_2e_i_2e_i_2e_i & 262144)) | ((llvm_lshr_u32(llvm_cbe_or109_2e_i_2e_i_2e_i, 10)) & 65536)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 13)) & 8192)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 4)) & 4096)) | ((llvm_cbe_or120_2e_i_2e_i_2e_i << 6) & 2048)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 1)) & 1024)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 5)) & 32)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 10)) & 16)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 18)) & 4)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 26)) & 2)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 24)) & 1)) | ((llvm_cbe_and110_2e_i_2e_i_2e_i << 2) & 131072)) | (llvm_cbe_shr163_2e_i_2e_i_2e_i & 512)) | (llvm_cbe_shr174_2e_i_2e_i_2e_i & 8));
-#line 598 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 598 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_shl186_2e_i_2e_i_2e_i = llvm_cbe_or109_2e_i_2e_i_2e_i << 15;
-#line 599 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 600 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 601 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 602 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 603 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 604 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 605 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 606 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 607 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 608 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 609 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 610 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 611 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 612 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 613 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 614 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 615 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 616 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 617 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 618 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 619 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 599 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 600 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 601 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 602 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 603 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 604 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 605 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 606 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 607 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 608 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 609 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 610 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 611 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 612 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 613 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 614 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 615 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 616 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 617 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 618 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 619 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 598 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 599 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 600 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 601 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 602 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 603 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 604 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 605 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 606 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 607 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 608 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 609 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 610 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 611 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 612 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 613 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 614 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 615 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 616 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 617 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 618 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 619 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 599 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 600 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 601 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 602 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 603 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 604 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 605 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 606 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 607 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 608 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 609 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 610 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 611 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 612 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 613 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 614 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 615 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 616 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 617 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 618 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 619 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 598 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&llvm_cbe_subkey_2e_addr_2e_i_2e_02_2e_i_2e_i[((int64_t)1)])) = (((((((((((((((((((((((llvm_cbe_or109_2e_i_2e_i_2e_i << 17) & 268435456) | (llvm_cbe_or120_2e_i_2e_i_2e_i & 512)) | (llvm_cbe_shl186_2e_i_2e_i_2e_i & 536870912)) | (llvm_cbe_shl142_2e_i_2e_i_2e_i & 134217728)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 22) & 67108864)) | ((llvm_lshr_u32(llvm_cbe_or109_2e_i_2e_i_2e_i, 2)) & 33554432)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 16) & 2097152)) | ((llvm_cbe_or109_2e_i_2e_i_2e_i << 11) & 1048576)) | ((llvm_lshr_u32(llvm_cbe_or109_2e_i_2e_i_2e_i, 6)) & 262144)) | (llvm_cbe_shl186_2e_i_2e_i_2e_i & 131072)) | ((llvm_lshr_u32(llvm_cbe_or109_2e_i_2e_i_2e_i, 4)) & 65536)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 2)) & 8192)) | ((llvm_cbe_or120_2e_i_2e_i_2e_i << 8) & 4096)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 9)) & 1024)) | ((llvm_cbe_or120_2e_i_2e_i_2e_i << 7) & 256)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 7)) & 32)) | ((llvm_lshr_u32(llvm_cbe_or120_2e_i_2e_i_2e_i, 21)) & 2)) | ((llvm_cbe_and110_2e_i_2e_i_2e_i << 1) & 16777216)) | ((llvm_cbe_and110_2e_i_2e_i_2e_i << 3) & 524288)) | (llvm_cbe_shr163_2e_i_2e_i_2e_i & 2056)) | (llvm_cbe_shr174_2e_i_2e_i_2e_i & 17)) | ((llvm_cbe_and121_2e_i_2e_i_2e_i << 2) & 4));
-#line 568 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 568 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_indvars_2e_iv_2e_next10_2e_i_2e_i = llvm_add_u64(llvm_cbe_indvars_2e_iv9_2e_i_2e_i, 1);
   if ((((llvm_cbe_indvars_2e_iv_2e_next10_2e_i_2e_i == UINT64_C(16))&1))) {
     goto llvm_cbe_loop_des_setkey_2e_1_2e_1_2e_exit;
@@ -1270,7 +1270,7 @@ llvm_cbe_for_2e_body_2e_i_2e_i_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body.i.i.i' */
 llvm_cbe_loop_des_setkey_2e_1_2e_1_2e_exit:
-#line 650 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 650 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _42 = __UNALIGNED_LOAD__(struct l_vector_4_uint32_t, 4, (((__MSALIGN__(16) struct l_vector_4_uint32_t*)((&llvm_cbe_ctx->field0.array[((int64_t)28)])))));
   __UNALIGNED_LOAD__(struct l_vector_4_uint32_t, 4, (((__MSALIGN__(16) struct l_vector_4_uint32_t*)((&llvm_cbe_ctx->field1.array[((int64_t)0)]))))) = (llvm_ctor_u32x4((_42).vector[2], (_42).vector[3], (_42).vector[0], (_42).vector[1]));
   _43 = __UNALIGNED_LOAD__(struct l_vector_4_uint32_t, 4, (((__MSALIGN__(16) struct l_vector_4_uint32_t*)((&llvm_cbe_ctx->field0.array[((int64_t)24)])))));
@@ -3201,118 +3201,118 @@ static void des_ecb_crypt_OC_2(struct l_struct_struct_OC__des_ctx* llvm_cbe_ctx)
   uint32_t llvm_cbe_xor781;
   uint32_t llvm_cbe_xor783;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
   ;
-#line 669 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 669 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _50 = *((&in.array[((int64_t)0)]));
   _51 = *((&in.array[((int64_t)1)]));
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _52 = *((&in.array[((int64_t)2)]));
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _53 = *((&in.array[((int64_t)3)]));
   llvm_cbe_or10_2e_i = ((((((uint32_t)(uint8_t)_51)) << 16) | ((((uint32_t)(uint8_t)_50)) << 24)) | ((((uint32_t)(uint8_t)_52)) << 8)) | (((uint32_t)(uint8_t)_53));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _54 = *((&in.array[((int64_t)4)]));
   _55 = *((&in.array[((int64_t)5)]));
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _56 = *((&in.array[((int64_t)6)]));
-#line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 132 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 133 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _57 = *((&in.array[((int64_t)7)]));
   llvm_cbe_or10_2e_i818 = ((((((uint32_t)(uint8_t)_55)) << 16) | ((((uint32_t)(uint8_t)_54)) << 24)) | ((((uint32_t)(uint8_t)_56)) << 8)) | (((uint32_t)(uint8_t)_57));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and = (llvm_cbe_or10_2e_i818 ^ (llvm_lshr_u32(llvm_cbe_or10_2e_i, 4))) & 252645135;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor4 = llvm_cbe_and ^ llvm_cbe_or10_2e_i818;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor5 = (llvm_cbe_and << 4) ^ llvm_cbe_or10_2e_i;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and8 = (llvm_lshr_u32(llvm_cbe_xor5, 16)) ^ (llvm_cbe_xor4 & 65535);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor9 = llvm_cbe_and8 ^ llvm_cbe_xor4;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor11 = (llvm_cbe_and8 << 16) ^ llvm_cbe_xor5;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and14 = ((llvm_lshr_u32(llvm_cbe_xor9, 2)) ^ llvm_cbe_xor11) & 858993459;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor15 = llvm_cbe_and14 ^ llvm_cbe_xor11;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor17 = (llvm_cbe_and14 << 2) ^ llvm_cbe_xor9;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and20 = ((llvm_lshr_u32(llvm_cbe_xor17, 8)) ^ llvm_cbe_xor15) & 16711935;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor21 = llvm_cbe_and20 ^ llvm_cbe_xor15;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor23 = (llvm_cbe_and20 << 8) ^ llvm_cbe_xor17;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_shl24 = llvm_cbe_xor23 << 1;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and27 = (llvm_cbe_shl24 ^ llvm_cbe_xor21) & 2863311530u;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor28 = llvm_cbe_and27 ^ (llvm_cbe_shl24 | (llvm_lshr_u32(llvm_cbe_xor23, 31)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor29 = llvm_cbe_and27 ^ llvm_cbe_xor21;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 672 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_or32 = (llvm_cbe_xor29 << 1) | (llvm_lshr_u32(llvm_cbe_xor29, 31));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr = (&llvm_cbe_ctx->field0.array[((int64_t)1)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _58 = *((&llvm_cbe_ctx->field0.array[((int64_t)0)]));
   llvm_cbe_xor33 = llvm_cbe_xor28 ^ _58;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor33 & 63))))]);
   _59 = ((uint8_t*)llvm_cbe_arrayidx);
   llvm_cbe_and_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx)) & 60;
@@ -3348,9 +3348,9 @@ llvm_cbe_for_2e_body_2e_i:
   } while (1); /* end of syntactic loop 'for.body.i' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx39 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor33, 8)) & 63))))]);
   _61 = ((uint8_t*)llvm_cbe_arrayidx39);
   llvm_cbe_and_2e_i1639 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx39)) & 60;
@@ -3386,9 +3386,9 @@ llvm_cbe_for_2e_body_2e_i1650:
   } while (1); /* end of syntactic loop 'for.body.i1650' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1651:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1643 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1643__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx44 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor33, 16)) & 63))))]);
   _63 = ((uint8_t*)llvm_cbe_arrayidx44);
   llvm_cbe_and_2e_i1626 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx44)) & 60;
@@ -3424,9 +3424,9 @@ llvm_cbe_for_2e_body_2e_i1637:
   } while (1); /* end of syntactic loop 'for.body.i1637' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1638:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1630 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1630__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx49 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor33, 24)) & 63))))]);
   _65 = ((uint8_t*)llvm_cbe_arrayidx49);
   llvm_cbe_and_2e_i1613 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx49)) & 60;
@@ -3462,18 +3462,18 @@ llvm_cbe_for_2e_body_2e_i1624:
   } while (1); /* end of syntactic loop 'for.body.i1624' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1625:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1617 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1617__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr54 = (&llvm_cbe_ctx->field0.array[((int64_t)2)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _67 = *llvm_cbe_incdec_2e_ptr;
   llvm_cbe_xor55 = _67 ^ ((llvm_cbe_xor28 << 28) | (llvm_lshr_u32(llvm_cbe_xor28, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx58 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor55 & 63))))]);
   _68 = ((uint8_t*)llvm_cbe_arrayidx58);
   llvm_cbe_and_2e_i1600 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx58)) & 60;
@@ -3509,9 +3509,9 @@ llvm_cbe_for_2e_body_2e_i1611:
   } while (1); /* end of syntactic loop 'for.body.i1611' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1612:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1604 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1604__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx63 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor55, 8)) & 63))))]);
   _70 = ((uint8_t*)llvm_cbe_arrayidx63);
   llvm_cbe_and_2e_i1587 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx63)) & 60;
@@ -3547,9 +3547,9 @@ llvm_cbe_for_2e_body_2e_i1598:
   } while (1); /* end of syntactic loop 'for.body.i1598' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1599:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1591 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1591__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx68 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor55, 16)) & 63))))]);
   _72 = ((uint8_t*)llvm_cbe_arrayidx68);
   llvm_cbe_and_2e_i1574 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx68)) & 60;
@@ -3585,9 +3585,9 @@ llvm_cbe_for_2e_body_2e_i1585:
   } while (1); /* end of syntactic loop 'for.body.i1585' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1586:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1578 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1578__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx73 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor55, 24)) & 63))))]);
   _74 = ((uint8_t*)llvm_cbe_arrayidx73);
   llvm_cbe_and_2e_i1561 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx73)) & 60;
@@ -3624,18 +3624,18 @@ llvm_cbe_for_2e_body_2e_i1572:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1573:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1565 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1565__PHI_TEMPORARY;
   llvm_cbe_xor74 = (((((((llvm_cbe_res_2e_0_2e_lcssa_2e_i ^ llvm_cbe_or32) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1643) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1630) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1617) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1604) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1591) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1578) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1565;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr75 = (&llvm_cbe_ctx->field0.array[((int64_t)3)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _76 = *llvm_cbe_incdec_2e_ptr54;
   llvm_cbe_xor76 = llvm_cbe_xor74 ^ _76;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx79 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor76 & 63))))]);
   _77 = ((uint8_t*)llvm_cbe_arrayidx79);
   llvm_cbe_and_2e_i1548 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx79)) & 60;
@@ -3671,9 +3671,9 @@ llvm_cbe_for_2e_body_2e_i1559:
   } while (1); /* end of syntactic loop 'for.body.i1559' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1560:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1552 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1552__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx84 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor76, 8)) & 63))))]);
   _79 = ((uint8_t*)llvm_cbe_arrayidx84);
   llvm_cbe_and_2e_i1535 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx84)) & 60;
@@ -3709,9 +3709,9 @@ llvm_cbe_for_2e_body_2e_i1546:
   } while (1); /* end of syntactic loop 'for.body.i1546' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1547:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1539 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1539__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx89 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor76, 16)) & 63))))]);
   _81 = ((uint8_t*)llvm_cbe_arrayidx89);
   llvm_cbe_and_2e_i1522 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx89)) & 60;
@@ -3747,9 +3747,9 @@ llvm_cbe_for_2e_body_2e_i1533:
   } while (1); /* end of syntactic loop 'for.body.i1533' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1534:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1526 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1526__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx94 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor76, 24)) & 63))))]);
   _83 = ((uint8_t*)llvm_cbe_arrayidx94);
   llvm_cbe_and_2e_i1509 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx94)) & 60;
@@ -3785,18 +3785,18 @@ llvm_cbe_for_2e_body_2e_i1520:
   } while (1); /* end of syntactic loop 'for.body.i1520' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1521:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1513 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1513__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr99 = (&llvm_cbe_ctx->field0.array[((int64_t)4)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _85 = *llvm_cbe_incdec_2e_ptr75;
   llvm_cbe_xor100 = _85 ^ ((llvm_cbe_xor74 << 28) | (llvm_lshr_u32(llvm_cbe_xor74, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx103 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor100 & 63))))]);
   _86 = ((uint8_t*)llvm_cbe_arrayidx103);
   llvm_cbe_and_2e_i1496 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx103)) & 60;
@@ -3832,9 +3832,9 @@ llvm_cbe_for_2e_body_2e_i1507:
   } while (1); /* end of syntactic loop 'for.body.i1507' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1508:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1500 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1500__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx108 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor100, 8)) & 63))))]);
   _88 = ((uint8_t*)llvm_cbe_arrayidx108);
   llvm_cbe_and_2e_i1483 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx108)) & 60;
@@ -3870,9 +3870,9 @@ llvm_cbe_for_2e_body_2e_i1494:
   } while (1); /* end of syntactic loop 'for.body.i1494' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1495:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1487 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1487__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx113 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor100, 16)) & 63))))]);
   _90 = ((uint8_t*)llvm_cbe_arrayidx113);
   llvm_cbe_and_2e_i1470 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx113)) & 60;
@@ -3908,9 +3908,9 @@ llvm_cbe_for_2e_body_2e_i1481:
   } while (1); /* end of syntactic loop 'for.body.i1481' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1482:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1474 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1474__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 674 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx118 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor100, 24)) & 63))))]);
   _92 = ((uint8_t*)llvm_cbe_arrayidx118);
   llvm_cbe_and_2e_i1457 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx118)) & 60;
@@ -3947,18 +3947,18 @@ llvm_cbe_for_2e_body_2e_i1468:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1469:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1461 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1461__PHI_TEMPORARY;
   llvm_cbe_xor119 = (((((((llvm_cbe_res_2e_0_2e_lcssa_2e_i1552 ^ llvm_cbe_xor28) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1539) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1526) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1513) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1500) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1487) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1474) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1461;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr120 = (&llvm_cbe_ctx->field0.array[((int64_t)5)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _94 = *llvm_cbe_incdec_2e_ptr99;
   llvm_cbe_xor121 = llvm_cbe_xor119 ^ _94;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx124 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor121 & 63))))]);
   _95 = ((uint8_t*)llvm_cbe_arrayidx124);
   llvm_cbe_and_2e_i1444 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx124)) & 60;
@@ -3994,9 +3994,9 @@ llvm_cbe_for_2e_body_2e_i1455:
   } while (1); /* end of syntactic loop 'for.body.i1455' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1456:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1448 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1448__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx129 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor121, 8)) & 63))))]);
   _97 = ((uint8_t*)llvm_cbe_arrayidx129);
   llvm_cbe_and_2e_i1431 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx129)) & 60;
@@ -4032,9 +4032,9 @@ llvm_cbe_for_2e_body_2e_i1442:
   } while (1); /* end of syntactic loop 'for.body.i1442' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1443:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1435 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1435__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx134 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor121, 16)) & 63))))]);
   _99 = ((uint8_t*)llvm_cbe_arrayidx134);
   llvm_cbe_and_2e_i1418 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx134)) & 60;
@@ -4070,9 +4070,9 @@ llvm_cbe_for_2e_body_2e_i1429:
   } while (1); /* end of syntactic loop 'for.body.i1429' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1430:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1422 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1422__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx139 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor121, 24)) & 63))))]);
   _101 = ((uint8_t*)llvm_cbe_arrayidx139);
   llvm_cbe_and_2e_i1405 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx139)) & 60;
@@ -4108,18 +4108,18 @@ llvm_cbe_for_2e_body_2e_i1416:
   } while (1); /* end of syntactic loop 'for.body.i1416' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1417:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1409 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1409__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr144 = (&llvm_cbe_ctx->field0.array[((int64_t)6)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _103 = *llvm_cbe_incdec_2e_ptr120;
   llvm_cbe_xor145 = _103 ^ ((llvm_cbe_xor119 << 28) | (llvm_lshr_u32(llvm_cbe_xor119, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx148 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor145 & 63))))]);
   _104 = ((uint8_t*)llvm_cbe_arrayidx148);
   llvm_cbe_and_2e_i1392 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx148)) & 60;
@@ -4155,9 +4155,9 @@ llvm_cbe_for_2e_body_2e_i1403:
   } while (1); /* end of syntactic loop 'for.body.i1403' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1404:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1396 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1396__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx153 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor145, 8)) & 63))))]);
   _106 = ((uint8_t*)llvm_cbe_arrayidx153);
   llvm_cbe_and_2e_i1379 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx153)) & 60;
@@ -4193,9 +4193,9 @@ llvm_cbe_for_2e_body_2e_i1390:
   } while (1); /* end of syntactic loop 'for.body.i1390' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1391:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1383 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1383__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx158 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor145, 16)) & 63))))]);
   _108 = ((uint8_t*)llvm_cbe_arrayidx158);
   llvm_cbe_and_2e_i1366 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx158)) & 60;
@@ -4231,9 +4231,9 @@ llvm_cbe_for_2e_body_2e_i1377:
   } while (1); /* end of syntactic loop 'for.body.i1377' */
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1378:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1370 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1370__PHI_TEMPORARY;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx163 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor145, 24)) & 63))))]);
   _110 = ((uint8_t*)llvm_cbe_arrayidx163);
   llvm_cbe_and_2e_i1353 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx163)) & 60;
@@ -4270,18 +4270,18 @@ llvm_cbe_for_2e_body_2e_i1364:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1365:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1357 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1357__PHI_TEMPORARY;
   llvm_cbe_xor164 = (((((((llvm_cbe_res_2e_0_2e_lcssa_2e_i1448 ^ llvm_cbe_xor74) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1435) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1422) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1409) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1396) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1383) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1370) ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1357;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr165 = (&llvm_cbe_ctx->field0.array[((int64_t)7)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _112 = *llvm_cbe_incdec_2e_ptr144;
   llvm_cbe_xor166 = llvm_cbe_xor164 ^ _112;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx169 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor166 & 63))))]);
   _113 = ((uint8_t*)llvm_cbe_arrayidx169);
   llvm_cbe_and_2e_i1340 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx169)) & 60;
@@ -4318,9 +4318,9 @@ llvm_cbe_for_2e_body_2e_i1351:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1352:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1344 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1344__PHI_TEMPORARY;
   llvm_cbe_xor170 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1344 ^ llvm_cbe_xor119;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx174 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor166, 8)) & 63))))]);
   _115 = ((uint8_t*)llvm_cbe_arrayidx174);
   llvm_cbe_and_2e_i1327 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx174)) & 60;
@@ -4357,9 +4357,9 @@ llvm_cbe_for_2e_body_2e_i1338:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1339:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1331 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1331__PHI_TEMPORARY;
   llvm_cbe_xor175 = llvm_cbe_xor170 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1331;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx179 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor166, 16)) & 63))))]);
   _117 = ((uint8_t*)llvm_cbe_arrayidx179);
   llvm_cbe_and_2e_i1314 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx179)) & 60;
@@ -4396,9 +4396,9 @@ llvm_cbe_for_2e_body_2e_i1325:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1326:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1318 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1318__PHI_TEMPORARY;
   llvm_cbe_xor180 = llvm_cbe_xor175 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1318;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx184 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor166, 24)) & 63))))]);
   _119 = ((uint8_t*)llvm_cbe_arrayidx184);
   llvm_cbe_and_2e_i1301 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx184)) & 60;
@@ -4435,18 +4435,18 @@ llvm_cbe_for_2e_body_2e_i1312:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1313:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1305 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1305__PHI_TEMPORARY;
   llvm_cbe_xor185 = llvm_cbe_xor180 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1305;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr189 = (&llvm_cbe_ctx->field0.array[((int64_t)8)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _121 = *llvm_cbe_incdec_2e_ptr165;
   llvm_cbe_xor190 = _121 ^ ((llvm_cbe_xor164 << 28) | (llvm_lshr_u32(llvm_cbe_xor164, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx193 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor190 & 63))))]);
   _122 = ((uint8_t*)llvm_cbe_arrayidx193);
   llvm_cbe_and_2e_i1288 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx193)) & 60;
@@ -4483,9 +4483,9 @@ llvm_cbe_for_2e_body_2e_i1299:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1300:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1292 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1292__PHI_TEMPORARY;
   llvm_cbe_xor194 = llvm_cbe_xor185 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1292;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx198 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor190, 8)) & 63))))]);
   _124 = ((uint8_t*)llvm_cbe_arrayidx198);
   llvm_cbe_and_2e_i1275 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx198)) & 60;
@@ -4522,9 +4522,9 @@ llvm_cbe_for_2e_body_2e_i1286:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1287:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1279 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1279__PHI_TEMPORARY;
   llvm_cbe_xor199 = llvm_cbe_xor194 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1279;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx203 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor190, 16)) & 63))))]);
   _126 = ((uint8_t*)llvm_cbe_arrayidx203);
   llvm_cbe_and_2e_i1262 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx203)) & 60;
@@ -4561,9 +4561,9 @@ llvm_cbe_for_2e_body_2e_i1273:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1274:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1266 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1266__PHI_TEMPORARY;
   llvm_cbe_xor204 = llvm_cbe_xor199 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1266;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 675 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx208 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor190, 24)) & 63))))]);
   _128 = ((uint8_t*)llvm_cbe_arrayidx208);
   llvm_cbe_and_2e_i1249 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx208)) & 60;
@@ -4600,18 +4600,18 @@ llvm_cbe_for_2e_body_2e_i1260:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1261:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1253 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1253__PHI_TEMPORARY;
   llvm_cbe_xor209 = llvm_cbe_xor204 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1253;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr210 = (&llvm_cbe_ctx->field0.array[((int64_t)9)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _130 = *llvm_cbe_incdec_2e_ptr189;
   llvm_cbe_xor211 = llvm_cbe_xor209 ^ _130;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx214 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor211 & 63))))]);
   _131 = ((uint8_t*)llvm_cbe_arrayidx214);
   llvm_cbe_and_2e_i1236 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx214)) & 60;
@@ -4648,9 +4648,9 @@ llvm_cbe_for_2e_body_2e_i1247:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1248:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1240 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1240__PHI_TEMPORARY;
   llvm_cbe_xor215 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1240 ^ llvm_cbe_xor164;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx219 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor211, 8)) & 63))))]);
   _133 = ((uint8_t*)llvm_cbe_arrayidx219);
   llvm_cbe_and_2e_i1223 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx219)) & 60;
@@ -4687,9 +4687,9 @@ llvm_cbe_for_2e_body_2e_i1234:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1235:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1227 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1227__PHI_TEMPORARY;
   llvm_cbe_xor220 = llvm_cbe_xor215 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1227;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx224 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor211, 16)) & 63))))]);
   _135 = ((uint8_t*)llvm_cbe_arrayidx224);
   llvm_cbe_and_2e_i1210 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx224)) & 60;
@@ -4726,9 +4726,9 @@ llvm_cbe_for_2e_body_2e_i1221:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1222:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1214 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1214__PHI_TEMPORARY;
   llvm_cbe_xor225 = llvm_cbe_xor220 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1214;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx229 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor211, 24)) & 63))))]);
   _137 = ((uint8_t*)llvm_cbe_arrayidx229);
   llvm_cbe_and_2e_i1197 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx229)) & 60;
@@ -4765,18 +4765,18 @@ llvm_cbe_for_2e_body_2e_i1208:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1209:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1201 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1201__PHI_TEMPORARY;
   llvm_cbe_xor230 = llvm_cbe_xor225 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1201;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr234 = (&llvm_cbe_ctx->field0.array[((int64_t)10)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _139 = *llvm_cbe_incdec_2e_ptr210;
   llvm_cbe_xor235 = _139 ^ ((llvm_cbe_xor209 << 28) | (llvm_lshr_u32(llvm_cbe_xor209, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx238 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor235 & 63))))]);
   _140 = ((uint8_t*)llvm_cbe_arrayidx238);
   llvm_cbe_and_2e_i1184 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx238)) & 60;
@@ -4813,9 +4813,9 @@ llvm_cbe_for_2e_body_2e_i1195:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1196:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1188 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1188__PHI_TEMPORARY;
   llvm_cbe_xor239 = llvm_cbe_xor230 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1188;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx243 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor235, 8)) & 63))))]);
   _142 = ((uint8_t*)llvm_cbe_arrayidx243);
   llvm_cbe_and_2e_i1171 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx243)) & 60;
@@ -4852,9 +4852,9 @@ llvm_cbe_for_2e_body_2e_i1182:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1183:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1175 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1175__PHI_TEMPORARY;
   llvm_cbe_xor244 = llvm_cbe_xor239 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1175;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx248 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor235, 16)) & 63))))]);
   _144 = ((uint8_t*)llvm_cbe_arrayidx248);
   llvm_cbe_and_2e_i1158 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx248)) & 60;
@@ -4891,9 +4891,9 @@ llvm_cbe_for_2e_body_2e_i1169:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1170:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1162 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1162__PHI_TEMPORARY;
   llvm_cbe_xor249 = llvm_cbe_xor244 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1162;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx253 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor235, 24)) & 63))))]);
   _146 = ((uint8_t*)llvm_cbe_arrayidx253);
   llvm_cbe_and_2e_i1145 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx253)) & 60;
@@ -4930,18 +4930,18 @@ llvm_cbe_for_2e_body_2e_i1156:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1157:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1149 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1149__PHI_TEMPORARY;
   llvm_cbe_xor254 = llvm_cbe_xor249 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1149;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr255 = (&llvm_cbe_ctx->field0.array[((int64_t)11)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _148 = *llvm_cbe_incdec_2e_ptr234;
   llvm_cbe_xor256 = llvm_cbe_xor254 ^ _148;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx259 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor256 & 63))))]);
   _149 = ((uint8_t*)llvm_cbe_arrayidx259);
   llvm_cbe_and_2e_i1132 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx259)) & 60;
@@ -4978,9 +4978,9 @@ llvm_cbe_for_2e_body_2e_i1143:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1144:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1136 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1136__PHI_TEMPORARY;
   llvm_cbe_xor260 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1136 ^ llvm_cbe_xor209;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx264 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor256, 8)) & 63))))]);
   _151 = ((uint8_t*)llvm_cbe_arrayidx264);
   llvm_cbe_and_2e_i1119 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx264)) & 60;
@@ -5017,9 +5017,9 @@ llvm_cbe_for_2e_body_2e_i1130:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1131:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1123 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1123__PHI_TEMPORARY;
   llvm_cbe_xor265 = llvm_cbe_xor260 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1123;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx269 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor256, 16)) & 63))))]);
   _153 = ((uint8_t*)llvm_cbe_arrayidx269);
   llvm_cbe_and_2e_i1106 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx269)) & 60;
@@ -5056,9 +5056,9 @@ llvm_cbe_for_2e_body_2e_i1117:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1118:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1110 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1110__PHI_TEMPORARY;
   llvm_cbe_xor270 = llvm_cbe_xor265 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1110;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx274 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor256, 24)) & 63))))]);
   _155 = ((uint8_t*)llvm_cbe_arrayidx274);
   llvm_cbe_and_2e_i1093 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx274)) & 60;
@@ -5095,18 +5095,18 @@ llvm_cbe_for_2e_body_2e_i1104:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1105:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1097 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1097__PHI_TEMPORARY;
   llvm_cbe_xor275 = llvm_cbe_xor270 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1097;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr279 = (&llvm_cbe_ctx->field0.array[((int64_t)12)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _157 = *llvm_cbe_incdec_2e_ptr255;
   llvm_cbe_xor280 = _157 ^ ((llvm_cbe_xor254 << 28) | (llvm_lshr_u32(llvm_cbe_xor254, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx283 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor280 & 63))))]);
   _158 = ((uint8_t*)llvm_cbe_arrayidx283);
   llvm_cbe_and_2e_i1080 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx283)) & 60;
@@ -5143,9 +5143,9 @@ llvm_cbe_for_2e_body_2e_i1091:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1092:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1084 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1084__PHI_TEMPORARY;
   llvm_cbe_xor284 = llvm_cbe_xor275 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1084;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx288 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor280, 8)) & 63))))]);
   _160 = ((uint8_t*)llvm_cbe_arrayidx288);
   llvm_cbe_and_2e_i1067 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx288)) & 60;
@@ -5182,9 +5182,9 @@ llvm_cbe_for_2e_body_2e_i1078:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1079:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1071 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1071__PHI_TEMPORARY;
   llvm_cbe_xor289 = llvm_cbe_xor284 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1071;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx293 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor280, 16)) & 63))))]);
   _162 = ((uint8_t*)llvm_cbe_arrayidx293);
   llvm_cbe_and_2e_i1054 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx293)) & 60;
@@ -5221,9 +5221,9 @@ llvm_cbe_for_2e_body_2e_i1065:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1066:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1058 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1058__PHI_TEMPORARY;
   llvm_cbe_xor294 = llvm_cbe_xor289 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1058;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 676 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx298 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor280, 24)) & 63))))]);
   _164 = ((uint8_t*)llvm_cbe_arrayidx298);
   llvm_cbe_and_2e_i1041 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx298)) & 60;
@@ -5260,18 +5260,18 @@ llvm_cbe_for_2e_body_2e_i1052:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1053:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1045 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1045__PHI_TEMPORARY;
   llvm_cbe_xor299 = llvm_cbe_xor294 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1045;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr300 = (&llvm_cbe_ctx->field0.array[((int64_t)13)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _166 = *llvm_cbe_incdec_2e_ptr279;
   llvm_cbe_xor301 = llvm_cbe_xor299 ^ _166;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx304 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor301 & 63))))]);
   _167 = ((uint8_t*)llvm_cbe_arrayidx304);
   llvm_cbe_and_2e_i1028 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx304)) & 60;
@@ -5308,9 +5308,9 @@ llvm_cbe_for_2e_body_2e_i1039:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1040:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1032 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1032__PHI_TEMPORARY;
   llvm_cbe_xor305 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1032 ^ llvm_cbe_xor254;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx309 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor301, 8)) & 63))))]);
   _169 = ((uint8_t*)llvm_cbe_arrayidx309);
   llvm_cbe_and_2e_i1015 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx309)) & 60;
@@ -5347,9 +5347,9 @@ llvm_cbe_for_2e_body_2e_i1026:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1027:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1019 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1019__PHI_TEMPORARY;
   llvm_cbe_xor310 = llvm_cbe_xor305 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1019;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx314 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor301, 16)) & 63))))]);
   _171 = ((uint8_t*)llvm_cbe_arrayidx314);
   llvm_cbe_and_2e_i1002 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx314)) & 60;
@@ -5386,9 +5386,9 @@ llvm_cbe_for_2e_body_2e_i1013:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1014:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i1006 = llvm_cbe_res_2e_0_2e_lcssa_2e_i1006__PHI_TEMPORARY;
   llvm_cbe_xor315 = llvm_cbe_xor310 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i1006;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx319 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor301, 24)) & 63))))]);
   _173 = ((uint8_t*)llvm_cbe_arrayidx319);
   llvm_cbe_and_2e_i989 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx319)) & 60;
@@ -5425,18 +5425,18 @@ llvm_cbe_for_2e_body_2e_i1000:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit1001:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i993 = llvm_cbe_res_2e_0_2e_lcssa_2e_i993__PHI_TEMPORARY;
   llvm_cbe_xor320 = llvm_cbe_xor315 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i993;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr324 = (&llvm_cbe_ctx->field0.array[((int64_t)14)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _175 = *llvm_cbe_incdec_2e_ptr300;
   llvm_cbe_xor325 = _175 ^ ((llvm_cbe_xor299 << 28) | (llvm_lshr_u32(llvm_cbe_xor299, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx328 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor325 & 63))))]);
   _176 = ((uint8_t*)llvm_cbe_arrayidx328);
   llvm_cbe_and_2e_i976 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx328)) & 60;
@@ -5473,9 +5473,9 @@ llvm_cbe_for_2e_body_2e_i987:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit988:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i980 = llvm_cbe_res_2e_0_2e_lcssa_2e_i980__PHI_TEMPORARY;
   llvm_cbe_xor329 = llvm_cbe_xor320 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i980;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx333 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor325, 8)) & 63))))]);
   _178 = ((uint8_t*)llvm_cbe_arrayidx333);
   llvm_cbe_and_2e_i963 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx333)) & 60;
@@ -5512,9 +5512,9 @@ llvm_cbe_for_2e_body_2e_i974:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit975:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i967 = llvm_cbe_res_2e_0_2e_lcssa_2e_i967__PHI_TEMPORARY;
   llvm_cbe_xor334 = llvm_cbe_xor329 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i967;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx338 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor325, 16)) & 63))))]);
   _180 = ((uint8_t*)llvm_cbe_arrayidx338);
   llvm_cbe_and_2e_i950 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx338)) & 60;
@@ -5551,9 +5551,9 @@ llvm_cbe_for_2e_body_2e_i961:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit962:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i954 = llvm_cbe_res_2e_0_2e_lcssa_2e_i954__PHI_TEMPORARY;
   llvm_cbe_xor339 = llvm_cbe_xor334 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i954;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx343 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor325, 24)) & 63))))]);
   _182 = ((uint8_t*)llvm_cbe_arrayidx343);
   llvm_cbe_and_2e_i937 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx343)) & 60;
@@ -5590,18 +5590,18 @@ llvm_cbe_for_2e_body_2e_i948:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit949:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i941 = llvm_cbe_res_2e_0_2e_lcssa_2e_i941__PHI_TEMPORARY;
   llvm_cbe_xor344 = llvm_cbe_xor339 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i941;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr345 = (&llvm_cbe_ctx->field0.array[((int64_t)15)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _184 = *llvm_cbe_incdec_2e_ptr324;
   llvm_cbe_xor346 = llvm_cbe_xor344 ^ _184;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx349 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor346 & 63))))]);
   _185 = ((uint8_t*)llvm_cbe_arrayidx349);
   llvm_cbe_and_2e_i924 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx349)) & 60;
@@ -5638,9 +5638,9 @@ llvm_cbe_for_2e_body_2e_i935:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit936:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i928 = llvm_cbe_res_2e_0_2e_lcssa_2e_i928__PHI_TEMPORARY;
   llvm_cbe_xor350 = llvm_cbe_res_2e_0_2e_lcssa_2e_i928 ^ llvm_cbe_xor299;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx354 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor346, 8)) & 63))))]);
   _187 = ((uint8_t*)llvm_cbe_arrayidx354);
   llvm_cbe_and_2e_i911 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx354)) & 60;
@@ -5677,9 +5677,9 @@ llvm_cbe_for_2e_body_2e_i922:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit923:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i915 = llvm_cbe_res_2e_0_2e_lcssa_2e_i915__PHI_TEMPORARY;
   llvm_cbe_xor355 = llvm_cbe_xor350 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i915;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx359 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor346, 16)) & 63))))]);
   _189 = ((uint8_t*)llvm_cbe_arrayidx359);
   llvm_cbe_and_2e_i898 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx359)) & 60;
@@ -5716,9 +5716,9 @@ llvm_cbe_for_2e_body_2e_i909:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit910:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i902 = llvm_cbe_res_2e_0_2e_lcssa_2e_i902__PHI_TEMPORARY;
   llvm_cbe_xor360 = llvm_cbe_xor355 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i902;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx364 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor346, 24)) & 63))))]);
   _191 = ((uint8_t*)llvm_cbe_arrayidx364);
   llvm_cbe_and_2e_i885 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx364)) & 60;
@@ -5755,18 +5755,18 @@ llvm_cbe_for_2e_body_2e_i896:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit897:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i889 = llvm_cbe_res_2e_0_2e_lcssa_2e_i889__PHI_TEMPORARY;
   llvm_cbe_xor365 = llvm_cbe_xor360 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i889;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr369 = (&llvm_cbe_ctx->field0.array[((int64_t)16)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _193 = *llvm_cbe_incdec_2e_ptr345;
   llvm_cbe_xor370 = _193 ^ ((llvm_cbe_xor344 << 28) | (llvm_lshr_u32(llvm_cbe_xor344, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx373 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor370 & 63))))]);
   _194 = ((uint8_t*)llvm_cbe_arrayidx373);
   llvm_cbe_and_2e_i872 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx373)) & 60;
@@ -5803,9 +5803,9 @@ llvm_cbe_for_2e_body_2e_i883:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit884:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i876 = llvm_cbe_res_2e_0_2e_lcssa_2e_i876__PHI_TEMPORARY;
   llvm_cbe_xor374 = llvm_cbe_xor365 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i876;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx378 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor370, 8)) & 63))))]);
   _196 = ((uint8_t*)llvm_cbe_arrayidx378);
   llvm_cbe_and_2e_i859 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx378)) & 60;
@@ -5842,9 +5842,9 @@ llvm_cbe_for_2e_body_2e_i870:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit871:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i863 = llvm_cbe_res_2e_0_2e_lcssa_2e_i863__PHI_TEMPORARY;
   llvm_cbe_xor379 = llvm_cbe_xor374 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i863;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx383 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor370, 16)) & 63))))]);
   _198 = ((uint8_t*)llvm_cbe_arrayidx383);
   llvm_cbe_and_2e_i846 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx383)) & 60;
@@ -5881,9 +5881,9 @@ llvm_cbe_for_2e_body_2e_i857:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit858:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i850 = llvm_cbe_res_2e_0_2e_lcssa_2e_i850__PHI_TEMPORARY;
   llvm_cbe_xor384 = llvm_cbe_xor379 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i850;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 677 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx388 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor370, 24)) & 63))))]);
   _200 = ((uint8_t*)llvm_cbe_arrayidx388);
   llvm_cbe_and_2e_i833 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx388)) & 60;
@@ -5920,18 +5920,18 @@ llvm_cbe_for_2e_body_2e_i844:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit845:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i837 = llvm_cbe_res_2e_0_2e_lcssa_2e_i837__PHI_TEMPORARY;
   llvm_cbe_xor389 = llvm_cbe_xor384 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i837;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr390 = (&llvm_cbe_ctx->field0.array[((int64_t)17)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _202 = *llvm_cbe_incdec_2e_ptr369;
   llvm_cbe_xor391 = llvm_cbe_xor389 ^ _202;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx394 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor391 & 63))))]);
   _203 = ((uint8_t*)llvm_cbe_arrayidx394);
   llvm_cbe_and_2e_i820 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx394)) & 60;
@@ -5968,9 +5968,9 @@ llvm_cbe_for_2e_body_2e_i831:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit832:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i824 = llvm_cbe_res_2e_0_2e_lcssa_2e_i824__PHI_TEMPORARY;
   llvm_cbe_xor395 = llvm_cbe_res_2e_0_2e_lcssa_2e_i824 ^ llvm_cbe_xor344;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx399 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor391, 8)) & 63))))]);
   _205 = ((uint8_t*)llvm_cbe_arrayidx399);
   llvm_cbe_and_2e_i807 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx399)) & 60;
@@ -6007,9 +6007,9 @@ llvm_cbe_for_2e_body_2e_i818:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit819:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i811 = llvm_cbe_res_2e_0_2e_lcssa_2e_i811__PHI_TEMPORARY;
   llvm_cbe_xor400 = llvm_cbe_xor395 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i811;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx404 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor391, 16)) & 63))))]);
   _207 = ((uint8_t*)llvm_cbe_arrayidx404);
   llvm_cbe_and_2e_i794 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx404)) & 60;
@@ -6046,9 +6046,9 @@ llvm_cbe_for_2e_body_2e_i805:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit806:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i798 = llvm_cbe_res_2e_0_2e_lcssa_2e_i798__PHI_TEMPORARY;
   llvm_cbe_xor405 = llvm_cbe_xor400 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i798;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx409 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor391, 24)) & 63))))]);
   _209 = ((uint8_t*)llvm_cbe_arrayidx409);
   llvm_cbe_and_2e_i781 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx409)) & 60;
@@ -6085,18 +6085,18 @@ llvm_cbe_for_2e_body_2e_i792:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit793:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i785 = llvm_cbe_res_2e_0_2e_lcssa_2e_i785__PHI_TEMPORARY;
   llvm_cbe_xor410 = llvm_cbe_xor405 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i785;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr414 = (&llvm_cbe_ctx->field0.array[((int64_t)18)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _211 = *llvm_cbe_incdec_2e_ptr390;
   llvm_cbe_xor415 = _211 ^ ((llvm_cbe_xor389 << 28) | (llvm_lshr_u32(llvm_cbe_xor389, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx418 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor415 & 63))))]);
   _212 = ((uint8_t*)llvm_cbe_arrayidx418);
   llvm_cbe_and_2e_i768 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx418)) & 60;
@@ -6133,9 +6133,9 @@ llvm_cbe_for_2e_body_2e_i779:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit780:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i772 = llvm_cbe_res_2e_0_2e_lcssa_2e_i772__PHI_TEMPORARY;
   llvm_cbe_xor419 = llvm_cbe_xor410 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i772;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx423 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor415, 8)) & 63))))]);
   _214 = ((uint8_t*)llvm_cbe_arrayidx423);
   llvm_cbe_and_2e_i755 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx423)) & 60;
@@ -6172,9 +6172,9 @@ llvm_cbe_for_2e_body_2e_i766:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit767:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i759 = llvm_cbe_res_2e_0_2e_lcssa_2e_i759__PHI_TEMPORARY;
   llvm_cbe_xor424 = llvm_cbe_xor419 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i759;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx428 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor415, 16)) & 63))))]);
   _216 = ((uint8_t*)llvm_cbe_arrayidx428);
   llvm_cbe_and_2e_i742 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx428)) & 60;
@@ -6211,9 +6211,9 @@ llvm_cbe_for_2e_body_2e_i753:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit754:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i746 = llvm_cbe_res_2e_0_2e_lcssa_2e_i746__PHI_TEMPORARY;
   llvm_cbe_xor429 = llvm_cbe_xor424 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i746;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx433 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor415, 24)) & 63))))]);
   _218 = ((uint8_t*)llvm_cbe_arrayidx433);
   llvm_cbe_and_2e_i729 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx433)) & 60;
@@ -6250,18 +6250,18 @@ llvm_cbe_for_2e_body_2e_i740:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit741:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i733 = llvm_cbe_res_2e_0_2e_lcssa_2e_i733__PHI_TEMPORARY;
   llvm_cbe_xor434 = llvm_cbe_xor429 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i733;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr435 = (&llvm_cbe_ctx->field0.array[((int64_t)19)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _220 = *llvm_cbe_incdec_2e_ptr414;
   llvm_cbe_xor436 = llvm_cbe_xor434 ^ _220;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx439 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor436 & 63))))]);
   _221 = ((uint8_t*)llvm_cbe_arrayidx439);
   llvm_cbe_and_2e_i716 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx439)) & 60;
@@ -6298,9 +6298,9 @@ llvm_cbe_for_2e_body_2e_i727:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit728:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i720 = llvm_cbe_res_2e_0_2e_lcssa_2e_i720__PHI_TEMPORARY;
   llvm_cbe_xor440 = llvm_cbe_res_2e_0_2e_lcssa_2e_i720 ^ llvm_cbe_xor389;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx444 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor436, 8)) & 63))))]);
   _223 = ((uint8_t*)llvm_cbe_arrayidx444);
   llvm_cbe_and_2e_i703 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx444)) & 60;
@@ -6337,9 +6337,9 @@ llvm_cbe_for_2e_body_2e_i714:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit715:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i707 = llvm_cbe_res_2e_0_2e_lcssa_2e_i707__PHI_TEMPORARY;
   llvm_cbe_xor445 = llvm_cbe_xor440 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i707;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx449 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor436, 16)) & 63))))]);
   _225 = ((uint8_t*)llvm_cbe_arrayidx449);
   llvm_cbe_and_2e_i690 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx449)) & 60;
@@ -6376,9 +6376,9 @@ llvm_cbe_for_2e_body_2e_i701:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit702:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i694 = llvm_cbe_res_2e_0_2e_lcssa_2e_i694__PHI_TEMPORARY;
   llvm_cbe_xor450 = llvm_cbe_xor445 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i694;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx454 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor436, 24)) & 63))))]);
   _227 = ((uint8_t*)llvm_cbe_arrayidx454);
   llvm_cbe_and_2e_i677 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx454)) & 60;
@@ -6415,18 +6415,18 @@ llvm_cbe_for_2e_body_2e_i688:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit689:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i681 = llvm_cbe_res_2e_0_2e_lcssa_2e_i681__PHI_TEMPORARY;
   llvm_cbe_xor455 = llvm_cbe_xor450 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i681;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr459 = (&llvm_cbe_ctx->field0.array[((int64_t)20)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _229 = *llvm_cbe_incdec_2e_ptr435;
   llvm_cbe_xor460 = _229 ^ ((llvm_cbe_xor434 << 28) | (llvm_lshr_u32(llvm_cbe_xor434, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx463 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor460 & 63))))]);
   _230 = ((uint8_t*)llvm_cbe_arrayidx463);
   llvm_cbe_and_2e_i664 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx463)) & 60;
@@ -6463,9 +6463,9 @@ llvm_cbe_for_2e_body_2e_i675:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit676:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i668 = llvm_cbe_res_2e_0_2e_lcssa_2e_i668__PHI_TEMPORARY;
   llvm_cbe_xor464 = llvm_cbe_xor455 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i668;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx468 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor460, 8)) & 63))))]);
   _232 = ((uint8_t*)llvm_cbe_arrayidx468);
   llvm_cbe_and_2e_i651 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx468)) & 60;
@@ -6502,9 +6502,9 @@ llvm_cbe_for_2e_body_2e_i662:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit663:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i655 = llvm_cbe_res_2e_0_2e_lcssa_2e_i655__PHI_TEMPORARY;
   llvm_cbe_xor469 = llvm_cbe_xor464 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i655;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx473 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor460, 16)) & 63))))]);
   _234 = ((uint8_t*)llvm_cbe_arrayidx473);
   llvm_cbe_and_2e_i638 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx473)) & 60;
@@ -6541,9 +6541,9 @@ llvm_cbe_for_2e_body_2e_i649:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit650:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i642 = llvm_cbe_res_2e_0_2e_lcssa_2e_i642__PHI_TEMPORARY;
   llvm_cbe_xor474 = llvm_cbe_xor469 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i642;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 678 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx478 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor460, 24)) & 63))))]);
   _236 = ((uint8_t*)llvm_cbe_arrayidx478);
   llvm_cbe_and_2e_i625 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx478)) & 60;
@@ -6580,18 +6580,18 @@ llvm_cbe_for_2e_body_2e_i636:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit637:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i629 = llvm_cbe_res_2e_0_2e_lcssa_2e_i629__PHI_TEMPORARY;
   llvm_cbe_xor479 = llvm_cbe_xor474 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i629;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr480 = (&llvm_cbe_ctx->field0.array[((int64_t)21)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _238 = *llvm_cbe_incdec_2e_ptr459;
   llvm_cbe_xor481 = llvm_cbe_xor479 ^ _238;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx484 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor481 & 63))))]);
   _239 = ((uint8_t*)llvm_cbe_arrayidx484);
   llvm_cbe_and_2e_i612 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx484)) & 60;
@@ -6628,9 +6628,9 @@ llvm_cbe_for_2e_body_2e_i623:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit624:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i616 = llvm_cbe_res_2e_0_2e_lcssa_2e_i616__PHI_TEMPORARY;
   llvm_cbe_xor485 = llvm_cbe_res_2e_0_2e_lcssa_2e_i616 ^ llvm_cbe_xor434;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx489 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor481, 8)) & 63))))]);
   _241 = ((uint8_t*)llvm_cbe_arrayidx489);
   llvm_cbe_and_2e_i599 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx489)) & 60;
@@ -6667,9 +6667,9 @@ llvm_cbe_for_2e_body_2e_i610:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit611:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i603 = llvm_cbe_res_2e_0_2e_lcssa_2e_i603__PHI_TEMPORARY;
   llvm_cbe_xor490 = llvm_cbe_xor485 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i603;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx494 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor481, 16)) & 63))))]);
   _243 = ((uint8_t*)llvm_cbe_arrayidx494);
   llvm_cbe_and_2e_i586 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx494)) & 60;
@@ -6706,9 +6706,9 @@ llvm_cbe_for_2e_body_2e_i597:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit598:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i590 = llvm_cbe_res_2e_0_2e_lcssa_2e_i590__PHI_TEMPORARY;
   llvm_cbe_xor495 = llvm_cbe_xor490 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i590;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx499 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor481, 24)) & 63))))]);
   _245 = ((uint8_t*)llvm_cbe_arrayidx499);
   llvm_cbe_and_2e_i573 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx499)) & 60;
@@ -6745,18 +6745,18 @@ llvm_cbe_for_2e_body_2e_i584:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit585:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i577 = llvm_cbe_res_2e_0_2e_lcssa_2e_i577__PHI_TEMPORARY;
   llvm_cbe_xor500 = llvm_cbe_xor495 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i577;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr504 = (&llvm_cbe_ctx->field0.array[((int64_t)22)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _247 = *llvm_cbe_incdec_2e_ptr480;
   llvm_cbe_xor505 = _247 ^ ((llvm_cbe_xor479 << 28) | (llvm_lshr_u32(llvm_cbe_xor479, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx508 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor505 & 63))))]);
   _248 = ((uint8_t*)llvm_cbe_arrayidx508);
   llvm_cbe_and_2e_i560 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx508)) & 60;
@@ -6793,9 +6793,9 @@ llvm_cbe_for_2e_body_2e_i571:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit572:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i564 = llvm_cbe_res_2e_0_2e_lcssa_2e_i564__PHI_TEMPORARY;
   llvm_cbe_xor509 = llvm_cbe_xor500 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i564;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx513 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor505, 8)) & 63))))]);
   _250 = ((uint8_t*)llvm_cbe_arrayidx513);
   llvm_cbe_and_2e_i547 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx513)) & 60;
@@ -6832,9 +6832,9 @@ llvm_cbe_for_2e_body_2e_i558:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit559:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i551 = llvm_cbe_res_2e_0_2e_lcssa_2e_i551__PHI_TEMPORARY;
   llvm_cbe_xor514 = llvm_cbe_xor509 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i551;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx518 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor505, 16)) & 63))))]);
   _252 = ((uint8_t*)llvm_cbe_arrayidx518);
   llvm_cbe_and_2e_i534 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx518)) & 60;
@@ -6871,9 +6871,9 @@ llvm_cbe_for_2e_body_2e_i545:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit546:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i538 = llvm_cbe_res_2e_0_2e_lcssa_2e_i538__PHI_TEMPORARY;
   llvm_cbe_xor519 = llvm_cbe_xor514 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i538;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx523 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor505, 24)) & 63))))]);
   _254 = ((uint8_t*)llvm_cbe_arrayidx523);
   llvm_cbe_and_2e_i521 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx523)) & 60;
@@ -6910,18 +6910,18 @@ llvm_cbe_for_2e_body_2e_i532:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit533:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i525 = llvm_cbe_res_2e_0_2e_lcssa_2e_i525__PHI_TEMPORARY;
   llvm_cbe_xor524 = llvm_cbe_xor519 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i525;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr525 = (&llvm_cbe_ctx->field0.array[((int64_t)23)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _256 = *llvm_cbe_incdec_2e_ptr504;
   llvm_cbe_xor526 = llvm_cbe_xor524 ^ _256;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx529 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor526 & 63))))]);
   _257 = ((uint8_t*)llvm_cbe_arrayidx529);
   llvm_cbe_and_2e_i508 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx529)) & 60;
@@ -6958,9 +6958,9 @@ llvm_cbe_for_2e_body_2e_i519:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit520:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i512 = llvm_cbe_res_2e_0_2e_lcssa_2e_i512__PHI_TEMPORARY;
   llvm_cbe_xor530 = llvm_cbe_res_2e_0_2e_lcssa_2e_i512 ^ llvm_cbe_xor479;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx534 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor526, 8)) & 63))))]);
   _259 = ((uint8_t*)llvm_cbe_arrayidx534);
   llvm_cbe_and_2e_i495 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx534)) & 60;
@@ -6997,9 +6997,9 @@ llvm_cbe_for_2e_body_2e_i506:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit507:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i499 = llvm_cbe_res_2e_0_2e_lcssa_2e_i499__PHI_TEMPORARY;
   llvm_cbe_xor535 = llvm_cbe_xor530 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i499;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx539 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor526, 16)) & 63))))]);
   _261 = ((uint8_t*)llvm_cbe_arrayidx539);
   llvm_cbe_and_2e_i482 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx539)) & 60;
@@ -7036,9 +7036,9 @@ llvm_cbe_for_2e_body_2e_i493:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit494:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i486 = llvm_cbe_res_2e_0_2e_lcssa_2e_i486__PHI_TEMPORARY;
   llvm_cbe_xor540 = llvm_cbe_xor535 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i486;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx544 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor526, 24)) & 63))))]);
   _263 = ((uint8_t*)llvm_cbe_arrayidx544);
   llvm_cbe_and_2e_i469 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx544)) & 60;
@@ -7075,18 +7075,18 @@ llvm_cbe_for_2e_body_2e_i480:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit481:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i473 = llvm_cbe_res_2e_0_2e_lcssa_2e_i473__PHI_TEMPORARY;
   llvm_cbe_xor545 = llvm_cbe_xor540 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i473;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr549 = (&llvm_cbe_ctx->field0.array[((int64_t)24)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _265 = *llvm_cbe_incdec_2e_ptr525;
   llvm_cbe_xor550 = _265 ^ ((llvm_cbe_xor524 << 28) | (llvm_lshr_u32(llvm_cbe_xor524, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx553 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor550 & 63))))]);
   _266 = ((uint8_t*)llvm_cbe_arrayidx553);
   llvm_cbe_and_2e_i456 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx553)) & 60;
@@ -7123,9 +7123,9 @@ llvm_cbe_for_2e_body_2e_i467:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit468:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i460 = llvm_cbe_res_2e_0_2e_lcssa_2e_i460__PHI_TEMPORARY;
   llvm_cbe_xor554 = llvm_cbe_xor545 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i460;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx558 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor550, 8)) & 63))))]);
   _268 = ((uint8_t*)llvm_cbe_arrayidx558);
   llvm_cbe_and_2e_i443 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx558)) & 60;
@@ -7162,9 +7162,9 @@ llvm_cbe_for_2e_body_2e_i454:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit455:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i447 = llvm_cbe_res_2e_0_2e_lcssa_2e_i447__PHI_TEMPORARY;
   llvm_cbe_xor559 = llvm_cbe_xor554 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i447;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx563 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor550, 16)) & 63))))]);
   _270 = ((uint8_t*)llvm_cbe_arrayidx563);
   llvm_cbe_and_2e_i430 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx563)) & 60;
@@ -7201,9 +7201,9 @@ llvm_cbe_for_2e_body_2e_i441:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit442:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i434 = llvm_cbe_res_2e_0_2e_lcssa_2e_i434__PHI_TEMPORARY;
   llvm_cbe_xor564 = llvm_cbe_xor559 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i434;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 679 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx568 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor550, 24)) & 63))))]);
   _272 = ((uint8_t*)llvm_cbe_arrayidx568);
   llvm_cbe_and_2e_i417 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx568)) & 60;
@@ -7240,18 +7240,18 @@ llvm_cbe_for_2e_body_2e_i428:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit429:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i421 = llvm_cbe_res_2e_0_2e_lcssa_2e_i421__PHI_TEMPORARY;
   llvm_cbe_xor569 = llvm_cbe_xor564 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i421;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr570 = (&llvm_cbe_ctx->field0.array[((int64_t)25)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _274 = *llvm_cbe_incdec_2e_ptr549;
   llvm_cbe_xor571 = llvm_cbe_xor569 ^ _274;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx574 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor571 & 63))))]);
   _275 = ((uint8_t*)llvm_cbe_arrayidx574);
   llvm_cbe_and_2e_i404 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx574)) & 60;
@@ -7288,9 +7288,9 @@ llvm_cbe_for_2e_body_2e_i415:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit416:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i408 = llvm_cbe_res_2e_0_2e_lcssa_2e_i408__PHI_TEMPORARY;
   llvm_cbe_xor575 = llvm_cbe_res_2e_0_2e_lcssa_2e_i408 ^ llvm_cbe_xor524;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx579 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor571, 8)) & 63))))]);
   _277 = ((uint8_t*)llvm_cbe_arrayidx579);
   llvm_cbe_and_2e_i391 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx579)) & 60;
@@ -7327,9 +7327,9 @@ llvm_cbe_for_2e_body_2e_i402:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit403:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i395 = llvm_cbe_res_2e_0_2e_lcssa_2e_i395__PHI_TEMPORARY;
   llvm_cbe_xor580 = llvm_cbe_xor575 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i395;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx584 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor571, 16)) & 63))))]);
   _279 = ((uint8_t*)llvm_cbe_arrayidx584);
   llvm_cbe_and_2e_i378 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx584)) & 60;
@@ -7366,9 +7366,9 @@ llvm_cbe_for_2e_body_2e_i389:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit390:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i382 = llvm_cbe_res_2e_0_2e_lcssa_2e_i382__PHI_TEMPORARY;
   llvm_cbe_xor585 = llvm_cbe_xor580 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i382;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx589 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor571, 24)) & 63))))]);
   _281 = ((uint8_t*)llvm_cbe_arrayidx589);
   llvm_cbe_and_2e_i365 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx589)) & 60;
@@ -7405,18 +7405,18 @@ llvm_cbe_for_2e_body_2e_i376:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit377:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i369 = llvm_cbe_res_2e_0_2e_lcssa_2e_i369__PHI_TEMPORARY;
   llvm_cbe_xor590 = llvm_cbe_xor585 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i369;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr594 = (&llvm_cbe_ctx->field0.array[((int64_t)26)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _283 = *llvm_cbe_incdec_2e_ptr570;
   llvm_cbe_xor595 = _283 ^ ((llvm_cbe_xor569 << 28) | (llvm_lshr_u32(llvm_cbe_xor569, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx598 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor595 & 63))))]);
   _284 = ((uint8_t*)llvm_cbe_arrayidx598);
   llvm_cbe_and_2e_i352 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx598)) & 60;
@@ -7453,9 +7453,9 @@ llvm_cbe_for_2e_body_2e_i363:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit364:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i356 = llvm_cbe_res_2e_0_2e_lcssa_2e_i356__PHI_TEMPORARY;
   llvm_cbe_xor599 = llvm_cbe_xor590 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i356;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx603 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor595, 8)) & 63))))]);
   _286 = ((uint8_t*)llvm_cbe_arrayidx603);
   llvm_cbe_and_2e_i339 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx603)) & 60;
@@ -7492,9 +7492,9 @@ llvm_cbe_for_2e_body_2e_i350:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit351:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i343 = llvm_cbe_res_2e_0_2e_lcssa_2e_i343__PHI_TEMPORARY;
   llvm_cbe_xor604 = llvm_cbe_xor599 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i343;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx608 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor595, 16)) & 63))))]);
   _288 = ((uint8_t*)llvm_cbe_arrayidx608);
   llvm_cbe_and_2e_i326 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx608)) & 60;
@@ -7531,9 +7531,9 @@ llvm_cbe_for_2e_body_2e_i337:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit338:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i330 = llvm_cbe_res_2e_0_2e_lcssa_2e_i330__PHI_TEMPORARY;
   llvm_cbe_xor609 = llvm_cbe_xor604 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i330;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx613 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor595, 24)) & 63))))]);
   _290 = ((uint8_t*)llvm_cbe_arrayidx613);
   llvm_cbe_and_2e_i313 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx613)) & 60;
@@ -7570,18 +7570,18 @@ llvm_cbe_for_2e_body_2e_i324:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit325:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i317 = llvm_cbe_res_2e_0_2e_lcssa_2e_i317__PHI_TEMPORARY;
   llvm_cbe_xor614 = llvm_cbe_xor609 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i317;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr615 = (&llvm_cbe_ctx->field0.array[((int64_t)27)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _292 = *llvm_cbe_incdec_2e_ptr594;
   llvm_cbe_xor616 = llvm_cbe_xor614 ^ _292;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx619 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor616 & 63))))]);
   _293 = ((uint8_t*)llvm_cbe_arrayidx619);
   llvm_cbe_and_2e_i300 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx619)) & 60;
@@ -7618,9 +7618,9 @@ llvm_cbe_for_2e_body_2e_i311:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit312:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i304 = llvm_cbe_res_2e_0_2e_lcssa_2e_i304__PHI_TEMPORARY;
   llvm_cbe_xor620 = llvm_cbe_res_2e_0_2e_lcssa_2e_i304 ^ llvm_cbe_xor569;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx624 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor616, 8)) & 63))))]);
   _295 = ((uint8_t*)llvm_cbe_arrayidx624);
   llvm_cbe_and_2e_i287 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx624)) & 60;
@@ -7657,9 +7657,9 @@ llvm_cbe_for_2e_body_2e_i298:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit299:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i291 = llvm_cbe_res_2e_0_2e_lcssa_2e_i291__PHI_TEMPORARY;
   llvm_cbe_xor625 = llvm_cbe_xor620 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i291;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx629 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor616, 16)) & 63))))]);
   _297 = ((uint8_t*)llvm_cbe_arrayidx629);
   llvm_cbe_and_2e_i274 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx629)) & 60;
@@ -7696,9 +7696,9 @@ llvm_cbe_for_2e_body_2e_i285:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit286:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i278 = llvm_cbe_res_2e_0_2e_lcssa_2e_i278__PHI_TEMPORARY;
   llvm_cbe_xor630 = llvm_cbe_xor625 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i278;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx634 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor616, 24)) & 63))))]);
   _299 = ((uint8_t*)llvm_cbe_arrayidx634);
   llvm_cbe_and_2e_i261 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx634)) & 60;
@@ -7735,18 +7735,18 @@ llvm_cbe_for_2e_body_2e_i272:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit273:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i265 = llvm_cbe_res_2e_0_2e_lcssa_2e_i265__PHI_TEMPORARY;
   llvm_cbe_xor635 = llvm_cbe_xor630 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i265;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr639 = (&llvm_cbe_ctx->field0.array[((int64_t)28)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _301 = *llvm_cbe_incdec_2e_ptr615;
   llvm_cbe_xor640 = _301 ^ ((llvm_cbe_xor614 << 28) | (llvm_lshr_u32(llvm_cbe_xor614, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx643 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor640 & 63))))]);
   _302 = ((uint8_t*)llvm_cbe_arrayidx643);
   llvm_cbe_and_2e_i248 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx643)) & 60;
@@ -7783,9 +7783,9 @@ llvm_cbe_for_2e_body_2e_i259:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit260:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i252 = llvm_cbe_res_2e_0_2e_lcssa_2e_i252__PHI_TEMPORARY;
   llvm_cbe_xor644 = llvm_cbe_xor635 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i252;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx648 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor640, 8)) & 63))))]);
   _304 = ((uint8_t*)llvm_cbe_arrayidx648);
   llvm_cbe_and_2e_i235 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx648)) & 60;
@@ -7822,9 +7822,9 @@ llvm_cbe_for_2e_body_2e_i246:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit247:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i239 = llvm_cbe_res_2e_0_2e_lcssa_2e_i239__PHI_TEMPORARY;
   llvm_cbe_xor649 = llvm_cbe_xor644 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i239;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx653 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor640, 16)) & 63))))]);
   _306 = ((uint8_t*)llvm_cbe_arrayidx653);
   llvm_cbe_and_2e_i222 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx653)) & 60;
@@ -7861,9 +7861,9 @@ llvm_cbe_for_2e_body_2e_i233:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit234:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i226 = llvm_cbe_res_2e_0_2e_lcssa_2e_i226__PHI_TEMPORARY;
   llvm_cbe_xor654 = llvm_cbe_xor649 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i226;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 680 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx658 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor640, 24)) & 63))))]);
   _308 = ((uint8_t*)llvm_cbe_arrayidx658);
   llvm_cbe_and_2e_i209 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx658)) & 60;
@@ -7900,18 +7900,18 @@ llvm_cbe_for_2e_body_2e_i220:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit221:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i213 = llvm_cbe_res_2e_0_2e_lcssa_2e_i213__PHI_TEMPORARY;
   llvm_cbe_xor659 = llvm_cbe_xor654 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i213;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr660 = (&llvm_cbe_ctx->field0.array[((int64_t)29)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _310 = *llvm_cbe_incdec_2e_ptr639;
   llvm_cbe_xor661 = llvm_cbe_xor659 ^ _310;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx664 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor661 & 63))))]);
   _311 = ((uint8_t*)llvm_cbe_arrayidx664);
   llvm_cbe_and_2e_i196 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx664)) & 60;
@@ -7948,9 +7948,9 @@ llvm_cbe_for_2e_body_2e_i207:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit208:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i200 = llvm_cbe_res_2e_0_2e_lcssa_2e_i200__PHI_TEMPORARY;
   llvm_cbe_xor665 = llvm_cbe_res_2e_0_2e_lcssa_2e_i200 ^ llvm_cbe_xor614;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx669 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor661, 8)) & 63))))]);
   _313 = ((uint8_t*)llvm_cbe_arrayidx669);
   llvm_cbe_and_2e_i183 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx669)) & 60;
@@ -7987,9 +7987,9 @@ llvm_cbe_for_2e_body_2e_i194:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit195:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i187 = llvm_cbe_res_2e_0_2e_lcssa_2e_i187__PHI_TEMPORARY;
   llvm_cbe_xor670 = llvm_cbe_xor665 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i187;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx674 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor661, 16)) & 63))))]);
   _315 = ((uint8_t*)llvm_cbe_arrayidx674);
   llvm_cbe_and_2e_i170 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx674)) & 60;
@@ -8026,9 +8026,9 @@ llvm_cbe_for_2e_body_2e_i181:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit182:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i174 = llvm_cbe_res_2e_0_2e_lcssa_2e_i174__PHI_TEMPORARY;
   llvm_cbe_xor675 = llvm_cbe_xor670 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i174;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx679 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor661, 24)) & 63))))]);
   _317 = ((uint8_t*)llvm_cbe_arrayidx679);
   llvm_cbe_and_2e_i157 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx679)) & 60;
@@ -8065,18 +8065,18 @@ llvm_cbe_for_2e_body_2e_i168:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit169:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i161 = llvm_cbe_res_2e_0_2e_lcssa_2e_i161__PHI_TEMPORARY;
   llvm_cbe_xor680 = llvm_cbe_xor675 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i161;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr684 = (&llvm_cbe_ctx->field0.array[((int64_t)30)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _319 = *llvm_cbe_incdec_2e_ptr660;
   llvm_cbe_xor685 = _319 ^ ((llvm_cbe_xor659 << 28) | (llvm_lshr_u32(llvm_cbe_xor659, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx688 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor685 & 63))))]);
   _320 = ((uint8_t*)llvm_cbe_arrayidx688);
   llvm_cbe_and_2e_i144 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx688)) & 60;
@@ -8113,9 +8113,9 @@ llvm_cbe_for_2e_body_2e_i155:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit156:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i148 = llvm_cbe_res_2e_0_2e_lcssa_2e_i148__PHI_TEMPORARY;
   llvm_cbe_xor689 = llvm_cbe_xor680 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i148;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx693 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor685, 8)) & 63))))]);
   _322 = ((uint8_t*)llvm_cbe_arrayidx693);
   llvm_cbe_and_2e_i131 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx693)) & 60;
@@ -8152,9 +8152,9 @@ llvm_cbe_for_2e_body_2e_i142:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit143:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i135 = llvm_cbe_res_2e_0_2e_lcssa_2e_i135__PHI_TEMPORARY;
   llvm_cbe_xor694 = llvm_cbe_xor689 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i135;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx698 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor685, 16)) & 63))))]);
   _324 = ((uint8_t*)llvm_cbe_arrayidx698);
   llvm_cbe_and_2e_i118 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx698)) & 60;
@@ -8191,9 +8191,9 @@ llvm_cbe_for_2e_body_2e_i129:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit130:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i122 = llvm_cbe_res_2e_0_2e_lcssa_2e_i122__PHI_TEMPORARY;
   llvm_cbe_xor699 = llvm_cbe_xor694 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i122;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx703 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor685, 24)) & 63))))]);
   _326 = ((uint8_t*)llvm_cbe_arrayidx703);
   llvm_cbe_and_2e_i105 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx703)) & 60;
@@ -8230,18 +8230,18 @@ llvm_cbe_for_2e_body_2e_i116:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit117:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i109 = llvm_cbe_res_2e_0_2e_lcssa_2e_i109__PHI_TEMPORARY;
   llvm_cbe_xor704 = llvm_cbe_xor699 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i109;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_incdec_2e_ptr705 = (&llvm_cbe_ctx->field0.array[((int64_t)31)]);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _328 = *llvm_cbe_incdec_2e_ptr684;
   llvm_cbe_xor706 = llvm_cbe_xor704 ^ _328;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx709 = (&sbox8.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor706 & 63))))]);
   _329 = ((uint8_t*)llvm_cbe_arrayidx709);
   llvm_cbe_and_2e_i92 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx709)) & 60;
@@ -8278,9 +8278,9 @@ llvm_cbe_for_2e_body_2e_i103:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit104:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i96 = llvm_cbe_res_2e_0_2e_lcssa_2e_i96__PHI_TEMPORARY;
   llvm_cbe_xor710 = llvm_cbe_res_2e_0_2e_lcssa_2e_i96 ^ llvm_cbe_xor659;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx714 = (&sbox6.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor706, 8)) & 63))))]);
   _331 = ((uint8_t*)llvm_cbe_arrayidx714);
   llvm_cbe_and_2e_i79 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx714)) & 60;
@@ -8317,9 +8317,9 @@ llvm_cbe_for_2e_body_2e_i90:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit91:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i83 = llvm_cbe_res_2e_0_2e_lcssa_2e_i83__PHI_TEMPORARY;
   llvm_cbe_xor715 = llvm_cbe_xor710 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i83;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx719 = (&sbox4.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor706, 16)) & 63))))]);
   _333 = ((uint8_t*)llvm_cbe_arrayidx719);
   llvm_cbe_and_2e_i66 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx719)) & 60;
@@ -8356,9 +8356,9 @@ llvm_cbe_for_2e_body_2e_i77:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit78:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i70 = llvm_cbe_res_2e_0_2e_lcssa_2e_i70__PHI_TEMPORARY;
   llvm_cbe_xor720 = llvm_cbe_xor715 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i70;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx724 = (&sbox2.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor706, 24)) & 63))))]);
   _335 = ((uint8_t*)llvm_cbe_arrayidx724);
   llvm_cbe_and_2e_i53 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx724)) & 60;
@@ -8395,17 +8395,17 @@ llvm_cbe_for_2e_body_2e_i64:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit65:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i57 = llvm_cbe_res_2e_0_2e_lcssa_2e_i57__PHI_TEMPORARY;
   llvm_cbe_xor725 = llvm_cbe_xor720 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i57;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   _337 = *llvm_cbe_incdec_2e_ptr705;
   llvm_cbe_xor730 = _337 ^ ((llvm_cbe_xor704 << 28) | (llvm_lshr_u32(llvm_cbe_xor704, 4)));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx733 = (&sbox7.array[((int64_t)(((uint64_t)(uint32_t)(llvm_cbe_xor730 & 63))))]);
   _338 = ((uint8_t*)llvm_cbe_arrayidx733);
   llvm_cbe_and_2e_i40 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx733)) & 60;
@@ -8442,9 +8442,9 @@ llvm_cbe_for_2e_body_2e_i51:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit52:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i44 = llvm_cbe_res_2e_0_2e_lcssa_2e_i44__PHI_TEMPORARY;
   llvm_cbe_xor734 = llvm_cbe_xor725 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i44;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx738 = (&sbox5.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor730, 8)) & 63))))]);
   _340 = ((uint8_t*)llvm_cbe_arrayidx738);
   llvm_cbe_and_2e_i27 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx738)) & 60;
@@ -8481,9 +8481,9 @@ llvm_cbe_for_2e_body_2e_i38:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit39:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i31 = llvm_cbe_res_2e_0_2e_lcssa_2e_i31__PHI_TEMPORARY;
   llvm_cbe_xor739 = llvm_cbe_xor734 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i31;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx743 = (&sbox3.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor730, 16)) & 63))))]);
   _342 = ((uint8_t*)llvm_cbe_arrayidx743);
   llvm_cbe_and_2e_i14 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx743)) & 60;
@@ -8520,9 +8520,9 @@ llvm_cbe_for_2e_body_2e_i25:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit26:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i18 = llvm_cbe_res_2e_0_2e_lcssa_2e_i18__PHI_TEMPORARY;
   llvm_cbe_xor744 = llvm_cbe_xor739 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i18;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 681 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_arrayidx748 = (&sbox1.array[((int64_t)(((uint64_t)(uint32_t)((llvm_lshr_u32(llvm_cbe_xor730, 24)) & 63))))]);
   _344 = ((uint8_t*)llvm_cbe_arrayidx748);
   llvm_cbe_and_2e_i1 = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx748)) & 60;
@@ -8559,97 +8559,97 @@ llvm_cbe_for_2e_body_2e_i12:
 llvm_cbe_uint32_t_dfl_glob_load_2e_exit13:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i5 = llvm_cbe_res_2e_0_2e_lcssa_2e_i5__PHI_TEMPORARY;
   llvm_cbe_xor749 = llvm_cbe_xor744 ^ llvm_cbe_res_2e_0_2e_lcssa_2e_i5;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_or752 = (llvm_cbe_xor749 << 31) | (llvm_lshr_u32(llvm_cbe_xor749, 1));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and754 = (llvm_cbe_or752 ^ llvm_cbe_xor704) & 2863311530u;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor755 = llvm_cbe_and754 ^ llvm_cbe_or752;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_or759 = (llvm_lshr_u32((llvm_cbe_and754 ^ llvm_cbe_xor704), 1)) | (llvm_cbe_xor704 << 31);
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and762 = ((llvm_lshr_u32(llvm_cbe_or759, 8)) ^ llvm_cbe_xor755) & 16711935;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor763 = llvm_cbe_and762 ^ llvm_cbe_xor755;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor765 = (llvm_cbe_and762 << 8) ^ llvm_cbe_or759;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and768 = ((llvm_lshr_u32(llvm_cbe_xor765, 2)) ^ llvm_cbe_xor763) & 858993459;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor769 = llvm_cbe_and768 ^ llvm_cbe_xor763;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor771 = (llvm_cbe_and768 << 2) ^ llvm_cbe_xor765;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and774 = (llvm_cbe_xor771 & 65535) ^ (llvm_lshr_u32(llvm_cbe_xor769, 16));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor775 = llvm_cbe_and774 ^ llvm_cbe_xor771;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor777 = (llvm_cbe_and774 << 16) ^ llvm_cbe_xor769;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_and780 = ((llvm_lshr_u32(llvm_cbe_xor777, 4)) ^ llvm_cbe_xor775) & 252645135;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor781 = llvm_cbe_and780 ^ llvm_cbe_xor775;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
-#line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 683 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   llvm_cbe_xor783 = (llvm_cbe_and780 << 4) ^ llvm_cbe_xor777;
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
   ;
-#line 140 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 140 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)0)])) = (((uint8_t)(llvm_lshr_u32(llvm_cbe_xor783, 24))));
-#line 141 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 141 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)1)])) = (((uint8_t)(llvm_lshr_u32(llvm_cbe_xor783, 16))));
-#line 142 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 142 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)2)])) = (((uint8_t)(llvm_lshr_u32(llvm_cbe_xor783, 8))));
-#line 143 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 143 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)3)])) = (((uint8_t)llvm_cbe_xor783));
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   ;
   ;
   ;
-#line 140 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 140 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)4)])) = (((uint8_t)(llvm_lshr_u32(llvm_cbe_xor781, 24))));
-#line 141 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 141 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)5)])) = (((uint8_t)(llvm_lshr_u32(llvm_cbe_xor781, 16))));
-#line 142 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 142 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)6)])) = (((uint8_t)(llvm_lshr_u32(llvm_cbe_xor781, 8))));
-#line 143 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
+// #line 143 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/libg/des.c"
   *((&out.array[((int64_t)7)])) = (((uint8_t)llvm_cbe_xor781));
 }
 

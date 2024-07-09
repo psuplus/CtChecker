@@ -36,6 +36,25 @@
   "sink": [],
   "using_whitelist": true,
   "whitelist": [],
-  "ptr_whitelist": [],
+  "ptr_whitelist": [
+    {
+      "type": "variable",
+      "name": "in1",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    },
+    {
+      "type": "variable",
+      "name": "in2",
+      "index": -1,
+      "l": {
+        "secret": "private"
+      },
+      "c": {}
+    }
+  ],
   "entry": ["__main"]
 }

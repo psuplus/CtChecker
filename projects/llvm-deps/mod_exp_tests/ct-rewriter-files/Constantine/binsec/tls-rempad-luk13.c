@@ -257,70 +257,70 @@ static void __main(void) {
 
   ;
   ;
-#line 8 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
-#line 9 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
-#line 10 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
-#line 11 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
-#line 12 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 8 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 9 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 10 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 11 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 12 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 15 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
-#line 18 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 15 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 18 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call =  /*tail*/ read(0, ((&promoted_stack_var_main_0.array[((int64_t)0)])), 63);
-#line 21 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 21 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call1 = read(0, (((uint8_t*)(&llvm_cbe_options))), 4);
-#line 22 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 22 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call2 = read(0, (((uint8_t*)(&llvm_cbe_s3_flags))), 4);
-#line 23 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 23 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call3 = read(0, (((uint8_t*)(&llvm_cbe_flags))), 4);
-#line 24 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 24 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call4 = read(0, (((uint8_t*)(&llvm_cbe_slicing_cheat))), 4);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 27 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 27 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call5 = read(0, (((uint8_t*)(&llvm_cbe_mac_size))), 4);
-#line 29 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 29 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   _1 = llvm_cbe_s3_flags;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 29 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 29 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   *((&promoted_stack_var_main_1.field0)) = _1;
   *((uint64_t*)((&promoted_stack_var_main_1.field1.array[((int64_t)0)]))) = 0;
-#line 31 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 31 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   _2 = ((uint8_t*)(&llvm_cbe_cipher));
   _3 = llvm_cbe_flags;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 31 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 31 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   *((&llvm_cbe_cipher.field0)) = _3;
-#line 32 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 32 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   _4 = ((uint8_t*)(&llvm_cbe_cipher_ctx));
   *((&llvm_cbe_cipher_ctx.field0)) = (&llvm_cbe_cipher);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 35 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 35 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   *((&promoted_stack_var_main_2.field0)) = (&llvm_cbe_dummy_expand);
   _5 = llvm_cbe_options;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 35 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 35 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   *((&promoted_stack_var_main_2.field1)) = _5;
   *((&promoted_stack_var_main_2.field2)) = (&promoted_stack_var_main_1);
   *((&promoted_stack_var_main_2.field3)) = (&llvm_cbe_cipher_ctx);
   _6 = llvm_cbe_slicing_cheat;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 35 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 35 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   *((&promoted_stack_var_main_2.field4)) = _6;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 40 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 40 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   *((&promoted_stack_var_main_3.field0)) = 63;
   *((&promoted_stack_var_main_3.field1)) = ((&promoted_stack_var_main_0.array[((int64_t)0)]));
   *((&promoted_stack_var_main_3.field2)) = 0;
   *((&promoted_stack_var_main_3.field3)) = ((uint8_t*)/*NULL*/0);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
   ;
   ;
@@ -330,18 +330,18 @@ static void __main(void) {
   ;
   ;
   ;
-#line 74 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 74 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _7 = *((&promoted_stack_var_main_0.array[((int64_t)62)]));
   llvm_cbe_conv_2e_i = ((uint32_t)(uint8_t)_7);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   ;
   ;
-#line 75 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 75 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   llvm_cbe_inc_2e_i = llvm_add_u32(llvm_cbe_conv_2e_i, 1);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   ;
-#line 76 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 79 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 76 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 79 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _8 = taken;
   taken = (((uint8_t)(bool)(((((((_5 & 512) != UINT64_C(0))&1)) & (((_8 != ((uint8_t)0))&1)))&1))));
   _9 = *(volatile uint64_t*)((uint64_t*)((&promoted_stack_var_main_2.field2)));
@@ -352,22 +352,22 @@ static void __main(void) {
   taken = (((uint8_t)(bool)((((((_12 != ((uint8_t)0))&1)) & (((((((llvm_cbe_conv_2e_i & 1) == 0u)&1)) & ((((((_12 == ((uint8_t)0))&1)) | ((((((_11 == UINT64_C(0))&1)) | ((((((struct l_struct_struct_OC_ssl3_state_st*)(uintptr_t)llvm_cbe_cond_2e_i_2e_i_2e_i_2e_i)) != (&promoted_stack_var_main_1))&1)))&1)))&1)))&1)))&1))));
   _13 = *(volatile uint64_t*)((&promoted_stack_var_main_1.field0));
   _14 = *(volatile uint8_t*)(&taken);
-#line 80 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 79 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 80 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 79 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _15 = *(volatile uint64_t*)((&promoted_stack_var_main_1.field0));
   _16 = *(volatile uint8_t*)(&taken);
   *(volatile uint64_t*)((&promoted_stack_var_main_1.field0)) = (llvm_select_u64(((((((_16 != ((uint8_t)0))&1)) & ((((((uint8_t*)(uintptr_t)(llvm_mul_u64(llvm_cbe_cond_2e_i_2e_i_2e_i_2e_i, (((uint64_t)(uint8_t)_14)))))) == ((uint8_t*)(&promoted_stack_var_main_1)))&1)))&1)), (llvm_select_u64((((_14 == ((uint8_t)0))&1)), 8, (llvm_select_u64(((((((uint8_t*)(uintptr_t)llvm_cbe_cond_2e_i_2e_i_2e_i_2e_i)) == ((uint8_t*)(&promoted_stack_var_main_1)))&1)), (_13 | 8), 8)))), _15));
   taken = _12;
   _17 = *(volatile uint64_t*)((&promoted_stack_var_main_1.field0));
   _18 = *(volatile uint8_t*)(&taken);
-#line 81 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 79 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 81 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 79 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _19 = llvm_select_u32(((((_5 & 512) != UINT64_C(0))&1)), (llvm_select_u32(((((((_18 == ((uint8_t)0))&1)) | (((((((_17 & 8) == UINT64_C(0))&1)) | (((~(((((((uint8_t*)(uintptr_t)llvm_cbe_cond_2e_i_2e_i_2e_i_2e_i)) == ((uint8_t*)(&promoted_stack_var_main_1)))&1))))&1)))&1)))&1)), llvm_cbe_inc_2e_i, llvm_cbe_conv_2e_i)), llvm_cbe_inc_2e_i);
-#line 86 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 86 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   llvm_cbe_tobool3_2e_i_2e_i2_2e_i = (((((_8 != ((uint8_t)0))&1)) & (((((uint32_t)_19) < ((uint32_t)48u))&1)))&1);
   llvm_cbe_frombool4_2e_i_2e_i3_2e_i = ((uint8_t)(bool)llvm_cbe_tobool3_2e_i_2e_i2_2e_i);
   taken = llvm_cbe_frombool4_2e_i_2e_i3_2e_i;
-#line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _20 = ((cfl_br_get_fixed((((_19 != 0u)&1)), 1))&1);
   if (_20) {
     goto llvm_cbe_codeRepl17_2e_i_2e_i_2e_i;
@@ -404,9 +404,9 @@ llvm_cbe_for_2e_body_2e_i_2e_i_2e_i_2e_i:
   _27 = *(volatile uint8_t*)(&taken);
   _28 = *(volatile uint8_t*)(&taken);
   _29 = *(volatile uint8_t*)(&taken);
-#line 97 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 97 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   llvm_cbe_arrayidx23_2e_i_2e_i_2e_i_2e_i_2e_i = (&promoted_stack_var_main_0.array[((int64_t)llvm_cbe_escaping_val_2e_i_2e_i_2e_i_2e_i)]);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   llvm_cbe_and_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i = (((uint64_t)(uintptr_t)llvm_cbe_arrayidx23_2e_i_2e_i_2e_i_2e_i_2e_i)) & 63;
   if ((((((int64_t)llvm_cbe_and_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i) < ((int64_t)((((uint64_t)(((uint64_t)(((uint64_t)(((uint64_t)((uint64_t)(uintptr_t)(&promoted_stack_var_main_0))) + ((uint64_t)126))))) - ((uint64_t)((uint64_t)(uintptr_t)(&promoted_stack_var_main_0)))))) & -64)))&1))) {
     goto llvm_cbe_for_2e_body_2e_preheader_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i;
@@ -440,17 +440,17 @@ llvm_cbe_for_2e_body_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i:
   } while (1); /* end of syntactic loop 'for.body.i.i.i.i.i.i' */
 llvm_cbe___cfl_branch_tls1_cbc_remove_padding_2e_10_2e_exit_2e_i_2e_i_2e_i_2e_i:
   llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i = llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i__PHI_TEMPORARY;
-#line 97 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 97 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i_2e_i_2e_i = llvm_add_u64(llvm_cbe_escaping_val_2e_i_2e_i_2e_i_2e_i, 1);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_loc_2e_i_2e_i_2e_i_2e_i = llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i_2e_i_2e_i;
-#line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _31 = ((((((((uint32_t)llvm_cbe_indvars_2e_iv_2e_next_2e_i_2e_i_2e_i_2e_i_2e_i)) == 63u)&1)) | (((~((((llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i == _7)&1))))&1)))&1);
   llvm_cbe__2e_loc6_2e_i_2e_i_2e_i_2e_i = ((_31) & 1);
   llvm_cbe__2e_inv_2e_loc_2e_i_2e_i_2e_i_2e_i = (((((llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i == _7)&1))) & 1);
-#line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 95 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _32 = *(volatile uint8_t*)(&taken);
   llvm_cbe_escaping_val8_2e_i_2e_i_2e_i_2e_i = ((llvm_select_bool((((_32 == ((uint8_t)0))&1)), llvm_cbe_last_valid7_2e_i_2e_i_2e_i_2e_i, (((llvm_cbe_res_2e_0_2e_lcssa_2e_i_2e_i_2e_i_2e_i_2e_i_2e_i == _7)&1))))&1);
   _33 = ((cfl_loop_exiting((&llvm_cbe_loop_cfl_count_2e_i_2e_i_2e_i_2e_i), _31))&1);
@@ -475,7 +475,7 @@ llvm_cbe___cfl_loop_tls1_cbc_remove_padding_2e_9_2e_exit_2e_i_2e_i_2e_i:
 
 llvm_cbe___cfl_branch_tls1_cbc_remove_padding_2e_7_2e_exit_2e_i_2e_i:
   _35 = ((_35__PHI_TEMPORARY)&1);
-#line 105 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 105 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _36 = ((cfl_br_get_fixed(_35, 0))&1);
   if (_36) {
     goto llvm_cbe_for_2e_end_2e_i_2e_i_2e_i;
@@ -489,26 +489,26 @@ llvm_cbe_for_2e_end_2e_i_2e_i_2e_i:
   *(volatile uint64_t*)((uint64_t*)((&promoted_stack_var_main_3.field1))) = (llvm_select_u64((((llvm_cbe_tobool3_2e_i_2e_i2_2e_i & (((_38 != ((uint8_t)0))&1)))&1)), ((uint64_t)(uintptr_t)((&promoted_stack_var_main_0.array[((int64_t)16)]))), _37));
   _39 = *(volatile uint64_t*)((uint64_t*)((&promoted_stack_var_main_3.field3)));
   _40 = *(volatile uint8_t*)(&taken);
-#line 106 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 105 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 106 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 105 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _41 = *(volatile uint64_t*)((uint64_t*)((&promoted_stack_var_main_3.field3)));
   _42 = *(volatile uint8_t*)(&taken);
   *(volatile uint64_t*)((uint64_t*)((&promoted_stack_var_main_3.field3))) = (llvm_select_u64(((((((_42 != ((uint8_t)0))&1)) & ((((((uint8_t*)(uintptr_t)(llvm_mul_u64((((uint64_t)(uint8_t)_40)), ((uint64_t)(uintptr_t)((&promoted_stack_var_main_3.field3))))))) == ((uint8_t*)((&promoted_stack_var_main_3.field3))))&1)))&1)), (((uint64_t)(uintptr_t)((&(llvm_select_pu8((((_40 == ((uint8_t)0))&1)), ((uint8_t*)/*NULL*/0), (((uint8_t*)(uintptr_t)_39))))[((int64_t)16)])))), _41));
-#line 107 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
-#line 105 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 107 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 105 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   _43 = *(volatile uint32_t*)((&promoted_stack_var_main_3.field0));
   _44 = *(volatile uint8_t*)(&taken);
   *(volatile uint32_t*)((&promoted_stack_var_main_3.field0)) = (llvm_select_u32((((((((((uint8_t*)(uintptr_t)(llvm_mul_u64((((uint64_t)(uint8_t)_42)), ((uint64_t)(uintptr_t)(&promoted_stack_var_main_3)))))) == ((uint8_t*)(&promoted_stack_var_main_3)))&1)) & (((_44 != ((uint8_t)0))&1)))&1)), (llvm_sub_u32(47, _19)), _43));
   goto llvm_cbe_tls1_cbc_remove_padding_2e_1_2e_exit;
 
 llvm_cbe_tls1_cbc_remove_padding_2e_1_2e_exit:
-#line 86 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
+// #line 86 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13.c"
   taken = _8;
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
-#line 44 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 44 "/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   llvm_cbe_call16 = write(1, ((&promoted_stack_var_main_0.array[((int64_t)0)])), 63);
-#line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
+// #line 1"/home/constantine/constantine/src/apps/binsec/openssl/tls1_cbc_remove_padding_lucky13_wrapper.c"
   ;
 }
 

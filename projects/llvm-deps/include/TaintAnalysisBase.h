@@ -15,6 +15,12 @@ class TaintAnalysisBase {
 private:
   Infoflow *ifa;
 
+  // performance optimizing variables
+  bool valueMapLock = false;
+  std::map<std::pair<std::string, std::string>, std::set<const Value *>>
+      localVarValueMap;
+  std::map<std::string, std::set<const Value *>> varValueMap;
+
 protected:
   bool hasPointerTarget(const AbstractLoc *loc);
 
@@ -32,6 +38,8 @@ protected:
                                                      unsigned, unsigned,
                                                      unsigned, unsigned,
                                                      const Value &, bool);
+
+  void getOrCreateLocalVarValueMap();
 
 public:
   void setInfoflow(Infoflow *flow) { ifa = flow; }

@@ -92,7 +92,7 @@ Infoflow::Infoflow()
 
 void Infoflow::doInitialization() {
   // Get the PointsToInterface
-  pti = &getAnalysis<PointsToInterface>();
+  // pti = &getAnalysis<PointsToInterface>();
   // CHANGE
   sourceSinkAnalysis = &getAnalysis<SourceSinkAnalysis>();
   // sourceSinkAnalysis = &getAnalysis<>();
@@ -236,9 +236,6 @@ void Infoflow::insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set) {
 
 void Infoflow::constrainFlowRecord(const FlowRecord &record) {
   ConsSet consSet;
-
-  errs() << &record << " record pred: " << record.getPredicate() << "\n";
-
   if (record.one_to_one_directptr()) {
     const Value *src = *record.source_directptr_begin();
     const Value *sink = *record.sink_directptr_begin();
@@ -246,6 +243,13 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
     auto sinkLoc = locsForValue(*sink);
     if (srcLoc.size() == 1 && sinkLoc.size() == 1) {
       if (*srcLoc.begin() == *sinkLoc.begin()) {
+        DEBUG_WITH_TYPE(DEBUG_TYPE_FLOW, {
+          FlowRecord newRecord = record;
+          newRecord.dump();
+          (*srcLoc.begin())->dump();
+          (*sinkLoc.begin())->dump();
+          errs() << "One to one directptr, not constraining\n";
+        });
         insertIntoFlowConsSetMap(record, consSet);
         return;
       }
@@ -357,22 +361,6 @@ void Infoflow::constrainFlowRecord(const FlowRecord &record) {
   // To try to save constraint generation, gather memory locations as before:
   constrainSinkMemoryLocations(record, *sourceElem, *sinkSourceElem, regFlow,
                                sinkFlow, consSet);
-
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-    errs() << "----- Trying to print out ConstraintSet -----\n";
-    errs() << "record pred: " << record.getPredicate() << "\n";
-    ConsSet tmp;
-    for (auto cons : consSet) {
-      cons.setPredicateStr(record.getPredicate());
-      tmp.insert(cons);
-    }
-    consSet = tmp;
-
-    for (auto cons : consSet) {
-      cons.dump(delim);
-    }
-  });
-
   insertIntoFlowConsSetMap(record, consSet);
 }
 
@@ -1087,37 +1075,14 @@ const Unit Infoflow::signatureForExternalCall(const ImmutableCallSite &cs,
 
   Flows taintFlows;
   Flows WLPFlows;
-  std::pair<Flows, Flows> recs;
-
-  if (cs.getCalledFunction()->getName().startswith("relabel")) {
-    errs() << "External Call: " << cs.getCalledFunction()->getName() << "\n";
-    FlowRecord flow = this->currentContextFlowRecord(false);
-    const Instruction *inst = cs.getInstruction();
-    flow.addSourceValue(*inst->getOperand(0));
-    flow.addSinkValue(*inst);
-
-    std::string predicate;
-    predicate.append("(");
-    predicate.append(inst->getParent()->getParent()->getName());
-    predicate.append("_");
-    predicate.append(inst->getOperand(1)->getName());
-    predicate.append("==1)  =>  ");
-    flow.setPredicate(predicate);
-
-    Flows internalTaint{flow};
-
-    recs = std::make_pair(internalTaint, Flows());
-  } else {
-    recs = signatureRegistrar->process(this->getCurrentContext(), cs);
-  }
-
+  std::pair<Flows, Flows> recs =
+      signatureRegistrar->process(this->getCurrentContext(), cs);
   Flows combinedFlows;
   for (auto flow = recs.first.begin(); flow != recs.first.end(); flow++) {
     (*flow).flowRecordID = currentFlowRecord;
     currentFlowRecord++;
     combinedFlows.push_back(*flow);
   }
-
   for (auto flow = recs.second.begin(); flow != recs.second.end(); flow++) {
     auto exist = std::find(combinedFlows.begin(), combinedFlows.end(), (*flow));
     if (exist != combinedFlows.end()) {
@@ -1259,7 +1224,6 @@ const MDLocalVariable *Infoflow::findVarNode(const Value *V,
     if ((*I)->getValue() == V)
       return (*I)->getVariable();
   }
-
   return NULL;
 }
 
@@ -1310,8 +1274,8 @@ void Infoflow::getOriginalLocation(const Value *V) {
     if (!Loc) {
       const MDLocalVariable *lv = findVarNode(V, F);
       if (!lv) {
-        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Unknown local variable"
-                                                 << "\n";);
+        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                        errs() << "Unknown local variable" << "\n";);
         return;
       }
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "Local variable: ";
@@ -1332,10 +1296,6 @@ void Infoflow::getOriginalLocation(const Value *V) {
 }
 
 std::string Infoflow::getOriginalLocationConsElem(const Value *V) {
-#if DEPS_DEBUG_CLEAN
-  return "";
-#endif
-
   // Global var?
   std::string ret;
 
@@ -1601,19 +1561,6 @@ void Infoflow::setLabel(std::string kind, const Value &value, RLLabel label,
   }
 }
 
-void Infoflow::setLabel(std::string kind, const ConsElem &elem, RLLabel label,
-                        bool gte, std::string meta) {
-  assert(kind != "default" && "Cannot add constraints to the default kind");
-  assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
-
-  if (gte)
-    kit->addConstraint(kind, kit->constant(label), elem,
-                       " ;  [ConsDebugTag-1] " + meta);
-  else
-    kit->addConstraint(kind, elem, kit->constant(label),
-                       " ;  [ConsDebugTag-1] " + meta);
-}
-
 void Infoflow::setUntainted(std::string kind, const Value &value) {
   assert(kind != "default" && "Cannot add constraints to the default kind");
   assert(kind != "implicit" && "Cannot add constraints to the implicit kind");
@@ -1832,10 +1779,6 @@ const std::string Infoflow::kindFromImplicitSink(bool implicit,
 
 const std::string Infoflow::getOrCreateStringFromValue(const Value &value,
                                                        bool withParent) {
-#if DEPS_DEBUG_CLEAN
-  return "";
-#endif
-
   if (valueStringMap.find(&value) != valueStringMap.end() && withParent) {
     return valueStringMap[&value];
   }
@@ -1901,13 +1844,9 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySource(const Value &value) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--1\n";);
-#if DEPS_DEBUG_CLEAN
-    const ConsElem &elem = kit->newVar("");
-#else
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value) + delim +
                     "*SummSource*");
-#endif
     summarySourceValueConstraintMap.insert(std::make_pair(&value, &elem));
     getOrCreateLocationValueMap();
     return elem;
@@ -1936,13 +1875,9 @@ const ConsElem &Infoflow::getOrCreateConsElemSummarySink(const Value &value) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--2\n";);
-#if DEPS_DEBUG_CLEAN
-    const ConsElem &elem = kit->newVar("");
-#else
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value) + delim +
                     "*SummSink*");
-#endif
     summarySinkValueConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -1973,12 +1908,8 @@ const ConsElem &Infoflow::getOrCreateConsElem(const ContextID ctxt,
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--3\n";);
-#if DEPS_DEBUG_CLEAN
-    const ConsElem &elem = kit->newVar("");
-#else
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value));
-#endif
     valueMap.insert(std::make_pair(&value, &elem));
 
     // Hook up the summaries for non-context sensitive interface
@@ -2051,12 +1982,8 @@ Infoflow::getOrCreateVargConsElemSummarySource(const Function &value) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--4\n";);
-#if DEPS_DEBUG_CLEAN
-    const ConsElem &elem = kit->newVar("");
-#else
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value));
-#endif
     summarySourceVargConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -2084,13 +2011,8 @@ Infoflow::getOrCreateVargConsElemSummarySink(const Function &value) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--5\n";);
-#if DEPS_DEBUG_CLEAN
-    const ConsElem &elem = kit->newVar("");
-#else
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value));
-#endif
-
     summarySinkVargConstraintMap.insert(std::make_pair(&value, &elem));
     return elem;
   } else {
@@ -2123,12 +2045,8 @@ const ConsElem &Infoflow::getOrCreateVargConsElem(const ContextID ctxt,
     DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                     errs() << "In context: " << this->getCurrentContext()
                            << " new_Var--6\n";);
-#if DEPS_DEBUG_CLEAN
-    const ConsElem &elem = kit->newVar("");
-#else
     const ConsElem &elem =
         kit->newVar(name + delim + getOriginalLocationConsElem(&value));
-#endif
     valueMap.insert(std::make_pair(&value, &elem));
 
     // Hook up the summaries for non-context sensitive interface
@@ -2207,13 +2125,9 @@ Infoflow::getOrCreateConsElemTyped(const AbstractLoc &loc, unsigned numElements,
       DEBUG_WITH_TYPE(DEBUG_TYPE_METAINFO,
                       errs() << "In context: " << this->getCurrentContext()
                              << " new_Var--7\n";);
-#if DEPS_DEBUG_CLEAN
-      const ConsElem &elem = kit->newVar("");
-#else
       const ConsElem &elem =
           kit->newVar(name + ": elem " + std::to_string(offset) + "::" + delim +
                       getOriginalLocationConsElem(v));
-#endif
       locConstraintMap[&loc].insert(std::make_pair(offset, &elem));
     }
     return locConstraintMap[&loc];
@@ -2239,29 +2153,19 @@ void Infoflow::createConsElemFromStruct(
 
   const DataLayout &TD = loc.getParentGraph()->getDataLayout();
   const StructLayout *SL = TD.getStructLayout(s);
-
-#if DEPS_DEBUG_CLEAN
-  std::string name = "";
-#else
   std::string name = getCaption(&loc, NULL);
-#endif
-
   // FIXIT: This part may need to be further verified
   bool unionType = s && s->hasName() && s->getName().startswith("union.");
   bool rawType = s && !s->hasName();
   if (unionType || rawType) {
     unsigned end = baseOffset + TD.getTypeStoreSize(s);
     for (; baseOffset < end; ++baseOffset) {
-#if DEPS_DEBUG_CLEAN
-      const ConsElem &elem = kit->newVar("");
-#else
       std::string varDesc = name + "[" + std::to_string(baseOffset) + "," +
                             std::to_string(baseOffset + 1) + "];";
       const ConsElem &elem = kit->newVar(varDesc);
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "\t\toffset "
                                                << format_decimal(baseOffset, 3)
                                                << ": [" << varDesc << "]\n";);
-#endif
       elemMap[baseOffset] = &elem;
     }
     return;
@@ -2275,12 +2179,10 @@ void Infoflow::createConsElemFromStruct(
     if (auto st = dyn_cast<StructType>(*it)) {
       createConsElemFromStruct(loc, st, elemMap, start);
     } else {
-#if DEPS_DEBUG_CLEAN
-      const ConsElem &elem = kit->newVar("");
-#else
       std::string varDesc =
           name + "[" + std::to_string(start) + "," + std::to_string(end) + "];";
       std::string varMeta;
+      std::string tmpDesc = varDesc;
       std::set<const Value *> vSet = invertedLocConstraintMap[&loc];
       if (vSet.size() > 1) {
         varMeta.append(delim + "*MultipleSource*");
@@ -2295,7 +2197,6 @@ void Infoflow::createConsElemFromStruct(
       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "\t\toffset "
                                                << format_decimal(start, 3)
                                                << ": [" << varDesc << "]\n";);
-#endif
       elemMap[start] = &elem;
     }
   }
@@ -2360,9 +2261,6 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
     if (createFieldSensitiveElementMap) {
       createConsElemFromStruct(loc, finalType, locConstraintMap[&loc], 0);
     } else {
-#if DEPS_DEBUG_CLEAN
-      const ConsElem &elem = kit->newVar("");
-#else
       std::string desc = getCaption(&loc, NULL) + ": elem 0:default:||";
       // std::set<const Value *> vSet = invertedLocConstraintMap[&loc];
       // for (const Value *v : vSet) {
@@ -2374,7 +2272,6 @@ Infoflow::getOrCreateConsElem(const AbstractLoc &loc) {
                                 << "In context [" << this->getCurrentContext()
                                 << "] created ConsElem [");
                       errs() << "] new_Var--9\n";);
-#endif
       locConstraintMap[&loc].insert(std::make_pair(0U, &elem));
     }
 
@@ -2524,19 +2421,18 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
     // The pc of the entry block will be tainted at any call sites
     generateBasicBlockConstraints(*bb, flowVector);
   }
-
   if (Infoflow::iterationTag > 1) {
     return;
   }
 
-  for (auto flow : flowVector) {
-    if (!flow.isImplicit() || IMPLICIT) {
-      DEBUG_WITH_TYPE(DEBUG_TYPE_FLOW, flow.dump(););
-      constrainFlowRecord(flow);
+  for (Flows::iterator flow = flowVector.begin(), end = flowVector.end();
+       flow != end; ++flow) {
+    if (!(*flow).isImplicit() || IMPLICIT) {
+      DEBUG_WITH_TYPE(DEBUG_TYPE_FLOW, (*flow).dump(););
+      constrainFlowRecord(*flow);
     }
   }
   flowVector.clear();
-
   for (auto instFlowKV = instFlowMap.begin(); instFlowKV != instFlowMap.end();
        instFlowKV++) {
     std::pair<Flows, Flows> flowPair = (*instFlowKV).second;
@@ -2599,35 +2495,35 @@ void Infoflow::generateFunctionConstraints(const Function &f) {
 void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
                                              Flows &flows) {
   // Build constraints for instructions
-  BranchInst *brI = nullptr;
-  if (const BasicBlock *pred = bb.getUniquePredecessor()) {
-    // pred->back().dump();
-    // errs() << pred->getName() << "   " << bb.getName() << " &&&&&&&&\n";
-    std::string predicate;
-    if (const BranchInst *brI = dyn_cast<BranchInst>(&pred->back())) {
-      if (brI->isConditional()) {
-        if (brI->getOperand(1)->getName() == bb.getName()) {
-          predicate.append("(Not(");
-          predicate.append(bb.getParent()->getName());
-          predicate.append("_");
-          predicate.append(brI->getOperand(0)->getName());
-          predicate.append("==1))  =>  ");
-        } else if (brI->getOperand(2)->getName() == bb.getName()) {
-          predicate.append("(");
-          predicate.append(bb.getParent()->getName());
-          predicate.append("_");
-          predicate.append(brI->getOperand(0)->getName());
-          predicate.append("==1)  =>  ");
-        }
-        // errs() << "0: " << brI->getOperand(0)->getName() << "\n";
-        // errs() << "1: " << brI->getOperand(1)->getName() << "\n";
-        // errs() << "2: " << brI->getOperand(2)->getName() << "\n";
-      }
-    }
-    errs() << "Predicate for [" << bb.getParent()->getName() << " -> "
-           << bb.getName() << "] : " << predicate << "\n";
-    predicateMap[&bb] = predicate;
-  }
+  // BranchInst *brI = nullptr;
+  // if (const BasicBlock *pred = bb.getUniquePredecessor()) {
+  //   // pred->back().dump();
+  //   // errs() << pred->getName() << "   " << bb.getName() << " &&&&&&&&
+  //   \n"; std::string predicate; if (const BranchInst *brI =
+  //   dyn_cast<BranchInst>(&pred->back())) {
+  //     if (brI->isConditional()) {
+  //       if (brI->getOperand(1)->getName() == bb.getName()) {
+  //         predicate.append("(Not(");
+  //         predicate.append(bb.getParent()->getName());
+  //         predicate.append("_");
+  //         predicate.append(brI->getOperand(0)->getName());
+  //         predicate.append("==1))  =>  ");
+  //       } else if (brI->getOperand(2)->getName() == bb.getName()) {
+  //         predicate.append("(");
+  //         predicate.append(bb.getParent()->getName());
+  //         predicate.append("_");
+  //         predicate.append(brI->getOperand(0)->getName());
+  //         predicate.append("==1)  =>  ");
+  //       }
+  //       // errs() << "0: " << brI->getOperand(0)->getName() << "\n";
+  //       // errs() << "1: " << brI->getOperand(1)->getName() << "\n";
+  //       // errs() << "2: " << brI->getOperand(2)->getName() << "\n";
+  //     }
+  //   }
+  //   errs() << "Predicate for [" << bb.getParent()->getName() << " -> "
+  //          << bb.getName() << "] : " << predicate << "\n";
+  //   predicateMap[&bb] = predicate;
+  // }
 
   if (&bb.getParent()->getEntryBlock() == &bb) {
     FlowRecord entryToBlocks = currentContextFlowRecord(true);
@@ -2639,10 +2535,10 @@ void Infoflow::generateBasicBlockConstraints(const BasicBlock &bb,
     flows.push_back(entryToBlocks);
   }
 
-  for (BasicBlock::const_iterator inst = bb.begin(); inst != bb.end(); ++inst) {
+  for (BasicBlock::const_iterator inst = bb.begin(), end = bb.end();
+       inst != end; ++inst) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << " +INST+\n"; (*inst).dump(););
-
-    getInstructionFlowsInternal(*inst, true, flows, predicateMap[&bb]);
+    getInstructionFlowsInternal(*inst, true, flows, "");
   }
 }
 
@@ -2820,11 +2716,16 @@ void Infoflow::constrainConditionalSuccessors(const TerminatorInst &term,
   }
 }
 
+Flows Infoflow::getInstructionFlows(const Instruction &inst) {
+  Flows flows;
+  getInstructionFlowsInternal(inst, false, flows, "");
+  return flows;
+}
+
 void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
                                            bool callees, Flows &flows,
                                            std::string predicate) {
   Flows temp = Flows(flows.begin(), flows.end());
-
   if (const AtomicCmpXchgInst *i = dyn_cast<AtomicCmpXchgInst>(&inst)) {
     Infoflow::constrainAtomicCmpXchgInst(*i, flows);
   } else if (const AtomicRMWInst *i = dyn_cast<AtomicRMWInst>(&inst)) {
@@ -2863,16 +2764,10 @@ void Infoflow::getInstructionFlowsInternal(const Instruction &inst,
   } else {
     assert(false && "Unsupported instruction type!");
   }
-
-  errs() << "NEW-FLOWS\n" << temp.size() << "\n";
-  errs() << "predicating on: " << predicate << "\n";
-  for (size_t i = temp.size(); i < flows.size(); i++) {
-    auto &flow = flows.at(i);
-    if (flow.getPredicate().empty())
-      flow.setPredicate(predicate);
-    flow.dump();
-  }
-  errs() << "NEW-FLOWS-END\n\n" << flows.size() << "\n";
+  // errs() << "NEW-FLOWS\n";
+  // for (size_t i = temp.size(); i != flows.size(); i++)
+  // flows.at(i).dump();
+  // errs() << "NEW-FLOWS-END\n\n";
 }
 
 void Infoflow::insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows,
@@ -3216,12 +3111,13 @@ void Infoflow::constrainGetElementPtrInst(const GetElementPtrInst &inst,
   return operandsAndPCtoValue(inst, flows);
 }
 
-void Infoflow::constrainConstantExpr(const Instruction &inst, const ConstantExpr &expr, Flows &flows) {
+void Infoflow::constrainConstantExpr(const Instruction &inst,
+                                     const ConstantExpr &expr, Flows &flows) {
   FlowRecord exp = currentContextFlowRecord(false);
 
   for (int i = 0; i < expr.getNumOperands(); i++) {
-      Value *op = expr.getOperand(i);
-      exp.addSourceValue(*op);
+    Value *op = expr.getOperand(i);
+    exp.addSourceValue(*op);
   }
 
   exp.addSinkValue(expr);
@@ -3237,7 +3133,8 @@ void Infoflow::constrainConstantExpr(const Instruction &inst, const ConstantExpr
   //   return operandsAndPCtoValue(*binConstExpr, flows);
   // } else if (const castConstExpr = dyn_cast<CastInst>(&expr)) {
   //   return operandsAndPCtoValue(*castConstExpr, flows);
-  // } else if (const getElemPtrConstExpr = dyn_cast<GetElementPtrInst>(&expr)) {
+  // } else if (const getElemPtrConstExpr = dyn_cast<GetElementPtrInst>(&expr))
+  // {
   //   return operandsAndPCtoValue(*getElemPtrConstExpr, flows);
   // } else {
   //   assert(false && "Unsupported constant expression type!");
@@ -3248,15 +3145,14 @@ void Infoflow::constrainConstantExpr(const Instruction &inst, const ConstantExpr
 /// value into the memory location. Has no return value.
 void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
   if (const ConstantExpr *ce =
-                dyn_cast<ConstantExpr>(inst.getPointerOperand())) {
+          dyn_cast<ConstantExpr>(inst.getPointerOperand())) {
     constrainConstantExpr(inst, *ce, flows);
   }
 
-  if (const ConstantExpr *ce =
-                dyn_cast<ConstantExpr>(inst.getValueOperand())) {
+  if (const ConstantExpr *ce = dyn_cast<ConstantExpr>(inst.getValueOperand())) {
     constrainConstantExpr(inst, *ce, flows);
   }
-  
+
   FlowRecord exp = currentContextFlowRecord(false);
   FlowRecord imp = currentContextFlowRecord(true);
   // pc
@@ -3284,10 +3180,10 @@ void Infoflow::constrainStoreInst(const StoreInst &inst, Flows &flows) {
 /// Flow from pc, ptr value, and memory to result.
 void Infoflow::constrainLoadInst(const LoadInst &inst, Flows &flows) {
   if (const ConstantExpr *ce =
-                dyn_cast<ConstantExpr>(inst.getPointerOperand())) {
+          dyn_cast<ConstantExpr>(inst.getPointerOperand())) {
     constrainConstantExpr(inst, *ce, flows);
   }
-  
+
   Value *ptr = inst.getOperand(0);
   if (Infoflow::whitelistPointers.find(ptr) !=
           Infoflow::whitelistPointers.end() &&
@@ -3449,12 +3345,10 @@ void Infoflow::constrainCallInst(const CallInst &inst, bool analyzeCallees,
                                  Flows &flows) {
   // TODO: filter out and handle Intrinsics here instead of deferring
   // to the Signature mechanism...
-  DEBUG_WITH_TYPE(DEBUG_TYPE_CALLINST, {
-    errs() << "Working on CallInst: ";
-    inst.dump();
-  });
+  DEBUG_WITH_TYPE(DEBUG_TYPE_CALLINST, errs() << "Working on CallInst: ";
+                  inst.dump(););
 
-  for (int i=0; i < inst.getNumArgOperands(); i++) {
+  for (int i = 0; i < inst.getNumArgOperands(); i++) {
     Value *arg = inst.getArgOperand(i);
     if (const ConstantExpr *ce = dyn_cast<ConstantExpr>(arg)) {
       constrainConstantExpr(inst, *ce, flows);
@@ -3501,19 +3395,16 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
                                  bool analyzeCallees, Flows &flows) {
   // For all functions that could possibly be invoked by this call
   // 1) pc of function should be at least as high as current pc + function
-  // pointer
-  // 2) levels of params should be as high as corresponding args
-  // 3) Result should be at least as high as the possible return values
+  // pointer 2) levels of params should be as high as corresponding args
+  // Result should be at least as high as the possible return values
 
   // Invoke the analysis on callees, if we're actually generating constraints
   // XXX HACK if we're not doing analysis on callees, we need to add any
   // signature flows here
 
-  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-    errs() << "working on callsite and \n\t" << (analyzeCallees ? "" : "not ")
-           << "analyzing callees\n";
-  });
-
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, errs() << "working on callsite and \n\t"
+                                           << (analyzeCallees ? "" : "not ")
+                                           << "analyzing callees\n";);
   Flows taintFlows;
   Flows WLPFlows;
   const CallInst *callinst = dyn_cast<CallInst>(cs.getInstruction());
@@ -3555,10 +3446,10 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
               sinkVar.callsite = getOrCreateStringFromValue(*meta);
             }
             indexedSinkVariables.push_back(sinkVar);
-            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-              errs() << "\tinserted [" << getOrCreateStringFromValue(*value)
-                     << "] at offset: " << var.index << "\n";
-            });
+            DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
+                            errs() << "\tinserted ["
+                                   << getOrCreateStringFromValue(*value)
+                                   << "] at offset: " << var.index << "\n";);
           }
         }
         callResult = false;
@@ -3566,7 +3457,6 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
     }
 
     if (callResult) {
-      errs() << "external relabel\n";
       this->getCallResult(cs, Unit());
     }
   } else if (usesExternalSignature(cs)) {
@@ -3594,11 +3484,15 @@ void Infoflow::constrainCallSite(const ImmutableCallSite &cs,
     flows.insert(flows.end(), combinedFlows.begin(), combinedFlows.end());
   }
 
+  std::set<std::pair<const Function *, const ContextID>> callees =
+      this->invokableCode(cs);
   // Do constraints for each callee
-  auto callees = this->invokableCode(cs);
   DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                  { errs() << "callee size: " << callees.size() << "\n"; });
-  for (auto callee = callees.begin(); callee != callees.end(); ++callee) {
+                  errs() << "callees' size: " << callees.size() << "\n";);
+  for (std::set<std::pair<const Function *, const ContextID>>::iterator
+           callee = callees.begin(),
+           end = callees.end();
+       callee != end; ++callee) {
     constrainCallee((*callee).second, *((*callee).first), cs, flows);
   }
   insertIntoInstFlowMap(callinst, taintFlows, WLPFlows);
@@ -3805,20 +3699,12 @@ void Infoflow::constrainIntrinsic(const IntrinsicInst &intr, Flows &flows) {
 // TODO: Update this function to provide information as getCaption does
 // for DSNode input.
 std::string getCaption(const AbstractHandle *NH, const DSGraph *G) {
-#if DEPS_DEBUG_CLEAN
-  return "";
-#endif
-
   const AbstractHandle NH2 = *NH;
   const AbstractLoc *N = NH->getNode();
   return "NH: " + getCaption(N, G);
 }
 
 std::string getCaption(const AbstractLoc *N, const DSGraph *G) {
-#if DEPS_DEBUG_CLEAN
-  return "";
-#endif
-
   std::string empty;
   raw_string_ostream OS(empty);
   const Module *M = 0;
@@ -4060,19 +3946,14 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
 
   RLLevel level;
   RLCompartment compartment;
-  std::string dynamic_label = "";
   if (v.contains("l") && v.contains("c")) {
     std::unordered_map<std::string, std::string> lmap = v.at("l");
     for (auto l : lmap) {
       auto v = RLConstant::RLLevelMap.at(l.first);
       auto it = find(v.begin(), v.end(), l.second);
-      // Handle dynamic labels.
-      if (it != v.end()) {
-        level.insert(std::make_pair(l.first, it - v.begin()));
-      } else if (it == v.end() && l.second.find("?") != std::string::npos) {
-        level.insert(std::make_pair(l.first, -1));
-        dynamic_label = fn + "_" + l.second;
-      }
+      assert(it != v.end());
+      int index = it - v.begin();
+      level.insert(std::make_pair(l.first, index));
     }
     std::unordered_map<std::string, std::list<std::string>> cmap = v.at("c");
     for (auto c : cmap) {
@@ -4090,34 +3971,41 @@ ConfigVariable Infoflow::parseConfigVariable(json v) {
   int line = v.contains("line") ? (unsigned int)v.at("line") : 0;
   long value = v.contains("value") ? (long)v.at("value") : 0;
 
-  ConfigVariable cv(fn, ty, name, num, idx, file, line, value, label);
-  cv.extras = dynamic_label;
-
-  return cv;
+  return ConfigVariable(fn, ty, name, num, idx, file, line, value, label);
 }
 
 int Infoflow::matchValueAndParsedString(const Value &value, std::string kind,
                                         ConfigVariable var) {
+  errs() << "Matching value with parsed string.\n";
   const Function *fn = findEnclosingFunc(&value);
+  if (fn)
+    errs() << "\t- found enclosing function: " << fn->getName() << "\n";
   int variable_matches = 0;
   if (var.function.size() == 0 ||
       (fn && fn->hasName() && fn->getName() == var.function)) {
+    errs() << "\t- function matched\n";
     const MDLocalVariable *local_var;
     if (fn) {
       local_var = findVarNode(&value, fn);
     }
     if (local_var &&
         (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+      errs() << "\t- local_var has the name: [" << local_var->getName()
+             << "]\n";
       if (local_var->getName() == var.name) {
         variable_matches |= 1;
+        errs() << "\t- Found a local variable match\n\n";
       }
     }
     if (value.hasName()) {
+      errs() << "\t- value has the name: [" << value.getName() << "]\n";
       if (value.getName() == var.name) {
         variable_matches |= 2;
+        errs() << "\t- Found a value name match\n\n";
       }
     }
   }
+  // errs() << "\t- Not a match\n\n";
   return variable_matches;
 }
 
@@ -4125,7 +4013,6 @@ void Infoflow::getOrCreateLocationValueMap() {
   for (auto entry : summarySourceValueConstraintMap) {
     const Value &value = *entry.first;
     if (!isa<BasicBlock>(value)) {
-      value.dump();
       const std::set<const AbstractLoc *> &locs = locsForValue(value);
       for (auto loc : locs) {
         invertedLocConstraintMap[loc].insert(&value);
@@ -4136,14 +4023,12 @@ void Infoflow::getOrCreateLocationValueMap() {
 
 void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
   getOrCreateLocationValueMap();
+  errs() << "Removing values tied to " << whitelist.name << "\n";
   for (DenseMap<const Value *, const ConsElem *>::const_iterator
            entry = summarySourceValueConstraintMap.begin(),
            end = summarySourceValueConstraintMap.end();
        entry != end; ++entry) {
-    DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-      errs() << "=== Iteration starts on a value==="
-             << "\n";
-    });
+    errs() << "=== Iteration starts on a value===" << "\n";
 
     const Value &value = *(entry->first);
 
@@ -4172,36 +4057,27 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
     if (matchValueAndParsedString(value, kind, whitelist)) {
       // Removing constraints in the registers, i.e., valueConstraintMap
       if (remove_reg) {
-        DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-          errs() << "Removing constraint from valueConstraintMap\n";
-        });
+        errs() << "Removing constraint from valueConstraintMap\n";
         for (DenseMap<ContextID,
                       DenseMap<const Value *, const ConsElem *>>::iterator
                  id = valueConstraintMap.begin(),
                  end = valueConstraintMap.end();
              id != end; ++id) {
-          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-            errs() << "Checking contextID: " << id->first << "\n";
-          });
+          errs() << "Checking contextID: " << id->first << "\n";
           for (DenseMap<const Value *, const ConsElem *>::iterator
                    I = id->second.begin(),
                    E = id->second.end();
                I != E; ++I) {
             if (I->first == &value) {
+              errs() << "Found the matching value in the valueConstraintMap:\n";
+              errs() << "\t- value name: " << (*I->first).getName() << "\n";
+              errs() << "\t- value addr: " << I->first << "\n";
               const ConsElem *thisElem = I->second;
-              DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-                errs()
-                    << "Found the matching value in the valueConstraintMap:\n";
-                errs() << "\t- value name: " << (*I->first).getName() << "\n";
-                errs() << "\t- value addr: " << I->first << "\n";
-                errs() << "Removing ConsElem addr: " << thisElem << "\n";
-              });
+              errs() << "Removing ConsElem addr: " << thisElem << "\n";
               kit->removeConstraintRHS(kind, *thisElem);
             }
           }
-          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
-            errs() << "Checking contextID: " << id->first << " finished.\n\n";
-          });
+          errs() << "Checking contextID: " << id->first << " finished.\n\n";
         }
       }
 
@@ -4209,6 +4085,9 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
       // from the value
       if (remove_mem) {
         const std::set<const AbstractLoc *> &locs = locsForValue(value);
+        errs() << "--" << whitelist.name << " : " << value
+               << ", t_offset: " << t_offset << ", locs: " << locs.size()
+               << "\n";
         for (std::set<const AbstractLoc *>::const_iterator loc = locs.begin(),
                                                            end = locs.end();
              loc != end; ++loc) {
@@ -4224,6 +4103,11 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
           if (invertedLocConstraintMap.find(*loc) !=
                   invertedLocConstraintMap.end() &&
               invertedLocConstraintMap.find(*loc)->getSecond().size() > 1) {
+            // if the AbsLocation is a merged node, we conservatively kick it
+            // out of the whitelisting process
+            errs() << "^^^^^: "
+                   << invertedLocConstraintMap.find(*loc)->getSecond().size()
+                   << "\n";
             invertedLocConstraintMap.find(*loc)->getSecond().erase(&value);
             continue;
           }
@@ -4238,6 +4122,7 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
               // target
               const DSNodeHandle nh = curElem->first->getLink(0);
               const AbstractLoc *node = nh.getNode();
+              errs() << "Linked Node";
               if (node != NULL) {
                 DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, node->dump(););
                 DenseMap<const AbstractLoc *,
@@ -4258,15 +4143,21 @@ void Infoflow::removeConstraint(std::string kind, ConfigVariable whitelist) {
                      itEnd = elemMap.end();
                  it != itEnd; ++it) {
               const ConsElem *e = it->second;
+
+              errs() << "------ conselem addr: " << e << "\n";
               kit->removeConstraintRHS(kind, *e);
             }
           }
         }
       }
     } else if (getOrCreateStringFromValue(value).find(whitelist.name) == 0) {
+      errs() << "Removing constraint with a no match: ";
       const ConsElem &elem = *(entry->second);
+      elem.dump(errs());
+      errs() << "\n";
       kit->removeConstraintRHS(kind, elem);
     }
+    errs() << "=== Iteration ends ===" << "\n\n\n";
   }
 }
 

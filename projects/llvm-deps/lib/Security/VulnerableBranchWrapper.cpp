@@ -139,16 +139,16 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
 
       if ((user || value) && matchNonPointerWhitelistAndTainted(
                                  value, user, Infoflow::tainted, I)) {
-        if (const MDLocation *loc = I.getDebugLoc())
-          // if (user){
-          //   errs() << "IR line (Index): ";
-          //   user->dump();
-          // } else {
-          //   errs() << "IR line (Index): ";
-          //   value->dump();
-          // }
-          errs() << loc->getFilename() << " at "
-                 << std::to_string(loc->getLine()) << "\n";
+        const MDLocation *loc = I.getDebugLoc();
+        if (user) {
+          errs() << "IR line (Index): ";
+          user->dump();
+        } else {
+          errs() << "IR line (Index): ";
+          value->dump();
+        }
+        errs() << loc->getFilename() << " at " << std::to_string(loc->getLine())
+               << "\n";
       }
 
       // This is to mimic SC-Eliminator
@@ -157,7 +157,7 @@ bool VulnerableBranchWrapper::runOnModule(Module &M) {
           const MDLocation *loc = I.getDebugLoc();
           errs() << "IR line (Index-SC-Eliminator): ";
           gep->dump();
-          errs() << loc->getFilename() << " at(SC-Eliminator) "
+          errs() << loc->getFilename() << " at (SC-Eliminator) "
                  << std::to_string(loc->getLine()) << "\n";
         }
       }

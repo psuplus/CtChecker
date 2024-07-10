@@ -39,9 +39,9 @@ for MEM2REG in true false ;
         $RUN findmax $MEM2REG
         $RUN matmul $MEM2REG
 
-        # echo "Change into libg"
-        # cd ../libg
-        # $RUN des $MEM2REG
+        echo "Change into libg"
+        cd ../libg
+        $RUN des $MEM2REG
 
         # echo "Change into supercop"
         # cd ../supercop $MEM2REG

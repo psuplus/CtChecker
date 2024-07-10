@@ -8,7 +8,6 @@ else
 fi
 
 COL=""
-MEM2REG="-mem2reg"
 
 COL+="WL"
 COL+="/FS"

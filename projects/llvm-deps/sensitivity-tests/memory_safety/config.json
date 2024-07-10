@@ -1,7 +1,7 @@
 {
   "signature_mode": {
-    "direction": 3,
-    "pointer": 1,
+    "direction": 1,
+    "pointer": 0,
     "custom": []
   },
   "lattice": {
@@ -15,18 +15,10 @@
   },
   "source": [
     {
+      "function": "foo",
       "type": "variable",
-      "name": "in1",
-      "index": -1,
-      "l": {
-        "secret": "private"
-      },
-      "c": {}
-    },
-    {
-      "type": "variable",
-      "name": "in2",
-      "index": -1,
+      "name": "A",
+      "index": 0,
       "l": {
         "secret": "private"
       },
@@ -38,23 +30,15 @@
   "whitelist": [],
   "ptr_whitelist": [
     {
+      "function": "foo",
       "type": "variable",
-      "name": "in1",
-      "index": -1,
-      "l": {
-        "secret": "private"
-      },
-      "c": {}
-    },
-    {
-      "type": "variable",
-      "name": "in2",
-      "index": -1,
+      "name": "A",
+      "index": 0,
       "l": {
         "secret": "private"
       },
       "c": {}
     }
   ],
-  "entry": ["__main"]
+  "entry": ["foo"]
 }

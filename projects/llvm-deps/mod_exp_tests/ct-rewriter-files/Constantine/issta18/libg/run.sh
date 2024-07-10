@@ -8,7 +8,6 @@ else
 fi
 
 COL=""
-MEM2REG="-mem2reg"
 
 COL+="WL"
 COL+="/FS"
@@ -26,7 +25,7 @@ fi
 echo "Running with flags: $COL"
 
 NAME=${1%.*}
-# change config file for each example
+change config file for each example
 rm config.json
 if [[ "$NAME" == *"des"* ]]; then
         cp config-des.json config.json

@@ -25,14 +25,14 @@ fi
 echo "Running with flags: $COL"
 
 NAME=${1%.*}
-# change config file for each example
-# rm config.json
-# if [[ "$NAME" == *"des"* ]]; then
-#         cp config-des.json config.json
-# else
-#         echo "Wrong example name"
-#         exit 1
-# fi
+change config file for each example
+rm config.json
+if [[ "$NAME" == *"des"* ]]; then
+        cp config-des.json config.json
+else
+        echo "Wrong example name"
+        exit 1
+fi
 
 CPPFLAGS=
 LLVMLIBS=

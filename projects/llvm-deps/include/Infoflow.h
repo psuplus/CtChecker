@@ -27,6 +27,7 @@
 #include "SignatureLibrary.h"
 #include "SourceSinkAnalysis.h"
 #include "TaintAnalysisBase.h"
+#include "DbgInstVisitor.h"
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/Analysis/PostDominators.h"

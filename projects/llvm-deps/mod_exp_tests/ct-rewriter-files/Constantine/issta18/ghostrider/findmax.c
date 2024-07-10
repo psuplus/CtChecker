@@ -122,11 +122,11 @@ static void __main(void) {
 
   do {     /* Syntactic loop 'for.body.i' to make GCC happy */
 llvm_cbe_for_2e_body_2e_i:
-#line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_indvars_2e_iv_2e_i = llvm_cbe_indvars_2e_iv_2e_i__PHI_TEMPORARY;
-#line 23 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 23 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_call_2e_i =  /*tail*/ read(0, (((uint8_t*)((&in.array[((int64_t)llvm_cbe_indvars_2e_iv_2e_i)])))), 2);
-#line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 22 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_indvars_2e_iv_2e_next_2e_i = llvm_add_u64(llvm_cbe_indvars_2e_iv_2e_i, 1);
   if ((((llvm_cbe_indvars_2e_iv_2e_next_2e_i == UINT64_C(1000))&1))) {
     goto llvm_cbe_loop_main_2e_exit;
@@ -137,10 +137,10 @@ llvm_cbe_for_2e_body_2e_i:
 
   } while (1); /* end of syntactic loop 'for.body.i' */
 llvm_cbe_loop_main_2e_exit:
-#line 25 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 25 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_call1_2e_i =  /*tail*/ max_OC_1();
   llvm_cbe_res = llvm_cbe_call1_2e_i;
-#line 26 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 26 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_call2_2e_i = write(1, (((uint8_t*)(&llvm_cbe_res))), 4);
 }
 
@@ -169,7 +169,7 @@ static uint32_t max_OC_1(void) {
   __MSALIGN__(16) struct l_vector_4_uint32_t _6;
   uint64_t llvm_cbe_index_2e_next_2e_1;
 
-#line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 1"/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   ;
   ;
   ;
@@ -180,17 +180,17 @@ static uint32_t max_OC_1(void) {
 
   do {     /* Syntactic loop 'vector.body' to make GCC happy */
 llvm_cbe_vector_2e_body:
-#line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_index = llvm_cbe_index__PHI_TEMPORARY;
   llvm_cbe_vec_2e_phi = llvm_cbe_vec_2e_phi__PHI_TEMPORARY;
   llvm_cbe_vec_2e_phi3 = llvm_cbe_vec_2e_phi3__PHI_TEMPORARY;
-#line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   _1 = (&in.array[((int64_t)llvm_cbe_index)]);
   llvm_cbe_wide_2e_load = *(((__MSALIGN__(16) struct l_vector_4_uint32_t*)_1));
   llvm_cbe_wide_2e_load4 = *(((__MSALIGN__(16) struct l_vector_4_uint32_t*)((&_1[((int64_t)4)]))));
   _2 = llvm_select_u32x4((llvm_icmp_sgt_i32x4(llvm_cbe_wide_2e_load, llvm_cbe_vec_2e_phi)), llvm_cbe_wide_2e_load, llvm_cbe_vec_2e_phi);
   _3 = llvm_select_u32x4((llvm_icmp_sgt_i32x4(llvm_cbe_wide_2e_load4, llvm_cbe_vec_2e_phi3)), llvm_cbe_wide_2e_load4, llvm_cbe_vec_2e_phi3);
-#line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_index_2e_next = llvm_cbe_index | 8;
   if ((((llvm_cbe_index_2e_next == UINT64_C(1000))&1))) {
     goto llvm_cbe_middle_2e_block;
@@ -199,13 +199,13 @@ llvm_cbe_vector_2e_body:
   }
 
 llvm_cbe_vector_2e_body_2e_1:
-#line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 11 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   _4 = (&in.array[((int64_t)llvm_cbe_index_2e_next)]);
   llvm_cbe_wide_2e_load_2e_1 = *(((__MSALIGN__(16) struct l_vector_4_uint32_t*)_4));
   llvm_cbe_wide_2e_load4_2e_1 = *(((__MSALIGN__(16) struct l_vector_4_uint32_t*)((&_4[((int64_t)4)]))));
   _5 = llvm_select_u32x4((llvm_icmp_sgt_i32x4(llvm_cbe_wide_2e_load_2e_1, _2)), llvm_cbe_wide_2e_load_2e_1, _2);
   _6 = llvm_select_u32x4((llvm_icmp_sgt_i32x4(llvm_cbe_wide_2e_load4_2e_1, _3)), llvm_cbe_wide_2e_load4_2e_1, _3);
-#line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
+// #line 10 "/home/constantine/constantine/src/apps/issta2018-benchmarks-wu/examples/ghostrider/findmax.c"
   llvm_cbe_index_2e_next_2e_1 = llvm_add_u64(llvm_cbe_index, 16);
   llvm_cbe_index__PHI_TEMPORARY = llvm_cbe_index_2e_next_2e_1;   /* for PHI node */
   llvm_cbe_vec_2e_phi__PHI_TEMPORARY = _5;   /* for PHI node */

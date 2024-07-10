@@ -8,16 +8,6 @@ namespace deps {
 STATISTIC(NumSourceConstrained, "Number of sources constrained");
 STATISTIC(NumSinkConstrained, "Number of sinks constrained");
 
-const Function *findEnclosingFunc(const Value *V) {
-  if (const Argument *Arg = dyn_cast<Argument>(V)) {
-    return Arg->getParent();
-  }
-  if (const Instruction *I = dyn_cast<Instruction>(V)) {
-    return I->getParent()->getParent();
-  }
-  return NULL;
-}
-
 bool TaintAnalysisBase::hasPointerTarget(const AbstractLoc *loc) {
   bool linkExists = false;
   if (loc != NULL && loc->getSize() > 0)
@@ -68,7 +58,7 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
   const AbstractLocSet &rlocs = ifa->reachableLocsForValue(value);
   if (t_offset < 0 || (locs.size() == 0 && rlocs.size() == 0)) {
     DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                    errs() << "SETTING " << s << " TO BE TAINTED\n";);
+                    { errs() << "SETTING " << s << " TO BE TAINTED\n"; });
     ifa->constrainAllConsElem(kind, value, std::set<const ConsElem *>(), label,
                               meta);
   }
@@ -80,23 +70,22 @@ void TaintAnalysisBase::constrainValue(std::string kind, const Value &value,
       relevantLocs.insert(rl);
     }
   }
-  DEBUG_WITH_TYPE(
-      DEBUG_TYPE_DEBUG, errs() << "\n --------- locs --------- \n";
-      for (auto &l
-           : locs) {
-        l->dump();
-        errs() << " --------- \n";
-      } errs()
-      << " --------- rlocs --------- \n";
-      for (auto &rl
-           : rlocs) {
-        rl->dump();
-        errs() << " --------- \n";
-      } errs()
-      << " locs size : " << locs.size() << "\n";
-      errs() << " rlocs size : " << rlocs.size() << "\n";
-      errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
-      errs() << " --------- end --------- \n\n";);
+  DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+    errs() << "\n --------- locs --------- \n";
+    for (auto &l : locs) {
+      l->dump();
+      errs() << " --------- \n";
+    }
+    errs() << " --------- rlocs --------- \n";
+    for (auto &rl : rlocs) {
+      rl->dump();
+      errs() << " --------- \n";
+    }
+    errs() << " locs size : " << locs.size() << "\n";
+    errs() << " rlocs size : " << rlocs.size() << "\n";
+    errs() << " relevantLocs size : " << relevantLocs.size() << "\n";
+    errs() << " --------- end --------- \n\n";
+  });
 
   unsigned offset = 0, span = 0;
   bool hasOffset = ifa->offsetForValue(value, &offset);
@@ -479,6 +468,8 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 void TaintAnalysisBase::labelValue(std::string kind,
                                    std::set<ConfigVariable> vars, bool gte) {
   for (auto var : vars) {
+    if (!valueMapLock)
+      getOrCreateLocalVarValueMap();
     NumSourceConstrained++;
     if (var.type == ConfigVariableType::Constant) {
       bool useConstant = true;
@@ -501,72 +492,127 @@ void TaintAnalysisBase::labelValue(std::string kind,
       }
       continue;
     }
-    for (DenseMap<const Value *, const ConsElem *>::const_iterator
-             entry = ifa->summarySourceValueConstraintMap.begin(),
-             end = ifa->summarySourceValueConstraintMap.end();
-         entry != end; ++entry) {
-      const Value &value = *(entry->first);
 
-      // Only taint variables defined in taint files if the function matches
-      const Function *fn = findEnclosingFunc(&value);
-      bool function_matches = false;
-      if (var.function.size() == 0) {
-        function_matches = true;
-      } else if (fn && fn->hasName() && fn->getName() == var.function) {
-        function_matches = true;
+    if (var.function.size() == 0) {
+      if (varValueMap.find(var.name) != varValueMap.end()) {
+        for (auto value : varValueMap[var.name]) {
+          constrainValue(kind, *value, var.index, var.name, var.label);
+        }
       }
+    } else {
+      auto key = std::make_pair(var.function, var.name);
+      if (localVarValueMap.find(key) != localVarValueMap.end()) {
+        for (auto value : localVarValueMap[key]) {
+          constrainValue(kind, *value, var.index, var.name, var.label);
+        }
+      }
+    }
 
-      if (function_matches) {
-        bool variable_matches = false;
-        if (value.hasName()) {
-          if (value.getName() == var.name) {
-            variable_matches = true;
-            DEBUG_WITH_TYPE(
-                DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
-                                         << " : " << var.name << "\n";
-                errs()
-                << "Matching value with config variable within function ["
-                << (fn ? fn->getName() : "GLOBAL") << "]\n";
-                errs() << "\t- Value has the name [" << value.getName()
-                       << "]\n";
-                errs() << "\t- Found a value name match\n\n";);
-          }
+    // for (auto entry : ifa->summarySourceValueConstraintMap) {
+    //   const Value &value = *(entry.first);
+
+    //   // Only taint variables defined in taint files if the function matches
+    //   const Function *fn = ifa->findEnclosingFunc(&value);
+    //   bool function_matches = false;
+    //   if (var.function.size() == 0) {
+    //     function_matches = true;
+    //   } else if (fn && fn->hasName() && fn->getName() == var.function) {
+    //     function_matches = true;
+    //   }
+
+    //   if (function_matches) {
+    //     // bool variable_matches = false;
+    //     // if (value.hasName()) {
+    //     //   if (value.getName() == var.name) {
+    //     //     variable_matches = true;
+    //     //     DEBUG_WITH_TYPE(
+    //     //         DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
+    //     //                                  << " : " << var.name << "\n";
+    //     //         errs()
+    //     //         << "Matching value with config variable within function ["
+    //     //         << (fn ? fn->getName() : "GLOBAL") << "]\n";
+    //     //         errs() << "\t- Value has the name [" << value.getName()
+    //     //                << "]\n";
+    //     //         errs() << "\t- Found a value name match\n\n";);
+    //     //   }
+    //     // }
+    //     // if (!variable_matches && fn) {
+    //     //   const MDLocalVariable *local_var = ifa->findVarNode(&value, fn);
+    //     //   if (local_var &&
+    //     //       (local_var->getTag() == 257 || local_var->getTag() == 256))
+    //     {
+    //     //     if (local_var->getName() == var.name) {
+    //     //       variable_matches = true;
+    //     //       DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG, {
+    //     //         errs() << "- Lookup: " << var.function << " : " <<
+    //     var.name
+    //     //                << "\n";
+    //     //         errs() << "Matching value with config variable within
+    //     //         function["
+    //     //                << fn->getName() << "]\n ";
+    //     //         errs() << "\t- Variable has name [" <<
+    //     local_var->getName()
+    //     //                << "]\n";
+    //     //         errs() << "\t- Found a local variable match\n\n";
+    //     //       });
+    //     //     }
+    //     //   }
+    //     // }
+
+    //     // if (variable_matches) {
+    //     // constrainValue(kind, value, var.index, var.name, var.label);
+    //     // } else
+    //     // if (function_matches) {
+    //     //   std::string name = ifa->getOrCreateStringFromValue(value,
+    //     false);
+    //     //   if (name == var.name) {
+    //     //     errs() << "Match Detected for " << name << "\n";
+    //     //     std::string meta =
+    //     //         "[" + name + ":" + std::to_string(var.index) +
+    //     //         "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
+    //     //     ifa->setLabel(kind, value, var.label, gte, meta);
+    //     //   }
+    //     // }
+    //   }
+    // }
+  }
+}
+
+void TaintAnalysisBase::getOrCreateLocalVarValueMap() {
+  if (!valueMapLock) {
+    valueMapLock = true;
+    for (auto entry : ifa->summarySourceValueConstraintMap) {
+      const Value *v = entry.first;
+      const Function *fn = ifa->findEnclosingFunc(v);
+      std::string valueStr = ifa->getOrCreateStringFromValue(*v, false);
+
+      if (fn) {
+        std::string fnName = fn->hasName() ? fn->getName() : "";
+        if (v->hasName()) {
+          auto key = std::make_pair(fnName, v->getName());
+          localVarValueMap.try_emplace(key, std::set<const Value *>());
+          localVarValueMap[key].insert(v);
         }
-        if (!variable_matches && fn) {
-          const MDLocalVariable *local_var = ifa->findVarNode(&value, fn);
-          if (local_var &&
-              (local_var->getTag() == 257 || local_var->getTag() == 256)) {
-            if (local_var->getName() == var.name) {
-              variable_matches = true;
-              DEBUG_WITH_TYPE(
-                  DEBUG_TYPE_DEBUG, errs() << "- Lookup: " << var.function
-                                           << " : " << var.name << "\n";
-                  errs()
-                  << "Matching value with config variable within function ["
-                  << fn->getName() << "]\n";
-                  errs() << "\t- Variable has name [" << local_var->getName()
-                         << "]\n";
-                  errs() << "\t- Found a local variable match\n\n";);
-            }
-          }
+        const MDLocalVariable *local_var = ifa->findVarNode(v, fn);
+        if (local_var &&
+            (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+          std::string name = local_var->getName();
+          auto key = std::make_pair(fnName, name);
+          localVarValueMap.try_emplace(key, std::set<const Value *>());
+          localVarValueMap[key].insert(v);
         }
 
-        if (variable_matches) {
-          constrainValue(kind, value, var.index, var.name, var.label);
-        } else if (function_matches) {
-          // test if the value's content starts with match
-          std::string name = ifa->getOrCreateStringFromValue(value, false);
-          DEBUG_WITH_TYPE(DEBUG_TYPE_DEBUG,
-                          errs() << "var.name = " << var.name << "\n";
-                          errs() << "name = " << name << "\n";);
-          if (name.find(var.name) == 0 && var.name.find(name) == 0) {
-            errs() << "Match Detected for " << name << "\n";
-            std::string meta =
-                "[" + name + ":" + std::to_string(var.index) +
-                "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
-            ifa->setLabel(kind, value, var.label, gte, meta);
-          }
+        auto valueStrKey = std::make_pair(fnName, valueStr);
+        localVarValueMap.try_emplace(valueStrKey, std::set<const Value *>());
+        localVarValueMap[valueStrKey].insert(v);
+      } else {
+        if (v->hasName()) {
+          varValueMap.try_emplace(v->getName(), std::set<const Value *>());
+          varValueMap[v->getName()].insert(v);
         }
+
+        varValueMap.try_emplace(valueStr, std::set<const Value *>());
+        varValueMap[valueStr].insert(v);
       }
     }
   }

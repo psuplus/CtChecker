@@ -899,7 +899,7 @@ bool InfoflowSolution::isTainted(const ConsElem &elem) {
   return !(soln->subst(elem) == botConstant);
 }
 
-const Function *findEnclosingFunc(const Value *V) {
+const Function *Infoflow::findEnclosingFunc(const Value *V) const {
   if (const Argument *Arg = dyn_cast<Argument>(V)) {
     return Arg->getParent();
   }
@@ -955,7 +955,7 @@ void InfoflowSolution::getOriginalLocation(const Value *V) {
   if (const Instruction *I = dyn_cast<Instruction>(V)) {
     Loc = I->getDebugLoc();
   } else { // try to find the uses of the value
-    const Function *F = findEnclosingFunc(V);
+    const Function *F = infoflow.findEnclosingFunc(V);
     if (!F) {
       DEBUG(errs() << "Unknown location";);
       return;

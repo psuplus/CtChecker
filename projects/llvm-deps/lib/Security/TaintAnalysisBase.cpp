@@ -340,44 +340,61 @@ std::set<const ConsElem *> TaintAnalysisBase::gatherRelevantConsElems(
 void TaintAnalysisBase::labelValue(std::string kind,
                                    std::set<ConfigVariable> vars, bool gte) {
   for (auto var : vars) {
+    if (!valueMapLock)
+      getOrCreateLocalVarValueMap();
     NumSourceConstrained++;
     DEBUG(errs() << "Labeling value\n";);
-    for (DenseMap<const Value *, const ConsElem *>::const_iterator
-             entry = ifa->summarySourceValueConstraintMap.begin(),
-             end = ifa->summarySourceValueConstraintMap.end();
-         entry != end; ++entry) {
-      const Value &value = *(entry->first);
-
-      // Only taint variables defined in taint files if the function matches
-      const Function *fn = findEnclosingFunc(&value);
-      bool function_matches = false;
-      if (var.function.size() == 0) {
-        function_matches = true;
-      } else if (fn && fn->hasName() && fn->getName() == var.function) {
-        function_matches = true;
-      }
-
-      if (function_matches) {
-        bool variable_matches = false;
-        if (ifa->matchValueAndParsedString(value, kind, var) > 0) {
-          variable_matches = true;
+    
+    if (var.function.size() == 0) {
+      if (varValueMap.find(var.name) != varValueMap.end()) {
+        for (auto value : varValueMap[var.name]) {
+          constrainValue(kind, *value, var.index, var.name, var.label);
         }
-
-        if (variable_matches) {
-          constrainValue(kind, value, var.index, var.name, var.label);
-        } else if (function_matches) {
-          // test if the value's content starts with match
-          std::string name = ifa->getOrCreateStringFromValue(value, false);
-          if (name.find(var.name) == 0 && var.name.find(name) == 0) {
-            DEBUG(errs() << "Match Detected for " << name << "\n";);
-            std::string meta =
-                "[" + name + ":" + std::to_string(var.index) +
-                "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
-            ifa->setLabel(kind, value, var.label, gte, meta);
-          }
+      }
+    } else {
+      auto key = std::make_pair(var.function, var.name);
+      if (localVarValueMap.find(key) != localVarValueMap.end()) {
+        for (auto value : localVarValueMap[key]) {
+          constrainValue(kind, *value, var.index, var.name, var.label);
         }
       }
     }
+    // for (DenseMap<const Value *, const ConsElem *>::const_iterator
+    //          entry = ifa->summarySourceValueConstraintMap.begin(),
+    //          end = ifa->summarySourceValueConstraintMap.end();
+    //      entry != end; ++entry) {
+    //   const Value &value = *(entry->first);
+
+    //   // Only taint variables defined in taint files if the function matches
+    //   const Function *fn = findEnclosingFunc(&value);
+    //   bool function_matches = false;
+    //   if (var.function.size() == 0) {
+    //     function_matches = true;
+    //   } else if (fn && fn->hasName() && fn->getName() == var.function) {
+    //     function_matches = true;
+    //   }
+
+    //   if (function_matches) {
+    //     bool variable_matches = false;
+    //     if (ifa->matchValueAndParsedString(value, kind, var) > 0) {
+    //       variable_matches = true;
+    //     }
+
+    //     if (variable_matches) {
+    //       constrainValue(kind, value, var.index, var.name, var.label);
+    //     } else if (function_matches) {
+    //       // test if the value's content starts with match
+    //       std::string name = ifa->getOrCreateStringFromValue(value, false);
+    //       if (name.find(var.name) == 0 && var.name.find(name) == 0) {
+    //         DEBUG(errs() << "Match Detected for " << name << "\n";);
+    //         std::string meta =
+    //             "[" + name + ":" + std::to_string(var.index) +
+    //             "] [SrcIdx:" + std::to_string(NumSourceConstrained) + "]";
+    //         ifa->setLabel(kind, value, var.label, gte, meta);
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
 
@@ -413,6 +430,54 @@ unsigned TaintAnalysisBase::getNumElements(const Value &value) {
   }
 
   return 1;
+}
+
+void TaintAnalysisBase::getOrCreateLocalVarValueMap() {
+  if (!valueMapLock) {
+    valueMapLock = true;
+    for (auto entry : ifa->summarySourceValueConstraintMap) {
+      const Value *v = entry.first;
+      const Function *fn = ifa->findEnclosingFunc(v);
+      std::string valueStr = ifa->getOrCreateStringFromValue(*v, false);
+
+      if (fn) {
+        std::string fnName = fn->hasName() ? fn->getName() : "";
+        if (v->hasName()) {
+          auto key = std::make_pair(fnName, v->getName());
+          if (localVarValueMap.find(key) != localVarValueMap.end()) {
+            localVarValueMap[key] = std::set<const Value *>();
+          }
+          localVarValueMap[key].insert(v);
+        }
+        // const MDLocalVariable *local_var = ifa->findVarNode(v, fn);
+        // if (local_var &&
+        //     (local_var->getTag() == 257 || local_var->getTag() == 256)) {
+        //   std::string name = local_var->getName();
+        //   auto key = std::make_pair(fnName, name);
+        //   localVarValueMap.try_emplace(key, std::set<const Value *>());
+        //   localVarValueMap[key].insert(v);
+        // }
+
+        auto valueStrKey = std::make_pair(fnName, valueStr);
+        if (localVarValueMap.find(valueStrKey) != localVarValueMap.end()) {
+          localVarValueMap[valueStrKey] = std::set<const Value *>();
+        }
+        localVarValueMap[valueStrKey].insert(v);
+      } else {
+        if (v->hasName()) {
+          if (varValueMap.find(v->getName()) != varValueMap.end()) {
+            varValueMap[v->getName()] = std::set<const Value *>();
+          }
+          varValueMap[v->getName()].insert(v);
+        }
+
+        if (varValueMap.find(valueStr) != varValueMap.end()) {
+          varValueMap[valueStr] = std::set<const Value *>();
+        }
+        varValueMap[valueStr].insert(v);
+      }
+    }
+  }
 }
 
 } // namespace deps

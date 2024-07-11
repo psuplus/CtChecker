@@ -576,6 +576,8 @@ private:
   void insertIntoInstFlowMap(const Instruction *inst, Flows &taintFlows, Flows &WLPFlows);
   void insertIntoFlowConsSetMap(const FlowRecord &flow, ConsSet &set);
 
+  const Function *findEnclosingFunc(const Value *V) const;
+
   AbstractLocSet getPointedToAbstractLocs(const Value *v);
 };
 

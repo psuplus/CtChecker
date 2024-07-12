@@ -88,7 +88,7 @@ static __MSALIGN__(64) struct l_struct_struct_OC_stream_state promoted_stack_var
 /* LLVM Intrinsic Builtin Function Bodies */
 static __forceinline uint8_t llvm_select_u8(bool condition, uint8_t iftrue, uint8_t ifnot) {
   uint8_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint32_t llvm_add_u32(uint32_t a, uint32_t b) {

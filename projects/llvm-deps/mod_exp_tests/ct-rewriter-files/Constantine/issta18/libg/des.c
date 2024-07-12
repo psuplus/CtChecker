@@ -121,7 +121,7 @@ static const __MSALIGN__(64) struct l_array_16_uint8_t encrypt_rotate_tab __attr
 /* LLVM Intrinsic Builtin Function Bodies */
 static __forceinline uint32_t llvm_select_u32(bool condition, uint32_t iftrue, uint32_t ifnot) {
   uint32_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint64_t llvm_add_u64(uint64_t a, uint64_t b) {

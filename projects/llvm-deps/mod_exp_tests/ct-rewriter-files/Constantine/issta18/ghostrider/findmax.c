@@ -75,10 +75,10 @@ static __MSALIGN__(16) struct l_array_1000_uint32_t in __attribute__((aligned(16
 /* LLVM Intrinsic Builtin Function Bodies */
 static __forceinline struct l_vector_4_uint32_t llvm_select_u32x4(struct l_vector_4_bool condition, struct l_vector_4_uint32_t iftrue, struct l_vector_4_uint32_t ifnot) {
   struct l_vector_4_uint32_t r;
-  r.vector[0] = condition.vector[0] ? iftrue.vector[0] : ifnot.vector[0];
-  r.vector[1] = condition.vector[1] ? iftrue.vector[1] : ifnot.vector[1];
-  r.vector[2] = condition.vector[2] ? iftrue.vector[2] : ifnot.vector[2];
-  r.vector[3] = condition.vector[3] ? iftrue.vector[3] : ifnot.vector[3];
+  r.vector[0] = iftrue.vector[0] + ifnot.vector[0] + condition.vector[0];
+  r.vector[1] = iftrue.vector[1] + ifnot.vector[1] + condition.vector[1];
+  r.vector[2] = iftrue.vector[2] + ifnot.vector[2] + condition.vector[2];
+  r.vector[3] = iftrue.vector[3] + ifnot.vector[3] + condition.vector[3];
   return r;
 }
 static __forceinline __MSALIGN__(4) struct l_vector_4_bool llvm_icmp_sgt_i32x4(struct l_vector_4_uint32_t l, struct l_vector_4_uint32_t r) {

@@ -226,7 +226,7 @@ def main():
 
     res = get_lines_from_source(positives, positives2)
     output_results(res)
-    # update_table(res)
+    update_table(res)
 
 
 if __name__ == "__main__":

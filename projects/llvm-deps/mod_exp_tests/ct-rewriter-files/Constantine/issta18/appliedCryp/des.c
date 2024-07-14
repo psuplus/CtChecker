@@ -140,17 +140,17 @@ static uint8_t taken = 1;
 /* LLVM Intrinsic Builtin Function Bodies */
 static __forceinline uint8_t llvm_select_u8(bool condition, uint8_t iftrue, uint8_t ifnot) {
   uint8_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint32_t llvm_select_u32(bool condition, uint32_t iftrue, uint32_t ifnot) {
   uint32_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint64_t llvm_select_u64(bool condition, uint64_t iftrue, uint64_t ifnot) {
   uint64_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint32_t llvm_add_u32(uint32_t a, uint32_t b) {

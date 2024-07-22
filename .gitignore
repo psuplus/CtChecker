@@ -139,7 +139,7 @@ projects/llvm-deps/linux_security_tests_final/
 projects/llvm-deps/linux_security_tests_relaxed/
 
 #==============================================================================#
-# Rewriter files - 4/15/2021
+# Rewriter files
 #==============================================================================#
 
 projects/llvm-deps/mod_exp_tests/ct-rewriter-files/lif/issta18-ll/libgcrypt/camellia/asm/main1_isochr.opt.s
@@ -334,3 +334,6 @@ projects/llvm-deps/mod_exp_tests/ct-rewriter-files/lif/issta18-ll/supercop/cast/
 projects/llvm-deps/mod_exp_tests/ct-rewriter-files/lif/issta18-ll/supercop/cast/bin/measure_64_meng
 projects/llvm-deps/mod_exp_tests/ct-rewriter-files/lif/issta18-ll/supercop/cast/bin/measure_64_meng.opt
 projects/llvm-deps/mod_exp_tests/ct-rewriter-files/lif/issta18-ll/supercop/cast/bin/measure_64.opt
+projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/**/config.json
+projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/*.csv
+projects/llvm-deps/mod_exp_tests/ct-rewriter-files/Constantine/**/results-*.txt

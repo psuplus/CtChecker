@@ -115,22 +115,22 @@ static uint64_t loop_cfl_glob_Flow_OC_split__cfl_loop_tls1_cbc_remove_padding_OC
 /* LLVM Intrinsic Builtin Function Bodies */
 static __forceinline bool llvm_select_bool(bool condition, bool iftrue, bool ifnot) {
   bool r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint8_t llvm_select_u8(bool condition, uint8_t iftrue, uint8_t ifnot) {
   uint8_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint32_t llvm_select_u32(bool condition, uint32_t iftrue, uint32_t ifnot) {
   uint32_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint64_t llvm_select_u64(bool condition, uint64_t iftrue, uint64_t ifnot) {
   uint64_t r;
-  r = iftrue + ifnot; //r = condition ? iftrue : ifnot;
+  r = iftrue + ifnot + condition; //r = condition ? iftrue : ifnot;
   return r;
 }
 static __forceinline uint8_t* llvm_select_pu8(bool condition, uint8_t* iftrue, uint8_t* ifnot) {
